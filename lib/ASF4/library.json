@@ -1,0 +1,24 @@
+{
+    "name": "ASF4",
+    "build":{
+        "flags":
+        [
+            "-Isrc",
+            "-Isrc/hal/include",
+            "-Isrc/hal/utils/include",
+            "-Isrc/dfp/include",
+            "-Isrc/CMSIS/Include",
+            "-Isrc/hri",
+            "-Isrc/hpl/core",
+            "-Isrc/hpl/gclk",
+            "-Isrc/hpl/pm",
+            "-Isrc/hpl/port",
+            "-Isrc/usb",
+            "-Isrc/usb/device",
+            "-Isrc/usb/class/cdc",
+            "-Isrc/usb/class/cdc/device",
+            "-Isrc/sd_mmc"
+        ],
+        "libArchive": false
+    }
+}
