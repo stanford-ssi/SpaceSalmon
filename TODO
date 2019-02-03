@@ -1,0 +1,8 @@
+-Make USB interface better (double buffered?)
+-Rearange all the test source files
+-Set up all the pin definitions
+-Test SPI
+-Test Sensors
+-Introduce RTOS?
+-Test Squib Firing
+-Test Bus Messaging
