@@ -14,7 +14,7 @@ int main(void)
 	gpio_set_pin_level(LED3,true);
 	gpio_set_pin_level(LED4,true);
 	
-	for(int i=0;i<100000;i++){}
+	for(int i=0;i<10000000;i++){}
 
 	gpio_set_pin_level(LED1,false);
 	gpio_set_pin_level(LED2,false);
