@@ -32,32 +32,34 @@ static struct usbd_descriptors single_desc[]
 };
 
 /** Buffers to receive and echo the communication bytes. */
-static uint32_t usbd_cdc_buffer[CDCD_ECHO_BUF_SIZ / 4];
+static uint8_t usbd_cdc_buffer[2][CDCD_ECHO_BUF_SIZ];
+
 
 /** Ctrl endpoint buffer */
 static uint8_t ctrl_buffer[64];
 
-volatile bool writing = false;
+volatile bool buffer = false;
+volatile bool writing[2] = {false,false};
+
+uint8_t full[2] = {0,0};
 
 /**
  * \brief Callback invoked when bulk OUT data received
  */
-static bool usb_device_cb_bulk_out(const uint8_t ep, const enum usb_xfer_code rc, const uint32_t count)
-{
-	cdcdf_acm_write((uint8_t *)usbd_cdc_buffer, count+5);
+//static bool usb_device_cb_bulk_out(const uint8_t ep, const enum usb_xfer_code rc, const uint32_t count)
+//{
+	//cdcdf_acm_write((uint8_t *)usbd_cdc_buffer, count+5);
 
 	/* No error. */
-	return false;
-}
+//	return false;
+//}
 
 /**
  * \brief Callback invoked when bulk IN data received
  */
 static bool usb_device_cb_bulk_in(const uint8_t ep, const enum usb_xfer_code rc, const uint32_t count)
 {
-	/* Echo data. */
-	writing = false;
-
+	writing[!buffer] = false; //done writing!
 	/* No error. */
 	return false;
 }
@@ -122,12 +124,18 @@ void usb_init(void)
 
 void puty(const char* msg, int len)
 {
-	writing = true;
-	memcpy((uint8_t *)usbd_cdc_buffer,msg,len);
-	cdcdf_acm_write((uint8_t *)usbd_cdc_buffer,len);
-	for(int i=0;i<100000;i++){
+	if(len < 63 - full[buffer]){
+		memcpy((uint8_t *)usbd_cdc_buffer[buffer] + full[buffer], msg, len);
+		full[buffer] += len;
 	}
-	//while(writing){}
+
+	if(!writing[!buffer]){
+		buffer = !buffer;
+		cdcdf_acm_write((uint8_t *)usbd_cdc_buffer[!buffer],len);//start writing
+		writing[!buffer] = true;
+		full[buffer] = 0;
+	}
+
 }
 
 int __attribute__((weak)) _write(int file, char *ptr, int len)
