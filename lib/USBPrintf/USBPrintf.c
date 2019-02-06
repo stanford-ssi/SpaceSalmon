@@ -1,5 +1,4 @@
-#include "atmel_start.h"
-#include "usb_start.h"
+#include "USBPrintf.h"
 
 #if CONF_USBD_HS_SP //faster, but we don't need it for now
 	static uint8_t single_desc_bytes[] = {CDCD_ACM_HS_DESCES_LS_FS};
@@ -83,7 +82,7 @@ void usb_init(void)
 
 int __attribute__((weak)) _write(int file, char *ptr, int len)
 {
-	if (len < 63 - tx_fill[tx_flag])
+	if (len + tx_fill[tx_flag] < 63)
 	{
 		memcpy((uint8_t *)usb_tx_buffer[tx_flag] + tx_fill[tx_flag], ptr, len);
 		tx_fill[tx_flag] += len;

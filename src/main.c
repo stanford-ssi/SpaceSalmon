@@ -1,5 +1,4 @@
 #include <atmel_start.h>
-#include <usb_start.h>
 
 int main(void)
 {
