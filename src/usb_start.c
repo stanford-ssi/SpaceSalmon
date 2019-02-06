@@ -72,7 +72,7 @@ static bool usb_device_cb_state_c(usb_cdc_control_signal_t state)
 	if (state.rs232.DTR) {
 		/* Callbacks must be registered after endpoint allocation */
 		//cdcdf_acm_register_callback(CDCDF_ACM_CB_READ, (FUNC_PTR)usb_device_cb_bulk_out);
-		cdcdf_acm_register_callback(CDCDF_ACM_CB_WRITE, (FUNC_PTR)usb_device_cb_bulk_in);
+		cdcdf_acm_register_callback(CDCDF_ACM_CB_WRITE, (FUNC_PTR)usb_device_cb_bulk_in);//this isint needed
 		/* Start Rx */
 		//cdcdf_acm_read((uint8_t *)usbd_cdc_buffer, sizeof(usbd_cdc_buffer));
 	}
@@ -108,12 +108,7 @@ void cdc_device_acm_init(void)
  */
 void cdcd_acm_example(void)
 {
-	//while (!cdcdf_acm_is_enabled()) {
-		// wait cdc acm to be installed
-	//};
-
 	cdcdf_acm_register_callback(CDCDF_ACM_CB_STATE_C, (FUNC_PTR)usb_device_cb_state_c);
-
 }
 
 void usb_init(void)
@@ -131,7 +126,8 @@ void puty(const char* msg, int len)
 
 	if(!writing[!buffer]){
 		buffer = !buffer;
-		cdcdf_acm_write((uint8_t *)usbd_cdc_buffer[!buffer],len);//start writing
+		cdcdf_acm_register_callback(CDCDF_ACM_CB_WRITE, (FUNC_PTR)usb_device_cb_bulk_in);//is this hacky? or ok?
+		cdcdf_acm_write((uint8_t *)usbd_cdc_buffer[!buffer],full[!buffer]);//start writing
 		writing[!buffer] = true;
 		full[buffer] = 0;
 	}
