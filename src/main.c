@@ -6,8 +6,6 @@ int main(void)
 	/* Initializes MCU, drivers and middleware */
 	atmel_start_init();
 
-	cdcd_acm_example();
-	/* Replace with your application code */
 	
 	gpio_set_pin_level(LED1,true);
 	gpio_set_pin_level(LED2,true);
