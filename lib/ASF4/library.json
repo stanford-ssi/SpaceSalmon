@@ -9,6 +9,7 @@
             "-Isrc/dfp/include",
             "-Isrc/CMSIS/Include",
             "-Isrc/hri",
+            "-Isrc/hpl/adc",
             "-Isrc/hpl/core",
             "-Isrc/hpl/gclk",
             "-Isrc/hpl/pm",
@@ -18,6 +19,7 @@
             "-Isrc/usb/class/cdc",
             "-Isrc/usb/class/cdc/device",
             "-Isrc/sd_mmc"
+            
         ],
         "libArchive": false
     }
