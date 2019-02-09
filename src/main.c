@@ -28,8 +28,20 @@ int main(void)
 				gpio_toggle_pin_level(BUZZER);
 			}
 			printf("TopKekTest\n");
+			
 		}
 		sdtester();
 	}
 		
+}
+
+static uint8_t example_SPI_0[12] = "Hello World!";
+
+void SPI_0_example(void)
+{
+	struct io_descriptor *io;
+	spi_m_sync_get_io_descriptor(&SPI_0, &io);
+
+	spi_m_sync_enable(&SPI_0);
+	io_write(io, example_SPI_0, 12);
 }
