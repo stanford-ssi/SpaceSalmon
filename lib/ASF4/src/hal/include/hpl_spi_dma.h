@@ -1,9 +1,9 @@
 /**
  * \file
  *
- * \brief HPL initialization related functionality implementation.
+ * \brief Common SPI DMA related functionality declaration.
  *
- * Copyright (c) 2014-2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2016-2018 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -31,48 +31,58 @@
  *
  */
 
-#include <hpl_gpio.h>
-#include <hpl_init.h>
-#include <hpl_gclk_base.h>
-#include <hpl_mclk_config.h>
+#ifndef _HPL_SPI_DMA_H_INCLUDED
+#define _HPL_SPI_DMA_H_INCLUDED
 
+#include <hpl_irq.h>
 #include <hpl_dma.h>
-#include <hpl_dmac_config.h>
-#include <hpl_cmcc_config.h>
-#include <hal_cache.h>
 
-/* Referenced GCLKs (out of 0~11), should be initialized firstly
- */
-#define _GCLK_INIT_1ST 0x00000000
-/* Not referenced GCLKs, initialized last */
-#define _GCLK_INIT_LAST 0x00000FFF
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/** The callback types */
+enum _spi_dma_dev_cb_type {
+	/** Callback type for DMA transmit. */
+	SPI_DEV_CB_DMA_TX,
+	/** Callback type for DMA receive. */
+	SPI_DEV_CB_DMA_RX,
+	/** Callback type for DMA error. */
+	SPI_DEV_CB_DMA_ERROR,
+	/** Number of callbacks. */
+	SPI_DEV_CB_DMA_N
+};
+
+struct _spi_dma_dev;
 
 /**
- * \brief Initialize the hardware abstraction layer
+ *  \brief The prototype for callback on SPI DMA.
  */
-void _init_chip(void)
-{
-	hri_nvmctrl_set_CTRLA_RWS_bf(NVMCTRL, CONF_NVM_WAIT_STATE);
+typedef void (*_spi_dma_cb_t)(struct _dma_resource *resource);
 
-	_osc32kctrl_init_sources();
-	_oscctrl_init_sources();
-	_mclk_init();
-#if _GCLK_INIT_1ST
-	_gclk_init_generators_by_fref(_GCLK_INIT_1ST);
-#endif
-	_oscctrl_init_referenced_generators();
-	_gclk_init_generators_by_fref(_GCLK_INIT_LAST);
+/**
+ *  \brief The callbacks offered by SPI driver
+ */
+struct _spi_dma_dev_callbacks {
+	_spi_dma_cb_t tx;
+	_spi_dma_cb_t rx;
+	_spi_dma_cb_t error;
+};
 
-#if CONF_DMAC_ENABLE
-	hri_mclk_set_AHBMASK_DMAC_bit(MCLK);
-	_dma_init();
-#endif
+/** SPI driver to support DMA HAL */
+struct _spi_dma_dev {
+	/** Pointer to the hardware base or private data for special device. */
+	void *prvt;
+	/** Pointer to callback functions */
+	struct _spi_dma_dev_callbacks callbacks;
+	/** IRQ instance for SPI device. */
+	struct _irq_descriptor irq;
+	/** DMA resource */
+	struct _dma_resource *resource;
+};
 
-#if (CONF_PORT_EVCTRL_PORT_0 | CONF_PORT_EVCTRL_PORT_1 | CONF_PORT_EVCTRL_PORT_2 | CONF_PORT_EVCTRL_PORT_3)
-	_port_event_init();
-#endif
-
-#if CONF_CMCC_ENABLE
-	cache_init();
-#endif
+#ifdef __cplusplus
 }
+#endif
+
+#endif /* ifndef _HPL_SPI_DMA_H_INCLUDED */

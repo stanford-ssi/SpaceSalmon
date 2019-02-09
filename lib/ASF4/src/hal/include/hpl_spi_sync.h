@@ -1,9 +1,9 @@
 /**
  * \file
  *
- * \brief HPL initialization related functionality implementation.
+ * \brief Common SPI related functionality declaration.
  *
- * Copyright (c) 2014-2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2015-2018 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -31,48 +31,40 @@
  *
  */
 
-#include <hpl_gpio.h>
-#include <hpl_init.h>
-#include <hpl_gclk_base.h>
-#include <hpl_mclk_config.h>
+#ifndef _HPL_SPI_SYNC_H_INCLUDED
+#define _HPL_SPI_SYNC_H_INCLUDED
 
-#include <hpl_dma.h>
-#include <hpl_dmac_config.h>
-#include <hpl_cmcc_config.h>
-#include <hal_cache.h>
+#include <compiler.h>
+#include <utils.h>
 
-/* Referenced GCLKs (out of 0~11), should be initialized firstly
- */
-#define _GCLK_INIT_1ST 0x00000000
-/* Not referenced GCLKs, initialized last */
-#define _GCLK_INIT_LAST 0x00000FFF
+#include <hpl_spi.h>
 
 /**
- * \brief Initialize the hardware abstraction layer
+ * \addtogroup hpl_spi HPL SPI
+ *
+ * \section hpl_spi_rev Revision History
+ * - v1.0.0 Initial Release
+ *
+ *@{
  */
-void _init_chip(void)
-{
-	hri_nvmctrl_set_CTRLA_RWS_bf(NVMCTRL, CONF_NVM_WAIT_STATE);
 
-	_osc32kctrl_init_sources();
-	_oscctrl_init_sources();
-	_mclk_init();
-#if _GCLK_INIT_1ST
-	_gclk_init_generators_by_fref(_GCLK_INIT_1ST);
-#endif
-	_oscctrl_init_referenced_generators();
-	_gclk_init_generators_by_fref(_GCLK_INIT_LAST);
-
-#if CONF_DMAC_ENABLE
-	hri_mclk_set_AHBMASK_DMAC_bit(MCLK);
-	_dma_init();
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-#if (CONF_PORT_EVCTRL_PORT_0 | CONF_PORT_EVCTRL_PORT_1 | CONF_PORT_EVCTRL_PORT_2 | CONF_PORT_EVCTRL_PORT_3)
-	_port_event_init();
-#endif
+/** SPI driver to support sync HAL */
+struct _spi_sync_dev {
+	/** Pointer to the hardware base or private data for special device. */
+	void *prvt;
+	/** Data size, number of bytes for each character */
+	uint8_t char_size;
+	/** Dummy byte used in master mode when reading the slave */
+	uint16_t dummy_byte;
+};
 
-#if CONF_CMCC_ENABLE
-	cache_init();
-#endif
+#ifdef __cplusplus
 }
+#endif
+
+/**@}*/
+#endif /* ifndef _HPL_SPI_SYNC_H_INCLUDED */
