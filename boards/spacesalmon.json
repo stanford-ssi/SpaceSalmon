@@ -1,0 +1,54 @@
+{
+  "build": {
+    "core": "adafruit",
+    "cpu": "cortex-m4",
+    "extra_flags": [
+      "-D__SAME51J20A__",
+      "-D__SAME51__",
+      "-D__FPU_PRESENT",
+      "-DARM_MATH_CM4"
+    ],
+    "hwids": [
+      [
+        "0x239A",
+        "0x8022"
+      ],
+      [
+        "0x239A",
+        "0x0022"
+      ]
+    ],
+    "mcu": "same51j20a",
+    "system": "same",
+    "usb_product": "Adafruit Feather M4",
+    "variant": "feather_m4"
+  },
+  "debug": {
+    "jlink_device": "ATSAME51J20",
+    "openocd_chipname": "at91same51j20",
+    "svd_path": "ATSAME51J20A.svd"
+  },
+  "frameworks": [
+    "arduino"
+  ],
+  "name": "SpaceSalmon",
+  "upload": {
+    "disable_flushing": true,
+    "maximum_ram_size": 196608,
+    "maximum_size": 507904,
+    "native_usb": true,
+    "protocol": "sam-ba",
+    "protocols": [
+      "sam-ba",
+      "blackmagic",
+      "jlink",
+      "atmel-ice"
+    ],
+    "require_upload_port": false,
+    "section_start": "0x4000",
+    "use_1200bps_touch": true,
+    "wait_for_upload_port": false
+  },
+  "url": "",
+  "vendor": "SSI"
+}
