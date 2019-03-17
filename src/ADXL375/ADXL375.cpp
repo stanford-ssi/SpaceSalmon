@@ -11,7 +11,7 @@ ADXL375::ADXL375()
 void ADXL375::init()
 {
 
-  setDataRate(0b00001111);
+  setDataRate(BW_12_5HZ);
 }
 
 void ADXL375::startMeasuring()
@@ -19,9 +19,9 @@ void ADXL375::startMeasuring()
   writeRegister(ADXL375_REG_POWER_CTL, 0x08);
 }
 
-void ADXL375::setDataRate(uint8_t rate)
+void ADXL375::setDataRate(ADXL375_Bandwidth bw)
 {
-  writeRegister(ADXL375_REG_BW_RATE, rate);
+  writeRegister(ADXL375_REG_BW_RATE, (uint8_t)bw);
 }
 
 AccelData ADXL375::getXYZ()
@@ -30,9 +30,9 @@ AccelData ADXL375::getXYZ()
   _multiReadRegister(ADXL375_REG_DATAX0, data, 6);
 
   AccelData xyz;
-  xyz.x = (data[0] | data[1]<<8)*ADXL375_XYZ_READ_SCALE_FACTOR;
-  xyz.y = (data[2] | data[3]<<8)*ADXL375_XYZ_READ_SCALE_FACTOR;
-  xyz.z = (data[4] | data[5]<<8)*ADXL375_XYZ_READ_SCALE_FACTOR;
+  xyz.x = ((int16_t)(data[0] | data[1]<<8))*ADXL375_XYZ_READ_SCALE_FACTOR;
+  xyz.y = ((int16_t)(data[2] | data[3]<<8))*ADXL375_XYZ_READ_SCALE_FACTOR;
+  xyz.z = ((int16_t)(data[4] | data[5]<<8))*ADXL375_XYZ_READ_SCALE_FACTOR;
   
   return xyz;
 }
@@ -101,8 +101,6 @@ void ADXL375::_multiReadRegister(uint8_t regAddress, uint8_t values[], uint8_t n
     regAddress |= 0x40;
   }
 
-  gpio_set_pin_level(ADXL_CS_1,false);
-
   uint8_t send[numberOfBytes + 1];
 	uint8_t recv[numberOfBytes + 1];
 
@@ -117,20 +115,22 @@ void ADXL375::_multiReadRegister(uint8_t regAddress, uint8_t values[], uint8_t n
 	data.txbuf = send;
 	data.rxbuf = recv;
 
-  spi_m_sync_enable(&SPI_SQUIB);
-	spi_m_sync_transfer(&SPI_SQUIB, &data);
-	spi_m_sync_disable(&SPI_SQUIB);
+  spi_m_sync_disable(&SPI_SENSOR);
+	spi_m_sync_set_mode(&SPI_SENSOR, SPI_MODE_3);
+	spi_m_sync_enable(&SPI_SENSOR);
+
+  gpio_set_pin_level(ADXL_CS_1,false);
+	spi_m_sync_transfer(&SPI_SENSOR, &data);
+  gpio_set_pin_level(ADXL_CS_1,true);
 
   memcpy(values,recv+1,numberOfBytes);
-
-  gpio_set_pin_level(ADXL_CS_1,true);
   
 }
 
 void ADXL375::writeRegister(uint8_t regAddress, uint8_t value)
 {
-    //Set Chip Select pin low to signal the beginning of an SPI packet.
-  gpio_set_pin_level(ADXL_CS_1,false);
+
+
   //Transfer the register address over SPI.
   //SPI.transfer(regAddress);
   //Transfer the desired register value over SPI.
@@ -144,10 +144,14 @@ void ADXL375::writeRegister(uint8_t regAddress, uint8_t value)
 	data.txbuf = send;
 	data.rxbuf = recv;
 
-  spi_m_sync_enable(&SPI_SQUIB);
-	spi_m_sync_transfer(&SPI_SQUIB, &data);
-	spi_m_sync_disable(&SPI_SQUIB);
-  //Set the Chip Select pin high to signal the end of an SPI packet.
+  spi_m_sync_disable(&SPI_SENSOR);
+	spi_m_sync_set_mode(&SPI_SENSOR, SPI_MODE_3);
+	spi_m_sync_enable(&SPI_SENSOR);
+
+  gpio_set_pin_level(ADXL_CS_1,false);
+	spi_m_sync_transfer(&SPI_SENSOR, &data);
   gpio_set_pin_level(ADXL_CS_1,true);
+
+
 }
 
