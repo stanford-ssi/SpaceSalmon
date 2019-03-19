@@ -190,7 +190,7 @@ bool testSquibSpi()
 	uint8_t recv = 0x00;
 	spi_xfer data = {&send, &recv, 1};
 	spi_m_sync_disable(&SPI_SQUIB);
-	spi_m_sync_set_mode(&SPI_SQUIB, SPI_MODE_0);
+	spi_m_sync_set_mode(&SPI_SQUIB, SPI_MODE_3);
 	spi_m_sync_enable(&SPI_SQUIB);
 
 	gpio_set_pin_level(SQUIB_CS, false);
