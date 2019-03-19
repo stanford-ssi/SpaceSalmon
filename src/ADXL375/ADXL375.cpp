@@ -129,12 +129,6 @@ void ADXL375::_multiReadRegister(uint8_t regAddress, uint8_t values[], uint8_t n
 
 void ADXL375::writeRegister(uint8_t regAddress, uint8_t value)
 {
-
-
-  //Transfer the register address over SPI.
-  //SPI.transfer(regAddress);
-  //Transfer the desired register value over SPI.
-  //SPI.transfer(value);
   uint8_t send[] = {regAddress,value};
 	uint8_t recv[] = {0x00, 0x00};
 
@@ -143,7 +137,8 @@ void ADXL375::writeRegister(uint8_t regAddress, uint8_t value)
   data.size = 2;
 	data.txbuf = send;
 	data.rxbuf = recv;
-
+  
+  //TODO: this could be removed...
   spi_m_sync_disable(&SPI_SENSOR);
 	spi_m_sync_set_mode(&SPI_SENSOR, SPI_MODE_3);
 	spi_m_sync_enable(&SPI_SENSOR);
@@ -151,7 +146,5 @@ void ADXL375::writeRegister(uint8_t regAddress, uint8_t value)
   gpio_set_pin_level(ADXL_CS_1,false);
 	spi_m_sync_transfer(&SPI_SENSOR, &data);
   gpio_set_pin_level(ADXL_CS_1,true);
-
-
 }
 
