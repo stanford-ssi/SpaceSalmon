@@ -44,7 +44,7 @@ int main(void)
 
 	Bmi088Accel Bmi088Accel(&SPI_SENSOR,ACCEL_CS_1);
 	printf("begin %d\n",Bmi088Accel.begin());
-	
+	printf("test: %f\n", 193.435F);
 
 	for(int k=0;k<10000;k++){
 		for(int i=0;i<1000;i++){}
@@ -74,15 +74,12 @@ int main(void)
 			delay_ms(50);
 		}
 
+		
 		Bmi088Accel.readSensor();
-		float x = Bmi088Accel.getAccelX_mss();
-		float y = Bmi088Accel.getAccelY_mss();
-		float z = Bmi088Accel.getAccelZ_mss();
-
-		printf("X: %d  ", (int)(100.0*y));
-		printf("Y: %d  ", (int)(100.0*y));
-		printf("Z: %d  ", (int)(100.0*z));
-
+		printf("X: %7f  ", Bmi088Accel.getAccelX_mss());
+		printf("Y: %7f  ", Bmi088Accel.getAccelY_mss());
+		printf("Z: %7f  ", Bmi088Accel.getAccelZ_mss());
+		
 
 		AccelData lol = adxl375.getXYZ();
 		printf("X: %7d  ",lol.x);
