@@ -1,5 +1,7 @@
 #include <atmel_start.h>
-#include "ADXL375/ADXL375.hpp"
+#include "ADXL375.hpp"
+#include "BMI088.hpp"
+
 #include "sdtester.c"
 
 bool testBMIGyroSpi();
@@ -27,13 +29,28 @@ int main(void)
 	gpio_set_pin_level(LED3, false);
 	gpio_set_pin_level(LED4, false);
 
-	spi_m_sync_set_mode(&SPI_SENSOR, SPI_MODE_0);
+	spi_m_sync_set_mode(&SPI_SENSOR, SPI_MODE_3);
 	spi_m_sync_enable(&SPI_SENSOR);
 
-	//ADXL375 kek;
-	//kek.init();
-	//kek.setDataRate(BW_12_5HZ);
-	//kek.startMeasuring();
+	ADXL375 adxl375(&SPI_SENSOR,ADXL_CS_1);
+	adxl375.init();
+	adxl375.setDataRate(BW_12_5HZ);
+	adxl375.startMeasuring();
+
+	testBMIGyroSpi();
+	testBMIAccelSpi();
+
+	
+
+	Bmi088Accel Bmi088Accel(&SPI_SENSOR,ACCEL_CS_1);
+	printf("begin %d\n",Bmi088Accel.begin());
+	
+
+	for(int k=0;k<10000;k++){
+		for(int i=0;i<1000;i++){}
+			//gpio_toggle_pin_level(BUZZER);
+	}
+
 
 	while (true)
 	{
@@ -47,71 +64,33 @@ int main(void)
 			}
 			printf("Blink!\n");
 			
-		}*/
-
-		//printf("SPI Test!\n");
-		/*
-		uint8_t send = 0x96;
-		uint8_t recv = 0x00;
-
-		data.size = 1;
-		data.txbuf = &send;
-		data.rxbuf = &recv;
-
-		//printf("sent: 0x%x\n", *(data.txbuf));
-
-		gpio_set_pin_level(SQUIB_CS,false);
-		spi_m_sync_enable(&SPI_SQUIB);
-		spi_m_sync_transfer(&SPI_SQUIB, &data);
-		spi_m_sync_disable(&SPI_SQUIB);
-		gpio_set_pin_level(SQUIB_CS,true);
+		}
 		*/
-		//printf("resp: 0x%x\n", *(data.rxbuf));
 
 		//printf("SD Test!");
 		//sdtester();
 		
-		/*
-		AccelData lol = kek.getXYZ();
+		for(int j=0;j<10;j++){
+			delay_ms(50);
+		}
+
+		Bmi088Accel.readSensor();
+		float x = Bmi088Accel.getAccelX_mss();
+		float y = Bmi088Accel.getAccelY_mss();
+		float z = Bmi088Accel.getAccelZ_mss();
+
+		printf("X: %d  ", (int)(100.0*y));
+		printf("Y: %d  ", (int)(100.0*y));
+		printf("Z: %d  ", (int)(100.0*z));
+
+
+		AccelData lol = adxl375.getXYZ();
 		printf("X: %7d  ",lol.x);
 		printf("Y: %7d  ",lol.y);
 		printf("Z: %7d  \n",lol.z);
-		*/
 
-		for (int i = 0; i < 1000; i++)
-		{
-		}
 
-		bool bmi;
-
-		//test BMI088-Gyro
-
-		bmi = testBMIGyroSpi();
-		bmi &= testBMIAccelSpi();
-		gpio_set_pin_level(LED1, bmi);
-
-		for (int i = 0; i < 1000; i++)
-		{
-		}
-
-		//test ADXL375
-		gpio_set_pin_level(LED2, testADXLSpi());
-
-		for (int i = 0; i < 1000; i++)
-		{
-		}
-
-		//test BMP388
-		gpio_set_pin_level(LED3, testBMPSpi());
-
-		//for (int i = 0; i < 1000; i++){}
-
-		//test Squib Driver
-		gpio_set_pin_level(LED4, testSquibSpi());
-
-		for (int i = 0; i < 1000; i++)
-		{
-		}
+		for(int i=0;i<100000;i++){}
 	}
 }
 
