@@ -1,7 +1,7 @@
 #include <atmel_start.h>
 #include "ADXL375.hpp"
 #include "BMI088.hpp"
-
+#include "ArduinoJson.h"
 #include "sdtester.c"
 
 bool testBMIGyroSpi();
@@ -79,6 +79,14 @@ int main(void)
 			delay_ms(50);
 		}
 
+		//char strtest[] = "HI famity!";
+		DynamicJsonDocument doc(1024);
+		doc["key"] = "value";
+
+		char string[3];
+		serializeJson(doc,string,sizeof(string));
+
+		//printf("str");
 		
 		BMI088Accel::Data accel = bmi088accel.readSensor();
 		printf("AX: %5d  ", (int)(accel.x*100));
