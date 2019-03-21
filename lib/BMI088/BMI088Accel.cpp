@@ -513,7 +513,8 @@ bool BMI088Accel::isCorrectId()
 /* writes a byte to BMI088 register given a register address and data */
 void BMI088Accel::writeRegister(uint8_t subAddress, uint8_t data)
 {
-  uint8_t send[] = {subAddress & ~SPI_READ, data};
+  subAddress &= ~SPI_READ;
+  uint8_t send[] = {subAddress, data};
   uint8_t recv[] = {0x00, 0x00};
 
   struct spi_xfer spi_data;

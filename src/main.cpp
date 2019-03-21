@@ -85,8 +85,8 @@ int main(void)
 		printf("AY: %5d  ", (int)(accel.y*100));
 		printf("AZ: %5d  ", (int)(accel.z*100));
 		printf("AT: %5d  ", (int)(accel.temp*100));
-		printf("AT: %5d  ", accel.time);
-		
+		printf("AT: %5lu  ", accel.time);
+
 		BMI088Gyro::Data gyro = bmi088gyro.readSensor();
 		printf("GX: %5d  ", (int)(gyro.x*100));
 		printf("GY: %5d  ", (int)(gyro.y*100));

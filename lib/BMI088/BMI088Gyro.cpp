@@ -245,6 +245,8 @@ BMI088Gyro::Data BMI088Gyro::readSensor()
   data.x = gyro_rads[0];
   data.y = gyro_rads[1];
   data.z = gyro_rads[2];
+
+  return data;
 }
 
 /* enables the new data interrupt */
@@ -279,7 +281,8 @@ bool BMI088Gyro::isCorrectId()
 /* writes a byte to BMI088 register given a register address and data */
 void BMI088Gyro::writeRegister(uint8_t subAddress, uint8_t data)
 {
-  uint8_t send[] = {subAddress & ~SPI_READ, data};
+  subAddress &= ~SPI_READ;
+  uint8_t send[] = {subAddress, data};
   uint8_t recv[] = {0x00, 0x00};
 
   struct spi_xfer spi_data;
