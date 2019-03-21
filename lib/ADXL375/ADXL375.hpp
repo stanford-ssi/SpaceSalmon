@@ -48,40 +48,41 @@ extern "C"
 #define ADXL375_TRIGGER_INT1_PIN 0
 #define ADXL375_TRIGGER_INT2_PIN 1
 
-struct AccelData
-{
-  int32_t x;
-  int32_t y;
-  int32_t z;
-};
-
-enum ADXL375_Bandwidth
-{
-  BW_0_05HZ = 0,
-  BW_0_1HZ = 1,
-  BW_0_2HZ = 2,
-  BW_0_39HZ = 3,
-  BW_0_78HZ = 4,
-  BW_1_56HZ = 5,
-  BW_3_13HZ = 6,
-  BW_6_25HZ = 7,
-  BW_12_5HZ = 8,
-  BW_25HZ = 9,
-  BW_50HZ = 10,
-  BW_100HZ = 11,
-  BW_200HZ = 12,
-  BW_400HZ = 13,
-  BW_800HZ = 14,
-  BW_1600HZ = 15
-};
-
 class ADXL375
 {
 public:
+  //Accelerometer data from ADXL375, in meters/sec^2
+  struct ADXL375_Data
+  {
+    float x;
+    float y;
+    float z;
+  };
+
+  enum ADXL375_Bandwidth
+  {
+    BW_0_05HZ = 0,
+    BW_0_1HZ = 1,
+    BW_0_2HZ = 2,
+    BW_0_39HZ = 3,
+    BW_0_78HZ = 4,
+    BW_1_56HZ = 5,
+    BW_3_13HZ = 6,
+    BW_6_25HZ = 7,
+    BW_12_5HZ = 8,
+    BW_25HZ = 9,
+    BW_50HZ = 10,
+    BW_100HZ = 11,
+    BW_200HZ = 12,
+    BW_400HZ = 13,
+    BW_800HZ = 14,
+    BW_1600HZ = 15
+  };
+
   ADXL375(struct spi_m_sync_descriptor *SPI, uint8_t CS_PIN);
   void init();
   void startMeasuring();
-  AccelData getXYZ();
+  ADXL375_Data getXYZ();
   uint8_t readRegister(uint8_t regAddress);
   void writeRegister(uint8_t regAddress, uint8_t value);
   void setShockThreshold(uint8_t shockThreshold);
