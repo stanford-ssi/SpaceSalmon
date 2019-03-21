@@ -12,7 +12,7 @@ extern "C"
 class BMI088Accel
 {
   public:
-    struct BMI088_Accel_Data
+    struct Data
     {
         float x;
         float y;
@@ -78,7 +78,7 @@ class BMI088Accel
     bool mapDrdyInt1(bool enable);
     bool mapDrdyInt2(bool enable);
     bool getDrdyStatus();
-    BMI088_Accel_Data readSensor();
+    Data readSensor();
     float getTemperature_C();
     uint64_t getTime_ps();
     void estimateBias();

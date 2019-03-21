@@ -253,10 +253,10 @@ bool BMI088Accel::getDrdyStatus()
 }
 
 /* reads the BMI088 accel */
-BMI088Accel::BMI088_Accel_Data BMI088Accel::readSensor()
+BMI088Accel::Data BMI088Accel::readSensor()
 {
   //struct to hold data:
-  BMI088_Accel_Data data;
+  Data data;
 
   /* accel data */
   uint16_t temp_uint11;
