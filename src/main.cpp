@@ -34,7 +34,7 @@ int main(void)
 
 	ADXL375 adxl375(&SPI_SENSOR,ADXL_CS_1);
 	adxl375.init();
-	adxl375.setDataRate(BW_12_5HZ);
+	adxl375.setDataRate(ADXL375::BW_12_5HZ);
 	adxl375.startMeasuring();
 
 	testBMIGyroSpi();
@@ -42,9 +42,14 @@ int main(void)
 
 	
 
-	Bmi088Accel Bmi088Accel(&SPI_SENSOR,ACCEL_CS_1);
-	printf("begin %d\n",Bmi088Accel.begin());
-	printf("test: %f\n", 193.435F);
+	BMI088Accel bmi088accel(&SPI_SENSOR,ACCEL_CS_1);
+	printf("begin %d\n", bmi088accel.begin());
+
+	BMI088Gyro bmi088gyro(&SPI_SENSOR,GYRO_CS_1);
+	printf("begin %d\n", bmi088gyro.begin());
+
+	//printf("test: %f\n", 193.435F);
+	//printf("str %d",5);
 
 	for(int k=0;k<10000;k++){
 		for(int i=0;i<1000;i++){}
@@ -75,16 +80,22 @@ int main(void)
 		}
 
 		
-		Bmi088Accel.readSensor();
-		printf("X: %7f  ", Bmi088Accel.getAccelX_mss());
-		printf("Y: %7f  ", Bmi088Accel.getAccelY_mss());
-		printf("Z: %7f  ", Bmi088Accel.getAccelZ_mss());
+		BMI088Accel::Data accel = bmi088accel.readSensor();
+		printf("AX: %5d  ", (int)(accel.x*100));
+		printf("AY: %5d  ", (int)(accel.y*100));
+		printf("AZ: %5d  ", (int)(accel.z*100));
+		printf("AT: %5d  ", (int)(accel.temp*100));
+		printf("AT: %5d  ", accel.time);
 		
+		BMI088Gyro::Data gyro = bmi088gyro.readSensor();
+		printf("GX: %5d  ", (int)(gyro.x*100));
+		printf("GY: %5d  ", (int)(gyro.y*100));
+		printf("GZ: %5d  ", (int)(gyro.z*100));		
 
-		AccelData lol = adxl375.getXYZ();
-		printf("X: %7d  ",lol.x);
-		printf("Y: %7d  ",lol.y);
-		printf("Z: %7d  \n",lol.z);
+		ADXL375::ADXL375_Data lol = adxl375.getXYZ();
+		printf("HX: %5d  ", (int)(lol.x*100));
+		printf("HY: %5d  ", (int)(lol.y*100));
+		printf("HZ: %5d  \n", (int)(lol.z*100));
 
 
 		for(int i=0;i<100000;i++){}
