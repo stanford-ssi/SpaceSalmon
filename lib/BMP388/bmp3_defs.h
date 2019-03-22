@@ -55,6 +55,8 @@
 #ifndef BMP3_DEFS_H_
 #define BMP3_DEFS_H_
 
+#include <stdint.h>
+
 /*! CPP guard */
 #ifdef __cplusplus
 extern "C"

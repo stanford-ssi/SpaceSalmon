@@ -4,6 +4,7 @@
 #include "ArduinoJson.h"
 #include "sdtester.c"
 #include "printf.h"
+#include "BMP3xx.hpp"
 
 bool testBMIGyroSpi();
 bool testBMIAccelSpi();
@@ -42,6 +43,8 @@ int main(void)
 	BMI088Gyro bmi088gyro(&SPI_SENSOR,GYRO_CS_1);
 	bmi088gyro.begin();
 
+	BMP3xx pres(&SPI_SENSOR,BMP_CS_1);
+	pres.begin();
 
 	delay_ms(1000);
 
@@ -66,7 +69,10 @@ int main(void)
 		BMI088Accel::Data accel = bmi088accel.readSensor();
 		BMI088Gyro::Data gyro = bmi088gyro.readSensor();
 		ADXL375::ADXL375_Data lol = adxl375.getXYZ();
-		
+
+		printf_("Pressure: %f\n", pres.readPressure());
+
+		/*
 		DynamicJsonDocument doc(1024);
 
 		JsonObject bmi088_json = doc.createNestedObject("bmi088");
@@ -91,7 +97,7 @@ int main(void)
 		char string[1000];
 		serializeJson(doc,string,sizeof(string));
 
-		printf_("%s\n",string);
+		printf_("%s\n",string);*/
 
 	}
 }

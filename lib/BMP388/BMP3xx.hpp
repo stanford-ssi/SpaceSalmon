@@ -1,5 +1,5 @@
 /*!
- * @file Adafruit_BMP3XX.h
+ * @file BMP3xx.h
  *
  * Adafruit BMP3XX temperature & barometric pressure sensor driver
  *
@@ -19,17 +19,17 @@
  *
  */
 
-#ifndef __BMP3XX_H__
-#define __BMP3XX_H__
+#pragma once
 
-#if (ARDUINO >= 100)
- #include "Arduino.h"
-#else
- #include "WProgram.h"
-#endif
-#include <Wire.h>
-#include <SPI.h>
+extern "C"
+{
 #include "bmp3.h"
+#include <hal_spi_m_sync.h>
+#include <hal_gpio.h>
+#include <math.h>
+#include <string.h>
+#include <hal_delay.h>
+}
 
 
 /*=========================================================================
@@ -41,17 +41,16 @@
 
 
 
-/** Adafruit_BMP3XX Class for both I2C and SPI usage.
+/** BMP3xx Class for both I2C and SPI usage.
  *  Wraps the Bosch library for Arduino usage
  */
 
-class Adafruit_BMP3XX
+class BMP3xx
 {
   public:
-    Adafruit_BMP3XX(int8_t cspin = -1);
-    Adafruit_BMP3XX(int8_t cspin, int8_t mosipin, int8_t misopin, int8_t sckpin);
+    BMP3xx(struct spi_m_sync_descriptor *spi, int8_t cspin);
 
-    bool  begin(uint8_t addr = BMP3XX_DEFAULT_ADDRESS, TwoWire *theWire=&Wire);
+    bool  begin();
     float readTemperature(void);
     float readPressure(void);
     float readAltitude(float seaLevel);
@@ -69,16 +68,15 @@ class Adafruit_BMP3XX
     /// Pressure (Pascals) assigned after calling performReading()
     double pressure;
 
+    void write();
+
   private:
-    bool _filterEnabled, _tempOSEnabled, _presOSEnabled, _ODREnabled;
-    uint8_t _i2caddr;
-    int32_t _sensorID;
     int8_t _cs;
+    bool _filterEnabled, _tempOSEnabled, _presOSEnabled, _ODREnabled;
+
     unsigned long _meas_end;
 
     uint8_t spixfer(uint8_t x);
 
     struct bmp3_dev the_sensor;
 };
-
-#endif

@@ -55,6 +55,7 @@
 #define BMP3_H_
 
 /* Header includes */
+#include <stdint.h>
 #include "bmp3_defs.h"
 
 /*! CPP guard */

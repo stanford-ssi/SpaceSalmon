@@ -1,5 +1,5 @@
 /*!
- * @file Adafruit_BMP3XX.cpp
+ * @file BMP3xx.cpp
  *
  * @mainpage Adafruit BMP3XX temperature & barometric pressure sensor driver
  *
@@ -25,24 +25,13 @@
  *
  */
 
-#include "Arduino.h"
-#include "Adafruit_BMP3XX.h"
+#include "BMP3xx.hpp"
 
-//#define BMP3XX_DEBUG
-
-///! These SPI pins must be global in order to work with underlying library
-int8_t _BMP3_SoftwareSPI_MOSI; ///< Global SPI MOSI pin
-int8_t _BMP3_SoftwareSPI_MISO; ///< Global SPI MISO pin
-int8_t _BMP3_SoftwareSPI_SCK;  ///< Global SPI Clock pin
-TwoWire *_BMP3_i2c;            ///< Global I2C interface pointer
-
-// Our hardware interface functions
-static int8_t i2c_write(uint8_t dev_id, uint8_t reg_addr, uint8_t *reg_data, uint16_t len);
-static int8_t i2c_read(uint8_t dev_id, uint8_t reg_addr, uint8_t *reg_data, uint16_t len);
 static int8_t spi_read(uint8_t dev_id, uint8_t reg_addr, uint8_t *reg_data, uint16_t len);
 static int8_t spi_write(uint8_t dev_id, uint8_t reg_addr, uint8_t *reg_data, uint16_t len);
-static uint8_t spi_transfer(uint8_t x);
 static void delay_msec(uint32_t ms);
+
+spi_m_sync_descriptor *BMP3xx_SPI;
 
 /***************************************************************************
  PUBLIC FUNCTIONS
@@ -54,36 +43,12 @@ static void delay_msec(uint32_t ms);
     @param  cspin SPI chip select. If not passed in, I2C will be used
 */
 /**************************************************************************/
-Adafruit_BMP3XX::Adafruit_BMP3XX(int8_t cspin)
-  : _cs(cspin)
-  , _meas_end(0)
+BMP3xx::BMP3xx(struct spi_m_sync_descriptor *spi ,int8_t cspin)
 {
-  _BMP3_SoftwareSPI_MOSI = -1;
-  _BMP3_SoftwareSPI_MISO = -1;
-  _BMP3_SoftwareSPI_SCK = -1;
+  BMP3xx_SPI = spi;
+  _cs = cspin;
   _filterEnabled = _tempOSEnabled = _presOSEnabled = false;
 }
-
-
-/**************************************************************************/
-/*!
-    @brief  Instantiates sensor with Software (bit-bang) SPI.
-    @param  cspin SPI chip select
-    @param  mosipin SPI MOSI (Data from microcontroller to sensor)
-    @param  misopin SPI MISO (Data to microcontroller from sensor)
-    @param  sckpin SPI Clock
-*/
-/**************************************************************************/
-Adafruit_BMP3XX::Adafruit_BMP3XX(int8_t cspin, int8_t mosipin, int8_t misopin, int8_t sckpin)
-  : _cs(cspin)
-{
-  _BMP3_SoftwareSPI_MOSI = mosipin;
-  _BMP3_SoftwareSPI_MISO = misopin;
-  _BMP3_SoftwareSPI_SCK = sckpin;
-  _filterEnabled = _tempOSEnabled = _presOSEnabled = false;
-}
-
-
 
 /**************************************************************************/
 /*!
@@ -97,42 +62,17 @@ Adafruit_BMP3XX::Adafruit_BMP3XX(int8_t cspin, int8_t mosipin, int8_t misopin, i
     @return True on sensor initialization success. False on failure.
 */
 /**************************************************************************/
-bool Adafruit_BMP3XX::begin(uint8_t addr, TwoWire *theWire) {
-  _i2caddr = addr;
+bool BMP3xx::begin() {
 
-  if (_cs == -1) {
-    // i2c
-    _BMP3_i2c = theWire;
-    _BMP3_i2c->begin();
-
-    the_sensor.dev_id = addr;
-    the_sensor.intf = BMP3_I2C_INTF;
-    the_sensor.read = &i2c_read;
-    the_sensor.write = &i2c_write;
-  } else {
-    digitalWrite(_cs, HIGH);
-    pinMode(_cs, OUTPUT);
-
-    if (_BMP3_SoftwareSPI_SCK == -1) {
-      // hardware SPI
-      SPI.begin();
-    } else {
-      // software SPI
-      pinMode(_BMP3_SoftwareSPI_SCK, OUTPUT);
-      pinMode(_BMP3_SoftwareSPI_MOSI, OUTPUT);
-      pinMode(_BMP3_SoftwareSPI_MISO, INPUT);
-    }
-
-    the_sensor.dev_id = _cs;
-    the_sensor.intf = BMP3_SPI_INTF;
-    the_sensor.read = &spi_read;
-    the_sensor.write = &spi_write;
-  }
-
+  the_sensor.dev_id = _cs;
+  the_sensor.intf = BMP3_SPI_INTF;
+  the_sensor.read = &spi_read;
+  the_sensor.write = &spi_write;
   the_sensor.delay_ms = delay_msec;
 
   int8_t rslt = BMP3_OK;
   rslt = bmp3_init(&the_sensor);
+
 #ifdef BMP3XX_DEBUG
   Serial.print("Result: "); Serial.println(rslt);
 #endif
@@ -175,7 +115,7 @@ bool Adafruit_BMP3XX::begin(uint8_t addr, TwoWire *theWire) {
     @return Temperature in degrees Centigrade
 */
 /**************************************************************************/
-float Adafruit_BMP3XX::readTemperature(void) {
+float BMP3xx::readTemperature(void) {
   performReading();
   return temperature;
 }
@@ -187,7 +127,7 @@ float Adafruit_BMP3XX::readTemperature(void) {
     @return Barometic pressure in Pascals
 */
 /**************************************************************************/
-float Adafruit_BMP3XX::readPressure(void) {
+float BMP3xx::readPressure(void) {
   performReading();
   return pressure;
 }
@@ -205,7 +145,7 @@ float Adafruit_BMP3XX::readPressure(void) {
     @return Altitude in meters
 */
 /**************************************************************************/
-float Adafruit_BMP3XX::readAltitude(float seaLevel)
+float BMP3xx::readAltitude(float seaLevel)
 {
     // Equation taken from BMP180 datasheet (page 16):
     //  http://www.adafruit.com/datasheets/BST-BMP180-DS000-09.pdf
@@ -222,12 +162,12 @@ float Adafruit_BMP3XX::readAltitude(float seaLevel)
 /*!
     @brief Performs a full reading of all sensors in the BMP3XX.
 
-    Assigns the internal Adafruit_BMP3XX#temperature & Adafruit_BMP3XX#pressure member variables
+    Assigns the internal BMP3xx#temperature & BMP3xx#pressure member variables
 
     @return True on success, False on failure
 */
 /**************************************************************************/
-bool Adafruit_BMP3XX::performReading(void) {
+bool BMP3xx::performReading(void) {
   int8_t rslt;
   /* Used to select the settings user needs to change */
   uint16_t settings_sel = 0;
@@ -301,7 +241,7 @@ bool Adafruit_BMP3XX::performReading(void) {
 */
 /**************************************************************************/
 
-bool Adafruit_BMP3XX::setTemperatureOversampling(uint8_t oversample) {
+bool BMP3xx::setTemperatureOversampling(uint8_t oversample) {
   if (oversample > BMP3_OVERSAMPLING_32X) return false;
 
   the_sensor.settings.odr_filter.temp_os = oversample;
@@ -322,7 +262,7 @@ bool Adafruit_BMP3XX::setTemperatureOversampling(uint8_t oversample) {
     @return True on success, False on failure
 */
 /**************************************************************************/
-bool Adafruit_BMP3XX::setPressureOversampling(uint8_t oversample) {
+bool BMP3xx::setPressureOversampling(uint8_t oversample) {
   if (oversample > BMP3_OVERSAMPLING_32X) return false;
 
   the_sensor.settings.odr_filter.press_os = oversample;
@@ -343,7 +283,7 @@ bool Adafruit_BMP3XX::setPressureOversampling(uint8_t oversample) {
 
 */
 /**************************************************************************/
-bool Adafruit_BMP3XX::setIIRFilterCoeff(uint8_t filtercoeff) {
+bool BMP3xx::setIIRFilterCoeff(uint8_t filtercoeff) {
   if (filtercoeff > BMP3_IIR_FILTER_COEFF_127) return false;
 
   the_sensor.settings.odr_filter.iir_filter = filtercoeff;
@@ -364,7 +304,7 @@ bool Adafruit_BMP3XX::setIIRFilterCoeff(uint8_t filtercoeff) {
 
 */
 /**************************************************************************/
-bool Adafruit_BMP3XX::setOutputDataRate(uint8_t odr) {
+bool BMP3xx::setOutputDataRate(uint8_t odr) {
   if (odr > BMP3_ODR_0_001_HZ) return false;
 
   the_sensor.settings.odr_filter.odr = odr;
@@ -376,99 +316,36 @@ bool Adafruit_BMP3XX::setOutputDataRate(uint8_t odr) {
 
 /**************************************************************************/
 /*!
-    @brief  Reads 8 bit values over I2C
-*/
-/**************************************************************************/
-int8_t i2c_read(uint8_t dev_id, uint8_t reg_addr, uint8_t *reg_data, uint16_t len) {
-#ifdef BMP3XX_DEBUG
-  Serial.print("\tI2C $"); Serial.print(reg_addr, HEX); Serial.print(" => ");
-#endif
-
-  _BMP3_i2c->beginTransmission((uint8_t)dev_id);
-  _BMP3_i2c->write((uint8_t)reg_addr);
-  _BMP3_i2c->endTransmission();
-  if (len != _BMP3_i2c->requestFrom((uint8_t)dev_id, (byte)len)) {
-#ifdef BMP3XX_DEBUG
-    Serial.print("Failed to read "); Serial.print(len); Serial.print(" bytes from "); Serial.println(dev_id, HEX);
-#endif
-    return 1;
-  }
-  while (len--) {
-    *reg_data = (uint8_t)_BMP3_i2c->read();
-#ifdef BMP3XX_DEBUG
-    Serial.print("0x"); Serial.print(*reg_data, HEX); Serial.print(", ");
-#endif
-    reg_data++;
-  }
-#ifdef BMP3XX_DEBUG
-  Serial.println("");
-#endif
-  return 0;
-}
-
-/**************************************************************************/
-/*!
-    @brief  Writes 8 bit values over I2C
-*/
-/**************************************************************************/
-int8_t i2c_write(uint8_t dev_id, uint8_t reg_addr, uint8_t *reg_data, uint16_t len) {
-#ifdef BMP3XX_DEBUG
-  Serial.print("\tI2C $"); Serial.print(reg_addr, HEX); Serial.print(" <= ");
-#endif
-  _BMP3_i2c->beginTransmission((uint8_t)dev_id);
-  _BMP3_i2c->write((uint8_t)reg_addr);
-  while (len--) {
-    _BMP3_i2c->write(*reg_data);
-#ifdef BMP3XX_DEBUG
-    Serial.print("0x"); Serial.print(*reg_data, HEX); Serial.print(", ");
-#endif
-    reg_data++;
-  }
-  _BMP3_i2c->endTransmission();
-#ifdef BMP3XX_DEBUG
-  Serial.println("");
-#endif
-  return 0;
-}
-
-
-
-/**************************************************************************/
-/*!
     @brief  Reads 8 bit values over SPI
 */
 /**************************************************************************/
 static int8_t spi_read(uint8_t cspin, uint8_t reg_addr, uint8_t *reg_data, uint16_t len) {
-#ifdef BMP3XX_DEBUG
-  Serial.print("\tSPI $"); Serial.print(reg_addr, HEX); Serial.print(" => ");
-#endif
 
-  // If hardware SPI we should use transactions!
-  if (_BMP3_SoftwareSPI_SCK == -1) {
-    SPI.beginTransaction(SPISettings(BMP3XX_DEFAULT_SPIFREQ, MSBFIRST, SPI_MODE0));
-  }
+  uint8_t send[len + 1];
+  uint8_t recv[len + 1];
 
-  digitalWrite(cspin, LOW);
+  memset(send, 0x00, len + 1);
+  memset(recv, 0x00, len + 1);
 
-  spi_transfer(reg_addr | 0x80);
+  send[0] = reg_addr | 0x80;
 
-  while (len--) {
-    *reg_data = spi_transfer(0x00);
-#ifdef BMP3XX_DEBUG
-    Serial.print("0x"); Serial.print(*reg_data, HEX); Serial.print(", ");
-#endif
-    reg_data++;
-  }
+  struct spi_xfer data;
 
-  digitalWrite(cspin, HIGH);
+  data.size = len + 1;
+  data.txbuf = send;
+  data.rxbuf = recv;
 
-  if (_BMP3_SoftwareSPI_SCK == -1) {
-    SPI.endTransaction();
-  }
+  //TODO: this could be removed...
+  spi_m_sync_disable(BMP3xx_SPI);
+  spi_m_sync_set_mode(BMP3xx_SPI, SPI_MODE_3);
+  spi_m_sync_enable(BMP3xx_SPI);
 
-#ifdef BMP3XX_DEBUG
-  Serial.println("");
-#endif
+  gpio_set_pin_level(cspin, false);
+  spi_m_sync_transfer(BMP3xx_SPI, &data);
+  gpio_set_pin_level(cspin, true);
+
+  memcpy(reg_data, recv + 1, len);
+
   return 0;
 }
 
@@ -478,58 +355,34 @@ static int8_t spi_read(uint8_t cspin, uint8_t reg_addr, uint8_t *reg_data, uint1
 */
 /**************************************************************************/
 static int8_t spi_write(uint8_t cspin, uint8_t reg_addr, uint8_t *reg_data, uint16_t len) {
-#ifdef BMP3XX_DEBUG
-  Serial.print("\tSPI $"); Serial.print(reg_addr, HEX); Serial.print(" <= ");
-#endif
 
-  // If hardware SPI we should use transactions!
-  if (_BMP3_SoftwareSPI_SCK == -1) {
-    SPI.beginTransaction(SPISettings(BMP3XX_DEFAULT_SPIFREQ, MSBFIRST, SPI_MODE0));
-  }
+  uint8_t send[len + 1];
+  uint8_t recv[len + 1];
 
-  digitalWrite(cspin, LOW);
+  memset(send, 0x00, len + 1);  
+  memcpy(send + 1, reg_data, len);
 
-  spi_transfer(reg_addr);
-  while (len--) {
-    spi_transfer(*reg_data);
-#ifdef BMP3XX_DEBUG
-    Serial.print("0x"); Serial.print(*reg_data, HEX); Serial.print(", ");
-#endif
-    reg_data++;
-  }
+  send[0] = reg_addr;
 
-  digitalWrite(cspin, HIGH);
+  struct spi_xfer data;
 
-  if (_BMP3_SoftwareSPI_SCK == -1) {
-    SPI.endTransaction();
-  }
+  data.size = len + 1;
+  data.txbuf = send;
+  data.rxbuf = recv;
 
-#ifdef BMP3XX_DEBUG
-  Serial.println("");
-#endif
+  //TODO: this could be removed...
+  spi_m_sync_disable(BMP3xx_SPI);
+  spi_m_sync_set_mode(BMP3xx_SPI, SPI_MODE_3);
+  spi_m_sync_enable(BMP3xx_SPI);
+
+  gpio_set_pin_level(cspin, false);
+  spi_m_sync_transfer(BMP3xx_SPI, &data);
+  gpio_set_pin_level(cspin, true);
+
   return 0;
 }
 
 
-static uint8_t spi_transfer(uint8_t x) {
-  if (_BMP3_SoftwareSPI_SCK == -1)
-    return SPI.transfer(x);
-
-  // software spi
-  //Serial.println("Software SPI");
-  uint8_t reply = 0;
-  for (int i=7; i>=0; i--) {
-    reply <<= 1;
-    digitalWrite(_BMP3_SoftwareSPI_SCK, LOW);
-    digitalWrite(_BMP3_SoftwareSPI_MOSI, x & (1<<i));
-    digitalWrite(_BMP3_SoftwareSPI_SCK, HIGH);
-    if (digitalRead(_BMP3_SoftwareSPI_MISO))
-      reply |= 1;
-  }
-  return reply;
-}
-
-
 static void delay_msec(uint32_t ms){
-  delay(ms);
+  delay_ms(ms);
 }
