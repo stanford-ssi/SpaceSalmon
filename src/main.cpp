@@ -36,19 +36,12 @@ int main(void)
 	adxl375.setDataRate(ADXL375::BW_12_5HZ);
 	adxl375.startMeasuring();
 
-	testBMIGyroSpi();
-	testBMIAccelSpi();
-
-	
-
 	BMI088Accel bmi088accel(&SPI_SENSOR,ACCEL_CS_1);
 	bmi088accel.begin();
 
 	BMI088Gyro bmi088gyro(&SPI_SENSOR,GYRO_CS_1);
 	bmi088gyro.begin();
 
-	//printf_("test: %f\n", 193.435F);
-	//printf_("str %d",5);
 
 	delay_ms(1000);
 
@@ -70,47 +63,36 @@ int main(void)
 		//printf_("SD Test!");	
 		//sdtester();
 
-		//printf_("TOPKEK\n");
-
-		//printf_("test: %f\n", 193.435F);
+		BMI088Accel::Data accel = bmi088accel.readSensor();
+		BMI088Gyro::Data gyro = bmi088gyro.readSensor();
+		ADXL375::ADXL375_Data lol = adxl375.getXYZ();
 		
-		//delay_ms(1000);
-
-		//char strtest[] = "HI famity!";
 		DynamicJsonDocument doc(1024);
-		doc["key"] = "value";
 
-		char string[100];
+		JsonObject bmi088_json = doc.createNestedObject("bmi088");
+		bmi088_json["temp"] = accel.temp;
+		bmi088_json["time"] = accel.time;
+
+		JsonObject bmi_accel_json = bmi088_json.createNestedObject("accel");
+		bmi_accel_json["x"] = accel.x;
+		bmi_accel_json["y"] = accel.y;
+		bmi_accel_json["z"] = accel.z;
+
+		JsonObject bmi_gyro_json = bmi088_json.createNestedObject("gryo");
+		bmi_gyro_json["x"] = gyro.x;
+		bmi_gyro_json["y"] = gyro.y;
+		bmi_gyro_json["z"] = gyro.z;
+
+		JsonObject adxl375_json = doc.createNestedObject("adxl375");
+		adxl375_json["x"] = lol.x;
+		adxl375_json["y"] = lol.y;
+		adxl375_json["z"] = lol.z;
+
+		char string[1000];
 		serializeJson(doc,string,sizeof(string));
 
-		//cdcdf_acm_write((uint8_t *)string, 5);
+		printf_("%s\n",string);
 
-		//printf_("TOPKE2\n");
-
-		//printf_("%s\n",string);
-
-		//printf_("TOPKE3\n");
-
-		BMI088Accel::Data accel = bmi088accel.readSensor();
-
-		printf_("AX: %5f  ", accel.x);
-		printf_("AY: %5f  ", accel.y);
-		printf_("AZ: %5f  ", accel.z);
-		printf_("AT: %5fC ", accel.temp);
-		printf_("AT: %5lu  ", accel.time);
-
-		BMI088Gyro::Data gyro = bmi088gyro.readSensor();
-		printf_("GX: %5d  ", (int)(gyro.x*100));
-		printf_("GY: %5d  ", (int)(gyro.y*100));
-		printf_("GZ: %5d  ", (int)(gyro.z*100));		
-
-		ADXL375::ADXL375_Data lol = adxl375.getXYZ();
-		printf_("HX: %5d  ", (int)(lol.x*100));
-		printf_("HY: %5d  ", (int)(lol.y*100));
-		printf_("HZ: %5d  \n", (int)(lol.z*100));
-		
-
-		//delay_ms(500);
 	}
 }
 
