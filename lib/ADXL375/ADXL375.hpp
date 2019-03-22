@@ -52,7 +52,7 @@ class ADXL375
 {
 public:
   //Accelerometer data from ADXL375, in meters/sec^2
-  struct ADXL375_Data
+  struct Data
   {
     float x;
     float y;
@@ -82,7 +82,7 @@ public:
   ADXL375(struct spi_m_sync_descriptor *SPI, uint8_t CS_PIN);
   void init();
   void startMeasuring();
-  ADXL375_Data getXYZ();
+  Data readSensor();
   uint8_t readRegister(uint8_t regAddress);
   void writeRegister(uint8_t regAddress, uint8_t value);
   void setShockThreshold(uint8_t shockThreshold);

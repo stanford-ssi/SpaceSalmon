@@ -108,56 +108,6 @@ bool BMP3xx::begin() {
   return true;
 }
 
-
-/**************************************************************************/
-/*!
-    @brief Performs a reading and returns the ambient temperature.
-    @return Temperature in degrees Centigrade
-*/
-/**************************************************************************/
-float BMP3xx::readTemperature(void) {
-  performReading();
-  return temperature;
-}
-
-
-/**************************************************************************/
-/*!
-    @brief Performs a reading and returns the barometric pressure.
-    @return Barometic pressure in Pascals
-*/
-/**************************************************************************/
-float BMP3xx::readPressure(void) {
-  performReading();
-  return pressure;
-}
-
-
-
-/**************************************************************************/
-/*!
-    @brief Calculates the altitude (in meters).
-
-    Reads the current atmostpheric pressure (in hPa) from the sensor and calculates
-    via the provided sea-level pressure (in hPa).
-
-    @param  seaLevel      Sea-level pressure in hPa
-    @return Altitude in meters
-*/
-/**************************************************************************/
-float BMP3xx::readAltitude(float seaLevel)
-{
-    // Equation taken from BMP180 datasheet (page 16):
-    //  http://www.adafruit.com/datasheets/BST-BMP180-DS000-09.pdf
-
-    // Note that using the equation from wikipedia can give bad results
-    // at high altitude. See this thread for more information:
-    //  http://forums.adafruit.com/viewtopic.php?f=22&t=58064
-
-    float atmospheric = readPressure() / 100.0F;
-    return 44330.0 * (1.0 - pow(atmospheric / seaLevel, 0.1903));
-}
-
 /**************************************************************************/
 /*!
     @brief Performs a full reading of all sensors in the BMP3XX.
@@ -167,12 +117,15 @@ float BMP3xx::readAltitude(float seaLevel)
     @return True on success, False on failure
 */
 /**************************************************************************/
-bool BMP3xx::performReading(void) {
+BMP3xx::Data BMP3xx::readSensor(void) {
   int8_t rslt;
   /* Used to select the settings user needs to change */
   uint16_t settings_sel = 0;
   /* Variable used to select the sensor component */
   uint8_t sensor_comp = 0;
+
+  /* Variable used to store the compensated data */
+  struct bmp3_data data = {0,0};
 
   /* Select the pressure and temperature sensor to be enabled */
   the_sensor.settings.temp_en = BMP3_ENABLE;
@@ -206,7 +159,7 @@ bool BMP3xx::performReading(void) {
 #endif
   rslt = bmp3_set_sensor_settings(settings_sel, &the_sensor);
   if (rslt != BMP3_OK)
-    return false;
+    return data;
 
   /* Set the power mode */
   the_sensor.settings.op_mode = BMP3_FORCED_MODE;
@@ -215,21 +168,17 @@ bool BMP3xx::performReading(void) {
 #endif
   rslt = bmp3_set_op_mode(&the_sensor);
   if (rslt != BMP3_OK)
-    return false;
-
-  /* Variable used to store the compensated data */
-  struct bmp3_data data;
+    return data;
 
   /* Temperature and Pressure data are read and stored in the bmp3_data instance */
   rslt = bmp3_get_sensor_data(sensor_comp, &data, &the_sensor);
 
   /* Save the temperature and pressure data */
-  temperature = data.temperature;
-  pressure = data.pressure;
-  if (rslt != BMP3_OK)
-    return false;
 
-  return true;
+  if (rslt != BMP3_OK)
+    return data;
+
+  return data;
 }
 
 

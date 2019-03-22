@@ -22,12 +22,12 @@ void ADXL375::setDataRate(ADXL375_Bandwidth bw)
   writeRegister(ADXL375_REG_BW_RATE, (uint8_t)bw);
 }
 
-ADXL375::ADXL375_Data ADXL375::getXYZ()
+ADXL375::Data ADXL375::readSensor()
 {
   uint8_t data[6];
   _multiReadRegister(ADXL375_REG_DATAX0, data, 6);
 
-  ADXL375_Data xyz;
+  Data xyz;
   //convert to mg, then g, then m/s2
   xyz.x = (float)((int16_t)(data[0] | data[1] << 8)) * ADXL375_XYZ_READ_SCALE_FACTOR / 1000.0 * 9.80665;
   xyz.y = (float)((int16_t)(data[2] | data[3] << 8)) * ADXL375_XYZ_READ_SCALE_FACTOR / 1000.0 * 9.80665;

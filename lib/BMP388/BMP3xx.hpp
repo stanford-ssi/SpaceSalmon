@@ -48,12 +48,11 @@ extern "C"
 class BMP3xx
 {
   public:
+    typedef bmp3_data Data;
+
     BMP3xx(struct spi_m_sync_descriptor *spi, int8_t cspin);
 
     bool  begin();
-    float readTemperature(void);
-    float readPressure(void);
-    float readAltitude(float seaLevel);
 
     bool setTemperatureOversampling(uint8_t os);
     bool setPressureOversampling(uint8_t os);
@@ -61,12 +60,7 @@ class BMP3xx
     bool setOutputDataRate(uint8_t odr);
 
     /// Perform a reading in blocking mode
-    bool performReading(void);
-
-    /// Temperature (Celsius) assigned after calling performReading()
-    double temperature;
-    /// Pressure (Pascals) assigned after calling performReading()
-    double pressure;
+    Data readSensor(void);
 
     void write();
 
