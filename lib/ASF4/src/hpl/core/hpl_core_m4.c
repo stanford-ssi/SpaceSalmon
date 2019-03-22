@@ -217,11 +217,9 @@ void _delay_cycles(void *const hw, uint32_t cycles)
 	(void)hw;
 	(void)cycles;
 #if defined __GNUC__
-	__asm(".syntax unified\n"
-	      "__delay:\n"
+	__asm("__delay:\n"
 	      "subs r1, r1, #1\n"
-	      "bhi __delay\n"
-	      ".syntax divided");
+	      "bhi __delay");
 #elif defined __CC_ARM
 	__asm("__delay:\n"
 	      "subs cycles, cycles, #1\n"
