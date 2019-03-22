@@ -17,10 +17,19 @@
 static uint8_t ctrl_buffer[64];
 
 /** Buffers to receive and echo the communication bytes. */
-static uint8_t usb_tx_buffer[2][CDCD_ECHO_BUF_SIZ];
-volatile bool tx_flag = false;
-volatile bool tx_status[2] = {false, false};
-uint8_t tx_fill[2] = {0, 0};
+
+char string1[100];
+uint8_t fill1 = 0;
+
+char string2[100];
+uint8_t fill2 = 0;
+
+bool state = false; //false = write into string1
+					//true  = write into string2
+
+volatile bool tx_done = true;
+
+volatile bool dtr_state = false;
 
 /**
  * 
@@ -39,7 +48,7 @@ uint8_t tx_fill[2] = {0, 0};
  */
 static bool usb_device_cb_bulk_in(const uint8_t ep, const enum usb_xfer_code rc, const uint32_t count)
 {
-	tx_status[!tx_flag] = false;
+	tx_done = true;
 	return false;
 }
 
@@ -52,8 +61,9 @@ static bool usb_device_cb_state_c(usb_cdc_control_signal_t state)
 	{
 		/* Callbacks must be registered after endpoint allocation */
 		//cdcdf_acm_register_callback(CDCDF_ACM_CB_READ, (FUNC_PTR)usb_device_cb_bulk_out);
-		cdcdf_acm_register_callback(CDCDF_ACM_CB_WRITE, (FUNC_PTR)usb_device_cb_bulk_in); //this is not needed really
+		//cdcdf_acm_register_callback(CDCDF_ACM_CB_WRITE, (FUNC_PTR)usb_device_cb_bulk_in); //this is not needed really
 	}
+	dtr_state = state.rs232.DTR;
 
 	/* No error. */
 	return false;
@@ -80,22 +90,43 @@ void usb_init(void)
 	cdcdf_acm_register_callback(CDCDF_ACM_CB_STATE_C, (FUNC_PTR)usb_device_cb_state_c);
 }
 
-int __attribute__((weak)) _write(int file, char *ptr, int len)
+int _write(int file, char *ptr, int len)
 {
-	if (len + tx_fill[tx_flag] < 63)
-	{
-		memcpy((uint8_t *)usb_tx_buffer[tx_flag] + tx_fill[tx_flag], ptr, len);
-		tx_fill[tx_flag] += len;
-	}
+	__disable_irq();
 
-	if (!tx_status[!tx_flag])
-	{
-		tx_flag = !tx_flag;
-		cdcdf_acm_register_callback(CDCDF_ACM_CB_WRITE, (FUNC_PTR)usb_device_cb_bulk_in); //is this hacky? or ok?
-		cdcdf_acm_write((uint8_t *)usb_tx_buffer[!tx_flag], tx_fill[!tx_flag]);				  //start tx_status
-		tx_status[!tx_flag] = true;
-		tx_fill[tx_flag] = 0;
+	if(state){
+		string2[fill2] = *ptr;
+		fill2++;
+	}else{
+		string1[fill1] = *ptr;
+		fill1++;
 	}
+	
+
+	//state -> writing into 2 -> sending 1 -> should start sending 2
+	
+
+	if(state){
+		if(tx_done && fill2 > 0){
+			cdcdf_acm_register_callback(CDCDF_ACM_CB_WRITE, (FUNC_PTR)usb_device_cb_bulk_in); //is this hacky? or ok?
+			tx_done = false;
+			cdcdf_acm_write((uint8_t *)string2, fill2);
+			fill1 = 0;
+			state = false;
+		}
+	}else{
+		if(tx_done && fill1 > 0){
+			cdcdf_acm_register_callback(CDCDF_ACM_CB_WRITE, (FUNC_PTR)usb_device_cb_bulk_in); //is this hacky? or ok?
+			tx_done = false;
+			cdcdf_acm_write((uint8_t *)string1, fill1);
+			fill2 = 0;
+			state = true;
+		}
+	}
+		
+	
+
+	__enable_irq();
 
 	return len;
 }

@@ -15,6 +15,8 @@ extern "C" {
 #include "cdcdf_acm.h"
 #include "cdcdf_acm_desc.h"
 
+int _write(int file, char *ptr, int len);
+
 void usb_init(void);
 
 #ifdef __cplusplus
