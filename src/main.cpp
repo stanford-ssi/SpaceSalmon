@@ -3,6 +3,7 @@
 #include "BMI088.hpp"
 #include "ArduinoJson.h"
 #include "sdtester.c"
+#include "printf.h"
 
 bool testBMIGyroSpi();
 bool testBMIAccelSpi();
@@ -20,9 +21,7 @@ int main(void)
 	gpio_set_pin_level(LED3, true);
 	gpio_set_pin_level(LED4, true);
 
-	for (int i = 0; i < 10000000; i++)
-	{
-	}
+	delay_ms(1000);
 
 	gpio_set_pin_level(LED1, false);
 	gpio_set_pin_level(LED2, false);
@@ -43,19 +42,15 @@ int main(void)
 	
 
 	BMI088Accel bmi088accel(&SPI_SENSOR,ACCEL_CS_1);
-	printf("begin %d\n", bmi088accel.begin());
+	bmi088accel.begin();
 
 	BMI088Gyro bmi088gyro(&SPI_SENSOR,GYRO_CS_1);
-	printf("begin %d\n", bmi088gyro.begin());
+	bmi088gyro.begin();
 
-	//printf("test: %f\n", 193.435F);
-	//printf("str %d",5);
+	//printf_("test: %f\n", 193.435F);
+	//printf_("str %d",5);
 
-	for(int k=0;k<10000;k++){
-		for(int i=0;i<1000;i++){}
-			//gpio_toggle_pin_level(BUZZER);
-	}
-
+	delay_ms(1000);
 
 	while (true)
 	{
@@ -67,46 +62,55 @@ int main(void)
 				for(int i=0;i<10000;i++){}
 				//gpio_toggle_pin_level(BUZZER);
 			}
-			printf("Blink!\n");
+			printf_("Blink!\n");
 			
 		}
 		*/
 
-		//printf("SD Test!");
+		//printf_("SD Test!");	
 		//sdtester();
+
+		//printf_("TOPKEK\n");
+
+		//printf_("test: %f\n", 193.435F);
 		
-		for(int j=0;j<10;j++){
-			delay_ms(50);
-		}
+		//delay_ms(1000);
 
 		//char strtest[] = "HI famity!";
 		DynamicJsonDocument doc(1024);
 		doc["key"] = "value";
 
-		char string[3];
+		char string[100];
 		serializeJson(doc,string,sizeof(string));
 
-		//printf("str");
-		
+		//cdcdf_acm_write((uint8_t *)string, 5);
+
+		//printf_("TOPKE2\n");
+
+		//printf_("%s\n",string);
+
+		//printf_("TOPKE3\n");
+
 		BMI088Accel::Data accel = bmi088accel.readSensor();
-		printf("AX: %5d  ", (int)(accel.x*100));
-		printf("AY: %5d  ", (int)(accel.y*100));
-		printf("AZ: %5d  ", (int)(accel.z*100));
-		printf("AT: %5d  ", (int)(accel.temp*100));
-		printf("AT: %5lu  ", accel.time);
+
+		printf_("AX: %5f  ", accel.x);
+		printf_("AY: %5f  ", accel.y);
+		printf_("AZ: %5f  ", accel.z);
+		printf_("AT: %5fC ", accel.temp);
+		printf_("AT: %5lu  ", accel.time);
 
 		BMI088Gyro::Data gyro = bmi088gyro.readSensor();
-		printf("GX: %5d  ", (int)(gyro.x*100));
-		printf("GY: %5d  ", (int)(gyro.y*100));
-		printf("GZ: %5d  ", (int)(gyro.z*100));		
+		printf_("GX: %5d  ", (int)(gyro.x*100));
+		printf_("GY: %5d  ", (int)(gyro.y*100));
+		printf_("GZ: %5d  ", (int)(gyro.z*100));		
 
 		ADXL375::ADXL375_Data lol = adxl375.getXYZ();
-		printf("HX: %5d  ", (int)(lol.x*100));
-		printf("HY: %5d  ", (int)(lol.y*100));
-		printf("HZ: %5d  \n", (int)(lol.z*100));
+		printf_("HX: %5d  ", (int)(lol.x*100));
+		printf_("HY: %5d  ", (int)(lol.y*100));
+		printf_("HZ: %5d  \n", (int)(lol.z*100));
+		
 
-
-		for(int i=0;i<100000;i++){}
+		//delay_ms(500);
 	}
 }
 
@@ -122,7 +126,7 @@ bool testBMIGyroSpi()
 	spi_m_sync_transfer(&SPI_SENSOR, &data);
 	gpio_set_pin_level(GYRO_CS_1, true);
 	
-	printf("BMI088-Gyro Response: 0x%x 0x%x\n", data.rxbuf[0], data.rxbuf[1]);
+	printf_("BMI088-Gyro Response: 0x%x 0x%x\n", data.rxbuf[0], data.rxbuf[1]);
 	return data.rxbuf[1] == 0x0F;
 }
 
@@ -140,7 +144,7 @@ bool testBMIAccelSpi()
 	spi_m_sync_transfer(&SPI_SENSOR, &data);
 	gpio_set_pin_level(ACCEL_CS_1, true);
 	
-	printf("BMI088-Accel Response: 0x%x 0x%x 0x%x \n", data.rxbuf[0], data.rxbuf[1], data.rxbuf[2]);
+	printf_("BMI088-Accel Response: 0x%x 0x%x 0x%x \n", data.rxbuf[0], data.rxbuf[1], data.rxbuf[2]);
 	return data.rxbuf[2] == 0x1E;
 }
 
@@ -157,7 +161,7 @@ bool testADXLSpi()
 	spi_m_sync_transfer(&SPI_SENSOR, &data);
 	gpio_set_pin_level(ADXL_CS_1, true);
 
-	printf("ADXL375 Response: 0x%x\n", data.rxbuf[0]);
+	printf_("ADXL375 Response: 0x%x\n", data.rxbuf[0]);
 	return data.rxbuf[0] == 0xE5;
 }
 
@@ -175,7 +179,7 @@ bool testBMPSpi()
 	spi_m_sync_transfer(&SPI_SENSOR, &data);
 	gpio_set_pin_level(BMP_CS_1, true);
 	
-	printf("BMP388 Response: 0x%x 0x%x 0x%x\n", data.rxbuf[0], data.rxbuf[1], data.rxbuf[2]);
+	printf_("BMP388 Response: 0x%x 0x%x 0x%x\n", data.rxbuf[0], data.rxbuf[1], data.rxbuf[2]);
 	return data.rxbuf[2] == 0x50;
 }
 
@@ -192,6 +196,6 @@ bool testSquibSpi()
 	spi_m_sync_transfer(&SPI_SQUIB, &data);
 	gpio_set_pin_level(SQUIB_CS, true);
 	
-	printf("Squib Response: 0x%x\n", data.rxbuf[0]);
+	printf_("Squib Response: 0x%x\n", data.rxbuf[0]);
 	return data.rxbuf[0] == 0x69;
 }
