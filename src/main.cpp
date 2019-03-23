@@ -54,6 +54,8 @@ int main(void)
 
 	uint8_t led = 0;
 
+	bool fire = false;
+
 	while (true)
 	{
 		gpio_toggle_pin_level(leds[led]);
@@ -66,11 +68,18 @@ int main(void)
 			gpio_toggle_pin_level(BUZZER);
 		}
 		*/
+		if(fire){
+			squib.fire(CMD_FIRE_1A2A1B2B);
+		}else{
+			squib.fire(CMD_FIRE_NO_SQUIBS);
+		}
+		fire = !fire;
 
 		//printf_("SD Test!");	
 		//sdtester();
-		Squib_ReturnType test = squib.getStatus();
-		Squib::Status boom =  squib.status;
+
+		squib.getStatus();
+		Squib::Status status =  squib.status;
 		BMI088Accel::Data accel = bmi088accel.readSensor();
 		BMI088Gyro::Data gyro = bmi088gyro.readSensor();
 		ADXL375::Data accelHigh = adxl375.readSensor();
@@ -102,18 +111,17 @@ int main(void)
 		bmp388_json["temp"] = pressure.temperature;*/
 
 		JsonObject squib_json = doc.createNestedObject("Squib");
-		squib_json["status"] = (uint8_t)test;
-		squib_json["fen1"] = boom.Squib_StatFen1;
-		squib_json["fen2"] = boom.Squib_StatFen2;
-		squib_json["1A_res"] = boom.Squib_Stat1AResistance;
-		squib_json["1B_res"] = boom.Squib_Stat1BResistance;
-		squib_json["2A_res"] = boom.Squib_Stat2AResistance;
-		squib_json["2B_res"] = boom.Squib_Stat2BResistance;
+		squib_json["fen1"] = status.Squib_StatFen1;
+		squib_json["fen2"] = status.Squib_StatFen2;
+		squib_json["1A_res"] = status.Squib_Stat1AResistance;
+		squib_json["1B_res"] = status.Squib_Stat1BResistance;
+		squib_json["2A_res"] = status.Squib_Stat2AResistance;
+		squib_json["2B_res"] = status.Squib_Stat2BResistance;
 
 		char string[1000];
 		serializeJson(doc,string,sizeof(string));
 
 		printf_("%s\n",string);
-		delay_ms(50);
+		//delay_ms(50);
 	}
 }

@@ -547,8 +547,6 @@ extern Squib_ReturnType Squib_ProgramCmd(
 
 extern Squib_ReturnType Squib_SingleCmd(void);
 
-uint8_t send(uint8_t data);
-
 #ifdef __cplusplus
 }
 #endif
