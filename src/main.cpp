@@ -6,6 +6,7 @@
 #include "printf.h"
 #include "BMP3xx.hpp"
 #include "SPITest.hpp"
+#include "Squib.hpp"
 
 int main(void)
 {
@@ -24,9 +25,13 @@ int main(void)
 	gpio_set_pin_level(LED3, false);
 	gpio_set_pin_level(LED4, false);
 
+	spi_m_sync_disable(&SPI_SENSOR);
 	spi_m_sync_set_mode(&SPI_SENSOR, SPI_MODE_3);
 	spi_m_sync_enable(&SPI_SENSOR);
 
+	spi_m_sync_disable(&SPI_SQUIB);
+	spi_m_sync_set_mode(&SPI_SQUIB, SPI_MODE_3);
+	spi_m_sync_enable(&SPI_SQUIB);
 
 	ADXL375 adxl375(&SPI_SENSOR,ADXL_CS_1);
 	adxl375.init();
@@ -41,8 +46,9 @@ int main(void)
 	BMP3xx bmp388(&SPI_SENSOR,BMP_CS_1);
 	bmp388.begin();
 
-
 	delay_ms(1000);
+
+	Squib squib(&SPI_SQUIB, SQUIB_CS);
 
 	uint8_t leds[] = {LED1,LED2,LED3,LED4};
 
@@ -54,15 +60,17 @@ int main(void)
 		led++;
 		led = led % 4;
 		
-		
+		/*
 		for(int k=0;k<100;k++){
 			for(int i=0;i<10000;i++){}
 			gpio_toggle_pin_level(BUZZER);
 		}
+		*/
 
 		//printf_("SD Test!");	
 		//sdtester();
-
+		Squib_ReturnType test = squib.getStatus();
+		Squib::Status boom =  squib.status;
 		BMI088Accel::Data accel = bmi088accel.readSensor();
 		BMI088Gyro::Data gyro = bmi088gyro.readSensor();
 		ADXL375::Data accelHigh = adxl375.readSensor();
@@ -70,7 +78,7 @@ int main(void)
 
 		DynamicJsonDocument doc(1024);
 
-		JsonObject bmi088_json = doc.createNestedObject("BMI088");
+		/*JsonObject bmi088_json = doc.createNestedObject("BMI088");
 		bmi088_json["temp"] = accel.temp;
 		bmi088_json["time"] = accel.time;
 
@@ -91,12 +99,21 @@ int main(void)
 
 		JsonObject bmp388_json = doc.createNestedObject("BMP388");
 		bmp388_json["pres"] = pressure.pressure;
-		bmp388_json["temp"] = pressure.temperature;
+		bmp388_json["temp"] = pressure.temperature;*/
+
+		JsonObject squib_json = doc.createNestedObject("Squib");
+		squib_json["status"] = (uint8_t)test;
+		squib_json["fen1"] = boom.Squib_StatFen1;
+		squib_json["fen2"] = boom.Squib_StatFen2;
+		squib_json["1A_res"] = boom.Squib_Stat1AResistance;
+		squib_json["1B_res"] = boom.Squib_Stat1BResistance;
+		squib_json["2A_res"] = boom.Squib_Stat2AResistance;
+		squib_json["2B_res"] = boom.Squib_Stat2BResistance;
 
 		char string[1000];
 		serializeJson(doc,string,sizeof(string));
 
 		printf_("%s\n",string);
-
+		delay_ms(50);
 	}
 }
