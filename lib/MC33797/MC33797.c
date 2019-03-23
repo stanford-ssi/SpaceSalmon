@@ -40,7 +40,7 @@ Ard_ComReturnType Ard_ComSendByte(uint8_t b, uint8_t *c)
 	spi_m_sync_transfer(SquibSPI, &data);
 	gpio_set_pin_level(SquibCS, true);
 
-  delay_ms(1);
+  delay_us(100);
 
   return ARD_COM_OK; //lol this could be better
 }
