@@ -56,6 +56,8 @@ int main(void)
 
 	bool fire = false;
 
+	adc_sync_enable_channel(&ADC_0,1);
+
 	while (true)
 	{
 		gpio_toggle_pin_level(leds[led]);
@@ -78,6 +80,39 @@ int main(void)
 		//printf_("SD Test!");	
 		//sdtester();
 
+		uint8_t data[] = {0,0};		
+
+		data[0] = 0;
+		data[1] = 0;
+
+		adc_sync_set_inputs(&ADC_0, 0x0D, 0x18, 1);
+
+		adc_sync_read_channel(&ADC_0,1,data,2);
+
+		printf_("AIN13: %u, ", data[0]);
+
+		uint8_t measB = data[0];
+		
+		data[0] = 0;
+		data[1] = 0;
+
+		adc_sync_set_inputs(&ADC_0, 0x0E, 0x18, 1);
+
+		adc_sync_read_channel(&ADC_0,1,data,2);
+
+		printf_("AIN14: %u, ", data[0]);
+
+		uint8_t measA = data[0];
+
+		float ratioA = 0.02726;
+		float ratioB = 0.04868;
+
+		float cellA = measA * ratioA;
+		float cellB = (measB * ratioB) - cellA;
+
+		printf("Cell A: %fV, ", cellA);
+		printf("Cell B: %fV\n", cellB);
+
 		squib.getStatus();
 		Squib::Status status =  squib.status;
 		BMI088Accel::Data accel = bmi088accel.readSensor();
@@ -87,7 +122,7 @@ int main(void)
 
 		DynamicJsonDocument doc(1024);
 
-		/*JsonObject bmi088_json = doc.createNestedObject("BMI088");
+		/* JsonObject bmi088_json = doc.createNestedObject("BMI088");
 		bmi088_json["temp"] = accel.temp;
 		bmi088_json["time"] = accel.time;
 
@@ -104,24 +139,24 @@ int main(void)
 		JsonObject adxl375_json = doc.createNestedObject("ADXL375");
 		adxl375_json["x"] = accelHigh.x;
 		adxl375_json["y"] = accelHigh.y;
-		adxl375_json["z"] = accelHigh.z;
+		adxl375_json["z"] = accelHigh.z; */
 
 		JsonObject bmp388_json = doc.createNestedObject("BMP388");
 		bmp388_json["pres"] = pressure.pressure;
-		bmp388_json["temp"] = pressure.temperature;*/
+		bmp388_json["temp"] = pressure.temperature;
 
-		JsonObject squib_json = doc.createNestedObject("Squib");
+		/*JsonObject squib_json = doc.createNestedObject("Squib");
 		squib_json["fen1"] = status.Squib_StatFen1;
 		squib_json["fen2"] = status.Squib_StatFen2;
 		squib_json["1A_res"] = status.Squib_Stat1AResistance;
 		squib_json["1B_res"] = status.Squib_Stat1BResistance;
 		squib_json["2A_res"] = status.Squib_Stat2AResistance;
-		squib_json["2B_res"] = status.Squib_Stat2BResistance;
+		squib_json["2B_res"] = status.Squib_Stat2BResistance;*/
 
 		char string[1000];
 		serializeJson(doc,string,sizeof(string));
 
-		printf_("%s\n",string);
+		//printf_("%s\n",string);
 		//delay_ms(50);
 	}
 }
