@@ -34,6 +34,8 @@ extern "C" {
 
 #include <hal_mci_sync.h>
 
+#include <hal_delay.h>
+
 #include "hal_usb_device.h"
 
 extern struct adc_sync_descriptor   ADC_0;
@@ -69,6 +71,8 @@ void I2C_BUS2_PORT_init(void);
 void MCI_0_PORT_init(void);
 void MCI_0_CLOCK_init(void);
 void MCI_0_init(void);
+
+void delay_driver_init(void);
 
 void USB_0_CLOCK_init(void);
 void USB_0_init(void);

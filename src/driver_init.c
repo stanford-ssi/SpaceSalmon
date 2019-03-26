@@ -599,6 +599,11 @@ void MCI_0_init(void)
 	MCI_0_PORT_init();
 }
 
+void delay_driver_init(void)
+{
+	delay_init(SysTick);
+}
+
 void USB_0_PORT_init(void)
 {
 
@@ -970,6 +975,8 @@ void system_init(void)
 	I2C_BUS2_init();
 
 	MCI_0_init();
+
+	delay_driver_init();
 
 	USB_0_init();
 }
