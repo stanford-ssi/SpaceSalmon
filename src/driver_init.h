@@ -28,7 +28,8 @@ extern "C" {
 #include <hal_spi_m_sync.h>
 
 #include <hal_usart_sync.h>
-#include <hal_spi_m_sync.h>
+
+#include <hal_spi_m_os.h>
 
 #include <hal_i2c_m_sync.h>
 
@@ -42,7 +43,8 @@ extern struct adc_sync_descriptor   ADC_0;
 extern struct spi_m_sync_descriptor SPI_SENSOR;
 
 extern struct usart_sync_descriptor USART_ESP;
-extern struct spi_m_sync_descriptor SPI_SQUIB;
+
+extern struct spi_m_os_descriptor SPI_SQUIB;
 
 extern struct i2c_m_sync_desc I2C_BUS2;
 
