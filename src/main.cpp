@@ -25,6 +25,7 @@ int main(void)
 	gpio_set_pin_level(LED3, false);
 	gpio_set_pin_level(LED4, false);
 
+
 	spi_m_sync_disable(&SPI_SENSOR);
 	spi_m_sync_set_mode(&SPI_SENSOR, SPI_MODE_3);
 	spi_m_sync_enable(&SPI_SENSOR);
@@ -56,7 +57,7 @@ int main(void)
 
 	bool fire = false;
 
-	adc_sync_enable_channel(&ADC_0,1);
+	//adc_sync_enable_channel(&ADC_0,1);
 
 	while (true)
 	{
@@ -82,25 +83,68 @@ int main(void)
 
 		uint8_t data[] = {0,0};		
 
+		uint32_t test;
+
 		data[0] = 0;
 		data[1] = 0;
 
-		adc_sync_set_inputs(&ADC_0, 0x0D, 0x18, 1);
+		//adc_sync_set_inputs(&ADC_0, 0x0D, 0x18, 1);
 
-		adc_sync_read_channel(&ADC_0,1,data,2);
+		//adc_sync_read_channel(&ADC_0,1,data,2);
 
-		printf_("AIN13: %u, ", data[0]);
+		while( ADC0->SYNCBUSY.reg & ADC_SYNCBUSY_INPUTCTRL ); //wait for sync
+  		ADC0->INPUTCTRL.bit.MUXPOS = 14; // Selection for the positive ADC input
+		ADC0->INPUTCTRL.bit.MUXNEG = 24;
+
+		while( ADC0->SYNCBUSY.reg & ADC_SYNCBUSY_SAMPCTRL ); //wait for sync
+  		ADC0->SAMPCTRL.bit.SAMPLEN = 63;
+
+  		ADC0->CTRLA.bit.PRESCALER = 7;
+
+		while( ADC0->SYNCBUSY.reg & ADC_SYNCBUSY_ENABLE ); //wait for sync
+		ADC0->CTRLA.bit.ENABLE = 0x01;             // Enable ADC
+
+		// Start conversion
+		while( ADC0->SYNCBUSY.reg & ADC_SYNCBUSY_ENABLE ); //wait for sync
+		
+		ADC0->SWTRIG.bit.START = 1;
+
+		// Clear the Data Ready flag
+		ADC0->INTFLAG.reg = ADC_INTFLAG_RESRDY;
+
+		// Start conversion again, since The first conversion after the reference is changed must not be used.
+		ADC0->SWTRIG.bit.START = 1;
+
+		while (ADC0->INTFLAG.bit.RESRDY == 0);   // Waiting for conversion to complete
+
+		//test = ;	
+
+		printf_("AIN14: %032lb, ", ADC0->RESULT.reg);	
+		printf_("AIN14: %u, ", ADC0->RESULT.reg);	
+
+		while( ADC0->SYNCBUSY.reg & ADC_SYNCBUSY_ENABLE ); //wait for sync
+  		ADC0->CTRLA.bit.ENABLE = 0x00;             // Disable ADC
+  		while( ADC0->SYNCBUSY.reg & ADC_SYNCBUSY_ENABLE ); //wait for sync
 
 		uint8_t measB = data[0];
+
+		printf_("CTRLA: %u ", ADC0->CTRLA.reg);
+		printf_("CTRLB: %u ", ADC0->CTRLB.reg);
+		printf_("REFCTRL: %u ",ADC0->REFCTRL.reg);
+		printf_("INPUTCTRL: %u ",ADC0->INPUTCTRL.reg);
+		printf_("SAMPCTRL: %u ",ADC0->SAMPCTRL.reg);
+		printf_("AVGCTRL: %u ",ADC0->AVGCTRL.reg);
 		
-		data[0] = 0;
-		data[1] = 0;
+		//data[0] = 0;
+		//data[1] = 0;
 
-		adc_sync_set_inputs(&ADC_0, 0x0E, 0x18, 1);
+		//adc_sync_set_inputs(&ADC_0, 0x0E, 0x18, 1);
 
-		adc_sync_read_channel(&ADC_0,1,data,2);
+		//adc_sync_read_channel(&ADC_0,1,data,2);
 
-		printf_("AIN14: %u, ", data[0]);
+		//test = ((Adc*)ADC_0.device.hw)->RESULT.reg;
+
+		//printf_("AIN14: %lu, ", test);
 
 		uint8_t measA = data[0];
 

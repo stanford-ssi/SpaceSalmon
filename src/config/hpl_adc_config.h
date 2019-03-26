@@ -18,7 +18,7 @@
 // <i>  Defines the bit resolution for the ADC sample values (RESSEL)
 // <id> adc_resolution
 #ifndef CONF_ADC_0_RESSEL
-#define CONF_ADC_0_RESSEL 0x3
+#define CONF_ADC_0_RESSEL 0x2
 #endif
 
 // <o> Reference Selection
@@ -142,7 +142,7 @@
 // <i> When enabled, the ADC conversion result is left-adjusted in the RESULT register. The high byte of the 12-bit result will be present in the upper part of the result register. (LEFTADJ)
 // <id> adc_arch_leftadj
 #ifndef CONF_ADC_0_LEFTADJ
-#define CONF_ADC_0_LEFTADJ 1
+#define CONF_ADC_0_LEFTADJ 0
 #endif
 
 // <q> Reference Buffer Offset Compensation Enable
