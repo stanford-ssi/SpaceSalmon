@@ -9,6 +9,12 @@
 #include "Squib.hpp"
 #include "Battery.hpp"
 
+uint32_t ms = 0;
+
+uint32_t millis(){//todo: interupts???
+	return ms;
+}
+
 int main(void)
 {
 	/* Initializes MCU, drivers and middleware */
@@ -60,7 +66,7 @@ int main(void)
 
 	bool fire = false;
 
-	
+	SysTick_Config(48000000/1000);
 
 	while (true)
 	{
@@ -84,17 +90,42 @@ int main(void)
 		//printf_("SD Test!");	
 		//sdtester();
 
+		uint32_t timer = millis();
+		
 		squib.getStatus();
-		Squib::Status status =  squib.status;
+		Squib::Status status = squib.status;
+
+		printf_("squib: %lu\n",millis()-timer);
+		timer = millis();
+
 		BMI088Accel::Data accel = bmi088accel.readSensor();
+
+		printf_("accel %lu\n",millis()-timer);
+		timer = millis();
+
 		BMI088Gyro::Data gyro = bmi088gyro.readSensor();
+
+		printf_("gyro: %lu\n",millis()-timer);
+		timer = millis();
+
 		ADXL375::Data accelHigh = adxl375.readSensor();
+
+		printf_("adxl: %lu\n",millis()-timer);
+		timer = millis();
+
 		BMP3xx::Data pressure = bmp388.readSensor();
+
+		printf_("pressure: %lu\n",millis()-timer);
+		timer = millis();
+
 		Battery::cell_voltage_t cells = battery.readVoltage();
+
+		printf_("batt: %lu\n",millis()-timer);
+		timer = millis();
 
 		DynamicJsonDocument doc(1024);
 
-		/* JsonObject bmi088_json = doc.createNestedObject("BMI088");
+		JsonObject bmi088_json = doc.createNestedObject("BMI088");
 		bmi088_json["temp"] = accel.temp;
 		bmi088_json["time"] = accel.time;
 
@@ -111,19 +142,19 @@ int main(void)
 		JsonObject adxl375_json = doc.createNestedObject("ADXL375");
 		adxl375_json["x"] = accelHigh.x;
 		adxl375_json["y"] = accelHigh.y;
-		adxl375_json["z"] = accelHigh.z; */
+		adxl375_json["z"] = accelHigh.z;
 
-		/*JsonObject bmp388_json = doc.createNestedObject("BMP388");
+		JsonObject bmp388_json = doc.createNestedObject("BMP388");
 		bmp388_json["pres"] = pressure.pressure;
-		bmp388_json["temp"] = pressure.temperature;*/
+		bmp388_json["temp"] = pressure.temperature;
 
-		/*JsonObject squib_json = doc.createNestedObject("Squib");
+		JsonObject squib_json = doc.createNestedObject("Squib");
 		squib_json["fen1"] = status.Squib_StatFen1;
 		squib_json["fen2"] = status.Squib_StatFen2;
 		squib_json["1A_res"] = status.Squib_Stat1AResistance;
 		squib_json["1B_res"] = status.Squib_Stat1BResistance;
 		squib_json["2A_res"] = status.Squib_Stat2AResistance;
-		squib_json["2B_res"] = status.Squib_Stat2BResistance;*/
+		squib_json["2B_res"] = status.Squib_Stat2BResistance;
 
 		JsonObject battery_json = doc.createNestedObject("Battery");
 		battery_json["cellA"] = cells.cellA;
@@ -133,7 +164,18 @@ int main(void)
 		char string[1000];
 		serializeJson(doc,string,sizeof(string));
 
+		printf("JSON: %lu\n",millis()-timer);
+		timer = millis();
+
 		printf_("%s\n",string);
-		//delay_ms(50);
+
+		printf("print: %lu\n",millis()-timer);
+
+		delay_ms(50);
 	}
 }
+
+void SysTick_Handler(void){
+	ms++;
+}
+
