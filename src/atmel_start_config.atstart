@@ -1330,6 +1330,17 @@ drivers:
         configuration:
           sdhc_gclk_selection: Generic clock generator 0
           sdhc_slow_gclk_selection: Generic clock generator 0
+  DELAY_0:
+    user_label: DELAY_0
+    definition: Atmel:SAME51_Drivers:0.0.1::SAME51J20A-AF::SysTick::driver_config_definition::Delay::HAL:Driver:Delay
+    functionality: Delay
+    api: HAL:Driver:Delay
+    configuration:
+      systick_arch_tickint: false
+    optional_signals: []
+    variant: null
+    clocks:
+      domain_group: null
   USB_0:
     user_label: USB_0
     definition: Atmel:SAME51_Drivers:0.0.1::SAME51J20A-AF::USB::driver_config_definition::USB.Device::HAL:Driver:USB.Device
