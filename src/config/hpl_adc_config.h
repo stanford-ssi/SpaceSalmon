@@ -46,7 +46,7 @@
 // <i> These bits define the ADC clock relative to the peripheral clock (PRESCALER)
 // <id> adc_prescaler
 #ifndef CONF_ADC_0_PRESCALER
-#define CONF_ADC_0_PRESCALER 0x0
+#define CONF_ADC_0_PRESCALER 0x7
 #endif
 
 // <q> Free Running Mode
@@ -90,7 +90,7 @@
 // <i> These bits define the Mux selection for the positive ADC input. (MUXPOS)
 // <id> adc_pinmux_positive
 #ifndef CONF_ADC_0_MUXPOS
-#define CONF_ADC_0_MUXPOS 0x0
+#define CONF_ADC_0_MUXPOS 0x0E
 #endif
 
 // <o> Negative Mux Input Selection
@@ -184,7 +184,7 @@
 // <i> These bits define the division coefficient in 2n steps. (ADJRES)
 // <id> adc_arch_adjres
 #ifndef CONF_ADC_0_ADJRES
-#define CONF_ADC_0_ADJRES 0x0
+#define CONF_ADC_0_ADJRES 0x4
 #endif
 
 // <o.0..10> Number of Samples to be Collected
@@ -202,14 +202,14 @@
 // <i> Define how many samples should be added together.The result will be available in the Result register (SAMPLENUM)
 // <id> adc_arch_samplenum
 #ifndef CONF_ADC_0_SAMPLENUM
-#define CONF_ADC_0_SAMPLENUM 0x0
+#define CONF_ADC_0_SAMPLENUM 0x4
 #endif
 
 // <o> Sampling Time Length <0-63>
 // <i> These bits control the ADC sampling time in number of half CLK_ADC cycles, depending of the prescaler value, thus controlling the ADC input impedance. (SAMPLEN)
 // <id> adc_arch_samplen
 #ifndef CONF_ADC_0_SAMPLEN
-#define CONF_ADC_0_SAMPLEN 0
+#define CONF_ADC_0_SAMPLEN 63
 #endif
 
 // <o> Window Monitor Mode

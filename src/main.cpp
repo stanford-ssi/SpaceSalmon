@@ -7,6 +7,7 @@
 #include "BMP3xx.hpp"
 #include "SPITest.hpp"
 #include "Squib.hpp"
+#include "Battery.hpp"
 
 int main(void)
 {
@@ -47,6 +48,8 @@ int main(void)
 	BMP3xx bmp388(&SPI_SENSOR,BMP_CS_1);
 	bmp388.begin();
 
+	Battery battery(&ADC_0);
+
 	delay_ms(1000);
 
 	Squib squib(&SPI_SQUIB, SQUIB_CS);
@@ -57,7 +60,7 @@ int main(void)
 
 	bool fire = false;
 
-	//adc_sync_enable_channel(&ADC_0,1);
+	
 
 	while (true)
 	{
@@ -81,88 +84,13 @@ int main(void)
 		//printf_("SD Test!");	
 		//sdtester();
 
-		uint8_t data[] = {0,0};		
-
-		uint32_t test;
-
-		data[0] = 0;
-		data[1] = 0;
-
-		//adc_sync_set_inputs(&ADC_0, 0x0D, 0x18, 1);
-
-		//adc_sync_read_channel(&ADC_0,1,data,2);
-
-		while( ADC0->SYNCBUSY.reg & ADC_SYNCBUSY_INPUTCTRL ); //wait for sync
-  		ADC0->INPUTCTRL.bit.MUXPOS = 14; // Selection for the positive ADC input
-		ADC0->INPUTCTRL.bit.MUXNEG = 24;
-
-		while( ADC0->SYNCBUSY.reg & ADC_SYNCBUSY_SAMPCTRL ); //wait for sync
-  		ADC0->SAMPCTRL.bit.SAMPLEN = 63;
-
-  		ADC0->CTRLA.bit.PRESCALER = 7;
-
-		while( ADC0->SYNCBUSY.reg & ADC_SYNCBUSY_ENABLE ); //wait for sync
-		ADC0->CTRLA.bit.ENABLE = 0x01;             // Enable ADC
-
-		// Start conversion
-		while( ADC0->SYNCBUSY.reg & ADC_SYNCBUSY_ENABLE ); //wait for sync
-		
-		ADC0->SWTRIG.bit.START = 1;
-
-		// Clear the Data Ready flag
-		ADC0->INTFLAG.reg = ADC_INTFLAG_RESRDY;
-
-		// Start conversion again, since The first conversion after the reference is changed must not be used.
-		ADC0->SWTRIG.bit.START = 1;
-
-		while (ADC0->INTFLAG.bit.RESRDY == 0);   // Waiting for conversion to complete
-
-		//test = ;	
-
-		printf_("AIN14: %032lb, ", ADC0->RESULT.reg);	
-		printf_("AIN14: %u, ", ADC0->RESULT.reg);	
-
-		while( ADC0->SYNCBUSY.reg & ADC_SYNCBUSY_ENABLE ); //wait for sync
-  		ADC0->CTRLA.bit.ENABLE = 0x00;             // Disable ADC
-  		while( ADC0->SYNCBUSY.reg & ADC_SYNCBUSY_ENABLE ); //wait for sync
-
-		uint8_t measB = data[0];
-
-		printf_("CTRLA: %u ", ADC0->CTRLA.reg);
-		printf_("CTRLB: %u ", ADC0->CTRLB.reg);
-		printf_("REFCTRL: %u ",ADC0->REFCTRL.reg);
-		printf_("INPUTCTRL: %u ",ADC0->INPUTCTRL.reg);
-		printf_("SAMPCTRL: %u ",ADC0->SAMPCTRL.reg);
-		printf_("AVGCTRL: %u ",ADC0->AVGCTRL.reg);
-		
-		//data[0] = 0;
-		//data[1] = 0;
-
-		//adc_sync_set_inputs(&ADC_0, 0x0E, 0x18, 1);
-
-		//adc_sync_read_channel(&ADC_0,1,data,2);
-
-		//test = ((Adc*)ADC_0.device.hw)->RESULT.reg;
-
-		//printf_("AIN14: %lu, ", test);
-
-		uint8_t measA = data[0];
-
-		float ratioA = 0.02726;
-		float ratioB = 0.04868;
-
-		float cellA = measA * ratioA;
-		float cellB = (measB * ratioB) - cellA;
-
-		printf("Cell A: %fV, ", cellA);
-		printf("Cell B: %fV\n", cellB);
-
 		squib.getStatus();
 		Squib::Status status =  squib.status;
 		BMI088Accel::Data accel = bmi088accel.readSensor();
 		BMI088Gyro::Data gyro = bmi088gyro.readSensor();
 		ADXL375::Data accelHigh = adxl375.readSensor();
 		BMP3xx::Data pressure = bmp388.readSensor();
+		Battery::cell_voltage_t cells = battery.readVoltage();
 
 		DynamicJsonDocument doc(1024);
 
@@ -185,9 +113,9 @@ int main(void)
 		adxl375_json["y"] = accelHigh.y;
 		adxl375_json["z"] = accelHigh.z; */
 
-		JsonObject bmp388_json = doc.createNestedObject("BMP388");
+		/*JsonObject bmp388_json = doc.createNestedObject("BMP388");
 		bmp388_json["pres"] = pressure.pressure;
-		bmp388_json["temp"] = pressure.temperature;
+		bmp388_json["temp"] = pressure.temperature;*/
 
 		/*JsonObject squib_json = doc.createNestedObject("Squib");
 		squib_json["fen1"] = status.Squib_StatFen1;
@@ -197,10 +125,15 @@ int main(void)
 		squib_json["2A_res"] = status.Squib_Stat2AResistance;
 		squib_json["2B_res"] = status.Squib_Stat2BResistance;*/
 
+		JsonObject battery_json = doc.createNestedObject("Battery");
+		battery_json["cellA"] = cells.cellA;
+		battery_json["cellB"] = cells.cellB;
+		battery_json["total"] = cells.total;
+
 		char string[1000];
 		serializeJson(doc,string,sizeof(string));
 
-		//printf_("%s\n",string);
+		printf_("%s\n",string);
 		//delay_ms(50);
 	}
 }
