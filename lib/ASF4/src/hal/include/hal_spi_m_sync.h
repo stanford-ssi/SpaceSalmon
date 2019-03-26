@@ -51,6 +51,7 @@ extern "C" {
  *
  */
 struct spi_m_sync_descriptor {
+	struct _spi_m_sync_hpl_interface *func;
 	/** SPI device instance */
 	struct _spi_sync_dev dev;
 	/** I/O read/write */
@@ -58,6 +59,16 @@ struct spi_m_sync_descriptor {
 	/** Flags for HAL driver */
 	uint16_t flags;
 };
+
+/** \brief Set the SPI HAL instance function pointer for HPL APIs.
+ *
+ *  Set SPI HAL instance function pointer for HPL APIs.
+ *
+ *  \param[in] spi Pointer to the HAL SPI instance.
+ *  \param[in] func Pointer to the HPL api structure.
+ *
+ */
+void spi_m_sync_set_func_ptr(struct spi_m_sync_descriptor *spi, void *const func);
 
 /** \brief Initialize SPI HAL instance and hardware for polling mode
  *

@@ -49,15 +49,22 @@ extern "C" {
 static int32_t _spi_m_sync_io_write(struct io_descriptor *const io, const uint8_t *const buf, const uint16_t length);
 static int32_t _spi_m_sync_io_read(struct io_descriptor *const io, uint8_t *const buf, const uint16_t length);
 
+/**
+ *  \brief Initialize the SPI HAL instance function pointer for HPL APIs.
+ */
+void spi_m_sync_set_func_ptr(struct spi_m_sync_descriptor *spi, void *const func)
+{
+	ASSERT(spi);
+	spi->func = (struct _spi_m_sync_hpl_interface *)func;
+}
+
 int32_t spi_m_sync_init(struct spi_m_sync_descriptor *spi, void *const hw)
 {
 	int32_t rc = 0;
-
 	ASSERT(spi && hw);
-
 	spi->dev.prvt = (void *)hw;
+	rc            = _spi_m_sync_init(&spi->dev, hw);
 
-	rc = _spi_m_sync_init(&spi->dev, hw);
 	if (rc < 0) {
 		return rc;
 	}
@@ -72,49 +79,42 @@ int32_t spi_m_sync_init(struct spi_m_sync_descriptor *spi, void *const hw)
 void spi_m_sync_deinit(struct spi_m_sync_descriptor *spi)
 {
 	ASSERT(spi);
-
 	_spi_m_sync_deinit(&spi->dev);
 }
 
 void spi_m_sync_enable(struct spi_m_sync_descriptor *spi)
 {
 	ASSERT(spi);
-
 	_spi_m_sync_enable(&spi->dev);
 }
 
 void spi_m_sync_disable(struct spi_m_sync_descriptor *spi)
 {
 	ASSERT(spi);
-
 	_spi_m_sync_disable(&spi->dev);
 }
 
 int32_t spi_m_sync_set_baudrate(struct spi_m_sync_descriptor *spi, const uint32_t baud_val)
 {
 	ASSERT(spi);
-
 	return _spi_m_sync_set_baudrate(&spi->dev, baud_val);
 }
 
 int32_t spi_m_sync_set_mode(struct spi_m_sync_descriptor *spi, const enum spi_transfer_mode mode)
 {
 	ASSERT(spi);
-
 	return _spi_m_sync_set_mode(&spi->dev, mode);
 }
 
 int32_t spi_m_sync_set_char_size(struct spi_m_sync_descriptor *spi, const enum spi_char_size char_size)
 {
 	ASSERT(spi);
-
 	return _spi_m_sync_set_char_size(&spi->dev, char_size);
 }
 
 int32_t spi_m_sync_set_data_order(struct spi_m_sync_descriptor *spi, const enum spi_data_order dord)
 {
 	ASSERT(spi);
-
 	return _spi_m_sync_set_data_order(&spi->dev, dord);
 }
 
@@ -181,7 +181,6 @@ int32_t spi_m_sync_transfer(struct spi_m_sync_descriptor *spi, const struct spi_
 	msg.txbuf = p_xfer->txbuf;
 	msg.rxbuf = p_xfer->rxbuf;
 	msg.size  = p_xfer->size;
-
 	return _spi_m_sync_trans(&spi->dev, &msg);
 }
 

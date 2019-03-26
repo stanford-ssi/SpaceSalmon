@@ -4,7 +4,7 @@ versions:
   api: '1.0'
   backend: 1.5.122
   commit: 820baecf7dd115d94b0d42ee3b0b9d6ba2da7113
-  content: 1.0.1375
+  content: 1.0.1405
   content_pack_name: acme-packs-all
   format: '2'
   frontend: 1.5.1826
@@ -39,7 +39,7 @@ drivers:
     functionality: ADC
     api: HAL:Driver:ADC_Sync
     configuration:
-      adc_advanced_settings: false
+      adc_advanced_settings: true
       adc_arch_adjres: 0
       adc_arch_corren: false
       adc_arch_dbgrun: false
@@ -67,9 +67,9 @@ drivers:
       adc_freerunning_mode: false
       adc_pinmux_negative: ADC AIN0 pin
       adc_pinmux_positive: ADC AIN0 pin
-      adc_prescaler: Peripheral clock divided by 2
-      adc_reference: Internal bandgap reference
-      adc_resolution: 12-bit
+      adc_prescaler: Peripheral clock divided by 256
+      adc_reference: VDDANA
+      adc_resolution: 10-bit
     optional_signals:
     - identifier: ADC_0:AIN/13
       pad: PB01
