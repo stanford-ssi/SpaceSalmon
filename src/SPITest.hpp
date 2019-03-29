@@ -8,4 +8,4 @@ bool testBMIGyroSpi();
 bool testBMIAccelSpi();
 bool testADXLSpi();
 bool testBMPSpi();
-bool testSquibSpi();
+bool testSquibSpi(spi_m_os_descriptor *spi);

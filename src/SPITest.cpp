@@ -69,19 +69,16 @@ bool testBMPSpi()
 	return data.rxbuf[2] == 0x50;
 }
 
-bool testSquibSpi()
+bool testSquibSpi(spi_m_os_descriptor* spi)
 {
 	uint8_t send = 0x96;
 	uint8_t recv = 0x00;
-	spi_xfer data = {&send, &recv, 1};
-	spi_m_sync_disable(&SPI_SQUIB);
-	spi_m_sync_set_mode(&SPI_SQUIB, SPI_MODE_3);
-	spi_m_sync_enable(&SPI_SQUIB);
 
 	gpio_set_pin_level(SQUIB_CS, false);
-	spi_m_sync_transfer(&SPI_SQUIB, &data);
+	spi_m_os_transfer(spi, &send, &recv, 1);
 	gpio_set_pin_level(SQUIB_CS, true);
 	
-	printf_("Squib Response: 0x%x\n", data.rxbuf[0]);
-	return data.rxbuf[0] == 0x69;
+	printf_("Squib Response: 0x%x\n", recv);
+	
+	return recv == 0x69;
 }
