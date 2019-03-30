@@ -41,7 +41,7 @@ void assert_triggered(const char *file, uint32_t line);
 // <i> Default: 2400
 // <id> freertos_total_heap_size
 #ifndef configTOTAL_HEAP_SIZE
-#define configTOTAL_HEAP_SIZE ((size_t)(2400))
+#define configTOTAL_HEAP_SIZE ((size_t)(10000))
 #endif
 
 // <q> Enable mutex
@@ -246,10 +246,10 @@ to exclude the API function. */
 // <q> Include the function to get current task handler
 // <id> freertos_xtaskgetcurrenttaskhandle
 #ifndef INCLUDE_xTaskGetCurrentTaskHandle
-#define INCLUDE_xTaskGetCurrentTaskHandle 0
+#define INCLUDE_xTaskGetCurrentTaskHandle 1
 #endif
 
-#define INCLUDE_uxTaskGetStackHighWaterMark 0
+#define INCLUDE_uxTaskGetStackHighWaterMark 1
 
 // <q> Include the function to get idle task handler
 // <id> freertos_xtaskgetidletaskhandle
