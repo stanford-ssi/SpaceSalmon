@@ -3,7 +3,7 @@
 
 extern "C"
 {
-#include <hal_spi_m_sync.h>
+#include <hal_spi_m_os.h>
 #include <hal_gpio.h>
 #include <math.h>
 #include <string.h>
@@ -48,7 +48,7 @@ public:
     ACTIVE_HIGH,
     ACTIVE_LOW
   };
-  BMI088Gyro(struct spi_m_sync_descriptor *bus, uint8_t csPin);
+  BMI088Gyro(struct spi_m_os_descriptor *bus, uint8_t csPin);
   int begin();
   bool setOdr(Odr odr);
   bool setRange(Range range);
@@ -70,7 +70,7 @@ private:
   };
   // spi
   uint8_t _csPin;
-  struct spi_m_sync_descriptor *_spi;
+  struct spi_m_os_descriptor *_spi;
   bool _useSPI;
   const uint8_t SPI_READ = 0x80;
   const uint32_t SPI_CLOCK = 10000000; // 10 MHz

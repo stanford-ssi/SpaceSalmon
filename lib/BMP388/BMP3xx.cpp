@@ -278,6 +278,11 @@ static int8_t spi_read(uint8_t cspin, uint8_t reg_addr, uint8_t *reg_data, uint1
 
   send[0] = reg_addr | 0x80;
 
+  spi_m_os_disable(BMP3xx_SPI);
+	spi_m_os_set_mode(BMP3xx_SPI, SPI_MODE_3);
+  spi_m_os_enable(BMP3xx_SPI);
+
+
   gpio_set_pin_level(cspin, false);
   spi_m_os_transfer(BMP3xx_SPI, send, recv, len+1);
   gpio_set_pin_level(cspin, true);
@@ -301,6 +306,11 @@ static int8_t spi_write(uint8_t cspin, uint8_t reg_addr, uint8_t *reg_data, uint
   memcpy(send + 1, reg_data, len);
 
   send[0] = reg_addr;
+
+  spi_m_os_disable(BMP3xx_SPI);
+	spi_m_os_set_mode(BMP3xx_SPI, SPI_MODE_3);
+  spi_m_os_enable(BMP3xx_SPI);
+
 
   gpio_set_pin_level(cspin, false);
   spi_m_os_transfer(BMP3xx_SPI, send, recv, len+1);

@@ -9,6 +9,7 @@
 #include "Squib.hpp"
 #include "Battery.hpp"
 #include "SquibTask.hpp"
+#include "SensorTask.hpp"
 
 int main(void)
 {
@@ -27,7 +28,14 @@ int main(void)
 	gpio_set_pin_level(LED3, false);
 	gpio_set_pin_level(LED4, false);
 
-	SquibTask Squib;
+	//SquibTask squib;
+
+	SensorTask sensor;
 
 	vTaskStartScheduler();
+}
+
+
+void HardFault_Handler(void){
+	assert(false,"fuck",1);
 }

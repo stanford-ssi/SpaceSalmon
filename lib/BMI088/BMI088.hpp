@@ -23,7 +23,7 @@
 
 extern "C"
 {
-#include <hal_spi_m_sync.h>
+#include <hal_spi_m_os.h>
 #include <hal_gpio.h>
 #include <math.h>
 #include <string.h>
@@ -77,7 +77,7 @@ public:
     ACTIVE_HIGH,
     ACTIVE_LOW
   };
-  BMI088(struct spi_m_sync_descriptor *bus, uint8_t accel_cs, uint8_t gyro_cs);
+  BMI088(struct spi_m_os_descriptor *bus, uint8_t accel_cs, uint8_t gyro_cs);
   int begin();
   bool setOdr(Odr odr);
   bool setRange(AccelRange accel_range, GyroRange gyro_range);

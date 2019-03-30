@@ -630,7 +630,7 @@ void BMI088::updateFeatureConfig(uint8_t addr, uint8_t count, const uint16_t *da
 }
 
 /* BMI088 object, input the SPI bus and chip select pin */
-BMI088::BMI088(spi_m_sync_descriptor *bus, uint8_t accel_cs, uint8_t gyro_cs)
+BMI088::BMI088(spi_m_os_descriptor *bus, uint8_t accel_cs, uint8_t gyro_cs)
 {
   accel = new BMI088Accel(bus,accel_cs);
   gyro = new BMI088Gyro(bus,gyro_cs);
