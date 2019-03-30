@@ -40,7 +40,8 @@ extern "C" {
 #include "hal_usb_device.h"
 
 extern struct adc_sync_descriptor   ADC_0;
-extern struct spi_m_sync_descriptor SPI_SENSOR;
+
+extern struct spi_m_os_descriptor SPI_SENSOR;
 
 extern struct usart_sync_descriptor USART_ESP;
 

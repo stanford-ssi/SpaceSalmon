@@ -21,7 +21,7 @@
 
 #include <hpl_adc_base.h>
 
-struct spi_m_sync_descriptor SPI_SENSOR;
+struct spi_m_os_descriptor SPI_SENSOR;
 
 struct adc_sync_descriptor ADC_0;
 
@@ -198,7 +198,13 @@ void SPI_SENSOR_CLOCK_init(void)
 void SPI_SENSOR_init(void)
 {
 	SPI_SENSOR_CLOCK_init();
-	spi_m_sync_init(&SPI_SENSOR, SERCOM0);
+		uint32_t irq = SERCOM0_0_IRQn;
+	for (uint32_t i = 0; i < 4; i++) {
+		NVIC_SetPriority((IRQn_Type)irq, PERIPHERAL_INTERRUPT_PRIORITY);
+		irq++;
+	}
+	spi_m_os_init(&SPI_SENSOR, SERCOM0);
+	spi_m_os_enable(&SPI_SENSOR);
 	SPI_SENSOR_PORT_init();
 }
 
