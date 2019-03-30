@@ -24,7 +24,7 @@
 extern "C"
 {
 #include "bmp3.h"
-#include <hal_spi_m_sync.h>
+#include <hal_spi_m_os.h>
 #include <hal_gpio.h>
 #include <math.h>
 #include <string.h>
@@ -50,7 +50,7 @@ class BMP3xx
   public:
     typedef bmp3_data Data;
 
-    BMP3xx(struct spi_m_sync_descriptor *spi, int8_t cspin);
+    BMP3xx(struct spi_m_os_descriptor *spi, int8_t cspin);
 
     bool  begin();
 

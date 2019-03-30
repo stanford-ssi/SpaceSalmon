@@ -2,7 +2,7 @@
 
 extern "C"
 {
-#include <hal_spi_m_sync.h>
+#include <hal_spi_m_os.h>
 #include <hal_gpio.h>
 #include <stdint.h>
 #include <string.h>
@@ -79,7 +79,7 @@ public:
     BW_1600HZ = 15
   };
 
-  ADXL375(struct spi_m_sync_descriptor *SPI, uint8_t CS_PIN);
+  ADXL375(struct spi_m_os_descriptor *SPI, uint8_t CS_PIN);
   void init();
   void startMeasuring();
   Data readSensor();
@@ -94,6 +94,6 @@ public:
 
 private:
   void _multiReadRegister(uint8_t regAddress, uint8_t values[], uint8_t numberOfBytes = 1);
-  struct spi_m_sync_descriptor *SPI;
+  struct spi_m_os_descriptor *SPI;
   uint8_t CS_PIN;
 };
