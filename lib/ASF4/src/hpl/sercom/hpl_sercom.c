@@ -164,6 +164,7 @@ static struct usart_configuration _usarts[] = {
 #endif
 
 static struct _spi_async_dev *_sercom3_dev = NULL;
+static struct _spi_async_dev *_sercom0_dev = NULL;
 
 static uint8_t _get_sercom_index(const void *const hw);
 static uint8_t _sercom_get_irq_num(const void *const hw);
@@ -594,6 +595,8 @@ static void _sercom_init_irq_param(const void *const hw, void *dev)
 
 	if (hw == SERCOM3) {
 		_sercom3_dev = (struct _spi_async_dev *)dev;
+	}else if (hw == SERCOM0) {
+		_sercom0_dev = (struct _spi_async_dev *)dev;
 	}
 }
 
@@ -2379,6 +2382,34 @@ static void _spi_handler(struct _spi_async_dev *dev)
 		hri_sercomspi_clear_INTFLAG_reg(hw, SERCOM_SPI_INTFLAG_ERROR);
 		dev->callbacks.err(dev, ERR_OVERFLOW);
 	}
+}
+/**
+ * \internal Sercom interrupt handler
+ */
+void SERCOM0_0_Handler(void)
+{
+	_spi_handler(_sercom0_dev);
+}
+/**
+ * \internal Sercom interrupt handler
+ */
+void SERCOM0_1_Handler(void)
+{
+	_spi_handler(_sercom0_dev);
+}
+/**
+ * \internal Sercom interrupt handler
+ */
+void SERCOM0_2_Handler(void)
+{
+	_spi_handler(_sercom0_dev);
+}
+/**
+ * \internal Sercom interrupt handler
+ */
+void SERCOM0_3_Handler(void)
+{
+	_spi_handler(_sercom0_dev);
 }
 
 /**
