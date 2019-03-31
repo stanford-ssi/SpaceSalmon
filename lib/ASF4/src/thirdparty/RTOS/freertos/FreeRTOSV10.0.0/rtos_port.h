@@ -49,7 +49,11 @@ extern "C" {
 /**
  * \brief Semaphore element type
  */
-typedef xSemaphoreHandle sem_t;
+typedef SemaphoreHandle_t sem_handle_t;
+
+typedef StaticSemaphore_t sem_buf_t;
+
+typedef sem_handle_t sem_t;
 
 /* sleep */
 #define os_sleep(tick) vTaskDelay(tick)

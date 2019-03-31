@@ -75,6 +75,12 @@ extern "C" {
 int32_t sem_init(sem_t *sem, uint32_t count);
 
 /**
+ * Initialize a new semaphore using provided static memory
+ * added by timv
+ */
+sem_handle_t sem_init_static(sem_buf_t *memory, uint32_t count);
+
+/**
  * \brief Semaphore up
  *
  * \param[in] sem The pointer to a sem_t instance

@@ -36,6 +36,16 @@
 /* Semaphore */
 
 /**
+ * \brief Semaphore initialization, now staticially allocated!
+ */
+sem_handle_t sem_init_static(sem_buf_t *memory, uint32_t count)
+{
+	ASSERT(count <= SEMAPHORE_MAX_COUNT);
+
+	return xSemaphoreCreateCountingStatic((uint32_t)SEMAPHORE_MAX_COUNT, count, memory);
+}
+
+/**
  * \brief Semaphore initialization
  */
 int32_t sem_init(sem_t *sem, uint32_t count)
@@ -50,7 +60,7 @@ int32_t sem_init(sem_t *sem, uint32_t count)
 /**
  * \brief Semaphore up
  */
-int32_t sem_up(sem_t *sem)
+int32_t sem_up(sem_handle_t *sem)
 {
 	return is_in_isr() ? (xSemaphoreGiveFromISR(*sem, pdFALSE) ? 0 : ERR_ABORTED)
 	                   : (xSemaphoreGive(*sem) ? ERR_NONE : ERR_ABORTED);
@@ -59,20 +69,15 @@ int32_t sem_up(sem_t *sem)
 /**
  * \brief Semaphore down, may suspend the caller thread
  */
-int32_t sem_down(sem_t *sem, uint32_t timeout)
+int32_t sem_down(sem_handle_t *sem, uint32_t timeout)
 {
 	return xSemaphoreTake(*sem, timeout) ? ERR_NONE : ERR_TIMEOUT;
 }
 
 /**
- * \brief Semaphore deinitialization
+ * \brief Semaphore deinitialization, not needed for static allocation
  */
-int32_t sem_deinit(sem_t *sem)
+int32_t sem_deinit(sem_handle_t *sem)
 {
-	if (*sem != NULL) {
-		vSemaphoreDelete(*sem);
-		*sem = NULL;
-	}
-
 	return ERR_NONE;
 }
