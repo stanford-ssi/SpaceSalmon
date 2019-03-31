@@ -1,13 +1,4 @@
 #include <atmel_start.h>
-#include "ADXL375.hpp"
-#include "BMI088.hpp"
-#include "ArduinoJson.h"
-#include "sdtester.c"
-#include "printf.h"
-#include "BMP3xx.hpp"
-#include "SPITest.hpp"
-#include "Squib.hpp"
-#include "Battery.hpp"
 #include "SquibTask.hpp"
 #include "SensorTask.hpp"
 

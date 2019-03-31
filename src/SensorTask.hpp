@@ -1,3 +1,5 @@
+#pragma once
+
 #include <FreeRTOS.h>
 #include <task.h>
 #include <semphr.h>
@@ -17,10 +19,14 @@
 class SensorTask
 {
 private:
-    TaskHandle_t taskHandle;
-    static void sensorActivity(void *p);
+    static const size_t stackSize = 1000;
+    static TaskHandle_t taskHandle;
+    static StaticTask_t xTaskBuffer;
+    static StackType_t xStack[stackSize];
+    static void activity(void *p);
 public:
     SensorTask();
     TaskHandle_t getTaskHandle();
 };
+
 

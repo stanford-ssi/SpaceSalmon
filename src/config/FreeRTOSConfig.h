@@ -44,6 +44,11 @@ void assert_triggered(const char *file, uint32_t line);
 #define configTOTAL_HEAP_SIZE ((size_t)(10000))
 #endif
 
+//static allocation is cool!
+#ifndef configSUPPORT_STATIC_ALLOCATION
+#define configSUPPORT_STATIC_ALLOCATION 1
+#endif
+
 // <q> Enable mutex
 // <id> freertos_use_mutexes
 #ifndef configUSE_MUTEXES

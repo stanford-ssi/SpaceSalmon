@@ -1,21 +1,27 @@
 #include "SensorTask.hpp"
 
+TaskHandle_t SensorTask::taskHandle = NULL;
+StaticTask_t SensorTask::xTaskBuffer;
+StackType_t SensorTask::xStack[stackSize];
+
 SensorTask::SensorTask()
 {
-    //TODO: xTaskCreateStatic()
-    if (xTaskCreate(sensorActivity, "Sensors", 1000, NULL, TASK_EXAMPLE_STACK_PRIORITY, &taskHandle) != pdPASS) {
-        printf_("Sensor Task Creation Failed!");
-	}
-    
+
+    //assert(xTaskCreate(activity, "Sensors", 1000, NULL, TASK_EXAMPLE_STACK_PRIORITY, &taskHandle) == pdPASS,__FILE__,__LINE__);
+    SensorTask::taskHandle = xTaskCreateStatic(activity,//static function to run
+                                "Sensors",  //task name
+                                stackSize,  //stack depth (words!)
+                                NULL,       //parameters
+                                1,          //priority
+                                SensorTask::xStack,     //stack object
+                                &SensorTask::xTaskBuffer);//TCB object*/
 }
 
 TaskHandle_t SensorTask::getTaskHandle(){
     return taskHandle;
 }
 
-void SensorTask::sensorActivity(void * ptr){
-
-    bool rc;
+void SensorTask::activity(void * ptr){
     
     ADXL375 adxl375(&SPI_SENSOR, ADXL_CS_1);
     adxl375.init();
@@ -39,41 +45,17 @@ void SensorTask::sensorActivity(void * ptr){
     while(true){
         vTaskDelay(100);
 
-        assert(uxTaskGetStackHighWaterMark(NULL),"kek",1);   
+        //assert(uxTaskGetStackHighWaterMark(NULL) > 10,"Out of Stack!",1);   
 
-         accelHigh = adxl375.readSensor();
-         pressure = bmp388.readSensor();
-         accel = bmi088accel.readSensor();
-         gyro = bmi088gyro.readSensor();
+        accelHigh = adxl375.readSensor();
+        pressure = bmp388.readSensor();
+        accel = bmi088accel.readSensor();
+        gyro = bmi088gyro.readSensor();
 
         printf_(" High:{%f %f %f} ", accelHigh.x, accelHigh.y, accelHigh.z);
         printf_(" Pres:{%f %f} ", pressure.pressure, pressure.temperature);
         printf_(" Gyro:{%f %f %f} ", gyro.x, gyro.y, gyro.z);
         printf_(" Accel:{%f %f %f %lu} \n", accel.x, accel.y, accel.z, accel.time);
-        
-
-
-        /*rc = testADXLSpi();
-        rc = testBMPSpi();
-        rc = testBMIAccelSpi();
-        rc = testBMIGyroSpi();*/
-
-        (void)rc;
-
-        /*DynamicJsonDocument doc(1024);
-
-        JsonObject adxl375_json = doc.createNestedObject("ADXL375");
-		adxl375_json["x"] = accelHigh.x;
-		adxl375_json["y"] = accelHigh.y;
-        adxl375_json["z"] = accelHigh.z;
-
-	    JsonObject bmp388_json = doc.createNestedObject("BMP388");
-		bmp388_json["pres"] = pressure.pressure;
-        bmp388_json["temp"] = pressure.temperature;
-
-        char string[1000];
-		serializeJson(doc,string,sizeof(string));*/
-
         
     }
 }
