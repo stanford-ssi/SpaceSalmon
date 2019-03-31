@@ -220,7 +220,7 @@ int32_t spi_m_os_init(struct spi_m_os_descriptor *const spi, void *const hw)
 	spi->io.read  = spi_m_os_io_read;
 	spi->io.write = spi_m_os_io_write;
 
-	sem_init(&spi->xfer_sem, 0);
+	spi->xfer_sem = sem_init_static(&spi->sem_buffer,0);
 
 	return ERR_NONE;
 }

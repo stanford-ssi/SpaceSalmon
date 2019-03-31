@@ -57,7 +57,8 @@ struct spi_m_os_descriptor {
 	struct _spi_m_async_hpl_interface *func;
 	struct _spi_m_async_dev            dev;      /** Pointer to SPI device instance */
 	struct io_descriptor               io;       /** I/O read/write */
-	sem_t                              xfer_sem; /** SPI semphore */
+	sem_buf_t						   sem_buffer;
+	sem_t 			                   xfer_sem; /** SPI semphore */
 	struct spi_xfer                    xfer;     /** Transfer information copy, for R/W/Transfer */
 	uint32_t                           xfercnt;  /** Character count in current transfer */
 	uint32_t                           error;    /** SPI complete status, 0:no error*/
