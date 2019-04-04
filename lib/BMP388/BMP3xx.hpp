@@ -29,6 +29,7 @@ extern "C"
 #include <math.h>
 #include <string.h>
 #include <hal_delay.h>
+#include "printf.h"
 }
 
 

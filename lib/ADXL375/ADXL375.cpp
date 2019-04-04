@@ -115,10 +115,13 @@ void ADXL375::_multiReadRegister(uint8_t regAddress, uint8_t values[], uint8_t n
   spi_m_os_disable(SPI);
 	spi_m_os_set_mode(SPI, SPI_MODE_3);
   spi_m_os_enable(SPI);
+  //printf_("SEND: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x\n", send[0], send[1], send[2], send[3], send[4], send[5], send[6]);
 
   gpio_set_pin_level(CS_PIN, false);
   spi_m_os_transfer(SPI, send, recv, numberOfBytes+1);
   gpio_set_pin_level(CS_PIN, true);
+
+  //printf_("RECV: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x\n", recv[0], recv[1], recv[2], recv[3], recv[4], recv[5], recv[6]);
 
   memcpy(values, recv + 1, numberOfBytes);
 }

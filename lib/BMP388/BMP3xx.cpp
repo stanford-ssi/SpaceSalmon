@@ -68,7 +68,7 @@ bool BMP3xx::begin() {
   the_sensor.intf = BMP3_SPI_INTF;
   the_sensor.read = &spi_read;
   the_sensor.write = &spi_write;
-  the_sensor.delay_ms = delay_msec;
+  the_sensor.delay_ms = &delay_msec;
 
   int8_t rslt = BMP3_OK;
   rslt = bmp3_init(&the_sensor);
@@ -158,8 +158,10 @@ BMP3xx::Data BMP3xx::readSensor(void) {
   Serial.println("Setting sensor settings");
 #endif
   rslt = bmp3_set_sensor_settings(settings_sel, &the_sensor);
-  if (rslt != BMP3_OK)
+  if (rslt != BMP3_OK){
     return data;
+    printf_("fuck");
+  }
 
   /* Set the power mode */
   the_sensor.settings.op_mode = BMP3_FORCED_MODE;
@@ -167,8 +169,11 @@ BMP3xx::Data BMP3xx::readSensor(void) {
   Serial.println("Setting power mode");
 #endif
   rslt = bmp3_set_op_mode(&the_sensor);
-  if (rslt != BMP3_OK)
+  if (rslt != BMP3_OK){
     return data;
+    printf_("shit");
+  }
+    
 
   /* Temperature and Pressure data are read and stored in the bmp3_data instance */
   rslt = bmp3_get_sensor_data(sensor_comp, &data, &the_sensor);
@@ -176,7 +181,7 @@ BMP3xx::Data BMP3xx::readSensor(void) {
   /* Save the temperature and pressure data */
 
   if (rslt != BMP3_OK)
-    return data;
+    printf_("damn");
 
   return data;
 }

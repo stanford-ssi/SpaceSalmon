@@ -34,8 +34,11 @@
 #include "hal_atomic.h"
 #include "hal_spi_m_os.h"
 #include <utils_assert.h>
-
+#include "hal_gpio.h"
 #include <utils.h>
+#include "printf.h"
+
+#define BMP_CS_1 GPIO(GPIO_PORTB, 7)
 
 /**
  * \brief RTOS Driver version
@@ -43,7 +46,7 @@
 #define SPI_M_OS_DRIVER_VERSION 0x00000001u
 
 /** \brief Do SPI read in background (RTOS version)
- *  For SPI master, register the buffer, do activate CS and send 0xFFs to get
+ *  For SPI master, register the buffer, do activate CS and txbuf 0xFFs to get
  *  data, then deactivate CS in background.
  *
  *  It blocks task/thread until transfer done. user check the retval to
@@ -81,7 +84,7 @@ static int32_t spi_m_os_io_read(struct io_descriptor *io, uint8_t *const buf, co
 }
 
 /** \brief Do SPI data write in background (RTOS)
- *  For SPI master, register buffer, do activate CS, buffer send and
+ *  For SPI master, register buffer, do activate CS, buffer txbuf and
  *  deactivate CS in background.
  *
  *  The data read back is discarded.
@@ -147,27 +150,28 @@ static void spi_m_os_rx(struct _spi_m_async_dev *dev)
 {
 	struct spi_m_os_descriptor *spi = CONTAINER_OF(dev, struct spi_m_os_descriptor, dev);
 
-	if (!(dev->char_size > 1)) {
+	//if (!(dev->char_size > 1)) {
 		/* 8-bit or less */
 		spi->xfer.rxbuf[spi->xfercnt++] = (uint8_t)_spi_m_async_read_one(dev);
-	} else {
+	//} else {
 		/* 9-bit or more */
-		((uint16_t *)spi->xfer.rxbuf)[spi->xfercnt++] = (uint16_t)_spi_m_async_read_one(dev);
-	}
+		//((uint16_t *)spi->xfer.rxbuf)[spi->xfercnt++] = (uint16_t)_spi_m_async_read_one(dev);
+	//}
 
 	if (spi->xfercnt < spi->xfer.size) {
 		if (spi->xfer.txbuf) {
-			if (dev->char_size == SPI_CHAR_SIZE_8) {
+			//if (dev->char_size == SPI_CHAR_SIZE_8) {
 				_spi_m_async_write_one(dev, spi->xfer.txbuf[spi->xfercnt]);
-			} else {
-				_spi_m_async_write_one(dev, ((uint16_t *)spi->xfer.txbuf)[spi->xfercnt]);
-			}
+			//} else {
+				//_spi_m_async_write_one(dev, ((uint16_t *)spi->xfer.txbuf)[spi->xfercnt]);
+			//}
 		} else {
 			_spi_m_async_write_one(dev, dev->dummy_byte);
 		}
 	} else {
 		_spi_m_async_enable_rx(dev, false);
 		sem_up(&spi->xfer_sem);
+		portYIELD_FROM_ISR(pdTRUE)
 	}
 }
 
@@ -321,12 +325,16 @@ int32_t spi_m_os_transfer(struct spi_m_os_descriptor *const spi, uint8_t const *
 	spi->xfer.txbuf = (uint8_t *)txbuf;
 	spi->xfer.size  = length;
 	spi->xfercnt    = 0;
+	//printf_("char_size: %u\n", spi->dev.char_size);
+	//printf_("len:%u\n", length);
+	//printf_("SEND: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x\n", txbuf[0], txbuf[1], txbuf[2], txbuf[3], txbuf[4], txbuf[5], txbuf[6]);
 	_spi_m_async_enable_rx(&spi->dev, true);
 	_spi_m_async_write_one(&spi->dev, txbuf[spi->xfercnt]);
 
 	if (0 != sem_down(&spi->xfer_sem, ~0)) {
 		return ERR_TIMEOUT;
 	}
+	//printf_("SENDPOST: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x\n", txbuf[0], txbuf[1], txbuf[2], txbuf[3], txbuf[4], txbuf[5], txbuf[6]);
 
 	return ERR_NONE;
 }

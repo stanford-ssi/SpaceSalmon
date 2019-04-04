@@ -44,6 +44,7 @@
 #include <hpl_usart_sync.h>
 #include <utils.h>
 #include <utils_assert.h>
+#include "printf.h"
 
 #ifndef CONF_SERCOM_0_USART_ENABLE
 #define CONF_SERCOM_0_USART_ENABLE 0

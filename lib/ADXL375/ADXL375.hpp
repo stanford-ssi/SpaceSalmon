@@ -6,6 +6,7 @@ extern "C"
 #include <hal_gpio.h>
 #include <stdint.h>
 #include <string.h>
+#include <printf.h>
 }
 
 #define ADXL375_REG_DEVID 0x00            // Device ID
