@@ -29,15 +29,15 @@ TaskHandle_t SensorTask::getTaskHandle()
 void SensorTask::activity(void *ptr)
 {
 
-    //ADXL375 adxl375(&SPI_SENSOR, ADXL_CS_1);
-    //adxl375.init();
-    //adxl375.startMeasuring();
+    ADXL375 adxl375(&SPI_SENSOR, ADXL_CS_1);
+    adxl375.init();
+    adxl375.startMeasuring();
 
     BMP3xx bmp388(&SPI_SENSOR, BMP_CS_1);
     bmp388.begin();
 
-    //BMI088Accel bmi088accel(&SPI_SENSOR, ACCEL_CS_1);
-    //bmi088accel.begin();
+    BMI088Accel bmi088accel(&SPI_SENSOR, ACCEL_CS_1);
+    bmi088accel.begin();
 
     BMI088Gyro bmi088gyro(&SPI_SENSOR, GYRO_CS_1);
     bmi088gyro.begin();
@@ -53,14 +53,14 @@ void SensorTask::activity(void *ptr)
 
         assert(uxTaskGetStackHighWaterMark(NULL) > 10,"Out of Stack!",1);
 
-        //accelHigh = adxl375.readSensor();
-        //vTaskDelay(100);
+        accelHigh = adxl375.readSensor();
+        vTaskDelay(10);
         pressure = bmp388.readSensor();
         vTaskDelay(10);
-        //accel = bmi088accel.readSensor();
-        //vTaskDelay(100);
+        accel = bmi088accel.readSensor();
+        vTaskDelay(10);
         gyro = bmi088gyro.readSensor();
-        //vTaskDelay(100);
+        vTaskDelay(10);
 
         printf_(" High:{%f %f %f} ", accelHigh.x, accelHigh.y, accelHigh.z);
         printf_(" Pres:{%f %f} ", pressure.pressure, pressure.temperature);

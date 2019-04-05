@@ -126,12 +126,8 @@ static int32_t spi_m_os_io_write(struct io_descriptor *io, const uint8_t *const 
 static void spi_m_os_tx(struct _spi_m_async_dev *dev)
 {
 	struct spi_m_os_descriptor *spi = CONTAINER_OF(dev, struct spi_m_os_descriptor, dev);
-
-	if (!(dev->char_size > 1)) {
-		_spi_m_async_write_one(dev, spi->xfer.txbuf[spi->xfercnt++]);
-	} else {
-		_spi_m_async_write_one(dev, ((uint16_t *)spi->xfer.txbuf)[spi->xfercnt++]);
-	}
+	
+	_spi_m_async_write_one(dev, spi->xfer.txbuf[spi->xfercnt++]);
 
 	if (spi->xfercnt >= spi->xfer.size) {
 		_spi_m_async_enable_tx(dev, false);
@@ -147,27 +143,18 @@ static void spi_m_os_rx(struct _spi_m_async_dev *dev)
 {
 	struct spi_m_os_descriptor *spi = CONTAINER_OF(dev, struct spi_m_os_descriptor, dev);
 
-	if (!(dev->char_size > 1)) {
-		/* 8-bit or less */
-		spi->xfer.rxbuf[spi->xfercnt++] = (uint8_t)_spi_m_async_read_one(dev);
-	} else {
-		/* 9-bit or more */
-		((uint16_t *)spi->xfer.rxbuf)[spi->xfercnt++] = (uint16_t)_spi_m_async_read_one(dev);
-	}
+	spi->xfer.rxbuf[spi->xfercnt++] = (uint8_t)_spi_m_async_read_one(dev);
 
 	if (spi->xfercnt < spi->xfer.size) {
 		if (spi->xfer.txbuf) {
-			if (dev->char_size == SPI_CHAR_SIZE_8) {
-				_spi_m_async_write_one(dev, spi->xfer.txbuf[spi->xfercnt]);
-			} else {
-				_spi_m_async_write_one(dev, ((uint16_t *)spi->xfer.txbuf)[spi->xfercnt]);
-			}
+			_spi_m_async_write_one(dev, spi->xfer.txbuf[spi->xfercnt]);
 		} else {
 			_spi_m_async_write_one(dev, dev->dummy_byte);
 		}
 	} else {
 		_spi_m_async_enable_rx(dev, false);
 		sem_up(&spi->xfer_sem);
+		portYIELD_FROM_ISR(pdTRUE)
 	}
 }
 

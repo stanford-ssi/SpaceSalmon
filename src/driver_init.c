@@ -205,6 +205,7 @@ void SPI_SENSOR_init(void)
 	}
 	spi_m_os_init(&SPI_SENSOR, SERCOM0);
 	spi_m_os_enable(&SPI_SENSOR);
+	spi_m_os_set_char_size(&SPI_SENSOR,SPI_CHAR_SIZE_8);
 	SPI_SENSOR_PORT_init();
 }
 
