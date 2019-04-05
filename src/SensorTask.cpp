@@ -35,7 +35,6 @@ void SensorTask::activity(void *ptr)
     adxl375.init();
     adxl375.startMeasuring();    
 
-/*
     BMP3xx bmp388(&SPI_SENSOR, BMP_CS_1);
     bmp388.begin();
 
@@ -43,7 +42,7 @@ void SensorTask::activity(void *ptr)
     bmi088accel.begin();
 
     BMI088Gyro bmi088gyro(&SPI_SENSOR, GYRO_CS_1);
-    bmi088gyro.begin();*/
+    bmi088gyro.begin();
 
     ADXL375::Data accelHigh;
     BMP3xx::Data pressure;
@@ -58,22 +57,10 @@ void SensorTask::activity(void *ptr)
 
         assert(uxTaskGetStackHighWaterMark(NULL) > 10,"Out of Stack!",1);
 
-        /*count++;
-        if(count >= 100){//this seems to be needed, beacuse for some reason preasure sensor needs to be reset in a weird way until it works.
-            count = 0;
-            adxl375.init();
-            adxl375.startMeasuring();
-            printf_("reset\n");
-        }*/
         accelHigh = adxl375.readSensor();
-
-        /*vTaskDelay(2);
         pressure = bmp388.readSensor();
-        vTaskDelay(2);
         accel = bmi088accel.readSensor();
-        vTaskDelay(2);
         gyro = bmi088gyro.readSensor();
-        vTaskDelay(2);*/
 
         printf_("High:{%f %f %f} ", accelHigh.x, accelHigh.y, accelHigh.z);
         printf_(" Pres:{%f %f} ", pressure.pressure, pressure.temperature);
