@@ -19,11 +19,13 @@ int main(void)
 	gpio_set_pin_level(LED3, false);
 	gpio_set_pin_level(LED4, false);
 
+	
+	
 	//SquibTask squib;
 
-	SensorTask sensor;
+	//SensorTask sensor;
 
-	vTaskStartScheduler();
+	//vTaskStartScheduler();
 }
 
 
