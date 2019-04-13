@@ -29,13 +29,7 @@
  */
 DWORD get_fattime(void)
 {
-	uint32_t                  ul_time;
-	struct calendar_date_time datetime;
-	calendar_get_date_time(&CALENDER_INTERFACE, &datetime);
-
-	ul_time = ((datetime.date.year - 1980) << 25) | (datetime.date.month << 21) | (datetime.date.day << 16)
-	          | (datetime.time.hour << 11) | (datetime.time.min << 5) | (datetime.time.sec << 0);
-	return ul_time;
+	return 0;
 }
 
 void fatfs_app_init(void)

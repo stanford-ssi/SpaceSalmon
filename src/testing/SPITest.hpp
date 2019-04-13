@@ -1,8 +1,9 @@
-#include <atmel_start.h>
+#include <support/atmel_start_pins.h>
 #include "stdint.h"
-#include "hal_spi_m_sync.h"
+#include "hal_spi_m_os.h"
 #include "hal_gpio.h"
 #include "printf.h"
+#include <support/driver_init.h>
 
 bool testBMIGyroSpi();
 bool testBMIAccelSpi();

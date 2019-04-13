@@ -4,9 +4,9 @@
 #include <task.h>
 #include <semphr.h>
 #include <hal_rtos.h>
-#include "driver_init.h"
+#include "support/driver_init.h"
 #include "printf.h"
-#include "atmel_start_pins.h"
+#include "support/atmel_start_pins.h"
 #include "ADXL375.hpp"
 #include "BMP3xx.hpp"
 #include "BMI088.hpp"

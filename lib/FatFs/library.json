@@ -1,0 +1,10 @@
+{
+    "name": "FatFs",
+    "build":{
+        "flags":
+        [
+            "-Isource"
+        ],
+        "libArchive": false
+    }
+}

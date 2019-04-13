@@ -1,10 +1,11 @@
-#include <atmel_start.h>
+#include "support/atmel_start.h"
 #include "SquibTask.hpp"
 #include "SensorTask.hpp"
 
+/*
 int main(void)
 {
-	/* Initializes MCU, drivers and middleware */
+	//Initializes MCU, drivers and middleware
 	atmel_start_init();
 
 	gpio_set_pin_level(LED1, true);
@@ -26,7 +27,7 @@ int main(void)
 	//SensorTask sensor;
 
 	//vTaskStartScheduler();
-}
+}*/
 
 
 void HardFault_Handler(void){

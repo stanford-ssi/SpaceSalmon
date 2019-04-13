@@ -8,7 +8,7 @@
 #ifndef DISKIO_START_H
 #define DISKIO_START_H
 
-#include <atmel_start.h>
+#include "atmel_start.h"
 
 #ifdef __cplusplus
 extern "C" {

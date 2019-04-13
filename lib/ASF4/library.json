@@ -19,6 +19,7 @@
             "-Isrc/usb/class/cdc",
             "-Isrc/usb/class/cdc/device",
             "-Isrc/sd_mmc",
+            "-Isrc/diskio",
             "-Isrc/thirdparty/RTOS",
             "-Isrc/thirdparty/RTOS/freertos",
             "-Isrc/thirdparty/RTOS/freertos/FreeRTOSV10.0.0",
