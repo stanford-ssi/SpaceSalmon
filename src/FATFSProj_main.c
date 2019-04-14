@@ -40,7 +40,7 @@
 #define TEST_SIZE (4 * 1024)
 
 /** Uncomment the macro to Format card and do testing*/
-#define FORMAT_CARD
+//	#define FORMAT_CARD
 
 /* Read/write buffer */
 static uint8_t data_buffer[DATA_SIZE];
@@ -160,53 +160,53 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 #if _FS_READONLY == 0
 	/* Format disk */
 	printf("-I- Format disk %d\n\r", (int)disk_dev_num);
-	printf("-I- Please wait a moment during formatting...\r");
+	printf("-I- Please wait a moment during formatting...\n\r");
 	res = f_mkfs(disk_str_num, /* Drv */
 	             0,            /* FDISK partition */
 	             512);         /* AllocSize */
-	printf("-I- Disk format finished !\r");
+	printf("-I- Disk format finished !\n\r");
 	if (res != FR_OK) {
 		printf("-E- f_mkfs pb: 0x%X\n\r", res);
 		return 0;
 	}
 #else
-	printf("-I- Please run Full version FAT FS test first\r");
+	printf("-I- Please run Full version FAT FS test first\n\r");
 	return 0;
 #endif
 #endif
 
 	/*Create a directory*/
-	printf("-I- Creating test directory !\r");
+	printf("-I- Creating test directory !\n\r");
 	res = f_mkdir(test_folder_name);
-	if (res != FR_OK) {
+	if (res != FR_OK && res != FR_EXIST) {
 		printf("-E- f_mkdir pb: 0x%X\n\r", res);
 		return 0;
 	}
 
 	/*Opening the directory*/
-	printf("-I- Opening directory !\r");
+	printf("-I- Opening directory !\n\r");
 	res = f_opendir(&dirs, test_folder_location);
 	if (res == FR_OK) {
 		/* Erase sd card to reformat it ? */
-		printf("-I- The disk is already formatted.\r");
+		printf("-I- The disk is already formatted.\n\r");
 
 		/* Display the file tree */
-		printf("-I- Display files contained in the memory :\r");
+		printf("-I- Display files contained in the memory :\n\r");
 		strcpy((char *)data_buffer, test_folder_location);
 		scan_files((char *)data_buffer);
 	}
 
 	/*Changing  the directory*/
-	printf("-I- Changing to test directory !\r");
+	printf("-I- Changing to test directory !\n\r");
 	res = f_chdir(test_folder_location);
-	printf("-I- Changed to directory\r");
+	printf("-I- Changed to directory\n\r");
 	if (res != FR_OK) {
 		printf("-E- f_chdir pb: 0x%X\n\r", res);
 		return 0;
 	}
 
 	/*Get the current working directory*/
-	printf("-I- Getting current working directory !\r");
+	printf("-I- Getting current working directory !\n\r");
 	res = f_getcwd(get_test_folder, 8);
 	if (res != FR_OK) {
 		printf("-E- getcwd not working\n\r");
@@ -235,7 +235,7 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 			data_buffer[i] = (i & 0xAA);
 		}
 	}
-	printf("-I- Write file\r");
+	printf("-I- Write file\n\r");
 	for (i = 0; i < TEST_SIZE; i += DATA_SIZE) {
 		res = f_write(&file_object, data_buffer, DATA_SIZE, &byte_written);
 
@@ -246,14 +246,14 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 	}
 
 	/* Flush after writing */
-	printf("-I- Synching file\r");
+	printf("-I- Synching file\n\r");
 	res = f_sync(&file_object);
 	if (res != FR_OK) {
 		printf("-E- f_sync pb: 0x%X\n\r", res);
 		return 0;
 	}
 	/* Close the file */
-	printf("-I- Close file\r");
+	printf("-I- Close file\n\r");
 	res = f_close(&file_object);
 	if (res != FR_OK) {
 		printf("-E- f_close pb: 0x%X\n\r", res);
@@ -269,7 +269,7 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 	}
 
 	/* Read file */
-	printf("-I- Read file\r");
+	printf("-I- Read file\n\r");
 	memset(data_buffer, 0, DATA_SIZE);
 	byte_to_read = file_object.fsize;
 
@@ -282,7 +282,7 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 	}
 
 	/* Close the file*/
-	printf("-I- Close file\r");
+	printf("-I- Close file\n\r");
 	res = f_close(&file_object);
 	if (res != FR_OK) {
 		printf("-E- f_close pb: 0x%X\n\r", res);
@@ -298,11 +298,11 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 			       (unsigned int)data_buffer[i]);
 		}
 	}
-	printf("-I- File data Ok !\r");
+	printf("-I- File data Ok !\n\r");
 
 #if _FS_READONLY == 0
 	/*Rename the file*/
-	printf("-I- Rename file\r");
+	printf("-I- Rename file\n\r");
 	res = f_rename(file_name, "Renam.bin");
 	if (res != FR_OK) {
 		printf("-E- f_rename pb: 0x%X\n\r", res);
@@ -311,7 +311,7 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 
 	memset(data_buffer, 0, DATA_SIZE);
 	/* Display the file tree */
-	printf("-I- Display files contained in the memory after renaming :\r");
+	printf("-I- Display files contained in the memory after renaming :\n\r");
 	strcpy((char *)data_buffer, test_folder_location);
 	scan_files((char *)data_buffer);
 
@@ -319,7 +319,7 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 	sprintf(file_name, "%s/Renam.bin", test_folder_location);
 
 	/*Change the mode of the file to hidden*/
-	printf("-I- Change file mode\r");
+	printf("-I- Change file mode\n\r");
 	res = f_chmod(file_name, AM_HID, 0);
 	if (res != FR_OK) {
 		printf("-E- f_chmod pb: 0x%X\n\r", res);
@@ -328,7 +328,7 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 
 	memset(data_buffer, 0, DATA_SIZE);
 	/* Display the file tree */
-	printf("-I- Display files contained in the memory after hiding :\r");
+	printf("-I- Display files contained in the memory after hiding :\n\r");
 	strcpy((char *)data_buffer, test_folder_location);
 	scan_files((char *)data_buffer);
 
@@ -348,14 +348,14 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 
 #if _USE_LABEL == 1
 	/*Setting the drive label to ACME*/
-	printf("-I- Setting label Name\r");
+	printf("-I- Setting label Name\n\r");
 	res = f_setlabel((const char *)"ACME");
 	if (res != FR_OK) {
 		printf("-E- f_setlabel pb: 0x%X\n\r", res);
 		return 0;
 	}
 	/*Getting the drive label*/
-	printf("-I- Getting label Name\r");
+	printf("-I- Getting label Name\n\r");
 	res = f_getlabel(file_name, &label_name, 0);
 	if (res != FR_OK) {
 		printf("-E- f_getlabel pb: 0x%X\n\r", res);
@@ -365,7 +365,7 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 		printf("-E- f_getlabel/f_setlabel not working pb: 0x%X\n\r", res);
 	}
 #endif
-	printf("-I- Delete file\r");
+	printf("-I- Delete file\n\r");
 	res = f_unlink(file_name);
 	if (res != FR_OK) {
 		printf("-E- f_unlink pb: 0x%X\n\r", res);
@@ -373,7 +373,7 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 	}
 	memset(data_buffer, 0, DATA_SIZE);
 	/* Display the file tree */
-	printf("-I- Display files contained in the memory after deleting :\r");
+	printf("-I- Display files contained in the memory after deleting :\n\r");
 	strcpy((char *)data_buffer, test_folder_location);
 	scan_files((char *)data_buffer);
 #endif
@@ -390,22 +390,38 @@ int main(void)
 {
 	atmel_start_init();
 
-	for(uint32_t i=0; i<1000000000; i++){
-		printf_("1");
+	gpio_set_pin_level(LED1, true);
+	gpio_set_pin_level(LED2, true);
+	gpio_set_pin_level(LED3, true);
+	gpio_set_pin_level(LED4, true);
+
+	delay_ms(2000);
+
+	gpio_set_pin_level(LED1, false);
+	gpio_set_pin_level(LED2, false);
+	gpio_set_pin_level(LED3, false);
+	gpio_set_pin_level(LED4, false);
+
+	printf_("1\n");
+	printf_("test\n");
+
+
+	while(true){
+		delay_ms(2000);
+		if (run_fatfs_test(0)) {
+			printf("-I- DISK 0 Test passed !\n\r\n\r");
+		} else {
+			printf("-F- DISK 0 Test Failed !\n\r\n\r");
+		}
 	}
+
+
+	static FATFS fs;
+	static FIL   file_object;
+	f_mount(&fs, "", 1);
+	f_open(&file_object, "0:/log.txt", FA_CREATE_ALWAYS | FA_READ | FA_WRITE);
+
+
 	
-	printf_("1");
-
-	for(uint32_t i=0; i<100000; i++){}
-
-	printf("test");
-
-	if (run_fatfs_test(0)) {
-		printf("-I- DISK 0 Test passed !\n\r\n\r");
-	} else {
-		printf("-F- DISK 0 Test Failed !\n\r\n\r");
-	}
-	while (1)
-		;
 	return 0;
 }
