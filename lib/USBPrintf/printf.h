@@ -34,6 +34,7 @@
 
 #include <stdarg.h>
 #include <stddef.h>
+#include "USBPrintf.h"
 
 
 #ifdef __cplusplus
