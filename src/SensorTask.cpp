@@ -68,7 +68,7 @@ void SensorTask::activity(void *ptr)
         used += snprintf_(str+used, sizeof(str)-used," Pres:{%f %f} ", pressure.pressure, pressure.temperature);
         used += snprintf_(str+used, sizeof(str)-used," Gyro:{%f %f %f} ", gyro.x, gyro.y, gyro.z);
         used += snprintf_(str+used, sizeof(str)-used," Accel:{%f %f %f %lu} ", accel.x, accel.y, accel.z, accel.time);
-        used += snprintf_(str+used, sizeof(str)-used," Stack: %u ", uxTaskGetStackHighWaterMark(NULL));
+        used += snprintf_(str+used, sizeof(str)-used," Stack: %lu ", uxTaskGetStackHighWaterMark(NULL));
     
         Globals::logger.log(str);
     }

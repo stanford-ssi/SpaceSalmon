@@ -58,6 +58,7 @@ extern "C" {
  */
 #define SEMAPHORE_MAX_COUNT 1
 
+#if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
 /**
  * \brief Semaphore initialization
  * it used as count Semaphore, The max count
@@ -73,6 +74,7 @@ extern "C" {
  * return <0 for ERR
  */
 int32_t sem_init(sem_t *sem, uint32_t count);
+#endif
 
 /**
  * Initialize a new semaphore using provided static memory

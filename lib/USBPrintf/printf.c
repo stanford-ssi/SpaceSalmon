@@ -126,7 +126,7 @@ static inline void _out_char(char character, void* buffer, size_t idx, size_t ma
   (void)buffer; (void)idx; (void)maxlen;
   if (character) {
     //_putchar(character);
-    write_byte(NULL,&character,1);
+    write_byte(0,&character,1);
   }
 }
 

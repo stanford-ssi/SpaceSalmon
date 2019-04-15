@@ -3,9 +3,9 @@
 SquibTask::SquibTask()
 {
     //TODO: xTaskCreateStatic()
-    if (xTaskCreate(activity, "Squib", 256, NULL, TASK_EXAMPLE_STACK_PRIORITY, &taskHandle) != pdPASS) {
+    /*if (xTaskCreate(activity, "Squib", 256, NULL, TASK_EXAMPLE_STACK_PRIORITY, &taskHandle) != pdPASS) {
         printf_("Sensor Task Creation Failed!");
-	}
+	}*/
     
 }
 

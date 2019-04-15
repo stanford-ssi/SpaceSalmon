@@ -49,6 +49,11 @@ void assert_triggered(const char *file, uint32_t line);
 #define configSUPPORT_STATIC_ALLOCATION 1
 #endif
 
+//dynamic allocation is not cool!
+#ifndef configSUPPORT_DYNAMIC_ALLOCATION
+#define configSUPPORT_DYNAMIC_ALLOCATION 0
+#endif
+
 // <q> Enable mutex
 // <id> freertos_use_mutexes
 #ifndef configUSE_MUTEXES

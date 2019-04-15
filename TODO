@@ -1,3 +1,5 @@
 -Test Bus Messaging
--add event timer to sensorTask
--add access interface to sensorTask
+-add event timer to sensorTask, to define timing
+-make battery/adc threaded
+-make squib threaded
+-fix assert warnings

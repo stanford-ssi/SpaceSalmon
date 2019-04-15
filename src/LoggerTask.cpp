@@ -41,6 +41,17 @@ void LoggerTask::activity(void *ptr)
 {
     FRESULT res;
 
+    printf("-I- Format disk %d\n\r", 0);
+	printf("-I- Please wait a moment during formatting...\n\r");
+	res = f_mkfs("0", /* Drv */
+				 0,			   /* FDISK partition */
+				 512);		   /* AllocSize */
+	printf("-I- Disk format finished !\n\r");
+	if (res != FR_OK)
+	{
+		printf("-E- f_mkfs pb: 0x%X\n\r", res);
+	}
+
     //Mount disk
 	printf("-I- Mount disk %d\n\r", 0);
 	//Clear file system object

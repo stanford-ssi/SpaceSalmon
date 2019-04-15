@@ -45,6 +45,7 @@ sem_handle_t sem_init_static(sem_buf_t *memory, uint32_t count)
 	return xSemaphoreCreateCountingStatic((uint32_t)SEMAPHORE_MAX_COUNT, count, memory);
 }
 
+#if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
 /**
  * \brief Semaphore initialization
  */
@@ -56,6 +57,7 @@ int32_t sem_init(sem_t *sem, uint32_t count)
 
 	return *sem ? ERR_NONE : ERR_NOT_INITIALIZED;
 }
+#endif
 
 /**
  * \brief Semaphore up

@@ -94,7 +94,7 @@ int32_t adc_os_init(struct adc_os_descriptor *const descr, void *const hw, uint8
 		return init_status;
 	}
 
-	init_status = sem_init(&descr->monitor_sem, 0);
+	init_status = sem_init(&descr->monitor_sem, 0); //TODO: make this static!
 	if (init_status < 0) {
 		_adc_async_deinit(device);
 		return init_status;
