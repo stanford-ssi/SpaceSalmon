@@ -67,5 +67,8 @@ void SensorTask::activity(void *ptr)
         printf_(" Gyro:{%f %f %f} ", gyro.x, gyro.y, gyro.z);
         printf_(" Accel:{%f %f %f %lu} ", accel.x, accel.y, accel.z, accel.time);
         printf_(" Stack: %u \n", uxTaskGetStackHighWaterMark(NULL));
+        char test[100];
+        snprintf_(test,sizeof(test)," Accel:{%f %f %f %lu} ", accel.x, accel.y, accel.z, accel.time);
+        Globals::logger.log(test);
     }
 }

@@ -424,7 +424,7 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 	return 1;
 }
 
-int main(void)
+/*int main(void)
 {
 	atmel_start_init();
 
@@ -447,9 +447,9 @@ int main(void)
 	static FATFS fs;
 	static FIL file_object;
 
-	/* Mount disk*/
+	//Mount disk
 	printf("-I- Mount disk %d\n\r", 0);
-	/* Clear file system object */
+	//Clear file system object
 	memset(&fs, 0, sizeof(FATFS));
 	res = f_mount(&fs, "", 1);
 	if (res != FR_OK)
@@ -483,4 +483,4 @@ int main(void)
 	}
 
 	return 0;
-}
+}*/

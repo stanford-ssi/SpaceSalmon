@@ -1,5 +1,7 @@
 #pragma once
 
+class SensorTask;
+
 #include <FreeRTOS.h>
 #include <task.h>
 #include <semphr.h>
@@ -10,6 +12,7 @@
 #include "ADXL375.hpp"
 #include "BMP3xx.hpp"
 #include "BMI088.hpp"
+#include "main.hpp"
 
 #define TASK_EXAMPLE_STACK_SIZE (128 / sizeof(portSTACK_TYPE))
 #define TASK_EXAMPLE_STACK_PRIORITY (tskIDLE_PRIORITY + 1)

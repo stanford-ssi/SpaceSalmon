@@ -1,8 +1,8 @@
-#include "support/atmel_start.h"
-#include "SquibTask.hpp"
-#include "SensorTask.hpp"
+#include "main.hpp"
 
-/*
+LoggerTask Globals::logger;
+SensorTask Globals::sensor;
+
 int main(void)
 {
 	//Initializes MCU, drivers and middleware
@@ -24,10 +24,10 @@ int main(void)
 	
 	//SquibTask squib;
 
-	//SensorTask sensor;
 
-	//vTaskStartScheduler();
-}*/
+
+	vTaskStartScheduler();
+}
 
 
 void HardFault_Handler(void){
