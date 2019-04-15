@@ -62,13 +62,14 @@ void SensorTask::activity(void *ptr)
         gyro = bmi088gyro.readSensor();
         vTaskDelay(10);
 
-        printf_(" High:{%f %f %f} ", accelHigh.x, accelHigh.y, accelHigh.z);
-        printf_(" Pres:{%f %f} ", pressure.pressure, pressure.temperature);
-        printf_(" Gyro:{%f %f %f} ", gyro.x, gyro.y, gyro.z);
-        printf_(" Accel:{%f %f %f %lu} ", accel.x, accel.y, accel.z, accel.time);
-        printf_(" Stack: %u \n", uxTaskGetStackHighWaterMark(NULL));
-        char test[100];
-        snprintf_(test,sizeof(test)," Accel:{%f %f %f %lu} ", accel.x, accel.y, accel.z, accel.time);
-        Globals::logger.log(test);
+        char str[250];
+        uint8_t used = 0;
+        used += snprintf_(str+used, sizeof(str)-used, " High:{%f %f %f} ", accelHigh.x, accelHigh.y, accelHigh.z);
+        used += snprintf_(str+used, sizeof(str)-used," Pres:{%f %f} ", pressure.pressure, pressure.temperature);
+        used += snprintf_(str+used, sizeof(str)-used," Gyro:{%f %f %f} ", gyro.x, gyro.y, gyro.z);
+        used += snprintf_(str+used, sizeof(str)-used," Accel:{%f %f %f %lu} ", accel.x, accel.y, accel.z, accel.time);
+        used += snprintf_(str+used, sizeof(str)-used," Stack: %u ", uxTaskGetStackHighWaterMark(NULL));
+    
+        Globals::logger.log(str);
     }
 }
