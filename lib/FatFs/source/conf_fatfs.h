@@ -37,7 +37,7 @@
 // <i> To enable string functions.
 // <id> strfunc_fs_enable
 #ifndef _USE_STRFUNC
-#   define _USE_STRFUNC 0x0
+#   define _USE_STRFUNC 0x1
 #endif
 
 // <q> f_mkfs Function Enable

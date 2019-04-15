@@ -56,9 +56,9 @@ static FRESULT scan_files(char *path)
 {
 	FRESULT res;
 	FILINFO fno;
-	DIR     dir;
+	DIR dir;
 	int32_t i;
-	char *  pc_fn;
+	char *pc_fn;
 #if _USE_LFN
 	char c_lfn[_MAX_LFN + 1];
 	fno.lfname = c_lfn;
@@ -67,11 +67,14 @@ static FRESULT scan_files(char *path)
 
 	/* Open the directory */
 	res = f_opendir(&dir, path);
-	if (res == FR_OK) {
+	if (res == FR_OK)
+	{
 		i = strlen(path);
-		for (;;) {
+		for (;;)
+		{
 			res = f_readdir(&dir, &fno);
-			if (res != FR_OK || fno.fname[0] == 0) {
+			if (res != FR_OK || fno.fname[0] == 0)
+			{
 				break;
 			}
 
@@ -80,20 +83,25 @@ static FRESULT scan_files(char *path)
 #else
 			pc_fn = fno.fname;
 #endif
-			if (*pc_fn == '.') {
+			if (*pc_fn == '.')
+			{
 				continue;
 			}
 
 			/* Check if it is a directory type */
-			if (fno.fattrib & AM_DIR) {
+			if (fno.fattrib & AM_DIR)
+			{
 				sprintf(&path[i], "/%s", pc_fn);
 				res = scan_files(path);
-				if (res != FR_OK) {
+				if (res != FR_OK)
+				{
 					break;
 				}
 
 				path[i] = 0;
-			} else {
+			}
+			else
+			{
 				printf("%s/%s\n\r", path, pc_fn);
 			}
 		}
@@ -112,15 +120,15 @@ static FRESULT scan_files(char *path)
 static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 {
 	uint32_t i;
-	UINT     byte_to_read;
-	UINT     byte_read;
+	UINT byte_to_read;
+	UINT byte_read;
 #if _FS_READONLY == 0
 	UINT byte_written;
 #endif
 
 	FRESULT res;
-	DIR     dirs;
-	TCHAR   root_directory[4];
+	DIR dirs;
+	TCHAR root_directory[4];
 	/* File name to be validated */
 	TCHAR file_name[18];
 
@@ -137,8 +145,8 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 	 * They each contain an array of maximum sector size.
 	 */
 	static FATFS fs;
-	static FIL   file_object;
-	char         disk_str_num[2];
+	static FIL file_object;
+	char disk_str_num[2];
 
 	sprintf(disk_str_num, "%d", disk_dev_num);
 	sprintf(test_folder_name, "%s", (const char *)"TEST");
@@ -151,7 +159,8 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 	/* Clear file system object */
 	memset(&fs, 0, sizeof(FATFS));
 	res = f_mount(&fs, "", 1);
-	if (res != FR_OK) {
+	if (res != FR_OK)
+	{
 		printf("-E- f_mount pb: 0x%X\n\r", res);
 		return 0;
 	}
@@ -162,10 +171,11 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 	printf("-I- Format disk %d\n\r", (int)disk_dev_num);
 	printf("-I- Please wait a moment during formatting...\n\r");
 	res = f_mkfs(disk_str_num, /* Drv */
-	             0,            /* FDISK partition */
-	             512);         /* AllocSize */
+				 0,			   /* FDISK partition */
+				 512);		   /* AllocSize */
 	printf("-I- Disk format finished !\n\r");
-	if (res != FR_OK) {
+	if (res != FR_OK)
+	{
 		printf("-E- f_mkfs pb: 0x%X\n\r", res);
 		return 0;
 	}
@@ -178,7 +188,8 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 	/*Create a directory*/
 	printf("-I- Creating test directory !\n\r");
 	res = f_mkdir(test_folder_name);
-	if (res != FR_OK && res != FR_EXIST) {
+	if (res != FR_OK && res != FR_EXIST)
+	{
 		printf("-E- f_mkdir pb: 0x%X\n\r", res);
 		return 0;
 	}
@@ -186,7 +197,8 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 	/*Opening the directory*/
 	printf("-I- Opening directory !\n\r");
 	res = f_opendir(&dirs, test_folder_location);
-	if (res == FR_OK) {
+	if (res == FR_OK)
+	{
 		/* Erase sd card to reformat it ? */
 		printf("-I- The disk is already formatted.\n\r");
 
@@ -200,7 +212,8 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 	printf("-I- Changing to test directory !\n\r");
 	res = f_chdir(test_folder_location);
 	printf("-I- Changed to directory\n\r");
-	if (res != FR_OK) {
+	if (res != FR_OK)
+	{
 		printf("-E- f_chdir pb: 0x%X\n\r", res);
 		return 0;
 	}
@@ -208,12 +221,14 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 	/*Get the current working directory*/
 	printf("-I- Getting current working directory !\n\r");
 	res = f_getcwd(get_test_folder, 8);
-	if (res != FR_OK) {
+	if (res != FR_OK)
+	{
 		printf("-E- getcwd not working\n\r");
 		return 0;
 	}
 	res = strcmp(test_folder_location, get_test_folder);
-	if (res != FR_OK) {
+	if (res != FR_OK)
+	{
 		printf("-E- Mismatch in f_getcwd and actual Folder name\n\r");
 		return 0;
 	}
@@ -222,24 +237,31 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 	/* Create a new file */
 	printf("-I- Create a file : \"%s\"\n\r", file_name);
 	res = f_open(&file_object, (char const *)file_name, FA_CREATE_ALWAYS | FA_READ | FA_WRITE);
-	if (res != FR_OK) {
+	if (res != FR_OK)
+	{
 		printf("-E- f_open create pb: 0x%X\n\r", res);
 		return 0;
 	}
 
 	/* Write a checkerboard pattern in the buffer */
-	for (i = 0; i < sizeof(data_buffer); i++) {
-		if ((i & 1) == 0) {
+	for (i = 0; i < sizeof(data_buffer); i++)
+	{
+		if ((i & 1) == 0)
+		{
 			data_buffer[i] = (i & 0x55);
-		} else {
+		}
+		else
+		{
 			data_buffer[i] = (i & 0xAA);
 		}
 	}
 	printf("-I- Write file\n\r");
-	for (i = 0; i < TEST_SIZE; i += DATA_SIZE) {
+	for (i = 0; i < TEST_SIZE; i += DATA_SIZE)
+	{
 		res = f_write(&file_object, data_buffer, DATA_SIZE, &byte_written);
 
-		if (res != FR_OK) {
+		if (res != FR_OK)
+		{
 			printf("-E- f_write pb: 0x%X\n\r", res);
 			return 0;
 		}
@@ -248,14 +270,16 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 	/* Flush after writing */
 	printf("-I- Synching file\n\r");
 	res = f_sync(&file_object);
-	if (res != FR_OK) {
+	if (res != FR_OK)
+	{
 		printf("-E- f_sync pb: 0x%X\n\r", res);
 		return 0;
 	}
 	/* Close the file */
 	printf("-I- Close file\n\r");
 	res = f_close(&file_object);
-	if (res != FR_OK) {
+	if (res != FR_OK)
+	{
 		printf("-E- f_close pb: 0x%X\n\r", res);
 		return 0;
 	}
@@ -263,7 +287,8 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 	/* Open the file */
 	printf("-I- Open the same file : \"%s\"\n\r", file_name);
 	res = f_open(&file_object, (char const *)file_name, FA_OPEN_EXISTING | FA_READ);
-	if (res != FR_OK) {
+	if (res != FR_OK)
+	{
 		printf("-E- f_open read pb: 0x%X\n\r", res);
 		return 0;
 	}
@@ -273,9 +298,11 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 	memset(data_buffer, 0, DATA_SIZE);
 	byte_to_read = file_object.fsize;
 
-	for (i = 0; i < byte_to_read; i += DATA_SIZE) {
+	for (i = 0; i < byte_to_read; i += DATA_SIZE)
+	{
 		res = f_read(&file_object, data_buffer, DATA_SIZE, &byte_read);
-		if (res != FR_OK) {
+		if (res != FR_OK)
+		{
 			printf("-E- f_read pb: 0x%X\n\r", res);
 			return 0;
 		}
@@ -284,18 +311,21 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 	/* Close the file*/
 	printf("-I- Close file\n\r");
 	res = f_close(&file_object);
-	if (res != FR_OK) {
+	if (res != FR_OK)
+	{
 		printf("-E- f_close pb: 0x%X\n\r", res);
 		return 0;
 	}
 
 	/* Compare the read data with the expected data */
-	for (i = 0; i < sizeof(data_buffer); i++) {
-		if (!((((i & 1) == 0) && (data_buffer[i] == (i & 0x55))) || (data_buffer[i] == (i & 0xAA)))) {
+	for (i = 0; i < sizeof(data_buffer); i++)
+	{
+		if (!((((i & 1) == 0) && (data_buffer[i] == (i & 0x55))) || (data_buffer[i] == (i & 0xAA))))
+		{
 			printf("Invalid data at data[%u] (expected 0x%02X, read 0x%02X)\n\r",
-			       (unsigned int)i,
-			       (unsigned int)(((i & 1) == 0) ? (i & 0x55) : (i & 0xAA)),
-			       (unsigned int)data_buffer[i]);
+				   (unsigned int)i,
+				   (unsigned int)(((i & 1) == 0) ? (i & 0x55) : (i & 0xAA)),
+				   (unsigned int)data_buffer[i]);
 		}
 	}
 	printf("-I- File data Ok !\n\r");
@@ -304,7 +334,8 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 	/*Rename the file*/
 	printf("-I- Rename file\n\r");
 	res = f_rename(file_name, "Renam.bin");
-	if (res != FR_OK) {
+	if (res != FR_OK)
+	{
 		printf("-E- f_rename pb: 0x%X\n\r", res);
 		return 0;
 	}
@@ -321,7 +352,8 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 	/*Change the mode of the file to hidden*/
 	printf("-I- Change file mode\n\r");
 	res = f_chmod(file_name, AM_HID, 0);
-	if (res != FR_OK) {
+	if (res != FR_OK)
+	{
 		printf("-E- f_chmod pb: 0x%X\n\r", res);
 		return 0;
 	}
@@ -335,7 +367,8 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 #if _USE_FIND == 1
 	/*Searching a file in location*/
 	res = f_findfirst(&dirs, &fno, "", "Ren*.bin"); /* Start to search for bin files with the name started by "Ren" */
-	if (res != FR_OK) {
+	if (res != FR_OK)
+	{
 		printf("-E- f_findfirst pb: 0x%X\n\r", res);
 		return 0;
 	}
@@ -350,24 +383,28 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 	/*Setting the drive label to ACME*/
 	printf("-I- Setting label Name\n\r");
 	res = f_setlabel((const char *)"ACME");
-	if (res != FR_OK) {
+	if (res != FR_OK)
+	{
 		printf("-E- f_setlabel pb: 0x%X\n\r", res);
 		return 0;
 	}
 	/*Getting the drive label*/
 	printf("-I- Getting label Name\n\r");
 	res = f_getlabel(file_name, &label_name, 0);
-	if (res != FR_OK) {
+	if (res != FR_OK)
+	{
 		printf("-E- f_getlabel pb: 0x%X\n\r", res);
 		return 0;
 	}
-	if (strcmp((const char *)"ACME", (const char *)label_name)) {
+	if (strcmp((const char *)"ACME", (const char *)label_name))
+	{
 		printf("-E- f_getlabel/f_setlabel not working pb: 0x%X\n\r", res);
 	}
 #endif
 	printf("-I- Delete file\n\r");
 	res = f_unlink(file_name);
-	if (res != FR_OK) {
+	if (res != FR_OK)
+	{
 		printf("-E- f_unlink pb: 0x%X\n\r", res);
 		return 0;
 	}
@@ -379,7 +416,8 @@ static uint8_t run_fatfs_test(uint32_t disk_dev_num)
 #endif
 	/*Closing directory*/
 	res = f_closedir(&dirs);
-	if (res != FR_OK) {
+	if (res != FR_OK)
+	{
 		printf("-E- f_closedir pb: 0x%X\n\r", res);
 		return 0;
 	}
@@ -405,23 +443,44 @@ int main(void)
 	printf_("1\n");
 	printf_("test\n");
 
+	FRESULT res;
+	static FATFS fs;
+	static FIL file_object;
 
-	while(true){
-		delay_ms(2000);
-		if (run_fatfs_test(0)) {
-			printf("-I- DISK 0 Test passed !\n\r\n\r");
-		} else {
-			printf("-F- DISK 0 Test Failed !\n\r\n\r");
-		}
+	/* Mount disk*/
+	printf("-I- Mount disk %d\n\r", 0);
+	/* Clear file system object */
+	memset(&fs, 0, sizeof(FATFS));
+	res = f_mount(&fs, "", 1);
+	if (res != FR_OK)
+	{
+		printf("-E- f_mount pb: 0x%X\n\r", res);
 	}
 
+	printf("-I- Create a file : \"%s\"\n\r", "0:/log.txt");
+	res = f_open(&file_object, "0:/log.txt", FA_CREATE_ALWAYS | FA_READ | FA_WRITE);
+	if (res != FR_OK)
+	{
+		printf("-E- f_open create pb: 0x%X\n\r", res);
+	}
 
-	static FATFS fs;
-	static FIL   file_object;
-	f_mount(&fs, "", 1);
-	f_open(&file_object, "0:/log.txt", FA_CREATE_ALWAYS | FA_READ | FA_WRITE);
+	while (true)
+	{
+		delay_ms(5000);
+		res = f_puts("This is a Test!\n", &file_object);
+		if (res < 0)
+		{
+			printf("-E- f_puts pb: 0x%X\n\r", res);
+		}
 
+		res = f_sync(&file_object);
+		if (res != FR_OK)
+		{
+			printf("-E- f_sync pb: 0x%X\n\r", res);
+		}
 
-	
+		printf("Saved!\n");
+	}
+
 	return 0;
 }
