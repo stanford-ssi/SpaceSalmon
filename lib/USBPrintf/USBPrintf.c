@@ -90,7 +90,7 @@ void usb_init(void)
 	cdcdf_acm_register_callback(CDCDF_ACM_CB_STATE_C, (FUNC_PTR)usb_device_cb_state_c);
 }
 
-int _write(int file, char *ptr, int len)
+int write_byte(int file, char *ptr, int len)
 {
 	__disable_irq();
 

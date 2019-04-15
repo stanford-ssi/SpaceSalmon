@@ -31,7 +31,7 @@ static int8_t spi_read(uint8_t dev_id, uint8_t reg_addr, uint8_t *reg_data, uint
 static int8_t spi_write(uint8_t dev_id, uint8_t reg_addr, uint8_t *reg_data, uint16_t len);
 static void delay_msec(uint32_t ms);
 
-spi_m_sync_descriptor *BMP3xx_SPI;
+spi_m_os_descriptor *BMP3xx_SPI;
 
 /***************************************************************************
  PUBLIC FUNCTIONS
@@ -43,7 +43,7 @@ spi_m_sync_descriptor *BMP3xx_SPI;
     @param  cspin SPI chip select. If not passed in, I2C will be used
 */
 /**************************************************************************/
-BMP3xx::BMP3xx(struct spi_m_sync_descriptor *spi ,int8_t cspin)
+BMP3xx::BMP3xx(struct spi_m_os_descriptor *spi ,int8_t cspin)
 {
   BMP3xx_SPI = spi;
   _cs = cspin;
@@ -278,19 +278,13 @@ static int8_t spi_read(uint8_t cspin, uint8_t reg_addr, uint8_t *reg_data, uint1
 
   send[0] = reg_addr | 0x80;
 
-  struct spi_xfer data;
+  spi_m_os_disable(BMP3xx_SPI);
+	spi_m_os_set_mode(BMP3xx_SPI, SPI_MODE_3);
+  spi_m_os_enable(BMP3xx_SPI);
 
-  data.size = len + 1;
-  data.txbuf = send;
-  data.rxbuf = recv;
-
-  //TODO: this could be removed...
-  spi_m_sync_disable(BMP3xx_SPI);
-  spi_m_sync_set_mode(BMP3xx_SPI, SPI_MODE_3);
-  spi_m_sync_enable(BMP3xx_SPI);
 
   gpio_set_pin_level(cspin, false);
-  spi_m_sync_transfer(BMP3xx_SPI, &data);
+  spi_m_os_transfer(BMP3xx_SPI, send, recv, len+1);
   gpio_set_pin_level(cspin, true);
 
   memcpy(reg_data, recv + 1, len);
@@ -313,19 +307,13 @@ static int8_t spi_write(uint8_t cspin, uint8_t reg_addr, uint8_t *reg_data, uint
 
   send[0] = reg_addr;
 
-  struct spi_xfer data;
+  spi_m_os_disable(BMP3xx_SPI);
+	spi_m_os_set_mode(BMP3xx_SPI, SPI_MODE_3);
+  spi_m_os_enable(BMP3xx_SPI);
 
-  data.size = len + 1;
-  data.txbuf = send;
-  data.rxbuf = recv;
-
-  //TODO: this could be removed...
-  spi_m_sync_disable(BMP3xx_SPI);
-  spi_m_sync_set_mode(BMP3xx_SPI, SPI_MODE_3);
-  spi_m_sync_enable(BMP3xx_SPI);
 
   gpio_set_pin_level(cspin, false);
-  spi_m_sync_transfer(BMP3xx_SPI, &data);
+  spi_m_os_transfer(BMP3xx_SPI, send, recv, len+1);
   gpio_set_pin_level(cspin, true);
 
   return 0;
@@ -333,5 +321,5 @@ static int8_t spi_write(uint8_t cspin, uint8_t reg_addr, uint8_t *reg_data, uint
 
 
 static void delay_msec(uint32_t ms){
-  delay_ms(ms);
+  vTaskDelay(ms);
 }

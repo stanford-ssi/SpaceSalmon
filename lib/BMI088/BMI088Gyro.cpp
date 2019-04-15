@@ -4,7 +4,7 @@
 #define SET_FIELD(regval, regname, value) ((regval & ~regname##_MASK) | ((value << regname##_POS) & regname##_MASK))
 
 /* BMI088 object, input the SPI bus and chip select pin */
-BMI088Gyro::BMI088Gyro(struct spi_m_sync_descriptor *bus, uint8_t csPin)
+BMI088Gyro::BMI088Gyro(struct spi_m_os_descriptor *bus, uint8_t csPin)
 {
   _spi = bus;     // SPI bus
   _csPin = csPin; // chip select pin
@@ -285,18 +285,13 @@ void BMI088Gyro::writeRegister(uint8_t subAddress, uint8_t data)
   uint8_t send[] = {subAddress, data};
   uint8_t recv[] = {0x00, 0x00};
 
-  struct spi_xfer spi_data;
+  spi_m_os_disable(_spi);
+	spi_m_os_set_mode(_spi, SPI_MODE_3);
+  spi_m_os_enable(_spi);
 
-  spi_data.size = 2;
-  spi_data.txbuf = send;
-  spi_data.rxbuf = recv;
-
-  spi_m_sync_disable(_spi);
-  spi_m_sync_set_mode(_spi, SPI_MODE_3);
-  spi_m_sync_enable(_spi);
 
   gpio_set_pin_level(_csPin, false);
-  spi_m_sync_transfer(_spi, &spi_data);
+  spi_m_os_transfer(_spi, send, recv, 2);
   gpio_set_pin_level(_csPin, true);
 }
 
@@ -311,19 +306,13 @@ void BMI088Gyro::readRegisters(uint8_t subAddress, uint8_t count, uint8_t *dest)
 
   send[0] = subAddress | SPI_READ;
 
-  struct spi_xfer data;
+	spi_m_os_disable(_spi);
+	spi_m_os_set_mode(_spi, SPI_MODE_3);
+  spi_m_os_enable(_spi);
 
-  data.size = count + 1;
-  data.txbuf = send;
-  data.rxbuf = recv;
-
-  //TODO: this could be removed...
-  spi_m_sync_disable(_spi);
-  spi_m_sync_set_mode(_spi, SPI_MODE_3);
-  spi_m_sync_enable(_spi);
 
   gpio_set_pin_level(_csPin, false);
-  spi_m_sync_transfer(_spi, &data);
+  spi_m_os_transfer(_spi, send, recv, count+1);
   gpio_set_pin_level(_csPin, true);
 
   memcpy(dest, recv + 1, count);
