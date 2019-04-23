@@ -3,3 +3,5 @@
 -make battery/adc threaded
 -make squib threaded
 -fix assert warnings
+-enable ECC ram!
+
