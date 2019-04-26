@@ -143,11 +143,11 @@ void LoggerTask::activity(void *ptr)
                     printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
                 }
 
-                res = f_sync(&file_object);
+                /*res = f_sync(&file_object); //the file is still saved every for each sector, which is pretty fast...
                 if (res != FR_OK)
                 {
                     printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
-                }
+                }*/
                 gpio_set_pin_level(DISK_LED, false);
             }
         }
