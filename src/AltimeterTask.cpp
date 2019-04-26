@@ -35,8 +35,10 @@ void AltimeterTask::activity(void *ptr)
 
         JsonObject tasks_json = status_json.createNestedObject("tasks");
 
+
         for(uint8_t i = 0; i < count; i++){
-            tasks_json[tasks[i].pcTaskName] = tasks[i].ulRunTimeCounter;
+            float percent = ((float)tasks[i].ulRunTimeCounter)/((float)runtime)*100.0;
+            tasks_json[tasks[i].pcTaskName] = percent;
         }
 
         char str[250];

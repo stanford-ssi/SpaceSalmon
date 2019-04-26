@@ -42,5 +42,5 @@ public:
   LoggerTask();
   TaskHandle_t getTaskHandle();
   void log(char *message);
-  //bool isLoggingEnabled() { return loggingEnabled; };
+  bool isLoggingEnabled() { return loggingEnabled; };
 };

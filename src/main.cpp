@@ -10,6 +10,8 @@ int main(void)
 	//Initializes MCU, drivers and middleware
 	atmel_start_init();
 
+	//hri_cmcc_write_CTRL_reg(CMCC, 1); //this seems to slow things down!
+
 	//Bootup LED Sequence
 	gpio_set_pin_level(LED1, true);
 	gpio_set_pin_level(LED2, true);

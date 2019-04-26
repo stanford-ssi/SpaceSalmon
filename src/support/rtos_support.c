@@ -1,5 +1,6 @@
 #include "FreeRTOS.h"
 #include <stdint.h>
+#include "task.h"
 
 /* configSUPPORT_STATIC_ALLOCATION is set to 1, so the application must provide an
 implementation of vApplicationGetIdleTaskMemory() to provide the memory that is
@@ -55,9 +56,8 @@ static StackType_t uxTimerTaskStack[ configTIMER_TASK_STACK_DEPTH ];
 }
 
 void vConfigureTimerForRunTimeStats(void){
-
 }
 
 uint32_t vGetRunTimeCounterValue(void){
-  return 0;
+  return xTaskGetTickCount(); //TODO: this would be better if used systick precise time measurements
 }
