@@ -89,7 +89,7 @@ void assert_triggered(const char *file, uint32_t line);
 // <q> Generate runtime stats
 // <id> freertos_generate_run_time_stats
 #ifndef configGENERATE_RUN_TIME_STATS
-#define configGENERATE_RUN_TIME_STATS 0
+#define configGENERATE_RUN_TIME_STATS 1
 #endif
 
 // <q> Use 16bit tick

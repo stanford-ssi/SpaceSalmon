@@ -53,3 +53,11 @@ static StackType_t uxTimerTaskStack[ configTIMER_TASK_STACK_DEPTH ];
     configTIMER_TASK_STACK_DEPTH is specified in words, not bytes. */
     *pulTimerTaskStackSize = configTIMER_TASK_STACK_DEPTH;
 }
+
+void vConfigureTimerForRunTimeStats(void){
+
+}
+
+uint32_t vGetRunTimeCounterValue(void){
+  return 0;
+}
