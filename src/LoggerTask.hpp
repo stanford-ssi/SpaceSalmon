@@ -9,36 +9,38 @@
 #include "printf.h"
 #include <string.h>
 #include "ff.h"
+#include "hal_gpio.h"
 
-
-#define TASK_EXAMPLE_STACK_SIZE (128 / sizeof(portSTACK_TYPE))
-#define TASK_EXAMPLE_STACK_PRIORITY (tskIDLE_PRIORITY + 1)
+#define DISK_LED LED3
 
 class LoggerTask
 {
-  private:
-    static const size_t stackSize = 1000;
+private:
+  static const size_t stackSize = 1000;
 
-    static TaskHandle_t taskHandle;
-    static StaticTask_t xTaskBuffer;
-    static StackType_t xStack[stackSize];
+  static TaskHandle_t taskHandle;
+  static StaticTask_t xTaskBuffer;
+  static StackType_t xStack[stackSize];
 
-    static void activity(void *p);
+  static const size_t bufferSize = 1000;
 
-    static const size_t bufferSize = 1000;
+  static MessageBufferHandle_t bufferHandle;
+  static StaticMessageBuffer_t messageBufferStruct;
+  static uint8_t ucStorageBuffer[bufferSize];
 
-    static MessageBufferHandle_t bufferHandle;
-    static StaticMessageBuffer_t messageBufferStruct;
-    static uint8_t ucStorageBuffer[bufferSize];
+  static char lineBuffer[bufferSize];
 
-    static char lineBuffer[bufferSize];
+  static FATFS fs;
+  static FIL file_object;
 
-    static FATFS fs;
-	  static FIL file_object;
+  static bool loggingEnabled;
 
-  public:
-    LoggerTask();
-    TaskHandle_t getTaskHandle();
-    void log(char* message);
+  static void activity(void *p);
+  static void format();
 
+public:
+  LoggerTask();
+  TaskHandle_t getTaskHandle();
+  void log(char *message);
+  //bool isLoggingEnabled() { return loggingEnabled; };
 };

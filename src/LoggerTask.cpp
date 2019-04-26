@@ -10,6 +10,8 @@ uint8_t LoggerTask::ucStorageBuffer[bufferSize];
 
 char LoggerTask::lineBuffer[bufferSize];
 
+bool LoggerTask::loggingEnabled = false;
+
 FATFS LoggerTask::fs;
 FIL LoggerTask::file_object;
 
@@ -22,7 +24,7 @@ LoggerTask::LoggerTask()
                                                1,                         //priority
                                                LoggerTask::xStack,        //stack object
                                                &LoggerTask::xTaskBuffer); //TCB object
-    
+
     LoggerTask::bufferHandle = xMessageBufferCreateStatic(bufferSize, LoggerTask::ucStorageBuffer, &LoggerTask::messageBufferStruct);
 }
 
@@ -31,71 +33,123 @@ TaskHandle_t LoggerTask::getTaskHandle()
     return taskHandle;
 }
 
-void LoggerTask::log(char* message){
+void LoggerTask::log(char *message)
+{
     vPortEnterCritical();
-    xMessageBufferSend(bufferHandle,message,strlen(message)+1,0);
+    xMessageBufferSend(bufferHandle, message, strlen(message) + 1, 0);
     vPortExitCritical();
+}
+
+void LoggerTask::format()
+{
+    FRESULT res;
+    printf("-I- Format disk %d\n\r", 0);
+    printf("-I- Please wait a moment during formatting...\n\r");
+    res = f_mkfs("0",  /* Drv */
+                 0,    /* FDISK partition */
+                 512); /* AllocSize */
+    printf("-I- Disk format finished !\n\r");
+    if (res != FR_OK)
+    {
+        printf("-E- f_mkfs pb: 0x%X\n\r", res);
+    }
 }
 
 void LoggerTask::activity(void *ptr)
 {
+    gpio_set_pin_level(DISK_LED, true);
     FRESULT res;
 
-    printf("-I- Format disk %d\n\r", 0);
-	printf("-I- Please wait a moment during formatting...\n\r");
-	res = f_mkfs("0", /* Drv */
-				 0,			   /* FDISK partition */
-				 512);		   /* AllocSize */
-	printf("-I- Disk format finished !\n\r");
-	if (res != FR_OK)
-	{
-		printf("-E- f_mkfs pb: 0x%X\n\r", res);
-	}
+    //Clear file system object
+    memset(&fs, 0, sizeof(FATFS));
 
-    //Mount disk
-	printf("-I- Mount disk %d\n\r", 0);
-	//Clear file system object
-	memset(&fs, 0, sizeof(FATFS));
-	res = f_mount(&fs, "", 1);
-	if (res != FR_OK)
-	{
-		printf("-E- f_mount pb: 0x%X\n\r", res);
-	}
+    res = f_mount(&fs, "", 1);
+    if (res != FR_OK)
+    {
+        loggingEnabled = false;
+        printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
+    }
+    else
+    {
+        loggingEnabled = true;
+        printf("Mounted SD card, enabling logging\n");
+    }
 
-	printf("-I- Create a file : \"%s\"\n\r", "0:/log.txt");
-	res = f_open(&file_object, "0:/log.txt", FA_CREATE_ALWAYS | FA_READ | FA_WRITE);//todo, give it a name!
-	if (res != FR_OK)
-	{
-		printf("-E- f_open create pb: 0x%X\n\r", res);
-	}
+    char file_name[20];
 
-    while(true){
-        if(xMessageBufferReceive(bufferHandle, lineBuffer, sizeof(lineBuffer), portMAX_DELAY) > 0){
-            printf_("LOG: %s\n",lineBuffer);
+    if (loggingEnabled)
+    {
+        int lognum = 0;
+        while (true)
+        {
+            snprintf(file_name, sizeof(file_name), "log%u.txt", lognum);
+            res = f_stat(file_name, NULL);
 
-            uint32_t len = strlen(lineBuffer);
-            if(len < sizeof(lineBuffer)-1){
-                lineBuffer[len] = '\n';
-                lineBuffer[len+1] = '\0';
-            }else{
-                lineBuffer[sizeof(lineBuffer)-2] = '\n';
-                lineBuffer[sizeof(lineBuffer)-1] = '\0';
-            }
-
-            res = (FRESULT)f_puts(lineBuffer, &file_object);
-            if (res < 0)
+            if (res == FR_NO_FILE)
             {
-                printf("-E- f_puts pb: 0x%X\n\r", res);
+                break;
             }
 
-            res = f_sync(&file_object);
             if (res != FR_OK)
             {
-                printf("-E- f_sync pb: 0x%X\n\r", res);
+                printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
+                printf("->Error stat-ing file: %s\n", file_name);
+                loggingEnabled = false;
+                break;
             }
 
-            printf("Saved!\n");
+            lognum++;
         }
     }
-    
+
+    if (loggingEnabled)
+    {
+        printf("Logging to file: %s\n", file_name);
+
+        res = f_open(&file_object, file_name, FA_CREATE_ALWAYS | FA_READ | FA_WRITE);
+        if (res != FR_OK)
+        {
+            printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
+            loggingEnabled = false;
+        }
+    }
+    gpio_set_pin_level(DISK_LED, false);
+
+    while (true)
+    {
+        if (xMessageBufferReceive(bufferHandle, lineBuffer, sizeof(lineBuffer), portMAX_DELAY) > 0)
+        {
+            printf_("%s\n", lineBuffer);
+
+            if (loggingEnabled)
+            {
+                gpio_set_pin_level(DISK_LED, true);
+
+                uint32_t len = strlen(lineBuffer);
+                if (len < sizeof(lineBuffer) - 1)
+                {
+                    lineBuffer[len] = '\n';
+                    lineBuffer[len + 1] = '\0';
+                }
+                else
+                {
+                    lineBuffer[sizeof(lineBuffer) - 2] = '\n';
+                    lineBuffer[sizeof(lineBuffer) - 1] = '\0';
+                }
+
+                res = (FRESULT)f_puts(lineBuffer, &file_object);
+                if (res < 0)
+                {
+                    printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
+                }
+
+                res = f_sync(&file_object);
+                if (res != FR_OK)
+                {
+                    printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
+                }
+                gpio_set_pin_level(DISK_LED, false);
+            }
+        }
+    }
 }
