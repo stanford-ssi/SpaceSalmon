@@ -47,9 +47,11 @@ void SensorTask::activity(void *ptr)
     BMI088Gyro::Data gyro;
     BMI088Accel::Data accel;
 
+    TickType_t lastSensorTime = xTaskGetTickCount();
+
     while (true)
     {
-        vTaskDelay(100);
+        vTaskDelayUntil(&lastSensorTime, 20);
 
         gpio_set_pin_level(SENSOR_LED,true);
 
