@@ -13,14 +13,14 @@ class SensorTask;
 #include "BMP3xx.hpp"
 #include "BMI088.hpp"
 #include "main.hpp"
+#include "ArduinoJson.h"
 
-#define TASK_EXAMPLE_STACK_SIZE (128 / sizeof(portSTACK_TYPE))
-#define TASK_EXAMPLE_STACK_PRIORITY (tskIDLE_PRIORITY + 1)
+#define SENSOR_LED LED2
 
 class SensorTask
 {
 private:
-    static const size_t stackSize = 1000;
+    static const size_t stackSize = 2000;
 
     static TaskHandle_t taskHandle;
     static StaticTask_t xTaskBuffer;

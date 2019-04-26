@@ -51,6 +51,8 @@ void SensorTask::activity(void *ptr)
     {
         vTaskDelay(100);
 
+        gpio_set_pin_level(SENSOR_LED,true);
+
         assert(uxTaskGetStackHighWaterMark(NULL) > 10,"Out of Stack!",1);
 
         accelHigh = adxl375.readSensor();
@@ -62,14 +64,38 @@ void SensorTask::activity(void *ptr)
         gyro = bmi088gyro.readSensor();
         vTaskDelay(10);
 
+        StaticJsonDocument<1000> jsonDoc;
+
+        JsonObject sensor_json = jsonDoc.createNestedObject("sensors");
+
+        JsonObject bmp388_json = sensor_json.createNestedObject("bmp");
+        JsonObject bmi088_json = sensor_json.createNestedObject("bmi");
+        JsonObject adxl375_json = sensor_json.createNestedObject("adxl");
+
+        bmp388_json["p"] = pressure.pressure;
+        bmp388_json["t"] = pressure.temperature;
+        
+        JsonArray bmi_accel_json = bmi088_json.createNestedArray("a");
+        bmi_accel_json.add(accel.x);
+        bmi_accel_json.add(accel.y);
+        bmi_accel_json.add(accel.z);
+
+        JsonArray bmi_gyro_json = bmi088_json.createNestedArray("g");
+        bmi_gyro_json.add(gyro.x);
+        bmi_gyro_json.add(gyro.y);
+        bmi_gyro_json.add(gyro.z);
+
+        JsonArray adxl_accel_json = adxl375_json.createNestedArray("a");
+        adxl_accel_json.add(accelHigh.x);
+        adxl_accel_json.add(accelHigh.y);
+        adxl_accel_json.add(accelHigh.z);
+        
+        jsonDoc["stack"] = uxTaskGetStackHighWaterMark(NULL);
+
         char str[250];
-        uint8_t used = 0;
-        used += snprintf_(str+used, sizeof(str)-used, " High:{%f %f %f} ", accelHigh.x, accelHigh.y, accelHigh.z);
-        used += snprintf_(str+used, sizeof(str)-used," Pres:{%f %f} ", pressure.pressure, pressure.temperature);
-        used += snprintf_(str+used, sizeof(str)-used," Gyro:{%f %f %f} ", gyro.x, gyro.y, gyro.z);
-        used += snprintf_(str+used, sizeof(str)-used," Accel:{%f %f %f %lu} ", accel.x, accel.y, accel.z, accel.time);
-        used += snprintf_(str+used, sizeof(str)-used," Stack: %lu ", uxTaskGetStackHighWaterMark(NULL));
-    
+        serializeJson(jsonDoc, str, sizeof(str));
         Globals::logger.log(str);
+
+        gpio_set_pin_level(SENSOR_LED,false);
     }
 }
