@@ -22,8 +22,18 @@ TaskHandle_t AltimeterTask::getTaskHandle()
 
 void AltimeterTask::activity(void *ptr)
 {
+
+    Globals::logger.log("Altimeter Started\n");
+    
+
+    TickType_t lastStatusTime = xTaskGetTickCount();
+
+    Battery battery(&ADC_0);
+
     while(true){
-        vTaskDelay(1000);
+
+        vTaskDelayUntil(&lastStatusTime, 1000);
+
         gpio_set_pin_level(SENSOR_LED,true);
 
         StaticJsonDocument<1000> jsonDoc;
@@ -35,11 +45,18 @@ void AltimeterTask::activity(void *ptr)
 
         JsonObject tasks_json = status_json.createNestedObject("tasks");
 
-
         for(uint8_t i = 0; i < count; i++){
             float percent = ((float)tasks[i].ulRunTimeCounter)/((float)runtime)*100.0;
             tasks_json[tasks[i].pcTaskName] = percent;
         }
+
+        Battery::cell_voltage_t voltage = battery.readVoltage();
+
+        JsonObject bat_json = status_json.createNestedObject("bat");
+        bat_json["cellA"] = voltage.cellA;
+        bat_json["cellB"] = voltage.cellB;
+
+        status_json["log"] = Globals::logger.isLoggingEnabled();
 
         char str[250];
         serializeJson(jsonDoc, str, sizeof(str));

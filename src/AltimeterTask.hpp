@@ -14,6 +14,7 @@ class AltimeterTask;
 #include "BMI088.hpp"
 #include "main.hpp"
 #include "ArduinoJson.h"
+#include "Battery.hpp"
 
 #define ALT_LED LED1
 
