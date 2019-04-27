@@ -22,10 +22,11 @@ TaskHandle_t AltimeterTask::getTaskHandle()
 
 void AltimeterTask::activity(void *ptr)
 {
+    char str[100];
 
-    Globals::logger.log("Altimeter Started\n");
+    snprintf(str,sizeof(str),"Altimeter Started\nBuild Version: %s\n", PIO_BUILD);
+    Globals::logger.log(str);
     
-
     TickType_t lastStatusTime = xTaskGetTickCount();
 
     Battery battery(&ADC_0);
