@@ -45,9 +45,7 @@ void LoggerTask::format()
     FRESULT res;
     printf("-I- Format disk %d\n\r", 0);
     printf("-I- Please wait a moment during formatting...\n\r");
-    res = f_mkfs("0",  /* Drv */
-                 0,    /* FDISK partition */
-                 512); /* AllocSize */
+    //res = f_mkfs("0", FM_EXFAT, 512);
     printf("-I- Disk format finished !\n\r");
     if (res != FR_OK)
     {
@@ -120,6 +118,8 @@ void LoggerTask::activity(void *ptr)
         if (xMessageBufferReceive(bufferHandle, lineBuffer, sizeof(lineBuffer), portMAX_DELAY) > 0)
         {
             printf_("%s\n", lineBuffer);
+            
+            uint8_t unsaved = 0;
 
             if (loggingEnabled)
             {
@@ -143,11 +143,16 @@ void LoggerTask::activity(void *ptr)
                     printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
                 }
 
-                res = f_sync(&file_object); //the file is still saved every for each sector, which is pretty fast... (false!)
-                if (res != FR_OK)
-                {
-                    printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
+                if(unsaved > 10){
+                    res = f_sync(&file_object); //the file is still saved every for each sector, which is pretty fast... (false!)
+                    if (res != FR_OK)
+                    {
+                        printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
+                    }
+                }else{
+                    unsaved++;
                 }
+                
                 gpio_set_pin_level(DISK_LED, false);
             }
         }
