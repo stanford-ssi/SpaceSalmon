@@ -113,13 +113,15 @@ void LoggerTask::activity(void *ptr)
     }
     gpio_set_pin_level(DISK_LED, false);
 
+    uint8_t unsaved = 0;
+
     while (true)
     {
         if (xMessageBufferReceive(bufferHandle, lineBuffer, sizeof(lineBuffer), portMAX_DELAY) > 0)
         {
-            printf_("%s\n", lineBuffer);
+            printf("%s\n", lineBuffer);
             
-            uint8_t unsaved = 0;
+            
 
             if (loggingEnabled)
             {
@@ -149,9 +151,9 @@ void LoggerTask::activity(void *ptr)
                     {
                         printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
                     }
-                }else{
-                    unsaved++;
+                    unsaved = 0;
                 }
+                unsaved++;
                 
                 gpio_set_pin_level(DISK_LED, false);
             }
