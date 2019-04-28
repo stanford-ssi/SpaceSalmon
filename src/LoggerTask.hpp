@@ -10,6 +10,7 @@
 #include <string.h>
 #include "ff.h"
 #include "hal_gpio.h"
+#include "ArduinoJson.h"
 
 #define DISK_LED LED3
 
@@ -42,5 +43,6 @@ public:
   LoggerTask();
   TaskHandle_t getTaskHandle();
   void log(char *message);
+  void logJSON(JsonDocument & jsonDoc, const char* id);
   bool isLoggingEnabled() { return loggingEnabled; };
 };

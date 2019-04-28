@@ -40,6 +40,16 @@ void LoggerTask::log(char *message)
     vPortExitCritical();
 }
 
+void LoggerTask::logJSON(JsonDocument & jsonDoc, const char* id){
+    jsonDoc["id"] = id;
+    jsonDoc["stack"] = uxTaskGetStackHighWaterMark(NULL);//TODO: Check this for capacity... (dangerous!)
+
+    size_t len = measureJson(jsonDoc);
+    char str[len+5]; //plenty of room!
+    serializeJson(jsonDoc, str, sizeof(str));
+    log(str);
+}
+
 void LoggerTask::format()
 {
     FRESULT res;

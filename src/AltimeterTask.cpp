@@ -37,8 +37,9 @@ void AltimeterTask::activity(void *ptr)
 
         gpio_set_pin_level(SENSOR_LED,true);
 
-        StaticJsonDocument<1000> jsonDoc;
-        JsonObject status_json = jsonDoc.createNestedObject("status");
+        StaticJsonDocument<1000> status_json;
+
+        status_json["tick"] = xTaskGetTickCount();
 
         uint32_t runtime;
         TaskStatus_t tasks[6];
@@ -59,9 +60,7 @@ void AltimeterTask::activity(void *ptr)
 
         status_json["log"] = Globals::logger.isLoggingEnabled();
 
-        char str[250];
-        serializeJson(jsonDoc, str, sizeof(str));
-        Globals::logger.log(str);
+        Globals::logger.logJSON(status_json,"status");
 
         gpio_set_pin_level(SENSOR_LED,false);
     }

@@ -57,18 +57,14 @@ void SensorTask::activity(void *ptr)
 
         assert(uxTaskGetStackHighWaterMark(NULL) > 10,"Out of Stack!",1);
 
+        StaticJsonDocument<1000> sensor_json;
+
         accelHigh = adxl375.readSensor();
-        vTaskDelay(10);
         pressure = bmp388.readSensor();
-        vTaskDelay(10);
         accel = bmi088accel.readSensor();
-        vTaskDelay(10);
         gyro = bmi088gyro.readSensor();
-        vTaskDelay(10);
 
-        StaticJsonDocument<1000> jsonDoc;
-
-        JsonObject sensor_json = jsonDoc.createNestedObject("sensors");
+        sensor_json["tick"] = xTaskGetTickCount();
 
         JsonObject bmp388_json = sensor_json.createNestedObject("bmp");
         JsonObject bmi088_json = sensor_json.createNestedObject("bmi");
@@ -92,11 +88,7 @@ void SensorTask::activity(void *ptr)
         adxl_accel_json.add(accelHigh.y);
         adxl_accel_json.add(accelHigh.z);
         
-        jsonDoc["stack"] = uxTaskGetStackHighWaterMark(NULL);
-
-        char str[250];
-        serializeJson(jsonDoc, str, sizeof(str));
-        Globals::logger.log(str);
+        Globals::logger.logJSON(sensor_json,"sensor");
 
         gpio_set_pin_level(SENSOR_LED,false);
     }
