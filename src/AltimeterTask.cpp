@@ -10,7 +10,7 @@ AltimeterTask::AltimeterTask()
                                                "Altimeter",                 //task name
                                                stackSize,                 //stack depth (words!)
                                                NULL,                      //parameters
-                                               1,                         //priority
+                                               3,                         //priority
                                                AltimeterTask::xStack,        //stack object
                                                &AltimeterTask::xTaskBuffer); //TCB object
 }
