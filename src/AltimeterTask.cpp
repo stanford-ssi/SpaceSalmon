@@ -24,7 +24,7 @@ void AltimeterTask::activity(void *ptr)
 {
     char str[100];
 
-    snprintf(str,sizeof(str),"Altimeter Started\nBuild Version: %s\n", PIO_BUILD);
+    snprintf(str,sizeof(str),"Altimeter Started\nBuild Version: %s", PIO_BUILD);
     Globals::logger.log(str);
     
     TickType_t lastStatusTime = xTaskGetTickCount();

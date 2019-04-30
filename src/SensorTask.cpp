@@ -28,10 +28,10 @@ TaskHandle_t SensorTask::getTaskHandle()
 
 void SensorTask::activity(void *ptr)
 {
-    Globals::logger.log("Initializing Sensors\n");
+    Globals::logger.log("Initializing Sensors");
 
     int rc;
-    char str[30];
+    char str[100];
 
     vTaskDelay(2); //but why...
 
@@ -46,7 +46,7 @@ void SensorTask::activity(void *ptr)
 
     if (rc != true)
     {
-        Globals::logger.log("Error Starting BMP388\n");
+        Globals::logger.log("Error Starting BMP388");
     }
 
     gpio_set_pin_level(ACCEL_CS_1, false);
@@ -59,7 +59,7 @@ void SensorTask::activity(void *ptr)
 
     if (rc != 1)
     {
-        snprintf(str, sizeof(str), "Error Starting BMI088Accel: %i\n", rc);
+        snprintf(str, sizeof(str), "Error Starting BMI088Accel: %i", rc);
         Globals::logger.log(str);
     }
 
@@ -70,7 +70,7 @@ void SensorTask::activity(void *ptr)
 
     if (rc != 1)
     {
-        snprintf(str, sizeof(str), "Error Starting BMI088Gyro: %i\n", rc);
+        snprintf(str, sizeof(str), "Error Starting BMI088Gyro: %i", rc);
         Globals::logger.log(str);
     }
 
