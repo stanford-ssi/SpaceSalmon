@@ -64,6 +64,4 @@ void AltimeterTask::activity(void *ptr)
 
         gpio_set_pin_level(SENSOR_LED,false);
     }
-        
-    
 }

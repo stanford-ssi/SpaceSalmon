@@ -28,19 +28,48 @@ TaskHandle_t SensorTask::getTaskHandle()
 
 void SensorTask::activity(void *ptr)
 {
+    Globals::logger.log("Initializing Sensors\n");
+
+    int rc;
+    char str[30];
+
+    vTaskDelay(2); //but why...
 
     ADXL375 adxl375(&SPI_SENSOR, ADXL_CS_1);
     adxl375.init();
     adxl375.startMeasuring();
 
+    vTaskDelay(2); //but why...
+
     BMP3xx bmp388(&SPI_SENSOR, BMP_CS_1);
-    bmp388.begin();
+    rc = bmp388.begin();
+
+    if (rc != true)
+    {
+        Globals::logger.log("Error Starting BMP388\n");
+    }
+
+    vTaskDelay(2); //but why...
 
     BMI088Accel bmi088accel(&SPI_SENSOR, ACCEL_CS_1);
-    bmi088accel.begin();
+    rc = bmi088accel.begin();
+
+    if (rc != 1)
+    {
+        snprintf(str, sizeof(str), "Error Starting BMI088Accel: %i\n", rc);
+        Globals::logger.log(str);
+    }
+
+    vTaskDelay(2); //but why...
 
     BMI088Gyro bmi088gyro(&SPI_SENSOR, GYRO_CS_1);
-    bmi088gyro.begin();
+    rc = bmi088gyro.begin();
+
+    if (rc != 1)
+    {
+        snprintf(str, sizeof(str), "Error Starting BMI088Gyro: %i\n", rc);
+        Globals::logger.log(str);
+    }
 
     ADXL375::Data accelHigh;
     BMP3xx::Data pressure;
@@ -53,17 +82,17 @@ void SensorTask::activity(void *ptr)
     {
         vTaskDelayUntil(&lastSensorTime, 20);
 
-        gpio_set_pin_level(SENSOR_LED,true);
+        gpio_set_pin_level(SENSOR_LED, true);
 
-        assert(uxTaskGetStackHighWaterMark(NULL) > 10,"Out of Stack!",1);
+        assert(uxTaskGetStackHighWaterMark(NULL) > 10, "Out of Stack!", 1);
 
         StaticJsonDocument<1000> sensor_json;
 
         accelHigh = adxl375.readSensor();
         pressure = bmp388.readSensor();
-        vTaskDelay(2);//but why...
+        vTaskDelay(2); //but why...
         accel = bmi088accel.readSensor();
-        vTaskDelay(2);//but why...
+        vTaskDelay(2); //but why...
         gyro = bmi088gyro.readSensor();
 
         sensor_json["tick"] = xTaskGetTickCount();
@@ -74,7 +103,7 @@ void SensorTask::activity(void *ptr)
 
         bmp388_json["p"] = pressure.pressure;
         bmp388_json["t"] = pressure.temperature;
-        
+
         JsonArray bmi_accel_json = bmi088_json.createNestedArray("a");
         bmi_accel_json.add(accel.x);
         bmi_accel_json.add(accel.y);
@@ -89,9 +118,9 @@ void SensorTask::activity(void *ptr)
         adxl_accel_json.add(accelHigh.x);
         adxl_accel_json.add(accelHigh.y);
         adxl_accel_json.add(accelHigh.z);
-        
-        Globals::logger.logJSON(sensor_json,"sensor");
 
-        gpio_set_pin_level(SENSOR_LED,false);
+        Globals::logger.logJSON(sensor_json, "sensor");
+
+        gpio_set_pin_level(SENSOR_LED, false);
     }
 }
