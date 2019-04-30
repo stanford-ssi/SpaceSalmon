@@ -49,7 +49,10 @@ void SensorTask::activity(void *ptr)
         Globals::logger.log("Error Starting BMP388\n");
     }
 
-    vTaskDelay(2); //but why...
+    gpio_set_pin_level(ACCEL_CS_1, false);
+    vTaskDelay(1);
+    gpio_set_pin_level(ACCEL_CS_1, true);
+    vTaskDelay(1);
 
     BMI088Accel bmi088accel(&SPI_SENSOR, ACCEL_CS_1);
     rc = bmi088accel.begin();
