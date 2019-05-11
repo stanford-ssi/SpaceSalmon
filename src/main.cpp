@@ -36,5 +36,5 @@ int main(void)
 
 
 void HardFault_Handler(void){
-	//assert(false,"fuck",1);
+	assert(false);
 }

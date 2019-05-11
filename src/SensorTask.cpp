@@ -76,8 +76,6 @@ void SensorTask::activity(void *ptr)
 
         gpio_set_pin_level(SENSOR_LED, true);
 
-        //assert(uxTaskGetStackHighWaterMark(NULL) > 10, "Out of Stack!", 1);
-
         StaticJsonDocument<1000> sensor_json;
 
         SensorData data;

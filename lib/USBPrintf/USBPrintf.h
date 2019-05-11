@@ -19,6 +19,8 @@ int write_byte(int file, char *ptr, int len);
 
 void usb_init(void);
 
+int _write(int fd, const void *buffer, unsigned int count);
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus
