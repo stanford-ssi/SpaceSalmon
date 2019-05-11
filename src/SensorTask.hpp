@@ -14,6 +14,8 @@ class SensorTask;
 #include "BMI088.hpp"
 #include "main.hpp"
 #include "ArduinoJson.h"
+#include "AltFilterTask.hpp"
+#include "AltFilter.hpp"
 
 #define SENSOR_LED LED2
 
@@ -27,18 +29,6 @@ private:
     static StackType_t xStack[stackSize];
 
     static void activity(void *p);
-
-    static StaticSemaphore_t mutexBuffer[4];
-
-    SemaphoreHandle_t adxl375_mutex;
-    SemaphoreHandle_t bmp388_mutex;
-    SemaphoreHandle_t bmi088gyro_mutex;
-    SemaphoreHandle_t bmi088accel_mutex;
-
-    ADXL375::Data adxl375_data;
-    BMP3xx::Data bmp388_data;
-    BMI088Gyro::Data bmi088gyro_data;
-    BMI088Accel::Data bmi088accel_data;
 
 public:
     SensorTask();

@@ -3,7 +3,6 @@
 TaskHandle_t SensorTask::taskHandle = NULL;
 StaticTask_t SensorTask::xTaskBuffer;
 StackType_t SensorTask::xStack[stackSize];
-StaticSemaphore_t SensorTask::mutexBuffer[4];
 
 SensorTask::SensorTask()
 {
@@ -14,11 +13,6 @@ SensorTask::SensorTask()
                                                1,                         //priority
                                                SensorTask::xStack,        //stack object
                                                &SensorTask::xTaskBuffer); //TCB object
-
-    adxl375_mutex = xSemaphoreCreateMutexStatic(&SensorTask::mutexBuffer[0]);
-    bmp388_mutex = xSemaphoreCreateMutexStatic(&SensorTask::mutexBuffer[1]);
-    bmi088accel_mutex = xSemaphoreCreateMutexStatic(&SensorTask::mutexBuffer[2]);
-    bmi088gyro_mutex = xSemaphoreCreateMutexStatic(&SensorTask::mutexBuffer[3]);
 }
 
 TaskHandle_t SensorTask::getTaskHandle()
@@ -74,11 +68,6 @@ void SensorTask::activity(void *ptr)
         Globals::logger.log(str);
     }
 
-    ADXL375::Data accelHigh;
-    BMP3xx::Data pressure;
-    BMI088Gyro::Data gyro;
-    BMI088Accel::Data accel;
-
     TickType_t lastSensorTime = xTaskGetTickCount();
 
     while (true)
@@ -87,16 +76,20 @@ void SensorTask::activity(void *ptr)
 
         gpio_set_pin_level(SENSOR_LED, true);
 
-        assert(uxTaskGetStackHighWaterMark(NULL) > 10, "Out of Stack!", 1);
+        //assert(uxTaskGetStackHighWaterMark(NULL) > 10, "Out of Stack!", 1);
 
         StaticJsonDocument<1000> sensor_json;
 
-        accelHigh = adxl375.readSensor();
-        pressure = bmp388.readSensor();
+        SensorData data;
+
+        data.adxl375_data = adxl375.readSensor();
+        data.bmp388_data = bmp388.readSensor();
         vTaskDelay(2); //but why...
-        accel = bmi088accel.readSensor();
+        data.bmi088accel_data = bmi088accel.readSensor();
         vTaskDelay(2); //but why...
-        gyro = bmi088gyro.readSensor();
+        data.bmi088gyro_data = bmi088gyro.readSensor();
+
+
 
         sensor_json["tick"] = xTaskGetTickCount();
 
@@ -104,23 +97,23 @@ void SensorTask::activity(void *ptr)
         JsonObject bmi088_json = sensor_json.createNestedObject("bmi");
         JsonObject adxl375_json = sensor_json.createNestedObject("adxl");
 
-        bmp388_json["p"] = pressure.pressure;
-        bmp388_json["t"] = pressure.temperature;
+        bmp388_json["p"] = data.bmp388_data.pressure;
+        bmp388_json["t"] = data.bmp388_data.temperature;
 
         JsonArray bmi_accel_json = bmi088_json.createNestedArray("a");
-        bmi_accel_json.add(accel.x);
-        bmi_accel_json.add(accel.y);
-        bmi_accel_json.add(accel.z);
+        bmi_accel_json.add(data.bmi088accel_data.x);
+        bmi_accel_json.add(data.bmi088accel_data.y);
+        bmi_accel_json.add(data.bmi088accel_data.z);
 
         JsonArray bmi_gyro_json = bmi088_json.createNestedArray("g");
-        bmi_gyro_json.add(gyro.x);
-        bmi_gyro_json.add(gyro.y);
-        bmi_gyro_json.add(gyro.z);
+        bmi_gyro_json.add(data.bmi088gyro_data.x);
+        bmi_gyro_json.add(data.bmi088gyro_data.y);
+        bmi_gyro_json.add(data.bmi088gyro_data.z);
 
         JsonArray adxl_accel_json = adxl375_json.createNestedArray("a");
-        adxl_accel_json.add(accelHigh.x);
-        adxl_accel_json.add(accelHigh.y);
-        adxl_accel_json.add(accelHigh.z);
+        adxl_accel_json.add(data.adxl375_data.x);
+        adxl_accel_json.add(data.adxl375_data.y);
+        adxl_accel_json.add(data.adxl375_data.z);
 
         Globals::logger.logJSON(sensor_json, "sensor");
 
