@@ -13,6 +13,7 @@ struct SensorData;
 #include "main.hpp"
 #include "ArduinoJson.h"
 #include "AltFilter.hpp"
+#include "FlightPlan.hpp"
 
 struct SensorData
 {

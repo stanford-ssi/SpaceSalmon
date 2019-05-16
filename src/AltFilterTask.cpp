@@ -36,15 +36,14 @@ void AltFilterTask::newSensorData(SensorData data)
 void AltFilterTask::activity(void *ptr)
 {
     AltFilter filter;
+    FlightPlan plan;
 
     while (true)
-        {
+        {   //Flight Control Loop: runs every sensor data cycle
             if (xMessageBufferReceive(bufferHandle, &data, sizeof(data), portMAX_DELAY) > 0)
             {
                 filter.update(data);
-                if(filter.getVelocity() < 0){
-                    //wow time to fire!
-                }
+                plan.update(filter);
             }
         }
 }
