@@ -21,6 +21,7 @@ struct SensorData
     BMP3xx::Data bmp388_data;
     BMI088Gyro::Data bmi088gyro_data;
     BMI088Accel::Data bmi088accel_data;
+    uint32_t tick;
 };
 
 class AltFilterTask
@@ -43,6 +44,8 @@ private:
     static uint8_t ucStorageBuffer[bufferSize];
 
     static SensorData data;
+    static AltFilter filter;
+    static FlightPlan plan;
     static void activity(void *p);
 
 };
