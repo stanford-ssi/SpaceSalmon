@@ -43,7 +43,7 @@ void FlightPlan::update(AltFilter filter){
     case Waiting:
         if(velocity > 100.0){ //launch!
             state = Flight;
-            //TODO: Log time and pad_alt
+            logState();
         }else{
             pad_alt_counter++;
             if(pad_alt_counter >= 50){
@@ -56,11 +56,14 @@ void FlightPlan::update(AltFilter filter){
     case Flight:
         if(velocity < 0.0){ //apogee!
             state = Falling;
+            logState();
         }
         break;
     case Falling:
-        if(velocity > -1.0) //stopped falling
-
+        if(velocity > -1.0){ //stopped falling
+            state = Landed;
+            logState();
+        }
         break;
     case Landed:
         //do nothing
@@ -75,7 +78,7 @@ void FlightPlan::update(AltFilter filter){
             ((e.velCond == VelNone) || (e.velCond == VelLess && velocity < e.velocity) || (e.velCond == VelMore && velocity > e.velocity)) && //check velocity threshold
             ((e.altCond == AltNone) || (e.altCond == AltLess && altitude < e.altitude) || (e.altCond == AltMore && altitude > e.altitude)))   //check altitude threshold
             {
-                StaticJsonDocument<1000> event_json;
+                StaticJsonDocument<500> event_json;
                 event_json["squib"] = e.squib;
                 Globals::logger.logJSON(event_json, "event");
                 //BLOW SQUIB!
@@ -83,5 +86,17 @@ void FlightPlan::update(AltFilter filter){
             
         
     }
-    
+
+    print_counter++;
+    if(print_counter > 50){
+        print_counter = 0;
+        logState();
+    }    
+}
+
+void FlightPlan::logState(){
+    StaticJsonDocument<500> json;
+    json["state"] = state;
+    json["pad_alt"] = pad_alts[0];
+    Globals::logger.logJSON(json, "state");
 }

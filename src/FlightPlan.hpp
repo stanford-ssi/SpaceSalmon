@@ -16,7 +16,9 @@ class FlightPlan{
     private:
         float pad_alts[2] ={0.0, 0.0}; //a buffer of past altitudes, the 0th of which will be the pad altitude
         uint8_t pad_alt_counter = 0;
+        uint8_t print_counter = 0;
         FlightState state;
+        void logState();
 
 };
 
