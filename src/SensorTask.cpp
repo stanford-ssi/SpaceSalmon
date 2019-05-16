@@ -87,9 +87,9 @@ void SensorTask::activity(void *ptr)
         vTaskDelay(2); //but why...
         data.bmi088gyro_data = bmi088gyro.readSensor();
 
+        data.tick = xTaskGetTickCount();
 
-
-        sensor_json["tick"] = xTaskGetTickCount();
+        sensor_json["tick"] = data.tick;
 
         JsonObject bmp388_json = sensor_json.createNestedObject("bmp");
         JsonObject bmi088_json = sensor_json.createNestedObject("bmi");
