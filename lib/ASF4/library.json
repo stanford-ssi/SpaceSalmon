@@ -24,7 +24,8 @@
             "-Isrc/thirdparty/RTOS/freertos",
             "-Isrc/thirdparty/RTOS/freertos/FreeRTOSV10.0.0",
             "-Isrc/thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include",
-            "-Isrc/thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM4F/"
+            "-Isrc/thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM4F/",
+            "-Lsrc/CMSIS"
         ],
         "libArchive": false
     }

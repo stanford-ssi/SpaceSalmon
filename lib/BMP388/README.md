@@ -11,3 +11,11 @@ Adafruit invests time and resources providing this open source code, please supp
 
 Written by Limor Fried/Ladyada for Adafruit Industries.
 MIT license, all text above must be included in any redistribution
+
+### Weird Bugs
+  * You need to edit `cstdio` in your arm-none-eabi, and comment out several `#undef` entries:
+    //#undef printf
+    //#undef sprintf
+    //#undef vsprintf
+    //#undef snprintf
+    //#undef vsnprintf
