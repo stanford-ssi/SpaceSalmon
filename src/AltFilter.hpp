@@ -5,7 +5,7 @@ class AltFilter;
 #include "AltFilterTask.hpp"
 
 //#include <WProgram.h>
-#include <Eigen30.h>
+#include <Eigen.h>
 #include <Eigen/Dense>
 //#include "Flight_Configuration.h"
 //#include "Utils.h"
