@@ -11,7 +11,7 @@ uint8_t AltFilterTask::ucStorageBuffer[bufferSize];
 AltFilterTask::AltFilterTask()
 {
     AltFilterTask::taskHandle = xTaskCreateStatic(activity,                  //static function to run
-                                               "Altimeter",                 //task name
+                                               "AltFilter",                 //task name
                                                stackSize,                 //stack depth (words!)
                                                NULL,                      //parameters
                                                3,                         //priority
@@ -35,16 +35,12 @@ void AltFilterTask::newSensorData(SensorData data)
 
 void AltFilterTask::activity(void *ptr)
 {
-    AltFilter filter;
-
     while (true)
-        {
+        {   //Flight Control Loop: runs every sensor data cycle
             if (xMessageBufferReceive(bufferHandle, &data, sizeof(data), portMAX_DELAY) > 0)
             {
                 filter.update(data);
-                if(filter.getVelocity() < 0){
-                    //wow time to fire!
-                }
+                plan.update(filter);
             }
         }
 }

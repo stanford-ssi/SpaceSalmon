@@ -1,6 +1,7 @@
 #include "AltFilter.hpp"
 
 AltFilter::AltFilter(){
+  
   X << 0,
        0,
        0;
@@ -39,14 +40,12 @@ void AltFilter::update(SensorData data){
   }
   kalmanUpdate();
 }
-/*
- * BE WARNED!!!! THIS FUNCTION RETURNNS FEET!!!!! NOT METERS!!!!
- */
-float AltFilter::getAltitude(){
-  return X(0)/0.3048;
+
+float AltFilter::getAltitude(){ //meters, ASL
+  return X(0);
 }
 
-float AltFilter::getVelocity(){
+float AltFilter::getVelocity(){ //meters/s
   return X(1);
 }
 

@@ -44,6 +44,10 @@ void LoggerTask::logJSON(JsonDocument & jsonDoc, const char* id){
     jsonDoc["id"] = id;
     jsonDoc["stack"] = uxTaskGetStackHighWaterMark(NULL);//TODO: Check this for capacity... (dangerous!)
 
+    if (jsonDoc.getMember("tick") == NULL){
+        jsonDoc["tick"] = xTaskGetTickCount();
+    }
+    
     size_t len = measureJson(jsonDoc);
     char str[len+5]; //plenty of room!
     serializeJson(jsonDoc, str, sizeof(str));
