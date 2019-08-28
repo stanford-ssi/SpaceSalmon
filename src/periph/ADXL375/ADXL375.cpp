@@ -1,6 +1,14 @@
+/*
+ADXL375 - High Range Accelerometer
+
+Status: Functional
+
+This is one of the more put together sensor libraries. There are a few TODOs that need to be cleaned up and tested, and porting to a better SPI interface would be cool.
+
+*/
 #include "ADXL375.hpp"
 
-ADXL375::ADXL375(struct spi_m_os_descriptor *SPI, uint8_t CS_PIN)
+ADXL375::ADXL375(struct spi_m_os_descriptor *SPI, uint8_t CS_PIN) //TODO: port to C++ SPI implementation.
 {
   this->SPI = SPI;
   this->CS_PIN = CS_PIN;
@@ -112,7 +120,7 @@ void ADXL375::_multiReadRegister(uint8_t regAddress, uint8_t values[], uint8_t n
 
   send[0] = regAddress;
 
-  spi_m_os_disable(SPI);
+  spi_m_os_disable(SPI); //TODO: this is probably not required
 	spi_m_os_set_mode(SPI, SPI_MODE_3);
   spi_m_os_enable(SPI);
 
@@ -128,7 +136,7 @@ void ADXL375::writeRegister(uint8_t regAddress, uint8_t value)
   uint8_t send[] = {regAddress, value};
   uint8_t recv[] = {0x00, 0x00};
 
-  spi_m_os_disable(SPI);
+  spi_m_os_disable(SPI); //TODO: this is probably not required
 	spi_m_os_set_mode(SPI, SPI_MODE_3);
   spi_m_os_enable(SPI);
 

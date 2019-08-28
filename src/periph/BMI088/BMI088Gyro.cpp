@@ -285,7 +285,7 @@ void BMI088Gyro::writeRegister(uint8_t subAddress, uint8_t data)
   uint8_t send[] = {subAddress, data};
   uint8_t recv[] = {0x00, 0x00};
 
-  spi_m_os_disable(_spi);
+  spi_m_os_disable(_spi); //likely not needed
 	spi_m_os_set_mode(_spi, SPI_MODE_3);
   spi_m_os_enable(_spi);
 
@@ -306,7 +306,7 @@ void BMI088Gyro::readRegisters(uint8_t subAddress, uint8_t count, uint8_t *dest)
 
   send[0] = subAddress | SPI_READ;
 
-	spi_m_os_disable(_spi);
+	spi_m_os_disable(_spi); //likely not needed
 	spi_m_os_set_mode(_spi, SPI_MODE_3);
   spi_m_os_enable(_spi);
 

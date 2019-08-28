@@ -537,7 +537,7 @@ void BMI088Accel::writeRegisters(uint8_t subAddress, uint8_t count, const uint8_
 
   memcpy(send + 1, data, count);
 
-  	spi_m_os_disable(_spi);
+  	spi_m_os_disable(_spi); //TODO: probably not needed
 	spi_m_os_set_mode(_spi, SPI_MODE_3);
     spi_m_os_enable(_spi);
 
@@ -558,7 +558,7 @@ void BMI088Accel::readRegisters(uint8_t subAddress, uint8_t count, uint8_t* dest
 
   send[0] = subAddress | SPI_READ;
 
-  	spi_m_os_disable(_spi);
+  	spi_m_os_disable(_spi); //TODO: probably not needed
 	spi_m_os_set_mode(_spi, SPI_MODE_3);
     spi_m_os_enable(_spi);
 
