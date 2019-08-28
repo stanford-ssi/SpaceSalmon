@@ -20,6 +20,12 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+/*
+BMI088 - IMU
+Status: Functional
+This library works, but there are some things that could be cleaned up, and better SPI would be cool.
+*/
+
 #include "BMI088.hpp"
 
 /* Macros to get and set register fields */

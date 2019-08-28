@@ -25,6 +25,10 @@
  *
  */
 
+/*
+TODO: This library works, but can only be used once. It needs to be re-writen as a C++ class that can be instantiated multiple times.
+*/
+
 #include "BMP3xx.hpp"
 
 static int8_t spi_read(uint8_t dev_id, uint8_t reg_addr, uint8_t *reg_data, uint16_t len);
