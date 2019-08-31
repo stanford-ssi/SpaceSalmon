@@ -18,7 +18,7 @@ struct SensorData;
 struct SensorData
 {
     ADXL375::Data adxl375_data;
-    BMP3xx::Data bmp388_data;
+    BMP388::Data bmp388_data;
     BMI088Gyro::Data bmi088gyro_data;
     BMI088Accel::Data bmi088accel_data;
     uint32_t tick;

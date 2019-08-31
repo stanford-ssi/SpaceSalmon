@@ -35,7 +35,7 @@ void SensorTask::activity(void *ptr)
 
     vTaskDelay(2); //but why...
 
-    BMP3xx bmp388(&SPI_SENSOR, BMP_CS_1);
+    BMP388 bmp388(&SPI_SENSOR, BMP_CS_1);
     rc = bmp388.begin();
 
     if (rc != true)
