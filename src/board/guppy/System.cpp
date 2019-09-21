@@ -1,9 +1,6 @@
-#include "main.hpp"
+#include "System.hpp"
 
-LoggerTask Globals::logger;
-SensorTask Globals::sensor;
-SquibTask Globals::squib;
-AltimeterTask Globals::altimeter;
+static System system;
 
 int main(void)
 {

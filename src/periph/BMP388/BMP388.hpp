@@ -8,18 +8,19 @@ extern "C"
 #include <math.h>
 #include <string.h>
 #include <hal_delay.h>
+#include "../Sensor.hpp"
 }
 
 
-class BMP388
+class BMP388 : public Sensor
 {
   public:
 
     typedef bmp3_data Data;
 
-    BMP388(struct spi_m_os_descriptor *spi, int8_t cspin);
+    BMP388(struct spi_m_os_descriptor *spi, int8_t cspin, char* id);
 
-    bool begin();
+    bool init();
     bool setTemperatureOversampling(uint8_t os);
     bool setPressureOversampling(uint8_t os);
     bool setIIRFilterCoeff(uint8_t fs);

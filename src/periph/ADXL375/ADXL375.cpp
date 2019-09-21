@@ -8,7 +8,7 @@ This is one of the more put together sensor libraries. There are a few TODOs tha
 */
 #include "ADXL375.hpp"
 
-ADXL375::ADXL375(struct spi_m_os_descriptor *SPI, uint8_t CS_PIN) //TODO: port to C++ SPI implementation.
+ADXL375::ADXL375(struct spi_m_os_descriptor *SPI, uint8_t CS_PIN, char* id) : Sensor(id) //TODO: port to C++ SPI implementation.
 {
   this->SPI = SPI;
   this->CS_PIN = CS_PIN;
@@ -16,7 +16,6 @@ ADXL375::ADXL375(struct spi_m_os_descriptor *SPI, uint8_t CS_PIN) //TODO: port t
 
 void ADXL375::init()
 {
-
   setDataRate(BW_12_5HZ);
 }
 

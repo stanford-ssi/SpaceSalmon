@@ -5,56 +5,60 @@ TODO: This library works, but can only be used once. It needs to be re-writen as
 
 #include "BMP388.hpp"
 
-
 /***************** Internal macros ******************************/
 
 /*! Power control settings */
-#define POWER_CNTL      UINT16_C(0x0006)
+#define POWER_CNTL UINT16_C(0x0006)
 /*! Odr and filter settings */
-#define ODR_FILTER      UINT16_C(0x00F0)
+#define ODR_FILTER UINT16_C(0x00F0)
 /*! Interrupt control settings */
-#define INT_CTRL	UINT16_C(0x0708)
+#define INT_CTRL UINT16_C(0x0708)
 /*! Advance settings */
-#define ADV_SETT	UINT16_C(0x1800)
+#define ADV_SETT UINT16_C(0x1800)
 
-
-BMP388::BMP388(struct spi_m_os_descriptor *spi ,int8_t cspin)
+BMP388::BMP388(struct spi_m_os_descriptor *spi, int8_t cspin, char *id) : Sensor(id)
 {
-  _spi = spi;
-  _cs = cspin;
-  _filterEnabled = _tempOSEnabled = _presOSEnabled = false;
+	_spi = spi;
+	_cs = cspin;
+	_filterEnabled = _tempOSEnabled = _presOSEnabled = false;
 }
 
-bool BMP388::begin() {
+bool BMP388::init()
+{
 
-  	int8_t rslt = BMP3_OK;
+	int8_t rslt = BMP3_OK;
 	uint8_t read_chip_id = 0;
 
 	rslt = get_regs(BMP3_CHIP_ID_ADDR, &read_chip_id, 1);
-		/* Proceed if everything is fine until now */
-		if (rslt == BMP3_OK) {
-			/* Check for chip id validity */
-			if (read_chip_id == BMP3_CHIP_ID) {
-				chip_id = read_chip_id;
-				/* Reset the sensor */
-				rslt = soft_reset();
-				if (rslt == BMP3_OK) {
-					/* Read the calibration data */
-					rslt = get_calib_data();
-				}
-			} else {
-				rslt = BMP3_E_DEV_NOT_FOUND;
+	/* Proceed if everything is fine until now */
+	if (rslt == BMP3_OK)
+	{
+		/* Check for chip id validity */
+		if (read_chip_id == BMP3_CHIP_ID)
+		{
+			chip_id = read_chip_id;
+			/* Reset the sensor */
+			rslt = soft_reset();
+			if (rslt == BMP3_OK)
+			{
+				/* Read the calibration data */
+				rslt = get_calib_data();
 			}
 		}
+		else
+		{
+			rslt = BMP3_E_DEV_NOT_FOUND;
+		}
+	}
 
-  setTemperatureOversampling(BMP3_NO_OVERSAMPLING);
-  setPressureOversampling(BMP3_NO_OVERSAMPLING);
-  setIIRFilterCoeff(BMP3_IIR_FILTER_DISABLE);
+	setTemperatureOversampling(BMP3_NO_OVERSAMPLING);
+	setPressureOversampling(BMP3_NO_OVERSAMPLING);
+	setIIRFilterCoeff(BMP3_IIR_FILTER_DISABLE);
 
-  // don't do anything till we request a reading
-  settings.op_mode = BMP3_FORCED_MODE;
+	// don't do anything till we request a reading
+	settings.op_mode = BMP3_FORCED_MODE;
 
-  return true;
+	return true;
 }
 
 /**************************************************************************/
@@ -66,70 +70,74 @@ bool BMP388::begin() {
     @return True on success, False on failure
 */
 /**************************************************************************/
-BMP388::Data BMP388::readSensor(void) {
-  int8_t rslt;
-  /* Used to select the settings user needs to change */
-  uint16_t settings_sel = 0;
-  /* Variable used to select the sensor component */
-  uint8_t sensor_comp = 0;
+BMP388::Data BMP388::readSensor(void)
+{
+	int8_t rslt;
+	/* Used to select the settings user needs to change */
+	uint16_t settings_sel = 0;
+	/* Variable used to select the sensor component */
+	uint8_t sensor_comp = 0;
 
-  /* Variable used to store the compensated data */
-  struct bmp3_data data = {0,0};
+	/* Variable used to store the compensated data */
+	struct bmp3_data data = {0, 0};
 
-  /* Select the pressure and temperature sensor to be enabled */
-  settings.temp_en = BMP3_ENABLE;
-  settings_sel |= BMP3_TEMP_EN_SEL;
-  sensor_comp |= BMP3_TEMP;
-  if (_tempOSEnabled) {
-     settings_sel |= BMP3_TEMP_OS_SEL;
-  }
+	/* Select the pressure and temperature sensor to be enabled */
+	settings.temp_en = BMP3_ENABLE;
+	settings_sel |= BMP3_TEMP_EN_SEL;
+	sensor_comp |= BMP3_TEMP;
+	if (_tempOSEnabled)
+	{
+		settings_sel |= BMP3_TEMP_OS_SEL;
+	}
 
-  settings.press_en = BMP3_ENABLE;
-  settings_sel |= BMP3_PRESS_EN_SEL;
-  sensor_comp |= BMP3_PRESS;
-  if (_presOSEnabled) {
-    settings_sel |= BMP3_PRESS_OS_SEL ;
-  }
+	settings.press_en = BMP3_ENABLE;
+	settings_sel |= BMP3_PRESS_EN_SEL;
+	sensor_comp |= BMP3_PRESS;
+	if (_presOSEnabled)
+	{
+		settings_sel |= BMP3_PRESS_OS_SEL;
+	}
 
-  if (_filterEnabled) {
-    settings_sel |= BMP3_IIR_FILTER_SEL;
-  }
+	if (_filterEnabled)
+	{
+		settings_sel |= BMP3_IIR_FILTER_SEL;
+	}
 
-  if (_ODREnabled) {
-    settings_sel |= BMP3_ODR_SEL;
-  }
+	if (_ODREnabled)
+	{
+		settings_sel |= BMP3_ODR_SEL;
+	}
 
-  // set interrupt to data ready
-  //settings_sel |= BMP3_DRDY_EN_SEL | BMP3_LEVEL_SEL | BMP3_LATCH_SEL;
+	// set interrupt to data ready
+	//settings_sel |= BMP3_DRDY_EN_SEL | BMP3_LEVEL_SEL | BMP3_LATCH_SEL;
 
-  /* Set the desired sensor configuration */
+	/* Set the desired sensor configuration */
 #ifdef BMP3XX_DEBUG
-  Serial.println("Setting sensor settings");
+	Serial.println("Setting sensor settings");
 #endif
-  rslt = set_sensor_settings(settings_sel);
-  if (rslt != BMP3_OK)
-    return data;
+	rslt = set_sensor_settings(settings_sel);
+	if (rslt != BMP3_OK)
+		return data;
 
-  /* Set the power mode */
-settings.op_mode = BMP3_FORCED_MODE;
+	/* Set the power mode */
+	settings.op_mode = BMP3_FORCED_MODE;
 #ifdef BMP3XX_DEBUG
-  Serial.println("Setting power mode");
+	Serial.println("Setting power mode");
 #endif
-  rslt = set_op_mode();
-  if (rslt != BMP3_OK)
-    return data;
+	rslt = set_op_mode();
+	if (rslt != BMP3_OK)
+		return data;
 
-  /* Temperature and Pressure data are read and stored in the bmp3_data instance */
-  rslt = get_sensor_data(sensor_comp, &data);
+	/* Temperature and Pressure data are read and stored in the bmp3_data instance */
+	rslt = get_sensor_data(sensor_comp, &data);
 
-  /* Save the temperature and pressure data */
+	/* Save the temperature and pressure data */
 
-  if (rslt != BMP3_OK)
-    return data;
+	if (rslt != BMP3_OK)
+		return data;
 
-  return data;
+	return data;
 }
-
 
 /**************************************************************************/
 /*!
@@ -139,19 +147,20 @@ settings.op_mode = BMP3_FORCED_MODE;
 */
 /**************************************************************************/
 
-bool BMP388::setTemperatureOversampling(uint8_t oversample) {
-  if (oversample > BMP3_OVERSAMPLING_32X) return false;
+bool BMP388::setTemperatureOversampling(uint8_t oversample)
+{
+	if (oversample > BMP3_OVERSAMPLING_32X)
+		return false;
 
-  settings.odr_filter.temp_os = oversample;
+	settings.odr_filter.temp_os = oversample;
 
-  if (oversample == BMP3_NO_OVERSAMPLING)
-    _tempOSEnabled = false;
-  else
-    _tempOSEnabled = true;
+	if (oversample == BMP3_NO_OVERSAMPLING)
+		_tempOSEnabled = false;
+	else
+		_tempOSEnabled = true;
 
-  return true;
+	return true;
 }
-
 
 /**************************************************************************/
 /*!
@@ -160,17 +169,19 @@ bool BMP388::setTemperatureOversampling(uint8_t oversample) {
     @return True on success, False on failure
 */
 /**************************************************************************/
-bool BMP388::setPressureOversampling(uint8_t oversample) {
-  if (oversample > BMP3_OVERSAMPLING_32X) return false;
+bool BMP388::setPressureOversampling(uint8_t oversample)
+{
+	if (oversample > BMP3_OVERSAMPLING_32X)
+		return false;
 
-  settings.odr_filter.press_os = oversample;
+	settings.odr_filter.press_os = oversample;
 
-  if (oversample == BMP3_NO_OVERSAMPLING)
-    _presOSEnabled = false;
-  else
-    _presOSEnabled = true;
+	if (oversample == BMP3_NO_OVERSAMPLING)
+		_presOSEnabled = false;
+	else
+		_presOSEnabled = true;
 
-  return true;
+	return true;
 }
 
 /**************************************************************************/
@@ -181,17 +192,19 @@ bool BMP388::setPressureOversampling(uint8_t oversample) {
 
 */
 /**************************************************************************/
-bool BMP388::setIIRFilterCoeff(uint8_t filtercoeff) {
-  if (filtercoeff > BMP3_IIR_FILTER_COEFF_127) return false;
+bool BMP388::setIIRFilterCoeff(uint8_t filtercoeff)
+{
+	if (filtercoeff > BMP3_IIR_FILTER_COEFF_127)
+		return false;
 
-  settings.odr_filter.iir_filter = filtercoeff;
+	settings.odr_filter.iir_filter = filtercoeff;
 
-  if (filtercoeff == BMP3_IIR_FILTER_DISABLE)
-    _filterEnabled = false;
-  else
-    _filterEnabled = true;
+	if (filtercoeff == BMP3_IIR_FILTER_DISABLE)
+		_filterEnabled = false;
+	else
+		_filterEnabled = true;
 
-  return true;
+	return true;
 }
 
 /**************************************************************************/
@@ -201,63 +214,66 @@ bool BMP388::setIIRFilterCoeff(uint8_t filtercoeff) {
     @return True on success, False on failur
 */
 /**************************************************************************/
-bool BMP388::setOutputDataRate(uint8_t odr) {
-  if (odr > BMP3_ODR_0_001_HZ) return false;
+bool BMP388::setOutputDataRate(uint8_t odr)
+{
+	if (odr > BMP3_ODR_0_001_HZ)
+		return false;
 
-  settings.odr_filter.odr = odr;
+	settings.odr_filter.odr = odr;
 
-  _ODREnabled = true;
+	_ODREnabled = true;
 
-  return true;
+	return true;
 }
 
-int8_t BMP388::spi_read(uint8_t reg_addr, uint8_t *reg_data, uint16_t len) {
+int8_t BMP388::spi_read(uint8_t reg_addr, uint8_t *reg_data, uint16_t len)
+{
 
-  uint8_t send[len + 1];
-  uint8_t recv[len + 1];
+	uint8_t send[len + 1];
+	uint8_t recv[len + 1];
 
-  memset(send, 0x00, len + 1);
-  memset(recv, 0x00, len + 1);
+	memset(send, 0x00, len + 1);
+	memset(recv, 0x00, len + 1);
 
-  send[0] = reg_addr | 0x80;
+	send[0] = reg_addr | 0x80;
 
-  spi_m_os_disable(_spi);
+	spi_m_os_disable(_spi);
 	spi_m_os_set_mode(_spi, SPI_MODE_3);
-  spi_m_os_enable(_spi);
+	spi_m_os_enable(_spi);
 
+	gpio_set_pin_level(_cs, false);
+	spi_m_os_transfer(_spi, send, recv, len + 1);
+	gpio_set_pin_level(_cs, true);
 
-  gpio_set_pin_level(_cs, false);
-  spi_m_os_transfer(_spi, send, recv, len+1);
-  gpio_set_pin_level(_cs, true);
+	memcpy(reg_data, recv + 1, len);
 
-  memcpy(reg_data, recv + 1, len);
-
-  return 0;
+	return 0;
 }
 
-int8_t BMP388::spi_write(uint8_t reg_addr, uint8_t *reg_data, uint16_t len) {
+int8_t BMP388::spi_write(uint8_t reg_addr, uint8_t *reg_data, uint16_t len)
+{
 
-  uint8_t send[len + 1];
-  uint8_t recv[len + 1];
+	uint8_t send[len + 1];
+	uint8_t recv[len + 1];
 
-  memset(send, 0x00, len + 1);  
-  memcpy(send + 1, reg_data, len);
+	memset(send, 0x00, len + 1);
+	memcpy(send + 1, reg_data, len);
 
-  send[0] = reg_addr;
+	send[0] = reg_addr;
 
-  spi_m_os_disable(_spi);
+	spi_m_os_disable(_spi);
 	spi_m_os_set_mode(_spi, SPI_MODE_3);
-  spi_m_os_enable(_spi);
+	spi_m_os_enable(_spi);
 
+	gpio_set_pin_level(_cs, false);
+	spi_m_os_transfer(_spi, send, recv, len + 1);
+	gpio_set_pin_level(_cs, true);
 
-  gpio_set_pin_level(_cs, false);
-  spi_m_os_transfer(_spi, send, recv, len+1);
-  gpio_set_pin_level(_cs, true);
-
-  return 0;
+	return 0;
 }
 
-int8_t BMP388::get_regs(uint8_t reg_addr, uint8_t *reg_data, uint16_t len) {
+int8_t BMP388::get_regs(uint8_t reg_addr, uint8_t *reg_data, uint16_t len)
+{
 	int8_t rslt;
 	uint16_t temp_len = len + 1;
 	uint16_t i;
@@ -272,46 +288,57 @@ int8_t BMP388::get_regs(uint8_t reg_addr, uint8_t *reg_data, uint16_t len) {
 	/* Check for communication error */
 	if (rslt != BMP3_OK)
 		rslt = BMP3_E_COMM_FAIL;
-	
+
 	return rslt;
 }
 
-int8_t BMP388::set_regs(uint8_t *reg_addr, const uint8_t *reg_data, uint8_t len) {
+int8_t BMP388::set_regs(uint8_t *reg_addr, const uint8_t *reg_data, uint8_t len)
+{
 	int8_t rslt;
 	uint8_t temp_buff[len * 2];
 	uint16_t temp_len;
 	uint8_t reg_addr_cnt;
 
 	/* Check for arguments validity */
-	if ((reg_addr != NULL) && (reg_data != NULL)) {
-		if (len != 0) {
+	if ((reg_addr != NULL) && (reg_data != NULL))
+	{
+		if (len != 0)
+		{
 			temp_buff[0] = reg_data[0];
 			/* interface selected is SPI */
 			for (reg_addr_cnt = 0; reg_addr_cnt < len; reg_addr_cnt++)
 				reg_addr[reg_addr_cnt] = reg_addr[reg_addr_cnt] & 0x7F;
 			/* Burst write mode */
-			if (len > 1) {
+			if (len > 1)
+			{
 				/* Interleave register address w.r.t data for
 				burst write*/
 				interleave_reg_addr(reg_addr, temp_buff, reg_data, len);
 				temp_len = len * 2;
-			} else {
+			}
+			else
+			{
 				temp_len = len;
 			}
 			rslt = spi_write(reg_addr[0], temp_buff, temp_len);
 			/* Check for communication error */
 			if (rslt != BMP3_OK)
 				rslt = BMP3_E_COMM_FAIL;
-		} else {
+		}
+		else
+		{
 			rslt = BMP3_E_INVALID_LEN;
 		}
-	} else {
+	}
+	else
+	{
 		rslt = BMP3_E_NULL_PTR;
 	}
 	return rslt;
 }
 
-int8_t BMP388::soft_reset() {
+int8_t BMP388::soft_reset()
+{
 	int8_t rslt;
 	uint8_t reg_addr = BMP3_CMD_ADDR;
 	/* 0xB6 is the soft reset command */
@@ -319,58 +346,69 @@ int8_t BMP388::soft_reset() {
 	uint8_t cmd_rdy_status;
 	uint8_t cmd_err_status;
 
-  /* Check for command ready status */
-  rslt = get_regs(BMP3_SENS_STATUS_REG_ADDR, &cmd_rdy_status, 1);
-  /* Device is ready to accept new command */
-  if ((cmd_rdy_status & BMP3_CMD_RDY) && (rslt == BMP3_OK)) {
-    /* Write the soft reset command in the sensor */
-    rslt = set_regs(&reg_addr, &soft_rst_cmd, 1);
-    /* Proceed if everything is fine until now */
-    if (rslt == BMP3_OK) {
-      /* Wait for 2 ms */
-      delay_ms(2);
-      /* Read for command error status */
-      rslt = get_regs(BMP3_ERR_REG_ADDR, &cmd_err_status, 1);
-      /* check for command error status */
-      if ((cmd_err_status & BMP3_CMD_ERR) || (rslt != BMP3_OK)) {
-        /* Command not written hence return
+	/* Check for command ready status */
+	rslt = get_regs(BMP3_SENS_STATUS_REG_ADDR, &cmd_rdy_status, 1);
+	/* Device is ready to accept new command */
+	if ((cmd_rdy_status & BMP3_CMD_RDY) && (rslt == BMP3_OK))
+	{
+		/* Write the soft reset command in the sensor */
+		rslt = set_regs(&reg_addr, &soft_rst_cmd, 1);
+		/* Proceed if everything is fine until now */
+		if (rslt == BMP3_OK)
+		{
+			/* Wait for 2 ms */
+			delay_ms(2);
+			/* Read for command error status */
+			rslt = get_regs(BMP3_ERR_REG_ADDR, &cmd_err_status, 1);
+			/* check for command error status */
+			if ((cmd_err_status & BMP3_CMD_ERR) || (rslt != BMP3_OK))
+			{
+				/* Command not written hence return
             error */
-        rslt = BMP3_E_CMD_EXEC_FAILED;
-      }
-    }
-  } else {
-    rslt = BMP3_E_CMD_EXEC_FAILED;
-  }
+				rslt = BMP3_E_CMD_EXEC_FAILED;
+			}
+		}
+	}
+	else
+	{
+		rslt = BMP3_E_CMD_EXEC_FAILED;
+	}
 
 	return rslt;
 }
 
-int8_t BMP388::set_op_mode() {
+int8_t BMP388::set_op_mode()
+{
 	int8_t rslt;
 	uint8_t last_set_mode;
 	uint8_t curr_mode = settings.op_mode;
 
-		rslt = get_op_mode(&last_set_mode);
-		/* If the sensor is not in sleep mode put the device to sleep
+	rslt = get_op_mode(&last_set_mode);
+	/* If the sensor is not in sleep mode put the device to sleep
 		   mode */
-		if (last_set_mode != BMP3_SLEEP_MODE) {
-			/* Device should be put to sleep before transiting to
+	if (last_set_mode != BMP3_SLEEP_MODE)
+	{
+		/* Device should be put to sleep before transiting to
 			   forced mode or normal mode */
-			rslt = put_device_to_sleep();
-			/* Give some time for device to go into sleep mode */
-			delay_ms(5);
-		}
-		/* Set the power mode */
-		if (rslt == BMP3_OK) {
-			if (curr_mode == BMP3_NORMAL_MODE) {
-				/* Set normal mode and validate
+		rslt = put_device_to_sleep();
+		/* Give some time for device to go into sleep mode */
+		delay_ms(5);
+	}
+	/* Set the power mode */
+	if (rslt == BMP3_OK)
+	{
+		if (curr_mode == BMP3_NORMAL_MODE)
+		{
+			/* Set normal mode and validate
 				   necessary settings */
-				rslt = set_normal_mode();
-			} else if (curr_mode == BMP3_FORCED_MODE) {
-				/* Set forced mode */
-				rslt = write_power_mode();
-			}
+			rslt = set_normal_mode();
 		}
+		else if (curr_mode == BMP3_FORCED_MODE)
+		{
+			/* Set forced mode */
+			rslt = write_power_mode();
+		}
+	}
 
 	return rslt;
 }
@@ -386,7 +424,8 @@ int8_t BMP388::write_power_mode()
 	/* Read the power mode register */
 	rslt = get_regs(reg_addr, &op_mode_reg_val, 1);
 	/* Set the power mode */
-	if (rslt == BMP3_OK) {
+	if (rslt == BMP3_OK)
+	{
 		op_mode_reg_val = BMP3_SET_BITS(op_mode_reg_val, BMP3_OP_MODE, op_mode);
 		/* Write the power mode in the register */
 		rslt = set_regs(&reg_addr, &op_mode_reg_val, 1);
@@ -402,15 +441,19 @@ int8_t BMP388::set_normal_mode()
 
 	rslt = validate_normal_mode_settings();
 	/* If osr and odr settings are proper then write the power mode */
-	if (rslt == BMP3_OK) {
+	if (rslt == BMP3_OK)
+	{
 		rslt = write_power_mode();
 		/* check for configuration error */
-		if (rslt == BMP3_OK) {
+		if (rslt == BMP3_OK)
+		{
 			/* Read the configuration error status */
 			rslt = get_regs(BMP3_ERR_REG_ADDR, &conf_err_status, 1);
 			/* Check if conf. error flag is set */
-			if (rslt == BMP3_OK) {
-				if (conf_err_status & BMP3_CONF_ERR) {
+			if (rslt == BMP3_OK)
+			{
+				if (conf_err_status & BMP3_CONF_ERR)
+				{
 					/* Osr and odr configuration is
 					   not proper */
 					rslt = BMP3_E_CONFIGURATION_ERR;
@@ -464,20 +507,21 @@ void BMP388::parse_odr_filter_settings(const uint8_t *reg_data, struct bmp3_odr_
 	settings->iir_filter = BMP3_GET_BITS(reg_data[index], BMP3_IIR_FILTER);
 }
 
-
 int8_t BMP388::validate_osr_and_odr_settings()
 {
 	int8_t rslt;
 	uint16_t meas_t = 0;
 	/* Odr values in milli secs  */
 	uint32_t odr[18] = {5, 10, 20, 40, 80, 160, 320, 640, 1280, 2560, 5120, 10240,
-			20480, 40960, 81920, 163840, 327680, 655360};
+						20480, 40960, 81920, 163840, 327680, 655360};
 
-	if (settings.press_en) {
+	if (settings.press_en)
+	{
 		/* Calculate the pressure measurement duration */
 		meas_t = calculate_press_meas_time();
 	}
-	if (settings.temp_en) {
+	if (settings.temp_en)
+	{
 		/* Calculate the temperature measurement duration */
 		meas_t += calculate_temp_meas_time();
 	}
@@ -510,11 +554,14 @@ int8_t BMP388::verify_meas_time_and_odr_duration(uint16_t meas_t, uint32_t odr_d
 {
 	int8_t rslt;
 
-	if (meas_t < odr_duration) {
+	if (meas_t < odr_duration)
+	{
 		/* If measurement duration is less than odr duration
 		   then osr and odr settings are fine */
 		rslt = BMP3_OK;
-	} else {
+	}
+	else
+	{
 		/* Osr and odr settings are not proper */
 		rslt = BMP3_E_INVALID_ODR_OSR_SETTINGS;
 	}
@@ -542,7 +589,6 @@ uint16_t BMP388::calculate_press_meas_time()
 	return press_meas_t;
 }
 
-
 int8_t BMP388::put_device_to_sleep()
 {
 	int8_t rslt;
@@ -552,7 +598,8 @@ int8_t BMP388::put_device_to_sleep()
 
 	rslt = get_regs(BMP3_PWR_CTRL_ADDR, &op_mode_reg_val, 1);
 
-	if (rslt == BMP3_OK) {
+	if (rslt == BMP3_OK)
+	{
 		/* Set the power mode */
 		op_mode_reg_val = op_mode_reg_val & (~(BMP3_OP_MODE_MSK));
 
@@ -567,15 +614,16 @@ int8_t BMP388::get_op_mode(uint8_t *op_mode)
 {
 	int8_t rslt;
 
-  /* Read the power mode register */
-  rslt = get_regs(BMP3_PWR_CTRL_ADDR, op_mode, 1);
-  /* Assign the power mode in the device structure */
-  *op_mode = BMP3_GET_BITS(*op_mode, BMP3_OP_MODE);
-	
+	/* Read the power mode register */
+	rslt = get_regs(BMP3_PWR_CTRL_ADDR, op_mode, 1);
+	/* Assign the power mode in the device structure */
+	*op_mode = BMP3_GET_BITS(*op_mode, BMP3_OP_MODE);
+
 	return rslt;
 }
 
-int8_t BMP388::get_sensor_data(uint8_t sensor_comp, struct bmp3_data *comp_data) {
+int8_t BMP388::get_sensor_data(uint8_t sensor_comp, struct bmp3_data *comp_data)
+{
 	int8_t rslt;
 	/* Array to store the pressure and temperature data read from
 	the sensor */
@@ -584,25 +632,30 @@ int8_t BMP388::get_sensor_data(uint8_t sensor_comp, struct bmp3_data *comp_data)
 
 	/* Check for null pointer in the device structure*/
 
-	if (comp_data != NULL) {
+	if (comp_data != NULL)
+	{
 		/* Read the pressure and temperature data from the sensor */
 		rslt = get_regs(BMP3_DATA_ADDR, reg_data, BMP3_P_T_DATA_LEN);
 
-		if (rslt == BMP3_OK) {
+		if (rslt == BMP3_OK)
+		{
 			/* Parse the read data from the sensor */
 			parse_sensor_data(reg_data, &uncomp_data);
 			/* Compensate the pressure/temperature/both data read
 			   from the sensor */
 			rslt = compensate_data(sensor_comp, &uncomp_data, comp_data, &calib_data);
 		}
-	} else {
+	}
+	else
+	{
 		rslt = BMP3_E_NULL_PTR;
 	}
 
 	return rslt;
 }
 
-void BMP388::parse_sensor_data(const uint8_t *reg_data, struct bmp3_uncomp_data *uncomp_data) {
+void BMP388::parse_sensor_data(const uint8_t *reg_data, struct bmp3_uncomp_data *uncomp_data)
+{
 	/* Temporary variables to store the sensor data */
 	uint32_t data_xlsb;
 	uint32_t data_lsb;
@@ -622,27 +675,34 @@ void BMP388::parse_sensor_data(const uint8_t *reg_data, struct bmp3_uncomp_data 
 }
 
 int8_t BMP388::compensate_data(uint8_t sensor_comp, const struct bmp3_uncomp_data *uncomp_data,
-				     struct bmp3_data *comp_data, struct bmp3_calib_data *calib_data) {
+							   struct bmp3_data *comp_data, struct bmp3_calib_data *calib_data)
+{
 	int8_t rslt = BMP3_OK;
 
-	if ((uncomp_data != NULL) && (comp_data != NULL) && (calib_data != NULL)) {
+	if ((uncomp_data != NULL) && (comp_data != NULL) && (calib_data != NULL))
+	{
 		/* If pressure or temperature component is selected */
-		if (sensor_comp & (BMP3_PRESS | BMP3_TEMP)) {
+		if (sensor_comp & (BMP3_PRESS | BMP3_TEMP))
+		{
 			/* Compensate the temperature data */
 			comp_data->temperature = compensate_temperature(uncomp_data, calib_data);
 		}
-		if (sensor_comp & BMP3_PRESS) {
+		if (sensor_comp & BMP3_PRESS)
+		{
 			/* Compensate the pressure data */
 			comp_data->pressure = compensate_pressure(uncomp_data, calib_data);
 		}
-	} else {
+	}
+	else
+	{
 		rslt = BMP3_E_NULL_PTR;
 	}
 
 	return rslt;
 }
 
-int8_t BMP388::get_calib_data(){
+int8_t BMP388::get_calib_data()
+{
 	int8_t rslt;
 	uint8_t reg_addr = BMP3_CALIB_DATA_ADDR;
 	/* Array to store calibration data */
@@ -660,25 +720,26 @@ int8_t BMP388::set_sensor_settings(uint32_t desired_settings)
 {
 	int8_t rslt;
 
-
-
-	if (are_settings_changed(POWER_CNTL, desired_settings)) {
+	if (are_settings_changed(POWER_CNTL, desired_settings))
+	{
 		/* Set the power control settings */
 		rslt = set_pwr_ctrl_settings(desired_settings);
 	}
-	if (are_settings_changed(ODR_FILTER, desired_settings) && (!rslt)) {
+	if (are_settings_changed(ODR_FILTER, desired_settings) && (!rslt))
+	{
 		/* Set the over sampling, odr and filter settings*/
 		rslt = set_odr_filter_settings(desired_settings);
 	}
-	if (are_settings_changed(INT_CTRL, desired_settings) && (!rslt)) {
+	if (are_settings_changed(INT_CTRL, desired_settings) && (!rslt))
+	{
 		/* Set the interrupt control settings */
 		rslt = set_int_ctrl_settings(desired_settings);
 	}
-	if (are_settings_changed(ADV_SETT, desired_settings) && (!rslt)) {
+	if (are_settings_changed(ADV_SETT, desired_settings) && (!rslt))
+	{
 		/* Set the advance settings */
 		rslt = set_advance_settings(desired_settings);
 	}
-
 
 	return rslt;
 }
@@ -687,15 +748,18 @@ void BMP388::fill_osr_data(uint32_t _settings, uint8_t *addr, uint8_t *reg_data,
 {
 	struct bmp3_odr_filter_settings osr_settings = settings.odr_filter;
 
-	if (_settings & (BMP3_PRESS_OS_SEL | BMP3_TEMP_OS_SEL)) {
+	if (_settings & (BMP3_PRESS_OS_SEL | BMP3_TEMP_OS_SEL))
+	{
 		/* Pressure over sampling settings check */
-		if (_settings & BMP3_PRESS_OS_SEL) {
+		if (_settings & BMP3_PRESS_OS_SEL)
+		{
 			/* Set the pressure over sampling settings in the
 			  register variable */
 			reg_data[*len] = BMP3_SET_BITS_POS_0(reg_data[0], BMP3_PRESS_OS, osr_settings.press_os);
 		}
 		/* Temperature over sampling settings check */
-		if (_settings & BMP3_TEMP_OS_SEL) {
+		if (_settings & BMP3_TEMP_OS_SEL)
+		{
 			/* Set the temperature over sampling settings in the
 			   register variable */
 			reg_data[*len] = BMP3_SET_BITS(reg_data[0], BMP3_TEMP_OS, osr_settings.temp_os);
@@ -732,9 +796,9 @@ void BMP388::fill_filter_data(uint8_t *addr, uint8_t *reg_data, uint8_t *len)
 {
 	struct bmp3_odr_filter_settings osr_settings = settings.odr_filter;
 
-       /* Set the iir settings in the register variable */
+	/* Set the iir settings in the register variable */
 	reg_data[*len] = BMP3_SET_BITS(reg_data[3], BMP3_IIR_FILTER, osr_settings.iir_filter);
-       /* 0x1F is the register address of iir filter register */
+	/* 0x1F is the register address of iir filter register */
 	addr[*len] = 0x1F;
 	(*len)++;
 }
@@ -750,28 +814,34 @@ int8_t BMP388::set_odr_filter_settings(uint32_t desired_settings)
 
 	rslt = get_regs(BMP3_OSR_ADDR, reg_data, 4);
 
-	if (rslt == BMP3_OK) {
-		if (are_settings_changed((BMP3_PRESS_OS_SEL | BMP3_TEMP_OS_SEL), desired_settings)) {
+	if (rslt == BMP3_OK)
+	{
+		if (are_settings_changed((BMP3_PRESS_OS_SEL | BMP3_TEMP_OS_SEL), desired_settings))
+		{
 			/* Fill the over sampling register address and
 			register data to be written in the sensor */
 			fill_osr_data(desired_settings, reg_addr, reg_data, &len);
 		}
-		if (are_settings_changed(BMP3_ODR_SEL, desired_settings)) {
+		if (are_settings_changed(BMP3_ODR_SEL, desired_settings))
+		{
 			/* Fill the output data rate register address and
 			register data to be written in the sensor */
 			fill_odr_data(reg_addr, reg_data, &len);
 		}
-		if (are_settings_changed(BMP3_IIR_FILTER_SEL, desired_settings)) {
+		if (are_settings_changed(BMP3_IIR_FILTER_SEL, desired_settings))
+		{
 			/* Fill the iir filter register address and
 			register data to be written in the sensor */
 			fill_filter_data(reg_addr, reg_data, &len);
 		}
-		if (settings.op_mode == BMP3_NORMAL_MODE) {
+		if (settings.op_mode == BMP3_NORMAL_MODE)
+		{
 			/* For normal mode, osr and odr settings should
 			   be proper */
 			rslt = validate_osr_and_odr_settings();
 		}
-		if (rslt == BMP3_OK) {
+		if (rslt == BMP3_OK)
+		{
 			/* Burst write the over sampling, odr and filter
 			   settings in the register */
 			rslt = set_regs(reg_addr, reg_data, len);
@@ -791,22 +861,27 @@ int8_t BMP388::set_int_ctrl_settings(uint32_t desired_settings)
 	reg_addr = BMP3_INT_CTRL_ADDR;
 	rslt = get_regs(reg_addr, &reg_data, 1);
 
-	if (rslt == BMP3_OK) {
+	if (rslt == BMP3_OK)
+	{
 		int_settings = settings.int_settings;
 
-		if (desired_settings & BMP3_OUTPUT_MODE_SEL) {
+		if (desired_settings & BMP3_OUTPUT_MODE_SEL)
+		{
 			/* Set the interrupt output mode bits */
 			reg_data = BMP3_SET_BITS_POS_0(reg_data, BMP3_INT_OUTPUT_MODE, int_settings.output_mode);
 		}
-		if (desired_settings & BMP3_LEVEL_SEL) {
+		if (desired_settings & BMP3_LEVEL_SEL)
+		{
 			/* Set the interrupt level bits */
 			reg_data = BMP3_SET_BITS(reg_data, BMP3_INT_LEVEL, int_settings.level);
 		}
-		if (desired_settings & BMP3_LATCH_SEL) {
+		if (desired_settings & BMP3_LATCH_SEL)
+		{
 			/* Set the interrupt latch bits */
 			reg_data = BMP3_SET_BITS(reg_data, BMP3_INT_LATCH, int_settings.latch);
 		}
-		if (desired_settings & BMP3_DRDY_EN_SEL) {
+		if (desired_settings & BMP3_DRDY_EN_SEL)
+		{
 			/* Set the interrupt data ready bits */
 			reg_data = BMP3_SET_BITS(reg_data, BMP3_INT_DRDY_EN, int_settings.drdy_en);
 		}
@@ -816,7 +891,6 @@ int8_t BMP388::set_int_ctrl_settings(uint32_t desired_settings)
 
 	return rslt;
 }
-
 
 int8_t BMP388::set_advance_settings(uint32_t desired_settings)
 {
@@ -828,12 +902,15 @@ int8_t BMP388::set_advance_settings(uint32_t desired_settings)
 	reg_addr = BMP3_IF_CONF_ADDR;
 	rslt = get_regs(reg_addr, &reg_data, 1);
 
-	if (rslt == BMP3_OK) {
-		if (desired_settings & BMP3_I2C_WDT_EN_SEL) {
+	if (rslt == BMP3_OK)
+	{
+		if (desired_settings & BMP3_I2C_WDT_EN_SEL)
+		{
 			/* Set the i2c watch dog enable bits */
 			reg_data = BMP3_SET_BITS(reg_data, BMP3_I2C_WDT_EN, adv_settings.i2c_wdt_en);
 		}
-		if (desired_settings & BMP3_I2C_WDT_SEL_SEL) {
+		if (desired_settings & BMP3_I2C_WDT_SEL_SEL)
+		{
 			/* Set the i2c watch dog select bits */
 			reg_data = BMP3_SET_BITS(reg_data, BMP3_I2C_WDT_SEL, adv_settings.i2c_wdt_sel);
 		}
@@ -852,13 +929,16 @@ int8_t BMP388::set_pwr_ctrl_settings(uint32_t desired_settings)
 
 	rslt = get_regs(reg_addr, &reg_data, 1);
 
-	if (rslt == BMP3_OK) {
-		if (desired_settings & BMP3_PRESS_EN_SEL) {
+	if (rslt == BMP3_OK)
+	{
+		if (desired_settings & BMP3_PRESS_EN_SEL)
+		{
 			/* Set the pressure enable settings in the
 			register variable */
 			reg_data = BMP3_SET_BITS_POS_0(reg_data, BMP3_PRESS_EN, settings.press_en);
 		}
-		if (desired_settings & BMP3_TEMP_EN_SEL) {
+		if (desired_settings & BMP3_TEMP_EN_SEL)
+		{
 			/* Set the temperature enable settings in the
 			register variable */
 			reg_data = BMP3_SET_BITS(reg_data, BMP3_TEMP_EN, settings.temp_en);
@@ -874,10 +954,13 @@ uint8_t BMP388::are_settings_changed(uint32_t sub_settings, uint32_t desired_set
 {
 	uint8_t settings_changed = FALSE;
 
-	if (sub_settings & desired_settings) {
+	if (sub_settings & desired_settings)
+	{
 		/* User wants to modify this particular settings */
 		settings_changed = TRUE;
-	} else {
+	}
+	else
+	{
 		/* User don't want to modify this particular settings */
 		settings_changed = FALSE;
 	}
@@ -890,9 +973,9 @@ int8_t BMP388::get_sensor_settings()
 	int8_t rslt;
 	uint8_t settings_data[BMP3_GEN_SETT_LEN];
 
-
 	rslt = get_regs(BMP3_INT_CTRL_ADDR, settings_data, BMP3_GEN_SETT_LEN);
-	if (rslt == BMP3_OK) {
+	if (rslt == BMP3_OK)
+	{
 		/* Parse the settings data */
 		parse_sett_data(settings_data);
 	}
@@ -910,7 +993,6 @@ void BMP388::parse_sett_data(const uint8_t *reg_data)
 	parse_pwr_ctrl_settings(&reg_data[2], &settings);
 	/* Parse odr and filter settings and store in device structure */
 	parse_odr_filter_settings(&reg_data[3], &settings.odr_filter);
-
 }
 
 void BMP388::parse_int_ctrl_settings(const uint8_t *reg_data, struct bmp3_int_ctrl_settings *settings)
@@ -920,7 +1002,6 @@ void BMP388::parse_int_ctrl_settings(const uint8_t *reg_data, struct bmp3_int_ct
 	settings->latch = BMP3_GET_BITS(*reg_data, BMP3_INT_LATCH);
 	settings->drdy_en = BMP3_GET_BITS(*reg_data, BMP3_INT_DRDY_EN);
 }
-
 
 void BMP388::parse_advance_settings(const uint8_t *reg_data, struct bmp3_adv_settings *settings)
 {
@@ -943,14 +1024,15 @@ void BMP388::interleave_reg_addr(const uint8_t *reg_addr, uint8_t *temp_buff, co
 {
 	uint8_t index;
 
-	for (index = 1; index < len; index++) {
+	for (index = 1; index < len; index++)
+	{
 		temp_buff[(index * 2) - 1] = reg_addr[index];
 		temp_buff[index * 2] = reg_data[index];
 	}
 }
 
 double BMP388::compensate_temperature(const struct bmp3_uncomp_data *uncomp_data,
-						struct bmp3_calib_data *calib_data)
+									  struct bmp3_calib_data *calib_data)
 {
 	uint32_t uncomp_temp = uncomp_data->temperature;
 	double partial_data1;
@@ -960,8 +1042,7 @@ double BMP388::compensate_temperature(const struct bmp3_uncomp_data *uncomp_data
 	partial_data2 = (double)(partial_data1 * calib_data->quantized_calib_data.par_t2);
 	/* Update the compensated temperature in calib structure since this is
 	   needed for pressure calculation */
-	calib_data->quantized_calib_data.t_lin = partial_data2 + (partial_data1 * partial_data1)
-							* calib_data->quantized_calib_data.par_t3;
+	calib_data->quantized_calib_data.t_lin = partial_data2 + (partial_data1 * partial_data1) * calib_data->quantized_calib_data.par_t3;
 
 	/* Returns compensated temperature */
 	return calib_data->quantized_calib_data.t_lin;
@@ -972,7 +1053,7 @@ double BMP388::compensate_temperature(const struct bmp3_uncomp_data *uncomp_data
  * return the compensated pressure data in double data type.
  */
 double BMP388::compensate_pressure(const struct bmp3_uncomp_data *uncomp_data,
-					const struct bmp3_calib_data *calib_data)
+								   const struct bmp3_calib_data *calib_data)
 {
 	const struct bmp3_quantized_calib_data *quantized_calib_data = &calib_data->quantized_calib_data;
 	/* Variable to store the compensated pressure */
@@ -994,7 +1075,7 @@ double BMP388::compensate_pressure(const struct bmp3_uncomp_data *uncomp_data,
 	partial_data2 = quantized_calib_data->par_p3 * bmp3_pow(quantized_calib_data->t_lin, 2);
 	partial_data3 = quantized_calib_data->par_p4 * bmp3_pow(quantized_calib_data->t_lin, 3);
 	partial_out2 = uncomp_data->pressure *
-			(quantized_calib_data->par_p1 + partial_data1 + partial_data2 + partial_data3);
+				   (quantized_calib_data->par_p1 + partial_data1 + partial_data2 + partial_data3);
 
 	partial_data1 = bmp3_pow((double)uncomp_data->pressure, 2);
 	partial_data2 = quantized_calib_data->par_p9 + quantized_calib_data->par_p10 * quantized_calib_data->t_lin;
@@ -1013,7 +1094,8 @@ double BMP388::bmp3_pow(double base, uint8_t power)
 {
 	double pow_output = 1;
 
-	while (power != 0) {
+	while (power != 0)
+	{
 		pow_output = base * pow_output;
 		power--;
 	}
@@ -1063,7 +1145,7 @@ void BMP388::parse_calib_data(const uint8_t *reg_data)
 	temp_var = 0.125f;
 	quantized_calib_data->par_p5 = ((double)reg_calib_data->par_p5 / temp_var);
 
-	reg_calib_data->par_p6 = BMP3_CONCAT_BYTES(reg_data[14],  reg_data[13]);
+	reg_calib_data->par_p6 = BMP3_CONCAT_BYTES(reg_data[14], reg_data[13]);
 	temp_var = 64.0f;
 	quantized_calib_data->par_p6 = ((double)reg_calib_data->par_p6 / temp_var);
 
