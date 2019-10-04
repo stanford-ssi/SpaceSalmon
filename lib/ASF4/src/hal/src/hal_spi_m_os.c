@@ -108,7 +108,7 @@ static int32_t spi_m_os_io_write(struct io_descriptor *io, const uint8_t *const 
 
 	_spi_m_async_enable_tx(&spi->dev, true);
 
-	if (sem_down(&spi->xfer_sem, ~0) < 0) {
+	if (sem_down(&spi->xfer_sem, ~0) < 0) { //TODO: this doesn't handle CS conflct, it should.
 		return ERR_TIMEOUT;
 	}
 
