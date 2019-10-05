@@ -1,7 +1,9 @@
+#pragma once
+
 #include "hal_adc_sync.h"
 #include <stdint.h>
 
-class Battery
+class OneBattery
 {
   private:
     adc_sync_descriptor *ADC;
@@ -14,6 +16,6 @@ class Battery
         float tempJunction;
     };
     
-    Battery(adc_sync_descriptor *adc);
+    OneBattery(adc_sync_descriptor *adc);
     cell_voltage_t readVoltage();
 };

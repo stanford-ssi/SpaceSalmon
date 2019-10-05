@@ -1,7 +1,7 @@
 #include "hal_adc_sync.h"
 #include <stdint.h>
 
-class Battery
+class TwoBattery
 {
   private:
     adc_sync_descriptor *ADC;
@@ -14,6 +14,6 @@ class Battery
         float tempJunction;
     };
     
-    Battery(adc_sync_descriptor *adc);
+    TwoBattery(adc_sync_descriptor *adc);
     cell_voltage_t readVoltage();
 };

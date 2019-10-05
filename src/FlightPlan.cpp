@@ -30,7 +30,7 @@ FlightPlan::FlightPlan(){
 
         events_json.add(event_arr[i]);
     }
-    Globals::logger.logJSON(flightplan_json, "flightplan");
+    sys.tasks.logger.logJSON(flightplan_json, "flightplan");
 }
 
 void FlightPlan::update(AltFilter filter){
@@ -80,7 +80,7 @@ void FlightPlan::update(AltFilter filter){
             {
                 StaticJsonDocument<500> event_json;
                 event_json["squib"] = e.squib;
-                Globals::logger.logJSON(event_json, "event");
+                sys.tasks.logger.logJSON(event_json, "event");
                 //BLOW SQUIB!
             }
             
@@ -98,5 +98,5 @@ void FlightPlan::logState(){
     StaticJsonDocument<500> json;
     json["state"] = state;
     json["pad_alt"] = pad_alts[0];
-    Globals::logger.logJSON(json, "state");
+    sys.tasks.logger.logJSON(json, "state");
 }

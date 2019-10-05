@@ -1,4 +1,4 @@
-#include "Battery.hpp"
+#include "TwoBattery.hpp"
 
 /*
 TODO:
@@ -7,12 +7,12 @@ TODO:
 -Measure VBAT
 */
 
-Battery::Battery(adc_sync_descriptor *adc)
+TwoBattery::TwoBattery(adc_sync_descriptor *adc)
 {
     ADC = adc;
 }
 
-Battery::cell_voltage_t Battery::readVoltage()
+TwoBattery::cell_voltage_t TwoBattery::readVoltage()
 {
     uint16_t readx0E, readx19, readx1C;
 

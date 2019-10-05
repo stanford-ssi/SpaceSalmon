@@ -1,6 +1,6 @@
 #include "System.hpp"
 
-static System system;
+System sys;
 
 int main(void)
 {

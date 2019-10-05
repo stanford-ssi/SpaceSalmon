@@ -1,3 +1,11 @@
+#pragma once
+
+enum SensorStatus
+{
+    Init,
+    Alive,
+    Error
+};
 
 class Sensor
 {
@@ -11,9 +19,3 @@ protected:
     char id[5];
 };
 
-enum SensorStatus
-{
-    Init,
-    Alive,
-    Error
-};

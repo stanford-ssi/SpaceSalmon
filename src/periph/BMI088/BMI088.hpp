@@ -86,9 +86,11 @@ public:
   bool mapSync(SyncPin pin);
   bool pinModeDrdy(PinMode mode, PinLevel level);
 
-private:
   BMI088Accel *accel;
   BMI088Gyro *gyro;
+
+private:
+
   uint8_t drdy_pin;
   // constants
   static const uint8_t ACC_DISABLE = 0;

@@ -22,25 +22,23 @@ TaskHandle_t SensorTask::getTaskHandle()
 
 void SensorTask::activity(void *ptr)
 {
-    Globals::logger.log("Initializing Sensors");
+    sys.tasks.logger.log("Initializing Sensors");
 
     int rc;
     char str[100];
 
     vTaskDelay(2); //but why...
 
-    ADXL375 adxl375(&SPI_SENSOR, ADXL_CS_1);
-    adxl375.init();
-    adxl375.startMeasuring();
+    sys.sensors.adxl1.init();
+    sys.sensors.adxl1.startMeasuring();
 
     vTaskDelay(2); //but why...
 
-    BMP388 bmp388(&SPI_SENSOR, BMP_CS_1);
-    rc = bmp388.begin();
+    rc = sys.sensors.pres1.init();
 
     if (rc != true)
     {
-        Globals::logger.log("Error Starting BMP388");
+        sys.tasks.logger.log("Error Starting BMP388");
     }
 
     gpio_set_pin_level(ACCEL_CS_1, false);
@@ -48,24 +46,22 @@ void SensorTask::activity(void *ptr)
     gpio_set_pin_level(ACCEL_CS_1, true);
     vTaskDelay(1);
 
-    BMI088Accel bmi088accel(&SPI_SENSOR, ACCEL_CS_1);
-    rc = bmi088accel.begin();
+    rc = sys.sensors.imu1.accel->begin();
 
     if (rc != 1)
     {
         snprintf(str, sizeof(str), "Error Starting BMI088Accel: %i", rc);
-        Globals::logger.log(str);
+        sys.tasks.logger.log(str);
     }
 
     vTaskDelay(2); //but why...
 
-    BMI088Gyro bmi088gyro(&SPI_SENSOR, GYRO_CS_1);
-    rc = bmi088gyro.begin();
+    rc = sys.sensors.imu1.gyro->begin();
 
     if (rc != 1)
     {
         snprintf(str, sizeof(str), "Error Starting BMI088Gyro: %i", rc);
-        Globals::logger.log(str);
+        sys.tasks.logger.log(str);
     }
 
     TickType_t lastSensorTime = xTaskGetTickCount();
@@ -80,12 +76,12 @@ void SensorTask::activity(void *ptr)
 
         SensorData data;
 
-        data.adxl375_data = adxl375.readSensor();
-        data.bmp388_data = bmp388.readSensor();
+        data.adxl375_data = sys.sensors.adxl1.readSensor();
+        data.bmp388_data = sys.sensors.pres1.readSensor();
         vTaskDelay(2); //but why...
-        data.bmi088accel_data = bmi088accel.readSensor();
+        data.bmi088accel_data = sys.sensors.imu1.accel->readSensor();
         vTaskDelay(2); //but why...
-        data.bmi088gyro_data = bmi088gyro.readSensor();
+        data.bmi088gyro_data = sys.sensors.imu1.gyro->readSensor();
 
         data.tick = xTaskGetTickCount();
 
@@ -113,7 +109,7 @@ void SensorTask::activity(void *ptr)
         adxl_accel_json.add(data.adxl375_data.y);
         adxl_accel_json.add(data.adxl375_data.z);
 
-        Globals::logger.logJSON(sensor_json, "sensor");
+        sys.tasks.logger.logJSON(sensor_json, "sensor");
 
         gpio_set_pin_level(SENSOR_LED, false);
     }

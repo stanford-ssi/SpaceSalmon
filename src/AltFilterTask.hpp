@@ -5,6 +5,7 @@ struct SensorData;
 
 #include <FreeRTOS.h>
 #include <task.h>
+#include <message_buffer.h>
 #include <semphr.h>
 #include <hal_rtos.h>
 #include "support/driver_init.h"
@@ -14,6 +15,7 @@ struct SensorData;
 #include "ArduinoJson.h"
 #include "AltFilter.hpp"
 #include "FlightPlan.hpp"
+#include "periph/OneBattery/OneBattery.hpp"
 
 struct SensorData
 {

@@ -25,11 +25,11 @@ void AltimeterTask::activity(void *ptr)
     char str[100];
 
     snprintf(str,sizeof(str),"Altimeter Started\nBuild Version: %s", PIO_BUILD);
-    Globals::logger.log(str);
+    sys.tasks.logger.log(str);
     
     TickType_t lastStatusTime = xTaskGetTickCount();
 
-    Battery battery(&ADC_0);
+    OneBattery battery(&ADC_0);
 
     while(true){
 
@@ -52,15 +52,14 @@ void AltimeterTask::activity(void *ptr)
             tasks_json[tasks[i].pcTaskName] = percent;
         }
 
-        Battery::cell_voltage_t voltage = battery.readVoltage();
+        OneBattery::cell_voltage_t voltage = battery.readVoltage();
 
         JsonObject bat_json = status_json.createNestedObject("bat");
-        bat_json["cellA"] = voltage.cellA;
-        bat_json["cellB"] = voltage.cellB;
+        bat_json["cell"] = voltage.cellMain;
 
-        status_json["log"] = Globals::logger.isLoggingEnabled();
+        status_json["log"] = sys.tasks.logger.isLoggingEnabled();
 
-        Globals::logger.logJSON(status_json,"status");
+        sys.tasks.logger.logJSON(status_json,"status");
 
         gpio_set_pin_level(SENSOR_LED,false);
     }
