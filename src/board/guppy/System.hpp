@@ -18,12 +18,12 @@ public:
     class Sensors
     {
     public:
-        ADXL375 adxl1 = ADXL375(&SPI_SENSOR, 10, "adxl1");
-        ADXL375 adxl2 = ADXL375(&SPI_SENSOR, 11, "adxl2");
-        BMI088 imu1 = BMI088(&SPI_SENSOR, 12, 13, "imu1");
-        BMI088 imu2 = BMI088(&SPI_SENSOR, 14, 15, "imu2");
-        BMP388 pres1 = BMP388(&SPI_SENSOR, 16, "pres1");
-        BMP388 pres2 = BMP388(&SPI_SENSOR, 17, "pres2");
+        ADXL375 adxl1 = ADXL375(&SPI_SENSOR, GPIO(GPIO_PORTB, 6), "adxl1");
+        ADXL375 adxl2 = ADXL375(&SPI_SENSOR, GPIO(GPIO_PORTA, 2), "adxl2");
+        BMI088 imu1 = BMI088(&SPI_SENSOR, GPIO(GPIO_PORTB, 9), GPIO(GPIO_PORTB, 8), "imu1");
+        BMI088 imu2 = BMI088(&SPI_SENSOR, GPIO(GPIO_PORTB, 5), GPIO(GPIO_PORTB, 4), "imu2");
+        BMP388 pres1 = BMP388(&SPI_SENSOR, GPIO(GPIO_PORTB, 7), "pres1");
+        BMP388 pres2 = BMP388(&SPI_SENSOR, GPIO(GPIO_PORTA, 3), "pres2");
         Sensor *list[6] = {&imu1, &imu2, &adxl1, &adxl2, &pres1, &pres2};
     };
     class Tasks
