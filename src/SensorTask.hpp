@@ -1,23 +1,11 @@
 #pragma once
 
-class SensorTask;
+#define SENSOR_LED LED2
 
 #include <FreeRTOS.h>
 #include <task.h>
 #include <semphr.h>
 #include <hal_rtos.h>
-#include "support/driver_init.h"
-#include "printf.h"
-#include "support/atmel_start_pins.h"
-#include "periph/ADXL375/ADXL375.hpp"
-#include "periph/BMP388/BMP388.hpp"
-#include "periph/BMI088/BMI088.hpp"
-#include "main.hpp"
-#include "ArduinoJson.h"
-#include "AltFilterTask.hpp"
-#include "AltFilter.hpp"
-
-#define SENSOR_LED LED2
 
 class SensorTask
 {
@@ -34,3 +22,14 @@ public:
     SensorTask();
     TaskHandle_t getTaskHandle();
 };
+
+#include "main.hpp"
+#include "support/driver_init.h"
+#include "printf.h"
+#include "support/atmel_start_pins.h"
+#include "periph/ADXL375/ADXL375.hpp"
+#include "periph/BMP388/BMP388.hpp"
+#include "periph/BMI088/BMI088.hpp"
+#include "ArduinoJson.h"
+#include "AltFilterTask.hpp"
+#include "AltFilter.hpp"

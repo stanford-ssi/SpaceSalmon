@@ -42,7 +42,7 @@ private:
 public:
   LoggerTask();
   TaskHandle_t getTaskHandle();
-  void log(char *message);
+  void log(const char *message);
   void logJSON(JsonDocument & jsonDoc, const char* id);
   bool isLoggingEnabled() { return loggingEnabled; };
 };

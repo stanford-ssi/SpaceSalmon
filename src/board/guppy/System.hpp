@@ -29,10 +29,10 @@ public:
     class Tasks
     {
     public:
-        //SensorTask sensor;
+        SensorTask sensor;
         LoggerTask logger;
-        /*SquibTask squib; //this should not be a task...
-        AltimeterTask altimeter;*/
+        //SquibTask squib; //this should not be a task...
+        //AltimeterTask altimeter;
     };
 
     Sensors sensors;

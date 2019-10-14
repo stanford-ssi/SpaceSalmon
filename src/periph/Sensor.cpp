@@ -1,7 +1,7 @@
 #include "Sensor.hpp"
 #include <cstring>
 
-Sensor::Sensor(char * newId){
+Sensor::Sensor(const char * newId){
     strncpy(id, newId, sizeof(id));
 }
 

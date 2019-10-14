@@ -18,7 +18,7 @@ class BMP388 : public Sensor
 
     typedef bmp3_data Data;
 
-    BMP388(struct spi_m_os_descriptor *spi, int8_t cspin, char* id);
+    BMP388(struct spi_m_os_descriptor *spi, int8_t cspin, const char* id);
 
     bool init();
     bool setTemperatureOversampling(uint8_t os);

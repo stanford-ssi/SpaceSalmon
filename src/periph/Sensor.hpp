@@ -10,7 +10,7 @@ enum SensorStatus
 class Sensor
 {
 public:
-    Sensor(char* newId);
+    Sensor(const char* newId);
     void readData(); //read data from sensor, store it internally
     SensorStatus getStatus(); //get the status of the sensor
     void init(); //initialize the sensor

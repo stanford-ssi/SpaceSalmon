@@ -16,7 +16,7 @@ TODO: This library works, but can only be used once. It needs to be re-writen as
 /*! Advance settings */
 #define ADV_SETT UINT16_C(0x1800)
 
-BMP388::BMP388(struct spi_m_os_descriptor *spi, int8_t cspin, char *id) : Sensor(id)
+BMP388::BMP388(struct spi_m_os_descriptor *spi, int8_t cspin, const char *id) : Sensor(id)
 {
 	_spi = spi;
 	_cs = cspin;

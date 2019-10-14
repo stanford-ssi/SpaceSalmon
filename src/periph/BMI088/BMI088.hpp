@@ -78,7 +78,7 @@ public:
     ACTIVE_HIGH,
     ACTIVE_LOW
   };
-  BMI088(struct spi_m_os_descriptor *bus, uint8_t accel_cs, uint8_t gyro_cs, char* id);
+  BMI088(struct spi_m_os_descriptor *bus, uint8_t accel_cs, uint8_t gyro_cs, const char* id);
   int init();
   bool setOdr(Odr odr);
   bool setRange(AccelRange accel_range, GyroRange gyro_range);

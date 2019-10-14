@@ -80,7 +80,7 @@ public:
     BW_1600HZ = 15
   };
 
-  ADXL375(struct spi_m_os_descriptor *SPI, uint8_t CS_PIN, char* id);
+  ADXL375(struct spi_m_os_descriptor *SPI, uint8_t CS_PIN, const char* id);
   void init();
   void startMeasuring();
   Data readSensor();
