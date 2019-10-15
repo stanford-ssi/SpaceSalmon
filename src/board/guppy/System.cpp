@@ -28,6 +28,9 @@ int main(void)
 	printf("#####################\n");
 	printf("\n");
 	printf("Starting Tasks!\n\n\n");
+
+
+	
 	vTaskStartScheduler();
 }
 
