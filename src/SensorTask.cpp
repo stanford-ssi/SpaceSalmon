@@ -34,11 +34,23 @@ void SensorTask::activity(void *ptr)
 
     vTaskDelay(2); //but why...
 
+    sys.sensors.adxl2.init();
+    sys.sensors.adxl2.startMeasuring();
+
+    vTaskDelay(2); //but why...
+
     rc = sys.sensors.pres1.init();
 
     if (rc != true)
     {
-        sys.tasks.logger.log("Error Starting BMP388");
+        sys.tasks.logger.log("Error Starting BMP1");
+    }
+
+    rc = sys.sensors.pres2.init();
+
+    if (rc != true)
+    {
+        sys.tasks.logger.log("Error Starting BMP2");
     }
 
     gpio_set_pin_level(ACCEL_CS_1, false);
@@ -50,7 +62,20 @@ void SensorTask::activity(void *ptr)
 
     if (rc != 1)
     {
-        snprintf(str, sizeof(str), "Error Starting BMI088Accel: %i", rc);
+        snprintf(str, sizeof(str), "Error Starting BMI1Accel: %i", rc);
+        sys.tasks.logger.log(str);
+    }
+
+    gpio_set_pin_level(ACCEL_CS_2, false);
+    vTaskDelay(1);
+    gpio_set_pin_level(ACCEL_CS_2, true);
+    vTaskDelay(1);
+
+    rc = sys.sensors.imu2.accel->begin();
+
+    if (rc != 1)
+    {
+        snprintf(str, sizeof(str), "Error Starting BMI2Accel: %i", rc);
         sys.tasks.logger.log(str);
     }
 
@@ -58,9 +83,20 @@ void SensorTask::activity(void *ptr)
 
     rc = sys.sensors.imu1.gyro->begin();
 
+    
     if (rc != 1)
     {
-        snprintf(str, sizeof(str), "Error Starting BMI088Gyro: %i", rc);
+        snprintf(str, sizeof(str), "Error Starting BMI1Gyro: %i", rc);
+        sys.tasks.logger.log(str);
+    }
+
+    vTaskDelay(2); //but why...
+
+    rc = sys.sensors.imu2.gyro->begin();
+
+    if (rc != 1)
+    {
+        snprintf(str, sizeof(str), "Error Starting BMI2Gyro: %i", rc);
         sys.tasks.logger.log(str);
     }
 
@@ -72,42 +108,76 @@ void SensorTask::activity(void *ptr)
 
         gpio_set_pin_level(SENSOR_LED, true);
 
-        StaticJsonDocument<1000> sensor_json;
+        StaticJsonDocument<1024> sensor_json;
 
         SensorData data;
 
-        data.adxl375_data = sys.sensors.adxl1.readSensor();
-        data.bmp388_data = sys.sensors.pres1.readSensor();
+        data.adxl1_data = sys.sensors.adxl1.readSensor();
+        data.bmp1_data = sys.sensors.pres1.readSensor();
         vTaskDelay(2); //but why...
-        data.bmi088accel_data = sys.sensors.imu1.accel->readSensor();
+        data.bmiaccel1_data = sys.sensors.imu1.accel->readSensor();
         vTaskDelay(2); //but why...
-        data.bmi088gyro_data = sys.sensors.imu1.gyro->readSensor();
+        data.bmigyro1_data = sys.sensors.imu1.gyro->readSensor();
+
+
+        data.adxl2_data = sys.sensors.adxl2.readSensor();
+        data.bmp2_data = sys.sensors.pres2.readSensor();
+        vTaskDelay(2); //but why...
+        data.bmiaccel2_data = sys.sensors.imu2.accel->readSensor();
+        vTaskDelay(2); //but why...
+        data.bmigyro2_data = sys.sensors.imu2.gyro->readSensor();
 
         data.tick = xTaskGetTickCount();
 
         sensor_json["tick"] = data.tick;
 
-        JsonObject bmp388_json = sensor_json.createNestedObject("bmp");
-        JsonObject bmi088_json = sensor_json.createNestedObject("bmi");
-        JsonObject adxl375_json = sensor_json.createNestedObject("adxl");
+        JsonObject bmp1_json = sensor_json.createNestedObject("bmp1");
+        JsonObject bmi1_json = sensor_json.createNestedObject("bmi1");
+        JsonObject adxl1_json = sensor_json.createNestedObject("adxl1");
 
-        bmp388_json["p"] = data.bmp388_data.pressure;
-        bmp388_json["t"] = data.bmp388_data.temperature;
+        bmp1_json["p"] = data.bmp1_data.pressure;
+        bmp1_json["t"] = data.bmp1_data.temperature;
 
-        JsonArray bmi_accel_json = bmi088_json.createNestedArray("a");
-        bmi_accel_json.add(data.bmi088accel_data.x);
-        bmi_accel_json.add(data.bmi088accel_data.y);
-        bmi_accel_json.add(data.bmi088accel_data.z);
+        JsonArray bmi1_accel_json = bmi1_json.createNestedArray("a");
+        bmi1_accel_json.add(data.bmiaccel1_data.x);
+        bmi1_accel_json.add(data.bmiaccel1_data.y);
+        bmi1_accel_json.add(data.bmiaccel1_data.z);
 
-        JsonArray bmi_gyro_json = bmi088_json.createNestedArray("g");
-        bmi_gyro_json.add(data.bmi088gyro_data.x);
-        bmi_gyro_json.add(data.bmi088gyro_data.y);
-        bmi_gyro_json.add(data.bmi088gyro_data.z);
+        JsonArray bmi1_gyro_json = bmi1_json.createNestedArray("g");
+        bmi1_gyro_json.add(data.bmigyro1_data.x);
+        bmi1_gyro_json.add(data.bmigyro1_data.y);
+        bmi1_gyro_json.add(data.bmigyro1_data.z);
 
-        JsonArray adxl_accel_json = adxl375_json.createNestedArray("a");
-        adxl_accel_json.add(data.adxl375_data.x);
-        adxl_accel_json.add(data.adxl375_data.y);
-        adxl_accel_json.add(data.adxl375_data.z);
+        JsonArray adxl1_accel_json = adxl1_json.createNestedArray("a");
+        adxl1_accel_json.add(data.adxl1_data.x);
+        adxl1_accel_json.add(data.adxl1_data.y);
+        adxl1_accel_json.add(data.adxl1_data.z);
+
+
+        //second set!
+
+        JsonObject bmp2_json = sensor_json.createNestedObject("bmp2");
+        JsonObject bmi2_json = sensor_json.createNestedObject("bmi2");
+        JsonObject adxl2_json = sensor_json.createNestedObject("adxl2");
+
+        bmp2_json["p"] = data.bmp2_data.pressure;
+        bmp2_json["t"] = data.bmp2_data.temperature;
+
+        JsonArray bmi2_accel_json = bmi2_json.createNestedArray("a");
+        bmi2_accel_json.add(data.bmiaccel2_data.x);
+        bmi2_accel_json.add(data.bmiaccel2_data.y);
+        bmi2_accel_json.add(data.bmiaccel2_data.z);
+
+        JsonArray bmi2_gyro_json = bmi2_json.createNestedArray("g");
+        bmi2_gyro_json.add(data.bmigyro2_data.x);
+        bmi2_gyro_json.add(data.bmigyro2_data.y);
+        bmi2_gyro_json.add(data.bmigyro2_data.z);
+
+        JsonArray adxl2_accel_json = adxl2_json.createNestedArray("a");
+        adxl2_accel_json.add(data.adxl2_data.x);
+        adxl2_accel_json.add(data.adxl2_data.y);
+        adxl2_accel_json.add(data.adxl2_data.z);
+        
 
         sys.tasks.logger.logJSON(sensor_json, "sensor");
 
