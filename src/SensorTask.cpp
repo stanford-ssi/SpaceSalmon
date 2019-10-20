@@ -104,7 +104,7 @@ void SensorTask::activity(void *ptr)
 
     while (true)
     {
-        vTaskDelayUntil(&lastSensorTime, 10);
+        vTaskDelayUntil(&lastSensorTime, 20);
 
         gpio_set_pin_level(SENSOR_LED, true);
 
@@ -114,17 +114,18 @@ void SensorTask::activity(void *ptr)
 
         data.adxl1_data = sys.sensors.adxl1.readSensor();
         data.bmp1_data = sys.sensors.pres1.readSensor();
-        vTaskDelay(2); //but why...
+        //vTaskDelay(2); //but why...
         data.bmiaccel1_data = sys.sensors.imu1.accel->readSensor();
-        vTaskDelay(2); //but why...
+        //vTaskDelay(2); //but why...
         data.bmigyro1_data = sys.sensors.imu1.gyro->readSensor();
 
+        //vTaskDelay(4); //but why...
 
         data.adxl2_data = sys.sensors.adxl2.readSensor();
         data.bmp2_data = sys.sensors.pres2.readSensor();
-        vTaskDelay(2); //but why...
+        //vTaskDelay(2); //but why...
         data.bmiaccel2_data = sys.sensors.imu2.accel->readSensor();
-        vTaskDelay(2); //but why...
+        //vTaskDelay(2); //but why...
         data.bmigyro2_data = sys.sensors.imu2.gyro->readSensor();
 
         data.tick = xTaskGetTickCount();

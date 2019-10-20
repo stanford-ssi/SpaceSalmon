@@ -357,7 +357,7 @@ int8_t BMP388::soft_reset()
 		if (rslt == BMP3_OK)
 		{
 			/* Wait for 2 ms */
-			delay_ms(2);
+			//delay_ms(2); //TODO FIX!
 			/* Read for command error status */
 			rslt = get_regs(BMP3_ERR_REG_ADDR, &cmd_err_status, 1);
 			/* check for command error status */
@@ -392,7 +392,7 @@ int8_t BMP388::set_op_mode()
 			   forced mode or normal mode */
 		rslt = put_device_to_sleep();
 		/* Give some time for device to go into sleep mode */
-		delay_ms(5);
+		//TODO FIX! delay_ms(5);
 	}
 	/* Set the power mode */
 	if (rslt == BMP3_OK)
