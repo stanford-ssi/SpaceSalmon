@@ -6,6 +6,7 @@ extern "C"
 #include <hal_gpio.h>
 #include <stdint.h>
 #include <string.h>
+#include "../Sensor.hpp"
 }
 
 #define ADXL375_REG_DEVID 0x00            // Device ID
@@ -48,7 +49,7 @@ extern "C"
 #define ADXL375_TRIGGER_INT1_PIN 0
 #define ADXL375_TRIGGER_INT2_PIN 1
 
-class ADXL375
+class ADXL375 : public Sensor
 {
 public:
   //Accelerometer data from ADXL375, in meters/sec^2
@@ -79,7 +80,7 @@ public:
     BW_1600HZ = 15
   };
 
-  ADXL375(struct spi_m_os_descriptor *SPI, uint8_t CS_PIN);
+  ADXL375(struct spi_m_os_descriptor *SPI, uint8_t CS_PIN, const char* id);
   void init();
   void startMeasuring();
   Data readSensor();

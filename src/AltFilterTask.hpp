@@ -5,6 +5,7 @@ struct SensorData;
 
 #include <FreeRTOS.h>
 #include <task.h>
+#include <message_buffer.h>
 #include <semphr.h>
 #include <hal_rtos.h>
 #include "support/driver_init.h"
@@ -14,13 +15,18 @@ struct SensorData;
 #include "ArduinoJson.h"
 #include "AltFilter.hpp"
 #include "FlightPlan.hpp"
+#include "periph/OneBattery/OneBattery.hpp"
 
 struct SensorData
 {
-    ADXL375::Data adxl375_data;
-    BMP3xx::Data bmp388_data;
-    BMI088Gyro::Data bmi088gyro_data;
-    BMI088Accel::Data bmi088accel_data;
+    ADXL375::Data adxl1_data;
+    ADXL375::Data adxl2_data;
+    BMP388::Data bmp1_data;
+    BMP388::Data bmp2_data;
+    BMI088Gyro::Data bmigyro1_data;
+    BMI088Gyro::Data bmigyro2_data;
+    BMI088Accel::Data bmiaccel1_data;
+    BMI088Accel::Data bmiaccel2_data;
     uint32_t tick;
 };
 

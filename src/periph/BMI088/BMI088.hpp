@@ -28,12 +28,13 @@ extern "C"
 #include <math.h>
 #include <string.h>
 #include <hal_delay.h>
+#include "../Sensor.hpp"
 }
 
 #include "BMI088Accel.hpp"
 #include "BMI088Gyro.hpp"
 
-class BMI088
+class BMI088 : public Sensor
 {
 public:
   enum AccelRange
@@ -77,17 +78,19 @@ public:
     ACTIVE_HIGH,
     ACTIVE_LOW
   };
-  BMI088(struct spi_m_os_descriptor *bus, uint8_t accel_cs, uint8_t gyro_cs);
-  int begin();
+  BMI088(struct spi_m_os_descriptor *bus, uint8_t accel_cs, uint8_t gyro_cs, const char* id);
+  int init();
   bool setOdr(Odr odr);
   bool setRange(AccelRange accel_range, GyroRange gyro_range);
   bool mapDrdy(DrdyPin pin);
   bool mapSync(SyncPin pin);
   bool pinModeDrdy(PinMode mode, PinLevel level);
 
-private:
   BMI088Accel *accel;
   BMI088Gyro *gyro;
+
+private:
+
   uint8_t drdy_pin;
   // constants
   static const uint8_t ACC_DISABLE = 0;

@@ -33,7 +33,7 @@ TaskHandle_t LoggerTask::getTaskHandle()
     return taskHandle;
 }
 
-void LoggerTask::log(char *message)
+void LoggerTask::log(const char *message)
 {
     vPortEnterCritical();
     xMessageBufferSend(bufferHandle, message, strlen(message) + 1, 0);

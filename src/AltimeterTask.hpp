@@ -10,11 +10,11 @@ class AltimeterTask;
 #include "printf.h"
 #include "support/atmel_start_pins.h"
 #include "periph/ADXL375/ADXL375.hpp"
-#include "periph/BMP388/BMP3xx.hpp"
+#include "periph/BMP388/BMP388.hpp"
 #include "periph/BMI088/BMI088.hpp"
 #include "main.hpp"
 #include "ArduinoJson.h"
-#include "Battery.hpp"
+#include "periph/OneBattery/OneBattery.hpp"
 
 #define ALT_LED LED1
 

@@ -1,9 +1,6 @@
-#include "main.hpp"
+#include "System.hpp"
 
-LoggerTask Globals::logger;
-SensorTask Globals::sensor;
-SquibTask Globals::squib;
-AltimeterTask Globals::altimeter;
+System sys;
 
 int main(void)
 {
@@ -31,6 +28,9 @@ int main(void)
 	printf("#####################\n");
 	printf("\n");
 	printf("Starting Tasks!\n\n\n");
+
+
+	
 	vTaskStartScheduler();
 }
 

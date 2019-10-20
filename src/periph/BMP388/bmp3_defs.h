@@ -721,24 +721,10 @@ struct bmp3_dev {
 	uint8_t chip_id;
 	/*! Device Id */
 	uint8_t dev_id;
-	/*! SPI/I2C interface */
-	enum bmp3_intf intf;
 	/*! Decide SPI or I2C read mechanism */
 	uint8_t dummy_byte;
-	/*! Read function pointer */
-	bmp3_com_fptr_t read;
-	/*! Write function pointer */
-	bmp3_com_fptr_t write;
-	/*! Delay function pointer */
-	bmp3_delay_fptr_t delay_ms;
 	/*! Trim data */
-	struct bmp3_calib_data calib_data;
-	/*! Sensor Settings */
-	struct bmp3_settings settings;
-	/*! Sensor and interrupt status flags */
-	struct bmp3_status status;
-	/*! FIFO data and settings structure */
-	struct bmp3_fifo *fifo;
+
 };
 
 #ifdef __cplusplus

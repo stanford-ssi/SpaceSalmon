@@ -1,5 +1,12 @@
 #include "Battery.hpp"
 
+/*
+TODO:
+-Option for Thunderguppy voltage
+-Measure Chip Temp
+-Measure VBAT
+*/
+
 Battery::Battery(adc_sync_descriptor *adc)
 {
     ADC = adc;
