@@ -37,7 +37,7 @@
 // <i> The SPI data transfer rate
 // <id> spi_master_baud_rate
 #ifndef CONF_SERCOM_0_SPI_BAUD
-#define CONF_SERCOM_0_SPI_BAUD 50000
+#define CONF_SERCOM_0_SPI_BAUD 500000 //500khz clock
 #endif
 
 // </h>

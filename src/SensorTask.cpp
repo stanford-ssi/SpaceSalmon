@@ -104,7 +104,7 @@ void SensorTask::activity(void *ptr)
 
     while (true)
     {
-        vTaskDelayUntil(&lastSensorTime, 20);
+        vTaskDelayUntil(&lastSensorTime, 10);
 
         gpio_set_pin_level(SENSOR_LED, true);
 
