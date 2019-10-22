@@ -32,7 +32,7 @@ public:
         SensorTask sensor;
         LoggerTask logger;
         //SquibTask squib; //this should not be a task...
-        //AltimeterTask altimeter;
+        AltimeterTask altimeter;
     };
 
     Sensors sensors;
