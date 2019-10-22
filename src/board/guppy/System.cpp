@@ -29,7 +29,17 @@ int main(void)
 	printf("\n");
 	printf("Starting Tasks!\n\n\n");
 
+	usart_sync_enable(&USART_ESP);
 
+	uint8_t buf[256];
+
+	while(true){
+		if(usart_sync_is_rx_not_empty(&USART_ESP)){
+			int end = USART_ESP.io.read(&USART_ESP.io,buf,256);
+			buf[end] = 0;
+			printf("%s",buf);
+		}
+	}
 	
 	vTaskStartScheduler();
 }
