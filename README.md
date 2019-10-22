@@ -15,3 +15,4 @@ Space Salmon is a a flight computer, designed by Tim Vrakas for the Stanford Stu
 `SystemSensors` struct will have a set of sensor objects that define the SPI and CS configuration for each board
 BMP and BMI libraries need to be re-writen as C++ classes so that they can co-exist.
 
+test
