@@ -382,7 +382,7 @@
 // <i> Indicates whether configuration for FDPLL0 is enabled or not
 // <id> enable_fdpll0
 #ifndef CONF_FDPLL0_CONFIG
-#define CONF_FDPLL0_CONFIG 0
+#define CONF_FDPLL0_CONFIG 1
 #endif
 
 // <y> Reference Clock Source
@@ -412,7 +412,7 @@
 // <i> Indicates whether Digital Phase Locked Loop is enabled or not
 // <id> fdpll0_arch_enable
 #ifndef CONF_FDPLL0_ENABLE
-#define CONF_FDPLL0_ENABLE 0
+#define CONF_FDPLL0_ENABLE 1
 #endif
 
 // <q> On Demand Control
@@ -430,18 +430,21 @@
 #endif
 
 // <o> Loop Divider Ratio Fractional Part <0x0-0x1F>
+// <i> Value of LDRFRAC is calculated using Fclk_dpll=Fckr*(LDR+1+LDRFRAC/32) formula as given in datasheet. This value is directly written in to DPLLRATIO register
 // <id> fdpll0_ldrfrac
 #ifndef CONF_FDPLL0_LDRFRAC
-#define CONF_FDPLL0_LDRFRAC 0xd
+#define CONF_FDPLL0_LDRFRAC 24
 #endif
 
 // <o> Loop Divider Ratio Integer Part <0x0-0x1FFF>
+// <i> Value of LDR is calculated using Fclk_dpll=Fckr*(LDR+1+LDRFRAC/32) formula as given in datasheet. This value is directly written in to DPLLRATIO register
 // <id> fdpll0_ldr
 #ifndef CONF_FDPLL0_LDR
-#define CONF_FDPLL0_LDR 0x5b7
+#define CONF_FDPLL0_LDR 3050
 #endif
 
 // <o> Clock Divider <0x0-0x7FF>
+// <i> This Clock divider is only for XOSC clock input to DPLL
 // <id> fdpll0_clock_div
 #ifndef CONF_FDPLL0_DIV
 #define CONF_FDPLL0_DIV 0x0
@@ -464,7 +467,7 @@
 // <i> Indicates whether Lock Bypass is enabled or not
 // <id> fdpll0_arch_lbypass
 #ifndef CONF_FDPLL0_LBYPASS
-#define CONF_FDPLL0_LBYPASS 0
+#define CONF_FDPLL0_LBYPASS 1
 #endif
 
 // <o> Lock Time
@@ -492,7 +495,7 @@
 // <i> Indicates whether Wake Up Fast is enabled or not
 // <id> fdpll0_arch_wuf
 #ifndef CONF_FDPLL0_WUF
-#define CONF_FDPLL0_WUF 0
+#define CONF_FDPLL0_WUF 1
 #endif
 
 // <o> Proportional Integral Filter Selection <0x0-0xF>
@@ -555,18 +558,21 @@
 #endif
 
 // <o> Loop Divider Ratio Fractional Part <0x0-0x1F>
+// <i> Value of LDRFRAC is calculated using Fclk_dpll=Fckr*(LDR+1+LDRFRAC/32) formula as given in datasheet. This value is directly written in to DPLLRATIO register
 // <id> fdpll1_ldrfrac
 #ifndef CONF_FDPLL1_LDRFRAC
 #define CONF_FDPLL1_LDRFRAC 0xd
 #endif
 
 // <o> Loop Divider Ratio Integer Part <0x0-0x1FFF>
+// <i> Value of LDR is calculated using Fclk_dpll=Fckr*(LDR+1+LDRFRAC/32) formula as given in datasheet. This value is directly written in to DPLLRATIO register
 // <id> fdpll1_ldr
 #ifndef CONF_FDPLL1_LDR
 #define CONF_FDPLL1_LDR 0x5b7
 #endif
 
 // <o> Clock Divider <0x0-0x7FF>
+// <i> This Clock divider is only for XOSC clock input to DPLL
 // <id> fdpll1_clock_div
 #ifndef CONF_FDPLL1_DIV
 #define CONF_FDPLL1_DIV 0x0

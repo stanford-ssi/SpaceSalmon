@@ -25,7 +25,7 @@
 // <i> This defines the clock source for generic clock generator 0
 // <id> gclk_gen_0_oscillator
 #ifndef CONF_GCLK_GEN_0_SOURCE
-#define CONF_GCLK_GEN_0_SOURCE GCLK_GENCTRL_SRC_DFLL
+#define CONF_GCLK_GEN_0_SOURCE GCLK_GENCTRL_SRC_DPLL0
 #endif
 
 // <q> Run in Standby

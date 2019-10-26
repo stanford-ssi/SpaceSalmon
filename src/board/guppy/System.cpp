@@ -29,7 +29,15 @@ int main(void)
 	printf("\n");
 	printf("Starting Tasks!\n\n\n");
 
-
+	while(true){
+		bool led = false;
+		for(uint32_t i = 0; true; i++){
+			printf("Count %d\n", i);
+			delay_ms(1000);
+			led = !led;
+			gpio_set_pin_level(LED1, led);
+		}
+	}
 	
 	vTaskStartScheduler();
 }
