@@ -36,10 +36,14 @@ void GPSTask::activity(void *ptr)
             while(usart_sync_is_rx_not_empty(&USART_ESP)){
                 int end = USART_ESP.io.read(&USART_ESP.io,buf,16);
                 for(uint8_t i = 0; i < end; i++){
-                    if(parser.encode(buf[i])){
-                        char str[64];
-                        sprintf_(str,"time: %d\n",parser.time.value());
-                        sys.tasks.logger.log(str);
+                    if(parser.encode(buf[i]) && parser.location.isUpdated()){
+                        StaticJsonDocument<1024> gps_json;
+                        gps_json["time"] = parser.time.value();
+                        gps_json["lat"] = parser.location.lat();
+                        gps_json["lng"] = parser.location.lng();
+                        gps_json["alt"] = parser.altitude.meters();
+                        gps_json["sat"] = parser.satellites.value();
+                        sys.tasks.logger.logJSON(gps_json, "gps");
                     }
                 }
             }
