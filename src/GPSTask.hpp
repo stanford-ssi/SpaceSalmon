@@ -6,6 +6,7 @@
 #include <task.h>
 #include <semphr.h>
 #include <hal_rtos.h>
+#include "TinyGPS++.h"
 
 class GPSTask
 {
@@ -18,6 +19,8 @@ private:
 
     static void activity(void *p);
 
+    static TinyGPSPlus parser;
+
 public:
     GPSTask();
     TaskHandle_t getTaskHandle();
@@ -28,3 +31,4 @@ public:
 #include "printf.h"
 #include "support/atmel_start_pins.h"
 #include "ArduinoJson.h"
+

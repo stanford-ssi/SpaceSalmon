@@ -3,6 +3,7 @@
 TaskHandle_t GPSTask::taskHandle = NULL;
 StaticTask_t GPSTask::xTaskBuffer;
 StackType_t GPSTask::xStack[stackSize];
+TinyGPSPlus GPSTask::parser;
 
 GPSTask::GPSTask()
 {
@@ -34,8 +35,13 @@ void GPSTask::activity(void *ptr)
             gpio_set_pin_level(GPS_LED, true);
             while(usart_sync_is_rx_not_empty(&USART_ESP)){
                 int end = USART_ESP.io.read(&USART_ESP.io,buf,16);
-                buf[end] = 0;
-                sys.tasks.logger.log((char*)buf);
+                for(uint8_t i = 0; i < end; i++){
+                    if(parser.encode(buf[i])){
+                        char str[64];
+                        sprintf_(str,"time: %d\n",parser.time.value());
+                        sys.tasks.logger.log(str);
+                    }
+                }
             }
             gpio_set_pin_level(GPS_LED, false);
 		}

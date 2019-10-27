@@ -353,12 +353,12 @@ typedef void (*FUNC_PTR)(void);
 /**
  * \brief Get the minimum of x and y
  */
-#define min(x, y) ((x) > (y) ? (y) : (x))
+//#define min(x, y) ((x) > (y) ? (y) : (x))
 
 /**
  * \brief Get the maximum of x and y
  */
-#define max(x, y) ((x) > (y) ? (x) : (y))
+//#define max(x, y) ((x) > (y) ? (x) : (y))
 
 /**@}*/
 
