@@ -10,7 +10,7 @@ SensorTask::SensorTask()
                                                "Sensors",                 //task name
                                                stackSize,                 //stack depth (words!)
                                                NULL,                      //parameters
-                                               1,                         //priority
+                                               10,                         //priority
                                                SensorTask::xStack,        //stack object
                                                &SensorTask::xTaskBuffer); //TCB object
 }

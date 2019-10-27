@@ -8,6 +8,7 @@ class System;
 #include "periph/BMP388/BMP388.hpp"
 #include "SensorTask.hpp"
 #include "SquibTask.hpp"
+#include "GPSTask.hpp"
 #include "LoggerTask.hpp"
 #include "AltimeterTask.hpp"
 #include "main.hpp"
@@ -31,6 +32,7 @@ public:
     public:
         SensorTask sensor;
         LoggerTask logger;
+        GPSTask gps;
         //SquibTask squib; //this should not be a task...
         //AltimeterTask altimeter;
     };
