@@ -34,7 +34,7 @@ public:
         LoggerTask logger;
         GPSTask gps;
         //SquibTask squib; //this should not be a task...
-        //AltimeterTask altimeter;
+        AltimeterTask altimeter;
     };
 
     Sensors sensors;

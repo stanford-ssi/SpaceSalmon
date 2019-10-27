@@ -24,7 +24,7 @@ void AltimeterTask::activity(void *ptr)
 {
     char str[100];
 
-    snprintf(str,sizeof(str),"Altimeter Started\nBuild Version: %s", PIO_BUILD);
+    snprintf(str,sizeof(str),"Altimeter Started\nBuild Version: %i", 420);
     sys.tasks.logger.log(str);
     
     TickType_t lastStatusTime = xTaskGetTickCount();
@@ -52,10 +52,10 @@ void AltimeterTask::activity(void *ptr)
             tasks_json[tasks[i].pcTaskName] = percent;
         }
 
-        OneBattery::cell_voltage_t voltage = battery.readVoltage();
+        //OneBattery::cell_voltage_t voltage = battery.readVoltage();
 
         JsonObject bat_json = status_json.createNestedObject("bat");
-        bat_json["cell"] = voltage.cellMain;
+        //bat_json["cell"] = voltage.cellMain;
 
         status_json["log"] = sys.tasks.logger.isLoggingEnabled();
 
