@@ -17,7 +17,7 @@
  * \brief ADC0's Clock frequency
  */
 #ifndef CONF_GCLK_ADC0_FREQUENCY
-#define CONF_GCLK_ADC0_FREQUENCY 48000000
+#define CONF_GCLK_ADC0_FREQUENCY 100000000
 #endif
 
 // <y> EIC Clock Source
@@ -33,7 +33,7 @@
  * \brief EIC's Clock frequency
  */
 #ifndef CONF_GCLK_EIC_FREQUENCY
-#define CONF_GCLK_EIC_FREQUENCY 48000000
+#define CONF_GCLK_EIC_FREQUENCY 100000000
 #endif
 
 /**
@@ -41,7 +41,7 @@
  * \brief CPU's Clock frequency
  */
 #ifndef CONF_CPU_FREQUENCY
-#define CONF_CPU_FREQUENCY 48000000
+#define CONF_CPU_FREQUENCY 100000000
 #endif
 
 // <y> Core Clock Source
@@ -65,7 +65,7 @@
  * \brief SERCOM0's Core Clock frequency
  */
 #ifndef CONF_GCLK_SERCOM0_CORE_FREQUENCY
-#define CONF_GCLK_SERCOM0_CORE_FREQUENCY 48000000
+#define CONF_GCLK_SERCOM0_CORE_FREQUENCY 100000000
 #endif
 
 /**
@@ -97,7 +97,7 @@
  * \brief SERCOM2's Core Clock frequency
  */
 #ifndef CONF_GCLK_SERCOM2_CORE_FREQUENCY
-#define CONF_GCLK_SERCOM2_CORE_FREQUENCY 48000000
+#define CONF_GCLK_SERCOM2_CORE_FREQUENCY 100000000
 #endif
 
 /**
@@ -129,7 +129,7 @@
  * \brief SERCOM3's Core Clock frequency
  */
 #ifndef CONF_GCLK_SERCOM3_CORE_FREQUENCY
-#define CONF_GCLK_SERCOM3_CORE_FREQUENCY 48000000
+#define CONF_GCLK_SERCOM3_CORE_FREQUENCY 100000000
 #endif
 
 /**
@@ -161,7 +161,7 @@
  * \brief SERCOM5's Core Clock frequency
  */
 #ifndef CONF_GCLK_SERCOM5_CORE_FREQUENCY
-#define CONF_GCLK_SERCOM5_CORE_FREQUENCY 48000000
+#define CONF_GCLK_SERCOM5_CORE_FREQUENCY 100000000
 #endif
 
 /**
@@ -195,7 +195,7 @@
  * \brief SDHC's Clock frequency
  */
 #ifndef CONF_SDHC0_FREQUENCY
-#define CONF_SDHC0_FREQUENCY 48000000
+#define CONF_SDHC0_FREQUENCY 100000000
 #endif
 
 /**
@@ -203,7 +203,7 @@
  * \brief SDHC's Clock slow frequency
  */
 #ifndef CONF_SDHC0_SLOW_FREQUENCY
-#define CONF_SDHC0_SLOW_FREQUENCY 48000000
+#define CONF_SDHC0_SLOW_FREQUENCY 100000000
 #endif
 
 // <y> USB Clock Source
@@ -211,7 +211,7 @@
 
 // <i> Select the clock source for USB.
 #ifndef CONF_GCLK_USB_SRC
-#define CONF_GCLK_USB_SRC GCLK_PCHCTRL_GEN_GCLK0_Val
+#define CONF_GCLK_USB_SRC GCLK_PCHCTRL_GEN_GCLK2_Val
 
 #endif
 

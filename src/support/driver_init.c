@@ -844,6 +844,14 @@ void system_init(void)
 
 	gpio_set_pin_function(LED1, GPIO_PIN_FUNCTION_OFF);
 
+
+	gpio_set_pin_direction(CLKBOI, GPIO_DIRECTION_OUT);
+	gpio_set_pin_function(CLKBOI, GPIO_PIN_FUNCTION_M);
+	
+
+	gpio_set_pin_direction(SLOCLK, GPIO_DIRECTION_OUT);
+	gpio_set_pin_function(SLOCLK, GPIO_PIN_FUNCTION_M);
+
 	// GPIO on PA31
 
 	gpio_set_pin_level(LED2,

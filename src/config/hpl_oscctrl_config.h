@@ -404,7 +404,7 @@
 // <i> Select the clock source.
 // <id> fdpll0_ref_clock
 #ifndef CONF_FDPLL0_GCLK
-#define CONF_FDPLL0_GCLK GCLK_GENCTRL_SRC_XOSC32K
+#define CONF_FDPLL0_GCLK GCLK_PCHCTRL_GEN_GCLK1_Val
 #endif
 
 // <h> Digital Phase Locked Loop Control
@@ -488,7 +488,7 @@
 // <0x3=>XOSC1 clock reference
 // <id> fdpll0_arch_refclk
 #ifndef CONF_FDPLL0_REFCLK
-#define CONF_FDPLL0_REFCLK 0x1
+#define CONF_FDPLL0_REFCLK 0x0
 #endif
 
 // <q> Wake Up Fast
