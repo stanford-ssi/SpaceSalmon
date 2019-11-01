@@ -17,6 +17,7 @@ ADXL375::ADXL375(struct spi_m_os_descriptor *SPI, uint8_t CS_PIN, const char* id
 void ADXL375::init()
 {
   setDataRate(BW_12_5HZ);
+  writeRegister(ADXL375_REG_DATA_FORMAT, 0x0B);
 }
 
 void ADXL375::startMeasuring()
