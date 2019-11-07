@@ -30,7 +30,10 @@ int main(void)
 	printf("Starting Tasks!\n\n\n");
 
 	gpio_set_pin_level(BUZZER, true);
-	
+	delay_ms(10000);
+	gpio_set_pin_level(BUZZER, false);
+
+
 	vTaskStartScheduler();
 }
 
