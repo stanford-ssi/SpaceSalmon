@@ -29,7 +29,7 @@ int main(void)
 	printf("\n");
 	printf("Starting Tasks!\n\n\n");
 
-
+	gpio_set_pin_level(BUZZER, true);
 	
 	vTaskStartScheduler();
 }
