@@ -23,9 +23,9 @@ public:
     TaskHandle_t getTaskHandle();
 };
 
-#include "support/driver_init.h"
+#include "driver_init.h"
 #include "printf.h"
-#include "support/atmel_start_pins.h"
+#include "atmel_start_pins.h"
 #include "periph/ADXL375/ADXL375.hpp"
 #include "periph/BMP388/BMP388.hpp"
 #include "periph/BMI088/BMI088.hpp"

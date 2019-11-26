@@ -2,10 +2,10 @@
 
 class System;
 
-#include "support/atmel_start.h"
-#include "periph/ADXL375/ADXL375.hpp"
-#include "periph/BMI088/BMI088.hpp"
-#include "periph/BMP388/BMP388.hpp"
+#include "../../support/atmel_start.h"
+#include "../../periph/ADXL375/ADXL375.hpp"
+#include "../../periph/BMI088/BMI088.hpp"
+#include "../../periph/BMP388/BMP388.hpp"
 #include "SensorTask.hpp"
 #include "SquibTask.hpp"
 #include "LoggerTask.hpp"

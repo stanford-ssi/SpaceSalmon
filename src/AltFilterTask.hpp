@@ -8,9 +8,9 @@ struct SensorData;
 #include <message_buffer.h>
 #include <semphr.h>
 #include <hal_rtos.h>
-#include "support/driver_init.h"
+#include "driver_init.h"
 #include "printf.h"
-#include "support/atmel_start_pins.h"
+#include "atmel_start_pins.h"
 #include "main.hpp"
 #include "ArduinoJson.h"
 #include "AltFilter.hpp"

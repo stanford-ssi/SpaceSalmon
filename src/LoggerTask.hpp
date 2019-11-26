@@ -5,7 +5,7 @@
 #include <message_buffer.h>
 #include <semphr.h>
 #include <hal_rtos.h>
-#include "support/driver_init.h"
+#include "driver_init.h"
 #include "printf.h"
 #include <string.h>
 #include "ff.h"

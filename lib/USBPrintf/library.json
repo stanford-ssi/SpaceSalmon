@@ -1,0 +1,10 @@
+{
+    "name": "USBPrintf",
+    "build":{
+        "flags":
+        [
+            "-Isrc"
+        ],
+        "libArchive": false
+    }
+}
