@@ -2,4 +2,5 @@
 .pioenvs
 .piolibdeps
 .vscode
+*.code-workspace
 *.DS_Store
