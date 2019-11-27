@@ -20,7 +20,6 @@ int main(void)
 	gpio_set_pin_level(LED2, false);
 	gpio_set_pin_level(LED3, false);
 	gpio_set_pin_level(LED4, false);
-	delay_ms(1000);
 
 	printf("\n");
 	printf("#####################\n");
@@ -29,8 +28,6 @@ int main(void)
 	printf("\n");
 	printf("Starting Tasks!\n\n\n");
 
-
-	
 	vTaskStartScheduler();
 }
 
