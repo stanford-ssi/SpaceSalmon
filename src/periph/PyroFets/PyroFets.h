@@ -1,6 +1,7 @@
 #pragma once
 #include "../Pyro.h"
 #include "stdint.h"
+#include "hal_adc_sync.h"
 
 class PyroFets : public Pyro {
 
@@ -10,7 +11,7 @@ class PyroFets : public Pyro {
         void disarm();
         bool fire(PyroChannel channel);
         
-        void getStatus();
+        bool getStatus(PyroChannel channel);
 
     private:
         //armed

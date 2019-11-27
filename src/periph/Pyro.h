@@ -17,5 +17,5 @@ class Pyro
     virtual bool fire(PyroChannel channel);
 
     //read the status
-    virtual void getStatus();
+    virtual bool getStatus(PyroChannel channel);
 };

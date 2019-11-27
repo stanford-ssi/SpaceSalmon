@@ -59,6 +59,15 @@ bool PyroFets::fire(PyroChannel channel){
     }
 }
 
-void PyroFets::getStatus(){
-    
+bool PyroFets::getStatus(PyroChannel channel){
+    if(channel == SquibA){
+        //adc_sync_enable_channel(ADC, 1);
+        //adc_sync_set_inputs(ADC, 0x0D, 0, 1);
+        //adc_sync_read_channel(ADC, 1, (uint8_t *)&readx0E, 2);
+    }else if(channel == SquibB){
+        //adc_sync_enable_channel(ADC, 1);
+        //adc_sync_set_inputs(ADC, 0x0C, 0, 1);
+        //adc_sync_read_channel(ADC, 1, (uint8_t *)&readx0E, 2);
+    }   
+    return false;
 }
