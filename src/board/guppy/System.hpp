@@ -16,11 +16,17 @@ class System;
 #include "AltimeterTask.hpp"
 #include "main.hpp"
 
+#include "ssi_adc.h"
+
 class System
 {
 public:
+
     PyroFets pyrofets = PyroFets(GPIO(GPIO_PORTA,21), GPIO(GPIO_PORTB,1), GPIO(GPIO_PORTA,23), GPIO(GPIO_PORTB,0));
-    Pyro &pyro = pyrofets; //superclass generic refrence
+    Pyro &pyro = pyrofets;
+
+    ADC adc0 = ADC(ADC0);
+
     class Sensors
     {
     public:

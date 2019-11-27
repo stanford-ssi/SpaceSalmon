@@ -7,25 +7,21 @@ TODO:
 -Measure VBAT
 */
 
-OneBattery::OneBattery(adc_sync_descriptor *adc)
-{
-    ADC = adc;
-}
+OneBattery::OneBattery(ADC& adc): _adc(adc)
+{}
 
 OneBattery::cell_voltage_t OneBattery::readVoltage()
 {
     uint16_t readx0E, readx19, readx1C;
 
-    adc_sync_enable_channel(ADC, 1);
+    readx0E = _adc.read(13);
 
-    adc_sync_set_inputs(ADC, 0x0E, 0, 1);
-    adc_sync_read_channel(ADC, 1, (uint8_t *)&readx0E, 2);
-
+/*
     adc_sync_set_inputs(ADC, 0x19, 0, 1);
     adc_sync_read_channel(ADC, 1, (uint8_t *)&readx19, 2);
 
     adc_sync_set_inputs(ADC, 0x1C, 0, 1);
-    adc_sync_read_channel(ADC, 1, (uint8_t *)&readx1C, 2);
+    adc_sync_read_channel(ADC, 1, (uint8_t *)&readx1C, 2);*/
 
     float vDivA = 0.6520;
 
