@@ -45,15 +45,24 @@ extern "C" {
 /* Semaphore */
 
 #define SEMAPHORE_ENABLED
+#define MUTEX_ENABLED
 
 /**
  * \brief Semaphore element type
  */
 typedef SemaphoreHandle_t sem_handle_t;
 
+typedef SemaphoreHandle_t mutex_handle_t;
+
 typedef StaticSemaphore_t sem_buf_t;
 
+typedef StaticSemaphore_t mutex_buf_t;
+
 typedef sem_handle_t sem_t;
+
+typedef mutex_handle_t mutex_t;
+
+#define NEVER portMAX_DELAY
 
 /* sleep */
 #define os_sleep(tick) vTaskDelay(tick)

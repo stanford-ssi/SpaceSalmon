@@ -118,6 +118,15 @@ int32_t sem_deinit(sem_t *sem);
 
 #endif
 
+#ifdef MUTEX_ENABLED
+
+int32_t mutex_init();
+mutex_handle_t mutex_init_static(mutex_buf_t *memory);
+void mutex_take(mutex_handle_t, uint32_t timeout);
+void mutex_give(mutex_handle_t);
+
+#endif
+
 /* os lock */
 
 #if !defined(os_lock) || !defined(os_unlock)

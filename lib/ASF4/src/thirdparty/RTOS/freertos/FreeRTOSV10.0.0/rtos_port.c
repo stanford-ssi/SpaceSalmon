@@ -83,3 +83,20 @@ int32_t sem_deinit(sem_handle_t *sem)
 {
 	return ERR_NONE;
 }
+
+int32_t mutex_init(mutex_t *mutex){
+	*mutex = xSemaphoreCreateMutex();
+	return *mutex ? ERR_NONE : ERR_NOT_INITIALIZED;
+}
+
+mutex_handle_t mutex_init_static(mutex_buf_t *memory){
+	return xSemaphoreCreateMutexStatic(memory);
+}
+
+void mutex_take(mutex_handle_t mutex, TickType_t timeout){
+	xSemaphoreTake(mutex, timeout);
+}
+
+void mutex_give(mutex_handle_t mutex){
+	xSemaphoreGive(mutex);
+}
