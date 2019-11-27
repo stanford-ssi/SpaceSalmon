@@ -15,7 +15,7 @@ uint16_t ADC::read(uint8_t pin){
   uint32_t valueRead;
   
   while( hw->SYNCBUSY.reg & ADC_SYNCBUSY_INPUTCTRL ); //wait for sync
-  hw->INPUTCTRL.bit.MUXPOS = 13;
+  hw->INPUTCTRL.bit.MUXPOS = pin;
   
   while( hw->SYNCBUSY.reg & ADC_SYNCBUSY_ENABLE ); //wait for sync
   hw->CTRLA.bit.ENABLE = 0x01;             // Enable ADC
