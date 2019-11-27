@@ -11,3 +11,10 @@
 - I2C stack development: Work on piping the GPS data from the RF carrier, and telemetry to the radio
 - Filter Development: used data from logging flight to develop altitude filter
 - Flight Management: write code to manage chute deployment etc.
+
+
+December Launch ToDo:
+- Why is it crashing? ADC?
+- Filter integration
+- Filter testing
+- 100Hz Filter
