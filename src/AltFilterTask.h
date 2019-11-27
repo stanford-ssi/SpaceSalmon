@@ -1,41 +1,23 @@
 #pragma once
 
-class AltFilterTask;
-struct SensorData;
-
 #include <FreeRTOS.h>
 #include <task.h>
 #include <message_buffer.h>
 #include <semphr.h>
 #include <hal_rtos.h>
-#include "driver_init.h"
-#include "printf.h"
-#include "atmel_start_pins.h"
-#include "main.hpp"
-#include "ArduinoJson.h"
+
+//class AltFilterTask;
+
 #include "AltFilter.hpp"
 #include "FlightPlan.hpp"
-#include "periph/OneBattery/OneBattery.hpp"
-
-struct SensorData
-{
-    ADXL375::Data adxl1_data;
-    ADXL375::Data adxl2_data;
-    BMP388::Data bmp1_data;
-    BMP388::Data bmp2_data;
-    BMI088Gyro::Data bmigyro1_data;
-    BMI088Gyro::Data bmigyro2_data;
-    BMI088Accel::Data bmiaccel1_data;
-    BMI088Accel::Data bmiaccel2_data;
-    uint32_t tick;
-};
+#include "SensorData.h"
 
 class AltFilterTask
 {
 public:
     AltFilterTask();
     TaskHandle_t getTaskHandle();
-    void newSensorData(SensorData data);
+    void queueSensorData(SensorData data);
 
 private:
     static const size_t stackSize = 2000;
@@ -55,3 +37,9 @@ private:
     static void activity(void *p);
 
 };
+
+#include "main.hpp"
+#include "driver_init.h"
+#include "printf.h"
+#include "atmel_start_pins.h"
+#include "ArduinoJson.h"

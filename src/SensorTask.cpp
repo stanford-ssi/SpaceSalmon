@@ -104,7 +104,7 @@ void SensorTask::activity(void *ptr)
 
     while (true)
     {
-        vTaskDelayUntil(&lastSensorTime, 10);
+        vTaskDelayUntil(&lastSensorTime, 1000);
 
         gpio_set_pin_level(SENSOR_LED, true);
 
@@ -129,6 +129,8 @@ void SensorTask::activity(void *ptr)
         data.bmigyro2_data = sys.sensors.imu2.gyro->readSensor();
 
         data.tick = xTaskGetTickCount();
+
+        sys.tasks.filter.queueSensorData(data);
 
         sensor_json["tick"] = data.tick;
 

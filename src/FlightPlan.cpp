@@ -1,4 +1,5 @@
 #include "FlightPlan.hpp"
+#include "main.hpp"
 
 FlightPlan::FlightPlan(){
     state = Waiting;
@@ -43,6 +44,7 @@ void FlightPlan::update(AltFilter filter){
     case Waiting:
         if(velocity > 100.0){ //launch!
             state = Flight;
+            sys.pyro.arm();
             logState();
         }else{
             pad_alt_counter++;
@@ -81,7 +83,7 @@ void FlightPlan::update(AltFilter filter){
                 StaticJsonDocument<500> event_json;
                 event_json["squib"] = e.squib;
                 sys.tasks.logger.logJSON(event_json, "event");
-                //BLOW SQUIB!
+                sys.pyro.fire(e.squib);
             }
             
         

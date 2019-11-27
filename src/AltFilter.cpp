@@ -61,6 +61,10 @@ void AltFilter::kalmanUpdate(){
 }
 
 void AltFilter::prefilter(SensorData data){
-  /*Z(0) = p2alt((bmp_data.pressure1 + bmp_data.pressure2)/2)*0.3048;  //LOL gotta convert to meters oops
-  Z(1) = mma_data.y;*/
+  Z(0) = p2alt((data.bmp1_data.pressure+data.bmp2_data.pressure)/2)*0.3048;  //LOL gotta convert to meters oops
+  Z(1) = data.adxl1_data.y;
+}
+
+float AltFilter::p2alt(float p){
+  return (1.0-(pow(((double)p/101350.0),0.190284)))*145366.45;
 }

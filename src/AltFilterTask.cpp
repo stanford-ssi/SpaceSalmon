@@ -1,4 +1,4 @@
-#include "AltFilterTask.hpp"
+#include "AltFilterTask.h"
 
 TaskHandle_t AltFilterTask::taskHandle = NULL;
 StaticTask_t AltFilterTask::xTaskBuffer;
@@ -7,6 +7,11 @@ StackType_t AltFilterTask::xStack[stackSize];
 MessageBufferHandle_t AltFilterTask::bufferHandle;
 StaticMessageBuffer_t AltFilterTask::messageBufferStruct;
 uint8_t AltFilterTask::ucStorageBuffer[bufferSize];
+
+//this might not need to be static...
+SensorData AltFilterTask::data;
+AltFilter AltFilterTask::filter;
+FlightPlan AltFilterTask::plan;
 
 AltFilterTask::AltFilterTask()
 {
@@ -26,7 +31,7 @@ TaskHandle_t AltFilterTask::getTaskHandle()
     return taskHandle;
 }
 
-void AltFilterTask::newSensorData(SensorData data)
+void AltFilterTask::queueSensorData(SensorData data)
 {
     vPortEnterCritical();
     xMessageBufferSend(bufferHandle, &data, sizeof(data), 0);

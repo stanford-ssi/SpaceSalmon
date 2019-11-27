@@ -11,10 +11,9 @@ class System;
 #include "../../periph/Pyro.h"
 
 #include "SensorTask.hpp"
-#include "SquibTask.hpp"
 #include "LoggerTask.hpp"
 #include "AltimeterTask.hpp"
-#include "main.hpp"
+#include "AltFilterTask.h"
 
 #include "ssi_adc.h"
 
@@ -38,15 +37,18 @@ public:
         BMP388 pres2 = BMP388(&SPI_SENSOR, GPIO(GPIO_PORTA, 3), "pres2");
         Sensor *list[6] = {&imu1, &imu2, &adxl1, &adxl2, &pres1, &pres2};
     };
+
     class Tasks
     {
     public:
-        SensorTask sensor;
-        LoggerTask logger;
-        //SquibTask squib; //this should not be a task...
-        AltimeterTask altimeter;
+        SensorTask sensor; //reads data from sensors
+        LoggerTask logger; //logs to USB/SD
+        AltFilterTask filter; //handles data processing, chute events
+        AltimeterTask altimeter; //handles system monitoring
     };
 
     Sensors sensors;
     Tasks tasks;
 };
+
+#include "main.hpp"

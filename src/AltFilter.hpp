@@ -1,9 +1,6 @@
 #pragma once
 
-class AltFilter;
-
-#include "AltFilterTask.hpp"
-
+#include "SensorData.h"
 //#include <WProgram.h>
 #include <Eigen.h>
 #include <Eigen/Dense>
@@ -29,4 +26,5 @@ private:
   void prefilter(SensorData data);
   void kalmanPredict();
   void kalmanUpdate();
+  float p2alt(float p);
 };

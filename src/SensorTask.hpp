@@ -31,5 +31,5 @@ public:
 #include "periph/BMP388/BMP388.hpp"
 #include "periph/BMI088/BMI088.hpp"
 #include "ArduinoJson.h"
-#include "AltFilterTask.hpp"
+#include "AltFilterTask.h"
 #include "AltFilter.hpp"
