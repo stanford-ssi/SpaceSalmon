@@ -6,6 +6,10 @@ class System;
 #include "../../periph/ADXL375/ADXL375.hpp"
 #include "../../periph/BMI088/BMI088.hpp"
 #include "../../periph/BMP388/BMP388.hpp"
+
+#include "../../periph/PyroFets/PyroFets.h"
+#include "../../periph/Pyro.h"
+
 #include "SensorTask.hpp"
 #include "SquibTask.hpp"
 #include "LoggerTask.hpp"
@@ -15,6 +19,8 @@ class System;
 class System
 {
 public:
+    PyroFets pyrofets = PyroFets(GPIO(GPIO_PORTA,21), GPIO(GPIO_PORTB,1), GPIO(GPIO_PORTA,23), GPIO(GPIO_PORTB,0));
+    Pyro &pyro = pyrofets; //superclass generic refrence
     class Sensors
     {
     public:
