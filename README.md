@@ -24,7 +24,7 @@ ThunderGuppy is the hardware version based on the SpaceSalmon architecure. It ha
 
  ### Uploading
  If BOSSAC uploading fails, use this:  
- `python uf2conv.py -b 0x4000 .pio\build\salmon\firmware.bin`  
+ `python uf2conv.py -b 0x4000 .pio\build\guppy\firmware.bin`  
 
  ### TODOs
  * fix the `#undef` bug listed above
