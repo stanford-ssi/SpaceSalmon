@@ -210,6 +210,13 @@ int32_t _adc_sync_init(struct _adc_sync_device *const device, void *const hw)
 	return _adc_init(hw, _adc_get_regs((uint32_t)hw));
 }
 
+int32_t _adc_generic_init(void *const hw)
+{
+	return _adc_init(hw, _adc_get_regs((uint32_t)hw));
+}
+
+
+
 /**
  * \brief Initialize ADC
  */

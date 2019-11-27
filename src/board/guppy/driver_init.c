@@ -19,11 +19,7 @@
  */
 #define PERIPHERAL_INTERRUPT_PRIORITY (configLIBRARY_LOWEST_INTERRUPT_PRIORITY - 1)
 
-#include <hpl_adc_base.h>
-
 struct spi_m_os_descriptor SPI_SENSOR;
-
-struct adc_sync_descriptor ADC_0;
 
 struct usart_sync_descriptor USART_ESP;
 
@@ -33,27 +29,6 @@ struct i2c_m_sync_desc I2C_BUS2;
 
 struct mci_sync_desc MCI_0;
 
-void ADC_0_PORT_init(void)
-{
-
-	// Disable digital pin circuitry
-	gpio_set_pin_direction(BAT_SNS_A, GPIO_DIRECTION_OFF);
-
-	gpio_set_pin_function(BAT_SNS_A, PINMUX_PB02B_ADC0_AIN14);
-}
-
-void ADC_0_CLOCK_init(void)
-{
-	hri_mclk_set_APBDMASK_ADC0_bit(MCLK);
-	hri_gclk_write_PCHCTRL_reg(GCLK, ADC0_GCLK_ID, CONF_GCLK_ADC0_SRC | (1 << GCLK_PCHCTRL_CHEN_Pos));
-}
-
-void ADC_0_init(void)
-{
-	ADC_0_CLOCK_init();
-	ADC_0_PORT_init();
-	adc_sync_init(&ADC_0, ADC0, (void *)NULL);
-}
 
 void EXTERNAL_IRQ_0_init(void)
 {
@@ -941,7 +916,6 @@ void system_init(void)
 
 	gpio_set_pin_function(LED4, GPIO_PIN_FUNCTION_OFF);
 
-	ADC_0_init();
 
 	EXTERNAL_IRQ_0_init();
 

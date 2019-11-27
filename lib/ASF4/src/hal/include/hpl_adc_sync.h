@@ -122,6 +122,8 @@ struct _adc_sync_device {
  */
 int32_t _adc_sync_init(struct _adc_sync_device *const device, void *const hw);
 
+int32_t _adc_generic_init(void *const hw);
+
 /**
  * \brief Deinitialize ADC
  *

@@ -39,8 +39,6 @@ extern "C" {
 
 #include "hal_usb_device.h"
 
-extern struct adc_sync_descriptor   ADC_0;
-
 extern struct spi_m_os_descriptor SPI_SENSOR;
 
 extern struct usart_sync_descriptor USART_ESP;
@@ -50,10 +48,6 @@ extern struct spi_m_os_descriptor SPI_SQUIB;
 extern struct i2c_m_sync_desc I2C_BUS2;
 
 extern struct mci_sync_desc MCI_0;
-
-void ADC_0_PORT_init(void);
-void ADC_0_CLOCK_init(void);
-void ADC_0_init(void);
 
 void SPI_SENSOR_PORT_init(void);
 void SPI_SENSOR_CLOCK_init(void);
