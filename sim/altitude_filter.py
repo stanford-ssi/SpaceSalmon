@@ -2,6 +2,7 @@ import numpy as np
 from numpy.linalg import inv
 import matplotlib.pyplot as plt
 import pickle
+import sys
 
 
 MACH_LOCKOUT_TRIGGER = 343*0.7  # mach 0.7
@@ -93,7 +94,7 @@ class altitude_filter:
 
 
 def main():
-    with open("launch_data.pkl", 'rb') as f:
+    with open(sys.argv[1], 'rb') as f:
         data = pickle.load(f)
     time = data[0]
     alt = data[1]
