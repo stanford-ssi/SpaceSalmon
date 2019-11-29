@@ -10,7 +10,7 @@ SensorTask::SensorTask()
                                                "Sensors",                 //task name
                                                stackSize,                 //stack depth (words!)
                                                NULL,                      //parameters
-                                               1,                         //priority
+                                               5,                         //priority
                                                SensorTask::xStack,        //stack object
                                                &SensorTask::xTaskBuffer); //TCB object
 }
@@ -104,7 +104,7 @@ void SensorTask::activity(void *ptr)
 
     while (true)
     {
-        vTaskDelayUntil(&lastSensorTime, 1000);
+        vTaskDelayUntil(&lastSensorTime, 10);
 
         gpio_set_pin_level(SENSOR_LED, true);
 
