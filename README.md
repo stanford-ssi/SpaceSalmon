@@ -26,6 +26,9 @@ ThunderGuppy is the hardware version based on the SpaceSalmon architecure. It ha
  If BOSSAC uploading fails, use this:  
  `python uf2conv.py -b 0x4000 .pio\build\guppy\firmware.bin`  
 
+### Lessons Learned
+* You can't write data into a buffer into another task, beacuse you don't know that it's constructor has been intialized! THe main case is logging. Don't try logging from the constructors! We should probably prevent the logger from taking input before its initialized...
+
  ### TODOs
  * fix the `#undef` bug listed above
  * fix the build version script, have it linked in last
