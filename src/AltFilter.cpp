@@ -77,6 +77,7 @@ float AltFilter::p2alt(float p){
 
 void AltFilter::logState(){
   StaticJsonDocument<500> json;
+  json["tick"] = xTaskGetTickCount();
   JsonArray x_json = json.createNestedArray("x");
   x_json.add(X(0));
   x_json.add(X(1));

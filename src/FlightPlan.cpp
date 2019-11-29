@@ -53,6 +53,7 @@ void FlightPlan::update(AltFilter filter){
             {
                 StaticJsonDocument<500> event_json;
                 event_json["squib"] = (uint8_t) e.squib;
+                event_json["tick"] = xTaskGetTickCount();
                 sys.tasks.logger.logJSON(event_json, "event");
                 sys.pyro.fire(e.squib);
             }   
@@ -68,6 +69,7 @@ void FlightPlan::logState(){
     StaticJsonDocument<500> json;
     json["state"] = (uint8_t) state;
     json["pad_alt"] = pad_alts[0];
+    json["tick"] = xTaskGetTickCount();
     sys.tasks.logger.logJSON(json, "flight_state");
 }
 
@@ -76,6 +78,7 @@ void FlightPlan::dumpConfig(){
     StaticJsonDocument<1000> flightplan_json;
     JsonArray events_json = flightplan_json.createNestedArray("events");
     uint8_t num_events = sizeof(eventList)/sizeof(FlightEvent);
+    flightplan_json["tick"] = xTaskGetTickCount();
     flightplan_json["count"] = num_events;
 
     for (uint8_t i = 0; i < num_events; i++)

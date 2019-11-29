@@ -104,7 +104,7 @@ void SensorTask::activity(void *ptr)
 
     while (true)
     {
-        vTaskDelayUntil(&lastSensorTime, 10);
+        vTaskDelayUntil(&lastSensorTime, 20);
 
         gpio_set_pin_level(SENSOR_LED, true);
 
@@ -180,7 +180,6 @@ void SensorTask::activity(void *ptr)
         adxl2_accel_json.add(data.adxl2_data.x);
         adxl2_accel_json.add(data.adxl2_data.y);
         adxl2_accel_json.add(data.adxl2_data.z);
-        
 
         sys.tasks.logger.logJSON(sensor_json, "sensor");
 
