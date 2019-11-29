@@ -39,8 +39,7 @@ typedef struct {
 } FlightEvent;
 
 static const FlightEvent eventList[] = {{Falling,   VelLess,    0.0,      AltNone,    0.0,      BlowSquib,  Pyro::PyroChannel::SquibA  },  //Apogee Event, at velocity 0-crossing
-                                        {Falling,   VelNone,    0.0,      AltLess,    500.0,    BlowSquib,  Pyro::PyroChannel::SquibB  },  //Main Event, when below 500 meters
-                                        {Falling,   VelLess,    -100.0,   AltLess,    1500.0,   BlowSquib,  Pyro::PyroChannel::SquibC  }}; //Backup Main Event, if drouge does not deploy
+                                        {Falling,   VelLess,  -30.0,      AltNone,    0.0,      BlowSquib,  Pyro::PyroChannel::SquibB  }}; //Backup Event, if drouge does not deploy
 
 #include "AltFilter.hpp"
 #include "stdint.h"

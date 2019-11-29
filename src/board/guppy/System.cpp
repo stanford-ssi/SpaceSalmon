@@ -10,7 +10,7 @@ int main(void)
 	//hri_cmcc_write_CTRL_reg(CMCC, 1); //this seems to slow things down!
 
 	//Bootup LED Sequence
-	gpio_set_pin_level(LED1, true);
+	/*gpio_set_pin_level(LED1, true);
 	gpio_set_pin_level(LED2, true);
 	gpio_set_pin_level(LED3, true);
 	gpio_set_pin_level(LED4, true);
@@ -19,7 +19,7 @@ int main(void)
 	gpio_set_pin_level(LED1, false);
 	gpio_set_pin_level(LED2, false);
 	gpio_set_pin_level(LED3, false);
-	gpio_set_pin_level(LED4, false);
+	gpio_set_pin_level(LED4, false);*/
 
 	printf("\n");
 	printf("#####################\n");
