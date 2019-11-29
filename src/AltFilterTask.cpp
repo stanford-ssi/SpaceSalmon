@@ -40,12 +40,15 @@ void AltFilterTask::queueSensorData(SensorData data)
 
 void AltFilterTask::activity(void *ptr)
 {
+    plan.dumpConfig();
     while (true)
         {   //Flight Control Loop: runs every sensor data cycle
             if (xMessageBufferReceive(bufferHandle, &data, sizeof(data), portMAX_DELAY) > 0)
             {
+                gpio_set_pin_level(LED4,true);
                 filter.update(data);
                 plan.update(filter);
+                gpio_set_pin_level(LED4,false);
             }
         }
 }

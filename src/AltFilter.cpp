@@ -1,4 +1,5 @@
 #include "AltFilter.hpp"
+#include "main.hpp"
 
 AltFilter::AltFilter(){
   
@@ -9,7 +10,7 @@ AltFilter::AltFilter(){
   Z << 0,
        0;
 
-  F << 1, 0.02, 0,
+  F << 1, 0.02, 0, //this depends on time step???
        0, 1, 0.02,
        0, 0, 1;
 
@@ -39,6 +40,11 @@ void AltFilter::update(SensorData data){
     if(R(0)>500) R(0) = 500;
   }
   kalmanUpdate();
+  
+  if(xTaskGetTickCount() - print_timer > 500){
+    print_timer = xTaskGetTickCount();
+    logState();
+  }
 }
 
 float AltFilter::getAltitude(){ //meters, ASL
@@ -67,4 +73,13 @@ void AltFilter::prefilter(SensorData data){
 
 float AltFilter::p2alt(float p){
   return (1.0-(pow(((double)p/101350.0),0.190284)))*145366.45;
+}
+
+void AltFilter::logState(){
+  StaticJsonDocument<500> json;
+  JsonArray x_json = json.createNestedArray("x");
+  x_json.add(X(0));
+  x_json.add(X(1));
+  x_json.add(X(2));
+  sys.tasks.logger.logJSON(json, "filter_state");
 }

@@ -5,6 +5,7 @@
 #include <Eigen.h>
 #include <Eigen/Dense>
 
+
 using namespace Eigen;
 class AltFilter{
 public:
@@ -13,6 +14,8 @@ public:
   float getAltitude();
   float getVelocity();
 private:
+
+  uint32_t print_timer;
 
   Vector3f X;
   Vector2f Z;
@@ -27,4 +30,5 @@ private:
   void kalmanPredict();
   void kalmanUpdate();
   float p2alt(float p);
+  void logState();
 };

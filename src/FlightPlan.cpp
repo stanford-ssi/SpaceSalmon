@@ -3,35 +3,6 @@
 
 FlightPlan::FlightPlan(){
     state = Waiting;
-    StaticJsonDocument<1000> flightplan_json;
-    JsonArray events_json = flightplan_json.createNestedArray("events");
-
-    uint8_t num_events = sizeof(eventList)/sizeof(FlightEvent);
-
-    JsonObject event_arr[num_events];
-
-    for (uint8_t i = 0; i > num_events; i++)
-    {
-        FlightEvent e = eventList[i];
-        event_arr[i]["state"] = eventList[i].state;
-
-        if(eventList[i].velCond != VelNone){
-            event_arr[i]["velCond"] = eventList[i].velCond;
-            event_arr[i]["velocity"] = eventList[i].velocity;
-        }
-
-        if(eventList[i].altCond != AltNone){
-            event_arr[i]["altCond"] = eventList[i].altCond;
-            event_arr[i]["altitude"] = eventList[i].altitude;
-        }
-
-        if(eventList[i].action == BlowSquib){
-            event_arr[i]["squib"] = eventList[i].squib;
-        }
-
-        events_json.add(event_arr[i]);
-    }
-    //sys.tasks.logger.logJSON(flightplan_json, "flightplan");
 }
 
 void FlightPlan::update(AltFilter filter){
@@ -51,7 +22,7 @@ void FlightPlan::update(AltFilter filter){
             if(pad_alt_counter >= 50){
                 pad_alt_counter = 0;
                 pad_alts[0] = pad_alts[1];
-                pad_alts[1] = altitude;
+                pad_alts[1] = filter.getAltitude();
             }
         }
         break;
@@ -81,24 +52,50 @@ void FlightPlan::update(AltFilter filter){
             ((e.altCond == AltNone) || (e.altCond == AltLess && altitude < e.altitude) || (e.altCond == AltMore && altitude > e.altitude)))   //check altitude threshold
             {
                 StaticJsonDocument<500> event_json;
-                event_json["squib"] = e.squib;
-                //sys.tasks.logger.logJSON(event_json, "event");
+                event_json["squib"] = (uint8_t) e.squib;
+                sys.tasks.logger.logJSON(event_json, "event");
                 sys.pyro.fire(e.squib);
-            }
-            
-        
+            }   
     }
 
-    print_counter++;
-    if(print_counter > 50){
-        print_counter = 0;
+    if(xTaskGetTickCount() - print_timer > 500){
+        print_timer = xTaskGetTickCount();
         logState();
     }    
 }
 
 void FlightPlan::logState(){
     StaticJsonDocument<500> json;
-    json["state"] = state;
+    json["state"] = (uint8_t) state;
     json["pad_alt"] = pad_alts[0];
-    //sys.tasks.logger.logJSON(json, "state");
+    sys.tasks.logger.logJSON(json, "flight_state");
+}
+
+//TODO: Strongly Typed Enums, and an implicit conversion to strings for logging
+void FlightPlan::dumpConfig(){
+    StaticJsonDocument<1000> flightplan_json;
+    JsonArray events_json = flightplan_json.createNestedArray("events");
+    uint8_t num_events = sizeof(eventList)/sizeof(FlightEvent);
+    flightplan_json["count"] = num_events;
+
+    for (uint8_t i = 0; i < num_events; i++)
+    {
+        JsonObject event_json = events_json.createNestedObject();
+        event_json["state"] = (uint8_t) eventList[i].state;
+
+        if(eventList[i].velCond != VelNone){
+            event_json["velCond"] = (uint8_t) eventList[i].velCond;
+            event_json["velocity"] = eventList[i].velocity;
+        }
+
+        if(eventList[i].altCond != AltNone){
+            event_json["altCond"] = (uint8_t) eventList[i].altCond;
+            event_json["altitude"] = eventList[i].altitude;
+        }
+
+        if(eventList[i].action == BlowSquib){
+            event_json["squib"] = (uint8_t) eventList[i].squib;
+        }
+    }
+    sys.tasks.logger.logJSON(flightplan_json, "flightplan");
 }
