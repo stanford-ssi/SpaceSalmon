@@ -52,3 +52,9 @@ public:
 };
 
 #include "main.hpp"
+
+
+//LED 1 : Altimeter
+//LED 2 : Sensor
+//LED 3 : Logger
+//LED 4 : Filter

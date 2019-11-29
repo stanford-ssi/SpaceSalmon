@@ -21,7 +21,7 @@ LoggerTask::LoggerTask()
                                                "Logger",                  //task name
                                                stackSize,                 //stack depth (words!)
                                                NULL,                      //parameters
-                                               2,                         //priority
+                                               10,                        //priority
                                                LoggerTask::xStack,        //stack object
                                                &LoggerTask::xTaskBuffer); //TCB object
 
