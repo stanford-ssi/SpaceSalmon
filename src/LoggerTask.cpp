@@ -8,7 +8,7 @@ MessageBufferHandle_t LoggerTask::bufferHandle;
 StaticMessageBuffer_t LoggerTask::messageBufferStruct;
 uint8_t LoggerTask::ucStorageBuffer[bufferSize];
 
-char LoggerTask::lineBuffer[bufferSize];
+char LoggerTask::lineBuffer[1000];
 
 bool LoggerTask::loggingEnabled = false;
 
@@ -21,7 +21,7 @@ LoggerTask::LoggerTask()
                                                "Logger",                  //task name
                                                stackSize,                 //stack depth (words!)
                                                NULL,                      //parameters
-                                               10,                        //priority
+                                               1,                        //priority
                                                LoggerTask::xStack,        //stack object
                                                &LoggerTask::xTaskBuffer); //TCB object
 
@@ -47,6 +47,8 @@ void LoggerTask::logJSON(JsonDocument & jsonDoc, const char* id){
     if (jsonDoc.getMember("tick") == NULL){
         jsonDoc["tick"] = xTaskGetTickCount();
     }
+
+    jsonDoc["la"] = xMessageBufferSpaceAvailable(bufferHandle);
     
     size_t len = measureJson(jsonDoc);
     char str[len+5]; //plenty of room!
@@ -118,7 +120,7 @@ void LoggerTask::activity(void *ptr)
     {
         printf("Logging to file: %s\n", file_name);
 
-        res = f_open(&file_object, file_name, FA_CREATE_ALWAYS | FA_READ | FA_WRITE);
+        res = f_open(&file_object, file_name, FA_CREATE_ALWAYS | FA_WRITE);
         if (res != FR_OK)
         {
             printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
@@ -133,10 +135,12 @@ void LoggerTask::activity(void *ptr)
     {
         if (xMessageBufferReceive(bufferHandle, lineBuffer, sizeof(lineBuffer), portMAX_DELAY) > 0)
         {
-            printf("%s\n", lineBuffer);
+            char endl = '\n';
+            for(uint32_t i = 0; i < strlen(lineBuffer); i++){
+                write_byte(0, &lineBuffer[i], 1);
+            }
+            write_byte(0, &endl , 1);
             
-            
-
             if (loggingEnabled)
             {
                 gpio_set_pin_level(DISK_LED, true);
