@@ -29,7 +29,7 @@ private:
   static StaticMessageBuffer_t messageBufferStruct;
   static uint8_t ucStorageBuffer[bufferSize];
 
-  static char lineBuffer[1000];
+  static char lineBuffer[10000];
 
   static FATFS fs;
   static FIL file_object;
