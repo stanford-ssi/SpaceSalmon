@@ -1,4 +1,5 @@
 #include "LoggerTask.hpp"
+#include "main.hpp"
 
 TaskHandle_t LoggerTask::taskHandle = NULL;
 StaticTask_t LoggerTask::xTaskBuffer;
@@ -14,6 +15,7 @@ bool LoggerTask::loggingEnabled = false;
 
 FATFS LoggerTask::fs;
 FIL LoggerTask::file_object;
+FIL LoggerTask::shitl_file_object;
 
 LoggerTask::LoggerTask()
 {
@@ -118,12 +120,23 @@ void LoggerTask::activity(void *ptr)
     {
         printf("Logging to file: %s\n", file_name);
 
-        res = f_open(&file_object, file_name, FA_CREATE_ALWAYS | FA_READ | FA_WRITE);
+        res = f_open(&file_object, file_name, FA_CREATE_ALWAYS | FA_WRITE);
         if (res != FR_OK)
         {
             printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
             loggingEnabled = false;
         }
+
+        //SHITL-----
+
+        printf("SHITL from file: shitl.txt\n");
+
+        res = f_open(&shitl_file_object, "shitl.txt", FA_READ);
+        if (res != FR_OK)
+        {
+            printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
+        }
+
     }
     gpio_set_pin_level(DISK_LED, false);
 
@@ -131,11 +144,14 @@ void LoggerTask::activity(void *ptr)
 
     while (true)
     {
+        //if there's a new message to log, then log it:
         if (xMessageBufferReceive(bufferHandle, lineBuffer, sizeof(lineBuffer), portMAX_DELAY) > 0)
         {
-            printf("%s\n", lineBuffer);
-            
-            
+            char endl = '\n';
+            for(uint32_t i = 0; i < strlen(lineBuffer); i++){
+                write_byte(0, &lineBuffer[i], 1);
+            }
+            write_byte(0, &endl , 1);
 
             if (loggingEnabled)
             {
@@ -171,6 +187,29 @@ void LoggerTask::activity(void *ptr)
                 
                 gpio_set_pin_level(DISK_LED, false);
             }
+
+        }else{
+
+            gpio_set_pin_level(SENSOR_LED, true);
+            //read in next line
+            f_gets(lineBuffer, sizeof(lineBuffer), &shitl_file_object);
+
+            StaticJsonDocument<1024> sensor_json;
+
+            SensorData data;
+
+            if(deserializeJson(sensor_json,lineBuffer) != DeserializationError::Ok){
+                printf("Parsing Error!\n");
+            }else{
+                //need try catch?
+                data.adxl1_data.y = 1;
+                data.bmp1_data.pressure = 1;
+                data.bmp2_data.pressure = 1;
+
+                sys.tasks.filter.queueSensorData(data);
+            }
+
+            gpio_set_pin_level(SENSOR_LED, true);
         }
     }
 }

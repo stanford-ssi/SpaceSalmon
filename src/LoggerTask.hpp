@@ -33,6 +33,7 @@ private:
 
   static FATFS fs;
   static FIL file_object;
+  static FIL shitl_file_object;
 
   static bool loggingEnabled;
 

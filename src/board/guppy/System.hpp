@@ -41,7 +41,7 @@ public:
     class Tasks
     {
     public:
-        SensorTask sensor; //reads data from sensors
+        //SensorTask sensor; //reads data from sensors
         LoggerTask logger; //logs to USB/SD
         AltFilterTask filter; //handles data processing, chute events
         AltimeterTask altimeter; //handles system monitoring
