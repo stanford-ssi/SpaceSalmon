@@ -14,7 +14,19 @@
 
 
 December Launch ToDo:
-- Why is it crashing? ADC?
-- Filter integration
-- Filter testing
+- SHITL Filter testing
 - 100Hz Filter
+
+SHITL:
+- Can we ICE in the data?
+- Read from SD
+    -MCI_OS
+    -FatFS_OS
+
+Modify LoggerTask to do both in and out to SD
+    -try with different USB cables...
+
+-can be very slow...
+
+Hardware Fixes:
+- 2x SPI buses would help performance and code simplicity a lot...
