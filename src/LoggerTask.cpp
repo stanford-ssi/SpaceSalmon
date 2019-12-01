@@ -48,7 +48,7 @@ void LoggerTask::logJSON(JsonDocument & jsonDoc, const char* id){
         jsonDoc["tick"] = xTaskGetTickCount();
     }
 
-    jsonDoc["la"] = xMessageBufferSpaceAvailable(bufferHandle);
+    //jsonDoc["la"] = xMessageBufferSpaceAvailable(bufferHandle);
     
     size_t len = measureJson(jsonDoc);
     char str[len+5]; //plenty of room!
