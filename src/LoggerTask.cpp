@@ -9,7 +9,7 @@ MessageBufferHandle_t LoggerTask::bufferHandle;
 StaticMessageBuffer_t LoggerTask::messageBufferStruct;
 uint8_t LoggerTask::ucStorageBuffer[bufferSize];
 
-char LoggerTask::lineBuffer[bufferSize];
+char LoggerTask::lineBuffer[10000];
 
 bool LoggerTask::loggingEnabled = false;
 
@@ -23,7 +23,7 @@ LoggerTask::LoggerTask()
                                                "Logger",                  //task name
                                                stackSize,                 //stack depth (words!)
                                                NULL,                      //parameters
-                                               10,                        //priority
+                                               1,                        //priority
                                                LoggerTask::xStack,        //stack object
                                                &LoggerTask::xTaskBuffer); //TCB object
 
@@ -49,6 +49,8 @@ void LoggerTask::logJSON(JsonDocument & jsonDoc, const char* id){
     if (jsonDoc.getMember("tick") == NULL){
         jsonDoc["tick"] = xTaskGetTickCount();
     }
+
+    //jsonDoc["la"] = xMessageBufferSpaceAvailable(bufferHandle);
     
     size_t len = measureJson(jsonDoc);
     char str[len+5]; //plenty of room!
@@ -140,50 +142,49 @@ void LoggerTask::activity(void *ptr)
     }
     gpio_set_pin_level(DISK_LED, false);
 
-    uint8_t unsaved = 0;
-
     while (true)
     {
-        //if there's a new message to log, then log it:
-        if (xMessageBufferReceive(bufferHandle, lineBuffer, sizeof(lineBuffer), portMAX_DELAY) > 0)
+        //Step 1: read in all the logs
+        lineBuffer[0] = '\0';
+        char* p = lineBuffer;
+        while (xMessageBufferReceive(bufferHandle, p, 1000, portMAX_DELAY) > 0)
         {
-            char endl = '\n';
-            for(uint32_t i = 0; i < strlen(lineBuffer); i++){
-                write_byte(0, &lineBuffer[i], 1);
-            }
-            write_byte(0, &endl , 1);
+            p = lineBuffer + strlen(lineBuffer);
 
+            p[0] = '\n';
+            p++;
+            p[0] = '\0';
+
+            if(p - lineBuffer > 8999){
+                break;
+            }
+        }
+        
+        //Step 2: Write to USB
+        char endl = '\n';
+        uint32_t len = strlen(lineBuffer);
+        for(uint32_t i = 0; i < len; i++){
+            write_byte(0, &lineBuffer[i], 1);
+        }
+        write_byte(0, &endl , 1);
+            
+        //Step 3: Write to SD card
             if (loggingEnabled)
             {
                 gpio_set_pin_level(DISK_LED, true);
 
-                uint32_t len = strlen(lineBuffer);
-                if (len < sizeof(lineBuffer) - 1)
-                {
-                    lineBuffer[len] = '\n';
-                    lineBuffer[len + 1] = '\0';
-                }
-                else
-                {
-                    lineBuffer[sizeof(lineBuffer) - 2] = '\n';
-                    lineBuffer[sizeof(lineBuffer) - 1] = '\0';
-                }
-
-                res = (FRESULT)f_puts(lineBuffer, &file_object);
-                if (res < 0)
+            UINT writen;
+            res = f_write(&file_object, lineBuffer, strlen(lineBuffer), &writen);
+            if (res != FR_OK)
                 {
                     printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
                 }
 
-                if(unsaved > 10){
-                    res = f_sync(&file_object); //the file is still saved every for each sector, which is pretty fast... (false!)
-                    if (res != FR_OK)
-                    {
-                        printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
-                    }
-                    unsaved = 0;
+                res = f_sync(&file_object); //the file is still saved every for each sector, which is pretty fast... (false!)
+                if (res != FR_OK)
+                {
+                    printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
                 }
-                unsaved++;
                 
                 gpio_set_pin_level(DISK_LED, false);
             }
@@ -212,4 +213,3 @@ void LoggerTask::activity(void *ptr)
             gpio_set_pin_level(SENSOR_LED, true);
         }
     }
-}

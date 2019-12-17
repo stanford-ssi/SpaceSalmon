@@ -23,13 +23,13 @@ private:
   static StaticTask_t xTaskBuffer;
   static StackType_t xStack[stackSize];
 
-  static const size_t bufferSize = 1000;
+  static const size_t bufferSize = 10000; //at least 10 lines
 
   static MessageBufferHandle_t bufferHandle;
   static StaticMessageBuffer_t messageBufferStruct;
   static uint8_t ucStorageBuffer[bufferSize];
 
-  static char lineBuffer[bufferSize];
+  static char lineBuffer[10000];
 
   static FATFS fs;
   static FIL file_object;

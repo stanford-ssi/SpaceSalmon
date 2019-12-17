@@ -10,7 +10,7 @@ SensorTask::SensorTask()
                                                "Sensors",                 //task name
                                                stackSize,                 //stack depth (words!)
                                                NULL,                      //parameters
-                                               5,                         //priority
+                                               3,                         //priority
                                                SensorTask::xStack,        //stack object
                                                &SensorTask::xTaskBuffer); //TCB object
 }
@@ -104,13 +104,15 @@ void SensorTask::activity(void *ptr)
 
     while (true)
     {
-        vTaskDelayUntil(&lastSensorTime, 20);
+        vTaskDelayUntil(&lastSensorTime, 10);
 
         gpio_set_pin_level(SENSOR_LED, true);
 
         StaticJsonDocument<1024> sensor_json;
 
         SensorData data;
+
+        data.tick = xTaskGetTickCount();
 
         data.adxl1_data = sys.sensors.adxl1.readSensor();
         data.bmp1_data = sys.sensors.pres1.readSensor();
@@ -127,8 +129,6 @@ void SensorTask::activity(void *ptr)
         data.bmiaccel2_data = sys.sensors.imu2.accel->readSensor();
         //vTaskDelay(2); //but why...
         data.bmigyro2_data = sys.sensors.imu2.gyro->readSensor();
-
-        data.tick = xTaskGetTickCount();
 
         sys.tasks.filter.queueSensorData(data);
 

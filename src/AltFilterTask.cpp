@@ -19,7 +19,7 @@ AltFilterTask::AltFilterTask()
                                                "AltFilter",                 //task name
                                                stackSize,                 //stack depth (words!)
                                                NULL,                      //parameters
-                                               6,                         //priority
+                                               4,                         //priority
                                                AltFilterTask::xStack,        //stack object
                                                &AltFilterTask::xTaskBuffer); //TCB object
 
