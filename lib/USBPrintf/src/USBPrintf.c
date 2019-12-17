@@ -96,8 +96,10 @@ int write_byte(int file, char *ptr, int len)
 	__disable_irq();
 
 	if(state){
-		string2[fill2] = *ptr;
-		fill2++;
+		if(fill2 < sizeof(string2)){
+			string2[fill2] = *ptr;
+			fill2++;
+		}
 		if(tx_done){
 			tx_done = false;
 			fill1 = 0;
@@ -106,8 +108,10 @@ int write_byte(int file, char *ptr, int len)
 			cdcdf_acm_write((uint8_t *)string2, fill2);
 		}
 	}else{
-		string1[fill1] = *ptr;
-		fill1++;
+		if(fill1 < sizeof(string1)){
+			string1[fill1] = *ptr;
+			fill1++;
+		}
 		if(tx_done){
 			tx_done = false;
 			fill2 = 0;
