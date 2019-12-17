@@ -31,13 +31,19 @@ private:
 
   static char lineBuffer[10000];
 
+  static char inputLineBuffer[1000];
+
   static FATFS fs;
   static FIL file_object;
   static FIL shitl_file_object;
 
   static bool loggingEnabled;
+  static bool shitlEnabled;
 
   static void activity(void *p);
+  static void readSHITL();
+  static void writeUSB(char* buf);
+  static void writeSD(char* buf);
   static void format();
 
 public:
@@ -46,4 +52,5 @@ public:
   void log(const char *message);
   void logJSON(JsonDocument & jsonDoc, const char* id);
   bool isLoggingEnabled() { return loggingEnabled; };
+  
 };

@@ -10,8 +10,10 @@ StaticMessageBuffer_t LoggerTask::messageBufferStruct;
 uint8_t LoggerTask::ucStorageBuffer[bufferSize];
 
 char LoggerTask::lineBuffer[10000];
+char LoggerTask::inputLineBuffer[1000];
 
 bool LoggerTask::loggingEnabled = false;
+bool LoggerTask::shitlEnabled = false;
 
 FATFS LoggerTask::fs;
 FIL LoggerTask::file_object;
@@ -134,20 +136,26 @@ void LoggerTask::activity(void *ptr)
         printf("SHITL from file: shitl.txt\n");
 
         res = f_open(&shitl_file_object, "shitl.txt", FA_READ);
-        if (res != FR_OK)
+        if (res == FR_OK)
         {
+            shitlEnabled = true;
+        }
+        else
+        {
+            shitlEnabled = false;
             printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
         }
 
     }
+
     gpio_set_pin_level(DISK_LED, false);
 
+    char* p = lineBuffer;
+    TickType_t timeout = 0;
     while (true)
     {
         //Step 1: read in all the logs
-        lineBuffer[0] = '\0';
-        char* p = lineBuffer;
-        while (xMessageBufferReceive(bufferHandle, p, 1000, portMAX_DELAY) > 0)
+        if (xMessageBufferReceive(bufferHandle, p, 1000, shitlEnabled ? 0 : NEVER) > 0)
         {
             p = lineBuffer + strlen(lineBuffer);
 
@@ -155,61 +163,77 @@ void LoggerTask::activity(void *ptr)
             p++;
             p[0] = '\0';
 
-            if(p - lineBuffer > 8999){
-                break;
+            if(p - lineBuffer > 8999 || xTaskGetTickCount() > timeout ){ //we need to write!
+                //Step 2: Write to USB
+                writeUSB(lineBuffer);
+                    
+                //Step 3: Write to SD card
+                if (loggingEnabled){
+                    writeSD(lineBuffer);
+                }
+
+                //reset buffer
+                lineBuffer[0] = '\0';
+                p = lineBuffer;
+                timeout = xTaskGetTickCount() + 1000;
             }
-        }
         
-        //Step 2: Write to USB
-        char endl = '\n';
-        uint32_t len = strlen(lineBuffer);
-        for(uint32_t i = 0; i < len; i++){
-            write_byte(0, &lineBuffer[i], 1);
-        }
-        write_byte(0, &endl , 1);
-            
-        //Step 3: Write to SD card
-            if (loggingEnabled)
-            {
-                gpio_set_pin_level(DISK_LED, true);
-
-            UINT writen;
-            res = f_write(&file_object, lineBuffer, strlen(lineBuffer), &writen);
-            if (res != FR_OK)
-                {
-                    printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
-                }
-
-                res = f_sync(&file_object); //the file is still saved every for each sector, which is pretty fast... (false!)
-                if (res != FR_OK)
-                {
-                    printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
-                }
-                
-                gpio_set_pin_level(DISK_LED, false);
-            }
-
         }else{
-
-            gpio_set_pin_level(SENSOR_LED, true);
-            //read in next line
-            f_gets(lineBuffer, sizeof(lineBuffer), &shitl_file_object);
-
-            StaticJsonDocument<1024> sensor_json;
-
-            SensorData data;
-
-            if(deserializeJson(sensor_json,lineBuffer) != DeserializationError::Ok){
-                printf("Parsing Error!\n");
-            }else{
-                //need try catch?
-                data.adxl1_data.y = 1;
-                data.bmp1_data.pressure = 1;
-                data.bmp2_data.pressure = 1;
-
-                sys.tasks.filter.queueSensorData(data);
-            }
-
-            gpio_set_pin_level(SENSOR_LED, true);
+            readSHITL();
         }
     }
+}
+
+void LoggerTask::readSHITL(){
+
+    gpio_set_pin_level(SENSOR_LED, true);
+    //read in next line
+    f_gets(inputLineBuffer, sizeof(inputLineBuffer), &shitl_file_object);
+
+    StaticJsonDocument<1024> sensor_json;
+
+    SensorData data;
+
+    if(deserializeJson(sensor_json, inputLineBuffer) != DeserializationError::Ok){
+        printf("Parsing Error!\n");
+    }else{
+        //need try catch?
+        data.adxl1_data.y = 1;
+        data.bmp1_data.pressure = 1;
+        data.bmp2_data.pressure = 1;
+
+        sys.tasks.filter.queueSensorData(data);
+    }
+
+    gpio_set_pin_level(SENSOR_LED, false);
+}
+
+void LoggerTask::writeUSB(char * buf){
+    char endl = '\n';
+    uint32_t len = strlen(lineBuffer);
+    for(uint32_t i = 0; i < len; i++){
+        write_byte(0, &lineBuffer[i], 1);
+    }
+    write_byte(0, &endl , 1);
+}
+
+void LoggerTask::writeSD(char* buf){
+    gpio_set_pin_level(DISK_LED, true);
+
+    FRESULT res;
+    UINT writen;
+    res = f_write(&file_object, lineBuffer, strlen(lineBuffer), &writen);
+
+    if (res != FR_OK)
+    {
+        printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
+    }
+
+    res = f_sync(&file_object); //the file is still saved every for each sector, which is pretty fast... (false!)
+    if (res != FR_OK)
+    {
+        printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
+    }
+    
+    gpio_set_pin_level(DISK_LED, false);
+}
