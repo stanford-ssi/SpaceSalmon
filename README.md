@@ -35,6 +35,6 @@ If BOSSAC uploading fails, use this:
 
 ### Task Priority
 4 - Filter
-3 - Altimeter
-2 - Sensor
+3 - Sensor
+2 - Altimeter
 1 - Logger
