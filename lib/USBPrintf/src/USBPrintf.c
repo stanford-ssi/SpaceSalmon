@@ -151,3 +151,7 @@ int __attribute__((weak)) _read(int file, char *ptr, int len) //TODO scanf!
 int _write(int fd, const void *buffer, unsigned int count){
 	return 0;
 }
+
+void _putchar(char c){
+	write_byte(0,&c,1);
+}
