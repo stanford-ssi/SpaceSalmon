@@ -27,7 +27,7 @@ uint8_t fill2 = 0;
 bool state = false; //false = write into string1
 					//true  = write into string2
 
-volatile bool tx_done = true;
+volatile bool tx_done = false;
 
 volatile bool dtr_state = false;
 
@@ -62,6 +62,7 @@ static bool usb_device_cb_state_c(usb_cdc_control_signal_t state)
 		/* Callbacks must be registered after endpoint allocation */
 		//cdcdf_acm_register_callback(CDCDF_ACM_CB_READ, (FUNC_PTR)usb_device_cb_bulk_out);
 		//cdcdf_acm_register_callback(CDCDF_ACM_CB_WRITE, (FUNC_PTR)usb_device_cb_bulk_in); //this is not needed really
+		tx_done = true;
 	}
 	dtr_state = state.rs232.DTR;
 
@@ -97,35 +98,25 @@ int write_byte(int file, char *ptr, int len)
 	if(state){
 		string2[fill2] = *ptr;
 		fill2++;
+		if(tx_done){
+			tx_done = false;
+			fill1 = 0;
+			state = false;
+			cdcdf_acm_register_callback(CDCDF_ACM_CB_WRITE, (FUNC_PTR)usb_device_cb_bulk_in); //is this hacky? or ok?
+			cdcdf_acm_write((uint8_t *)string2, fill2);
+		}
 	}else{
 		string1[fill1] = *ptr;
 		fill1++;
-	}
-	
-
-	//state -> writing into 2 -> sending 1 -> should start sending 2
-	
-
-	if(state){
-		if(tx_done && fill2 > 0){
-			cdcdf_acm_register_callback(CDCDF_ACM_CB_WRITE, (FUNC_PTR)usb_device_cb_bulk_in); //is this hacky? or ok?
+		if(tx_done){
 			tx_done = false;
-			cdcdf_acm_write((uint8_t *)string2, fill2);
-			fill1 = 0;
-			state = false;
-		}
-	}else{
-		if(tx_done && fill1 > 0){
-			cdcdf_acm_register_callback(CDCDF_ACM_CB_WRITE, (FUNC_PTR)usb_device_cb_bulk_in); //is this hacky? or ok?
-			tx_done = false;
-			cdcdf_acm_write((uint8_t *)string1, fill1);
 			fill2 = 0;
 			state = true;
+			cdcdf_acm_register_callback(CDCDF_ACM_CB_WRITE, (FUNC_PTR)usb_device_cb_bulk_in); //is this hacky? or ok?
+			cdcdf_acm_write((uint8_t *)string1, fill1);
 		}
 	}
-		
 	
-
 	__enable_irq();
 
 	return len;

@@ -148,11 +148,12 @@ void LoggerTask::activity(void *ptr)
         }
         
         //Step 2: Write to USB
-        //char endl = '\n';
-        /*    for(uint32_t i = 0; i < strlen(lineBuffer); i++){
-                write_byte(0, &lineBuffer[i], 1);
-            }*/
-        //write_byte(0, &endl , 1);
+        char endl = '\n';
+        uint32_t len = strlen(lineBuffer);
+        for(uint32_t i = 0; i < len; i++){
+            write_byte(0, &lineBuffer[i], 1);
+        }
+        write_byte(0, &endl , 1);
             
         //Step 3: Write to SD card
             if (loggingEnabled)
