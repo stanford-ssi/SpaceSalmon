@@ -132,20 +132,22 @@ void LoggerTask::activity(void *ptr)
         }
 
         //SHITL-----
+        if(sys.shitl){
+            printf("SHITL from file: shitl.txt\n");
 
-        printf("SHITL from file: shitl.txt\n");
-
-        res = f_open(&shitl_file_object, "shitl.txt", FA_READ);
-        if (res == FR_OK)
-        {
-            shitlEnabled = true;
-            printf("Starting in SHITL mode");
+            res = f_open(&shitl_file_object, "shitl.txt", FA_READ);
+            if (res == FR_OK)
+            {
+                shitlEnabled = true;
+                printf("Starting in SHITL mode");
+            }
+            else
+            {
+                shitlEnabled = false;
+                printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
+            }
         }
-        else
-        {
-            shitlEnabled = false;
-            printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
-        }
+        
 
     }
 

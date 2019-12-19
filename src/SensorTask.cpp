@@ -1,4 +1,5 @@
 #include "SensorTask.hpp"
+#include "main.hpp"
 
 TaskHandle_t SensorTask::taskHandle = NULL;
 StaticTask_t SensorTask::xTaskBuffer;
@@ -6,13 +7,15 @@ StackType_t SensorTask::xStack[stackSize];
 
 SensorTask::SensorTask()
 {
-    SensorTask::taskHandle = xTaskCreateStatic(activity,                  //static function to run
-                                               "Sensors",                 //task name
-                                               stackSize,                 //stack depth (words!)
-                                               NULL,                      //parameters
-                                               3,                         //priority
-                                               SensorTask::xStack,        //stack object
-                                               &SensorTask::xTaskBuffer); //TCB object
+    if(!sys.shitl){
+        SensorTask::taskHandle = xTaskCreateStatic(activity,                  //static function to run
+                                                "Sensors",                 //task name
+                                                stackSize,                 //stack depth (words!)
+                                                NULL,                      //parameters
+                                                3,                         //priority
+                                                SensorTask::xStack,        //stack object
+                                                &SensorTask::xTaskBuffer); //TCB object
+    }
 }
 
 TaskHandle_t SensorTask::getTaskHandle()

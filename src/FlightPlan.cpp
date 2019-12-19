@@ -79,7 +79,7 @@ void FlightPlan::update(AltFilter& filter){
         }
     }
 
-    if(xTaskGetTickCount() - print_timer > 500){
+    if(sys.shitl || xTaskGetTickCount() - print_timer > 500){
         print_timer = xTaskGetTickCount();
         logState();
     }    
