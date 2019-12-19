@@ -210,7 +210,9 @@ void LoggerTask::readSHITL(){
                     if(adxl_a_1.isNull() || bmp_p.isNull()){
                         printf("sensor frame had invalid data\n");
                     }else{
-                        printf("reading sensor tick: %lu bmp: %f\n", (uint32_t) tick, (float)bmp_p);
+                        if((uint32_t) tick % 1000 == (uint32_t) tick % 20){
+                            printf("reading sensor tick: %lu bmp: %f\n", (uint32_t) tick, (float)bmp_p);
+                        }
                         data.tick = tick;
                         data.adxl1_data.y = adxl_a_1;
                         data.bmp1_data.pressure = bmp_p;
@@ -220,9 +222,7 @@ void LoggerTask::readSHITL(){
                 }else{
                     printf("ignoring other tick: %lu\n", (uint32_t) tick);
                 }
-
-            }
-            
+            } 
         }else{
             printf("Parsing Error!\n");
         }

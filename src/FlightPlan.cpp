@@ -32,7 +32,7 @@ void FlightPlan::update(AltFilter& filter){
         }
         break;
     case Flight:
-        if(state_timer > 200 || velocity < 0.0){ //apogee!
+        if(state_timer > 200 && velocity < 0.0){ //apogee!
             state = Falling;
             state_timer = 0;
             logState();
@@ -40,21 +40,21 @@ void FlightPlan::update(AltFilter& filter){
         }
         break;
     case Falling:
-        if(state_timer > 200 || velocity > -5.0){ //stopped falling
+        if(state_timer > 500 && velocity > -5.0){ //stopped falling
             state = Landed;
             state_timer = 0;
             sys.pyro.disarm();
             logState();
             filter.logState();
         }
-        
+
         break;
     case Landed:
         //do nothing
         break;
     }
 
-    for (uint8_t i = 0; i > (sizeof(eventList)/sizeof(FlightEvent)); i++)
+    for (uint8_t i = 0; i < (sizeof(eventList)/sizeof(FlightEvent)); i++)
     {
         FlightEvent e = eventList[i];
 
@@ -81,6 +81,7 @@ void FlightPlan::logState(){
     json["state"] = (uint8_t) state;
     json["pad_alt"] = pad_alts[0];
     json["tick"] = xTaskGetTickCount();
+    json["timer"] = state_timer;
     sys.tasks.logger.logJSON(json, "flight_state");
 }
 
