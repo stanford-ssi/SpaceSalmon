@@ -3,23 +3,28 @@
 
 FlightPlan::FlightPlan(){
     state = Waiting;
+    state_timer = 0;
 }
 
-void FlightPlan::update(AltFilter filter){
+void FlightPlan::update(AltFilter& filter){
 
     float velocity = filter.getVelocity();
     float altitude = filter.getAltitude() - pad_alts[0]; //convert ASL to AGL!
 
+    state_timer++;
+
     switch (state)
     {
     case Waiting:
-        if(velocity > 100.0){ //launch!
+        if(state_timer > 200 && velocity > 100.0){ //launch!
             state = Flight;
+            state_timer = 0;
             sys.pyro.arm();
             logState();
+            filter.logState();
         }else{
             pad_alt_counter++;
-            if(pad_alt_counter >= 50){
+            if(pad_alt_counter >= 100){
                 pad_alt_counter = 0;
                 pad_alts[0] = pad_alts[1];
                 pad_alts[1] = filter.getAltitude();
@@ -27,23 +32,29 @@ void FlightPlan::update(AltFilter filter){
         }
         break;
     case Flight:
-        if(velocity < 0.0){ //apogee!
+        if(state_timer > 200 || velocity < 0.0){ //apogee!
             state = Falling;
+            state_timer = 0;
             logState();
+            filter.logState();
         }
         break;
     case Falling:
-        if(velocity > -1.0){ //stopped falling
+        if(state_timer > 200 || velocity > -5.0){ //stopped falling
             state = Landed;
+            state_timer = 0;
+            sys.pyro.disarm();
             logState();
+            filter.logState();
         }
+        
         break;
     case Landed:
         //do nothing
         break;
     }
 
-    for (uint8_t i = 0; i > sizeof(eventList)/sizeof(FlightEvent); i++)
+    for (uint8_t i = 0; i > (sizeof(eventList)/sizeof(FlightEvent)); i++)
     {
         FlightEvent e = eventList[i];
 

@@ -47,15 +47,16 @@ static const FlightEvent eventList[] = {{Falling,   VelLess,    0.0,      AltNon
 class FlightPlan{
     public:
         FlightPlan();
-        void update(AltFilter filter);
+        void update(AltFilter& filter);
         void dumpConfig();
+        void logState();
 
     private:
         float pad_alts[2] = {0.0, 0.0}; //a buffer of past altitudes, the 0th of which will be the pad altitude
         uint8_t pad_alt_counter = 0;
         uint32_t print_timer = 0;
+        uint32_t state_timer = 0;
         FlightState state;
-        void logState();
 
 };
 

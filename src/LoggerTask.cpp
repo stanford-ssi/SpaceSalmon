@@ -85,12 +85,12 @@ void LoggerTask::activity(void *ptr)
     if (res != FR_OK)
     {
         loggingEnabled = false;
-        printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
+        sys.tasks.logger.log("Could Not Mount Disk");
     }
     else
     {
         loggingEnabled = true;
-        printf("Mounted SD card, enabling logging\n");
+        sys.tasks.logger.log("Mounted SD card");
     }
 
     char file_name[20];
@@ -106,12 +106,12 @@ void LoggerTask::activity(void *ptr)
             if (res == FR_NO_FILE)
             {
                 break;
+                //found an open file name we can use
             }
 
             if (res != FR_OK)
             {
-                printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
-                printf("->Error stat-ing file: %s\n", file_name);
+                sys.tasks.logger.log("Error stat-ing file");
                 loggingEnabled = false;
                 break;
             }
@@ -139,6 +139,7 @@ void LoggerTask::activity(void *ptr)
         if (res == FR_OK)
         {
             shitlEnabled = true;
+            printf("Starting in SHITL mode");
         }
         else
         {
@@ -175,10 +176,10 @@ void LoggerTask::activity(void *ptr)
                 //reset buffer
                 lineBuffer[0] = '\0';
                 p = lineBuffer;
-                timeout = xTaskGetTickCount() + 1000;
+                timeout = xTaskGetTickCount() + 1000; //if there are no logs for a bit, we should still flush every once and a while
             }
         
-        }else{
+        }else{ //if timeout is NEVER, we don't ever reach this (no SHITL)
             readSHITL();
         }
     }
@@ -194,25 +195,46 @@ void LoggerTask::readSHITL(){
 
     SensorData data;
 
-    if(deserializeJson(sensor_json, inputLineBuffer) != DeserializationError::Ok){
-        printf("Parsing Error!\n");
-    }else{
-        //need try catch?
-        data.adxl1_data.y = 1;
-        data.bmp1_data.pressure = 1;
-        data.bmp2_data.pressure = 1;
+    if(deserializeJson(sensor_json, inputLineBuffer) == DeserializationError::Ok){
+    
+        JsonVariant tick = sensor_json["tick"];
+        JsonVariant id = sensor_json["id"];
 
-        sys.tasks.filter.queueSensorData(data);
+
+        if (tick.isNull() || id.isNull()) {
+            printf("frame was invalid\n");
+        }else{
+            if(strcmp(id, "sensor") == 0){
+                JsonVariant adxl_a_1 = sensor_json["adxl"]["a"][1];
+                JsonVariant bmp_p = sensor_json["bmp"]["p"];
+                if(adxl_a_1.isNull() || bmp_p.isNull()){
+                    printf("sensor frame had invalid data\n");
+                }else{
+                    printf("reading sensor tick: %lu bmp: %f\n", (uint32_t) tick, (float)bmp_p);
+                    data.tick = tick;
+                    data.adxl1_data.y = adxl_a_1;
+                    data.bmp1_data.pressure = bmp_p;
+                    data.bmp2_data.pressure = bmp_p;
+                    sys.tasks.filter.queueSensorData(data);
+                }
+            }else{
+                printf("ignoring other tick: %lu\n", (uint32_t) tick);
+            }
+
+        }
+        
+    }else{
+        printf("Parsing Error!\n");
     }
 
     gpio_set_pin_level(SENSOR_LED, false);
 }
 
-void LoggerTask::writeUSB(char * buf){
+void LoggerTask::writeUSB(char* buf){
     char endl = '\n';
-    uint32_t len = strlen(lineBuffer);
+    uint32_t len = strlen(buf);
     for(uint32_t i = 0; i < len; i++){
-        write_byte(0, &lineBuffer[i], 1);
+        write_byte(0, &buf[i], 1);
     }
     write_byte(0, &endl , 1);
 }
@@ -222,14 +244,14 @@ void LoggerTask::writeSD(char* buf){
 
     FRESULT res;
     UINT writen;
-    res = f_write(&file_object, lineBuffer, strlen(lineBuffer), &writen);
+    res = f_write(&file_object, buf, strlen(buf), &writen);
 
     if (res != FR_OK)
     {
         printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
     }
 
-    res = f_sync(&file_object); //the file is still saved every for each sector, which is pretty fast... (false!)
+    res = f_sync(&file_object); //update file structure
     if (res != FR_OK)
     {
         printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
