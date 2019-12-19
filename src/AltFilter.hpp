@@ -10,9 +10,12 @@ using namespace Eigen;
 class AltFilter{
 public:
   AltFilter();
-  void update(SensorData data);
+  void update(SensorData& data);
+  void init(SensorData& data);
   float getAltitude();
   float getVelocity();
+  void logState();
+
 private:
 
   uint32_t print_timer;
@@ -30,5 +33,4 @@ private:
   void kalmanPredict();
   void kalmanUpdate();
   float p2alt(float p);
-  void logState();
 };

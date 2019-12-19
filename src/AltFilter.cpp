@@ -2,7 +2,7 @@
 #include "main.hpp"
 
 AltFilter::AltFilter(){
-  
+
   X << 0,
        0,
        0;
@@ -31,7 +31,12 @@ AltFilter::AltFilter(){
 
 }
 
-void AltFilter::update(SensorData data){
+void AltFilter::init(SensorData& data){
+  prefilter(data);
+  X(0) = Z(0);
+}
+
+void AltFilter::update(SensorData& data){
   kalmanPredict();
   prefilter(data);
   if(X(1) > 343*0.7) R(0) = 100000;
@@ -67,13 +72,13 @@ void AltFilter::kalmanUpdate(){
 }
 
 void AltFilter::prefilter(SensorData data){
-  Z(0) = p2alt((data.bmp1_data.pressure+data.bmp2_data.pressure)/2)*0.3048;  //LOL gotta convert to meters oops
+  Z(0) = p2alt((data.bmp1_data.pressure + data.bmp2_data.pressure)/2);  //LOL gotta convert to meters oops
   Z(1) = data.adxl1_data.y * -1.0 ; //NEGATIVE! If the accelerometers read -9.8 when the rocket is vertical,
   //then you should have a -1.0 term here, so that at rest the filter sees normal force accleratrion upwards (positive).
 }
 
 float AltFilter::p2alt(float p){
-  return (1.0-(pow(((double)p/101350.0),0.190284)))*145366.45;
+  return (1.0-(pow(((double)p/101350.0),0.190284)))*145366.45*0.3048;
 }
 
 void AltFilter::logState(){
