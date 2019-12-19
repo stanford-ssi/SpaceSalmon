@@ -1,5 +1,6 @@
 #pragma once
 #include "periph/Pyro.h"
+#include <hal_rtos.h>
 
 class FlightPlan;
 
@@ -36,10 +37,11 @@ typedef struct {
     float altitude; //meters AGL
     EventAction action;
     SquibChannel squib;
+    TickType_t time; //time to fire for (min)
 } FlightEvent;
 
-static const FlightEvent eventList[] = {{Falling,   VelLess,    0.0,      AltNone,    0.0,      BlowSquib,  Pyro::PyroChannel::SquibA  },  //Apogee Event, at velocity 0-crossing
-                                        {Falling,   VelLess,  -30.0,      AltNone,    0.0,      BlowSquib,  Pyro::PyroChannel::SquibB  }}; //Backup Event, if drouge does not deploy
+static const FlightEvent eventList[] = {{Falling,   VelLess,    0.0,      AltNone,    0.0,      BlowSquib,  Pyro::PyroChannel::SquibA,  2000    },  //Apogee Event, at velocity 0-crossing
+                                        {Falling,   VelLess,  -10.0,      AltNone,    0.0,      BlowSquib,  Pyro::PyroChannel::SquibB,  2000    }}; //Backup Event, if drouge does not deploy
 
 #include "AltFilter.hpp"
 #include "stdint.h"
@@ -57,6 +59,8 @@ class FlightPlan{
         uint32_t print_timer = 0;
         uint32_t state_timer = 0;
         FlightState state;
+        bool event_done[(sizeof(eventList)/sizeof(FlightEvent))] = {false,false};
+        uint32_t event_timer = 0;
 
 };
 

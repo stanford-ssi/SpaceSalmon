@@ -57,17 +57,26 @@ void FlightPlan::update(AltFilter& filter){
     for (uint8_t i = 0; i < (sizeof(eventList)/sizeof(FlightEvent)); i++)
     {
         FlightEvent e = eventList[i];
+        
+        if(event_done[i] == false){
 
-        if(state == e.state &&  //state is right
-            ((e.velCond == VelNone) || (e.velCond == VelLess && velocity < e.velocity) || (e.velCond == VelMore && velocity > e.velocity)) && //check velocity threshold
-            ((e.altCond == AltNone) || (e.altCond == AltLess && altitude < e.altitude) || (e.altCond == AltMore && altitude > e.altitude)))   //check altitude threshold
+            if(state == e.state &&  //state is right
+               ((e.velCond == VelNone) || (e.velCond == VelLess && velocity < e.velocity) || (e.velCond == VelMore && velocity > e.velocity)) && //check velocity threshold
+               ((e.altCond == AltNone) || (e.altCond == AltLess && altitude < e.altitude) || (e.altCond == AltMore && altitude > e.altitude)))   //check altitude threshold
             {
-                StaticJsonDocument<500> event_json;
-                event_json["squib"] = (uint8_t) e.squib;
-                event_json["tick"] = xTaskGetTickCount();
-                sys.tasks.logger.logJSON(event_json, "event");
-                sys.pyro.fire(e.squib);
+                if(xTaskGetTickCount() > event_timer){
+                    event_timer = xTaskGetTickCount() + e.time;
+                    event_done[i] = true;
+
+                    sys.pyro.fire(e.squib);
+
+                    StaticJsonDocument<500> event_json;
+                    event_json["squib"] = (uint8_t) e.squib;
+                    event_json["tick"] = xTaskGetTickCount();
+                    sys.tasks.logger.logJSON(event_json, "event");
+                }
             }   
+        }
     }
 
     if(xTaskGetTickCount() - print_timer > 500){
