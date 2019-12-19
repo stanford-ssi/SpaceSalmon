@@ -62,7 +62,7 @@ void LoggerTask::logJSON(JsonDocument & jsonDoc, const char* id){
 
 void LoggerTask::format()
 {
-    FRESULT res;
+    FRESULT res = FR_OK;
     printf("-I- Format disk %d\n\r", 0);
     printf("-I- Please wait a moment during formatting...\n\r");
     //res = f_mkfs("0", FM_EXFAT, 512);
@@ -189,42 +189,43 @@ void LoggerTask::readSHITL(){
 
     gpio_set_pin_level(SENSOR_LED, true);
     //read in next line
-    f_gets(inputLineBuffer, sizeof(inputLineBuffer), &shitl_file_object);
+    if(!f_eof(&shitl_file_object)){
+        f_gets(inputLineBuffer, sizeof(inputLineBuffer), &shitl_file_object);
 
-    StaticJsonDocument<1024> sensor_json;
+        StaticJsonDocument<1024> sensor_json;
 
-    SensorData data;
+        SensorData data;
 
-    if(deserializeJson(sensor_json, inputLineBuffer) == DeserializationError::Ok){
-    
-        JsonVariant tick = sensor_json["tick"];
-        JsonVariant id = sensor_json["id"];
-
-
-        if (tick.isNull() || id.isNull()) {
-            printf("frame was invalid\n");
-        }else{
-            if(strcmp(id, "sensor") == 0){
-                JsonVariant adxl_a_1 = sensor_json["adxl"]["a"][1];
-                JsonVariant bmp_p = sensor_json["bmp"]["p"];
-                if(adxl_a_1.isNull() || bmp_p.isNull()){
-                    printf("sensor frame had invalid data\n");
-                }else{
-                    printf("reading sensor tick: %lu bmp: %f\n", (uint32_t) tick, (float)bmp_p);
-                    data.tick = tick;
-                    data.adxl1_data.y = adxl_a_1;
-                    data.bmp1_data.pressure = bmp_p;
-                    data.bmp2_data.pressure = bmp_p;
-                    sys.tasks.filter.queueSensorData(data);
-                }
-            }else{
-                printf("ignoring other tick: %lu\n", (uint32_t) tick);
-            }
-
-        }
+        if(deserializeJson(sensor_json, inputLineBuffer) == DeserializationError::Ok){
         
-    }else{
-        printf("Parsing Error!\n");
+            JsonVariant tick = sensor_json["tick"];
+            JsonVariant id = sensor_json["id"];
+
+            if (tick.isNull() || id.isNull()) {
+                printf("frame was invalid\n");
+            }else{
+                if(strcmp(id, "sensor") == 0){
+                    JsonVariant adxl_a_1 = sensor_json["adxl"]["a"][1];
+                    JsonVariant bmp_p = sensor_json["bmp"]["p"];
+                    if(adxl_a_1.isNull() || bmp_p.isNull()){
+                        printf("sensor frame had invalid data\n");
+                    }else{
+                        printf("reading sensor tick: %lu bmp: %f\n", (uint32_t) tick, (float)bmp_p);
+                        data.tick = tick;
+                        data.adxl1_data.y = adxl_a_1;
+                        data.bmp1_data.pressure = bmp_p;
+                        data.bmp2_data.pressure = bmp_p;
+                        sys.tasks.filter.queueSensorData(data);
+                    }
+                }else{
+                    printf("ignoring other tick: %lu\n", (uint32_t) tick);
+                }
+
+            }
+            
+        }else{
+            printf("Parsing Error!\n");
+        }
     }
 
     gpio_set_pin_level(SENSOR_LED, false);
