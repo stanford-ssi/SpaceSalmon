@@ -32,7 +32,7 @@ for line in file:
             adxl["z"].append(data[u"adxl"]["a"][2])
             id.append(data[u"id"])
             stack.append(data[u"stack"])
-            tick_sensor.append(data[u"tick"])
+            tick_sensor.append(data[u"tick"] - 9350000)
             # except KeyError:
                 #print 'keyError'
                 #print line

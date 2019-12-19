@@ -12,7 +12,7 @@ MACH_LOCKOUT_CLIP_VAL = 100000  # value to clip
 class altitude_filter:
 
     def __init__(self):
-        self.X  = np.array([0.,  # state in altitude, velocity, acceleration (SI units)
+        self.X  = np.array([643.0,  # state in altitude, velocity, acceleration (SI units)
                             0,
                             0])
 
