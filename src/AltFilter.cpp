@@ -71,9 +71,10 @@ void AltFilter::kalmanUpdate(){
   P = (Matrix3f::Identity() - K * H) * P;
 }
 
-void AltFilter::prefilter(SensorData data){
+void AltFilter::prefilter(SensorData& data){
+  data_time = data.tick;
   Z(0) = p2alt((data.bmp1_data.pressure + data.bmp2_data.pressure)/2);  //LOL gotta convert to meters oops
-  Z(1) = data.adxl1_data.y * -1.0 ; //NEGATIVE! If the accelerometers read -9.8 when the rocket is vertical,
+  Z(1) = (data.adxl1_data.y * -1.0) - 9.807; //NEGATIVE! If the accelerometers read -9.8 when the rocket is vertical,
   //then you should have a -1.0 term here, so that at rest the filter sees normal force accleratrion upwards (positive).
 }
 
@@ -83,10 +84,13 @@ float AltFilter::p2alt(float p){
 
 void AltFilter::logState(){
   StaticJsonDocument<500> json;
-  json["tick"] = xTaskGetTickCount();
+  json["tick"] = data_time; 
   JsonArray x_json = json.createNestedArray("x");
   x_json.add(X(0));
   x_json.add(X(1));
   x_json.add(X(2));
+  JsonArray z_json = json.createNestedArray("z");
+  z_json.add(Z(0));
+  z_json.add(Z(1));
   sys.tasks.logger.logJSON(json, "filter_state");
 }

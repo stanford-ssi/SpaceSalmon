@@ -29,7 +29,9 @@ private:
   Matrix<float, 2, 3> H;
   Matrix2f R;
 
-  void prefilter(SensorData data);
+  uint32_t data_time;
+
+  void prefilter(SensorData& data);
   void kalmanPredict();
   void kalmanUpdate();
   float p2alt(float p);

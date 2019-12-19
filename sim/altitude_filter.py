@@ -55,7 +55,7 @@ class altitude_filter:
         self.kalmanUpdate()
 
     def update_delta_t(self, time):
-        delta_t = time - self.time
+        delta_t = 0.02#time - self.time
         self.F = np.array([1., delta_t, 0,  # state transition model
                            0,  1,    delta_t,
                            0,  0,    1]).reshape((3,3))
@@ -98,8 +98,8 @@ def main():
         data = pickle.load(f)
     time = data[0]
     alt = data[1]
-    adxl_a = data[2] * -1 -10
-    bmi_a = data[3] * -1 -10
+    adxl_a = (data[2] * -1) - 9.8
+    bmi_a = (data[3] * -1) - 9.8
     n = len(time)
 
     kf = altitude_filter()
@@ -148,6 +148,9 @@ def main():
 
     # plt.figure()
     # plt.plot(time, states[:,1])
+
+    with open("filter_sim_data.pkl", "wb") as f:
+        pickle.dump([time, states[:,0], states[:,1]], f)
 
 
 if __name__ == '__main__':

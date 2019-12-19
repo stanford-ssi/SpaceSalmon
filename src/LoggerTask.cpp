@@ -205,22 +205,17 @@ void LoggerTask::readSHITL(){
                 printf("frame was invalid\n");
             }else{
                 if(strcmp(id, "sensor") == 0){
-                    JsonVariant adxl_a_1 = sensor_json["adxl"]["a"][1];
+                    JsonVariant adxl_a_2 = sensor_json["adxl"]["a"][2];
                     JsonVariant bmp_p = sensor_json["bmp"]["p"];
-                    if(adxl_a_1.isNull() || bmp_p.isNull()){
+                    if(adxl_a_2.isNull() || bmp_p.isNull()){
                         printf("sensor frame had invalid data\n");
                     }else{
-                        if((uint32_t) tick % 1000 == (uint32_t) tick % 20){
-                            printf("reading sensor tick: %lu bmp: %f\n", (uint32_t) tick, (float)bmp_p);
-                        }
                         data.tick = tick;
-                        data.adxl1_data.y = adxl_a_1;
+                        data.adxl1_data.y = adxl_a_2;
                         data.bmp1_data.pressure = bmp_p;
                         data.bmp2_data.pressure = bmp_p;
                         sys.tasks.filter.queueSensorData(data);
                     }
-                }else{
-                    printf("ignoring other tick: %lu\n", (uint32_t) tick);
                 }
             } 
         }else{
