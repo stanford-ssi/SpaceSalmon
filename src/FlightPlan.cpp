@@ -24,7 +24,7 @@ void FlightPlan::update(AltFilter& filter){
             filter.logState();
         }else{
             pad_alt_counter++;
-            if(pad_alt_counter >= 100){
+            if(pad_alt_counter >= 1000){
                 pad_alt_counter = 0;
                 pad_alts[0] = pad_alts[1];
                 pad_alts[1] = filter.getAltitude();
