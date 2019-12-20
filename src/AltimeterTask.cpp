@@ -55,7 +55,8 @@ void AltimeterTask::activity(void *ptr)
         OneBattery::cell_voltage_t voltage = battery.readVoltage();
 
         JsonObject bat_json = status_json.createNestedObject("bat");
-        bat_json["cell"] = voltage.cellMain;
+        bat_json["main"] = voltage.cellMain;
+        bat_json["bkp"] = voltage.cellBackup;
 
         status_json["log"] = sys.tasks.logger.isLoggingEnabled();
 

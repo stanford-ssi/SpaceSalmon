@@ -14,7 +14,6 @@ class OneBattery
     {
         float cellMain;
         float cellBackup;
-        float tempJunction;
     };
     
     OneBattery(ADC& adc);
