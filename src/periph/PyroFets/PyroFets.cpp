@@ -1,5 +1,6 @@
 #include "PyroFets.h"
 #include "hal_gpio.h"
+#include "main.hpp"
 
 PyroFets::PyroFets(uint8_t fire1, uint8_t sense1, uint8_t fire2, uint8_t sense2){
     fire1_pin = fire1;
@@ -60,14 +61,13 @@ bool PyroFets::fire(PyroChannel channel){
 }
 
 bool PyroFets::getStatus(PyroChannel channel){
+    uint16_t value = 0;
+    
     if(channel == SquibA){
-        //adc_sync_enable_channel(ADC, 1);
-        //adc_sync_set_inputs(ADC, 0x0D, 0, 1);
-        //adc_sync_read_channel(ADC, 1, (uint8_t *)&readx0E, 2);
+        value = sys.adc0.read(0x0D);
     }else if(channel == SquibB){
-        //adc_sync_enable_channel(ADC, 1);
-        //adc_sync_set_inputs(ADC, 0x0C, 0, 1);
-        //adc_sync_read_channel(ADC, 1, (uint8_t *)&readx0E, 2);
-    }   
-    return false;
+        value = sys.adc0.read(0x0C);
+    }
+
+    return (value > 400);
 }

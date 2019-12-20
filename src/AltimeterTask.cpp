@@ -60,6 +60,11 @@ void AltimeterTask::activity(void *ptr)
 
         status_json["log"] = sys.tasks.logger.isLoggingEnabled();
 
+        JsonArray pyro_json = status_json.createNestedArray("pyro");
+
+        pyro_json.add(sys.pyro.getStatus(Pyro::SquibA));
+        pyro_json.add(sys.pyro.getStatus(Pyro::SquibB));
+
         sys.tasks.logger.logJSON(status_json,"status");
 
         gpio_set_pin_level(ALT_LED,false);
