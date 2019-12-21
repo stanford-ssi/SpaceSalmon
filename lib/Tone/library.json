@@ -1,0 +1,10 @@
+{
+    "name": "Tone",
+    "build":{
+        "flags":
+        [
+            "-Isource"
+        ],
+        "libArchive": false
+    }
+}

@@ -916,6 +916,11 @@ void system_init(void)
 
 	gpio_set_pin_function(LED4, GPIO_PIN_FUNCTION_OFF);
 
+	
+	gpio_set_pin_level(BUZZER, false);
+	gpio_set_pin_direction(BUZZER, GPIO_DIRECTION_OUT);
+	gpio_set_pin_function(BUZZER, GPIO_PIN_FUNCTION_E);
+
 
 	EXTERNAL_IRQ_0_init();
 

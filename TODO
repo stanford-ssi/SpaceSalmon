@@ -32,3 +32,6 @@ Hardware Fixes:
 - 2x SPI buses would help performance and code simplicity a lot...
 
 TODO: Once flight state is "falling" below some velocity, the filter should put a big error on the accel term input, so that it knows when landed.
+
+
+PA15 = TC3/ WO[1]
