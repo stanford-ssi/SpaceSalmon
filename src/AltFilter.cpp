@@ -10,8 +10,8 @@ AltFilter::AltFilter(){
   Z << 0,
        0;
 
-  F << 1, 0.02, 0, //this depends on time step???
-       0, 1, 0.02,
+  F << 1, 0.01, 0,
+       0, 1, 0.01,
        0, 0, 1;
 
   H << 1, 0, 0,
