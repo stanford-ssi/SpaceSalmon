@@ -10,6 +10,8 @@ class System;
 #include "../../periph/PyroFets/PyroFets.h"
 #include "../../periph/Pyro.h"
 
+#include "Tone.h"
+
 #include "SensorTask.hpp"
 #include "LoggerTask.hpp"
 #include "AltimeterTask.hpp"
@@ -25,6 +27,8 @@ public:
     Pyro &pyro = pyrofets;
 
     ADC adc0 = ADC(ADC0);
+
+    Tone buzzer = Tone(BUZZER);
 
     const bool shitl = false;
 

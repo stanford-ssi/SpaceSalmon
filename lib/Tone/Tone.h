@@ -21,9 +21,12 @@
 #include <atmel_start_pins.h>
 #include <hal_gpio.h>
 
-#ifdef __cplusplus
+class Tone
+{
+public:
+  Tone(uint32_t pin);
+  void set(uint32_t);
 
-void tone(uint32_t _pin, uint32_t frequency, uint32_t duration = 0);
-void noTone(uint32_t _pin);
-
-#endif
+private:
+  uint32_t _pin;
+};
