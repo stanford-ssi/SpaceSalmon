@@ -62,11 +62,24 @@ void AltimeterTask::activity(void *ptr)
 
         JsonArray pyro_json = status_json.createNestedArray("pyro");
 
-        pyro_json.add(sys.pyro.getStatus(Pyro::SquibA));
-        pyro_json.add(sys.pyro.getStatus(Pyro::SquibB));
+        bool pyroA = sys.pyro.getStatus(Pyro::SquibA);
+        bool pyroB = sys.pyro.getStatus(Pyro::SquibB);
+
+        pyro_json.add(pyroA);
+        pyro_json.add(pyroB);
 
         sys.tasks.logger.logJSON(status_json,"status");
 
         gpio_set_pin_level(ALT_LED,false);
+
+        if(pyroA && pyroB){
+            sys.buzzer.set(5000);
+            vTaskDelay(100);
+            sys.buzzer.set(0);
+        }else{
+            sys.buzzer.set(800);
+            vTaskDelay(300);
+            sys.buzzer.set(0);
+        }
     }
 }
