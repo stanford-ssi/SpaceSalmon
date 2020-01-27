@@ -858,19 +858,9 @@ void system_init(void)
 
 	gpio_set_pin_function(LED2, GPIO_PIN_FUNCTION_OFF);
 
-	// GPIO on PB00
-
-	gpio_set_pin_level(BUZZER,
-	                   // <y> Initial level
-	                   // <id> pad_initial_level
-	                   // <false"> Low
-	                   // <true"> High
-	                   false);
-
-	// Set pin direction to output
+	gpio_set_pin_level(BUZZER, false);
 	gpio_set_pin_direction(BUZZER, GPIO_DIRECTION_OUT);
-
-	gpio_set_pin_function(BUZZER, GPIO_PIN_FUNCTION_OFF);
+	gpio_set_pin_function(BUZZER, GPIO_PIN_FUNCTION_E);
 
 	// GPIO on PB04
 
