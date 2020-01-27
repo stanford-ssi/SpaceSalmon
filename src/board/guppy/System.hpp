@@ -32,6 +32,8 @@ public:
 
     const bool shitl = false;
 
+    const bool silent = true;
+
     class Sensors
     {
     public:
