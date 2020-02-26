@@ -1,0 +1,3 @@
+[submodule "lib/SSISD"]
+	path = lib/SSISD
+	url = https://github.com/stanford-ssi/SSISD.git
