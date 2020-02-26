@@ -32,6 +32,8 @@ If BOSSAC uploading fails, use this:
 ### TODOs
 * fix the `#undef` bug listed above
 * fix the build version script, have it linked in last
+* Port back to Ardunio (going on in `arduino-backport` branch)
+* fix but that caused no deploy
 
 ### SHITL
 The code supports SHITL (Some Hardware in the Loop) testing. This allows you to feed a log of sensor data from a past flight into the hardware in the place of live sensor data. To perform SHTIL you must do the following. The logs from a SHITL test are treated the same as flight logs.
