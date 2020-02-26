@@ -3,30 +3,42 @@
     "core": "adafruit",
     "cpu": "cortex-m4",
     "extra_flags": [
-      "-D__SAME51J20A__",
-      "-D__SAME51__",
+      "-DARDUINO_ARCH_SAMD",
+      "-DARDUINO_FEATHER_M4",
+      "-DADAFRUIT_FEATHER_M4_EXPRESS",
+      "-D__SAMD51J19A__",
+      "-D__SAMD51__",
       "-D__FPU_PRESENT",
-      "-DARM_MATH_CM4"
+      "-DARM_MATH_CM4",
+      "-DENABLE_CACHE",
+      "-DVARIANT_QSPI_BAUD_DEFAULT=50000000"
     ],
+    "f_cpu": "120000000L",
     "hwids": [
       [
         "0x239A",
-        "0x8022"
+        "0x8031"
       ],
       [
         "0x239A",
-        "0x0022"
+        "0x0031"
+      ],
+      [
+        "0x239A",
+        "0x0032"
       ]
     ],
-    "mcu": "same51j20a",
-    "system": "same",
+    "ldscript": "flash_with_bootloader.ld",
+    "mcu": "samd51j19a",
+    "system": "samd",
     "usb_product": "Adafruit Feather M4",
     "variant": "feather_m4"
   },
   "debug": {
-    "jlink_device": "ATSAME51J20",
-    "openocd_chipname": "at91same51j20",
-    "svd_path": "ATSAME51J20A.svd"
+    "jlink_device": "ATSAMD51J19",
+    "openocd_chipname": "at91samd51j19",
+    "openocd_target": "atsame5x",
+    "svd_path": "ATSAMD51J19A.svd"
   },
   "frameworks": [
     "arduino"
@@ -35,20 +47,19 @@
   "upload": {
     "disable_flushing": true,
     "maximum_ram_size": 196608,
-    "maximum_size": 507904,
+    "maximum_size": 524288,
     "native_usb": true,
+    "offset_address": "0x4000",
     "protocol": "sam-ba",
     "protocols": [
       "sam-ba",
-      "blackmagic",
       "jlink",
       "atmel-ice"
     ],
-    "require_upload_port": false,
-    "offset_address": "0x4000",
-    "use_1200bps_touch": false,
-    "wait_for_upload_port": false
+    "require_upload_port": true,
+    "use_1200bps_touch": true,
+    "wait_for_upload_port": true
   },
-  "url": "",
+  "url": "https://www.adafruit.com/product/3857",
   "vendor": "SSI"
 }
