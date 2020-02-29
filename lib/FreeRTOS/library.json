@@ -1,0 +1,13 @@
+{
+    "name": "FreeRTOS",
+    "build":{
+        "flags":
+        [
+            "-Isrc",
+            "-Isrc/Source/include",
+            "-Isrc/Source/portable/GCC/ARM_CM4F/",
+            "-Iconfig"
+        ],
+        "libArchive": false
+    }
+}
