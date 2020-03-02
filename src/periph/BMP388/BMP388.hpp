@@ -3,14 +3,14 @@
 extern "C"
 {
 #include "bmp3_defs.h"
-#include <hal_spi_m_os.h>
 #include <hal_gpio.h>
 #include <math.h>
 #include <string.h>
-#include <hal_delay.h>
 #include "../Sensor.hpp"
 }
 
+#include "Arduino.h"
+#include "SPI.h"
 
 class BMP388 : public Sensor
 {
@@ -18,7 +18,7 @@ class BMP388 : public Sensor
 
     typedef bmp3_data Data;
 
-    BMP388(struct spi_m_os_descriptor *spi, int8_t cspin, const char* id);
+    BMP388(SPIClass *spi, int8_t cspin, const char* id);
 
     bool init();
     bool setTemperatureOversampling(uint8_t os);
@@ -33,7 +33,7 @@ class BMP388 : public Sensor
 
   private:
     int8_t _cs;
-    struct spi_m_os_descriptor *_spi;
+    SPIClass *_spi;
 
 
     /*! Chip Id */

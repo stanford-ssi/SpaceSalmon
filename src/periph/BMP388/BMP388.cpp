@@ -16,7 +16,7 @@ TODO: This library works, but can only be used once. It needs to be re-writen as
 /*! Advance settings */
 #define ADV_SETT UINT16_C(0x1800)
 
-BMP388::BMP388(struct spi_m_os_descriptor *spi, int8_t cspin, const char *id) : Sensor(id)
+BMP388::BMP388(SPIClass *spi, int8_t cspin, const char *id) : Sensor(id)
 {
 	_spi = spi;
 	_cs = cspin;
@@ -229,45 +229,31 @@ bool BMP388::setOutputDataRate(uint8_t odr)
 int8_t BMP388::spi_read(uint8_t reg_addr, uint8_t *reg_data, uint16_t len)
 {
 
-	uint8_t send[len + 1];
-	uint8_t recv[len + 1];
+	uint8_t buf[len + 1];
 
-	memset(send, 0x00, len + 1);
-	memset(recv, 0x00, len + 1);
+	memset(buf, 0x00, len + 1);
 
-	send[0] = reg_addr | 0x80;
+	buf[0] = reg_addr | 0x80;
 
-	spi_m_os_disable(_spi);
-	spi_m_os_set_mode(_spi, SPI_MODE_3);
-	spi_m_os_enable(_spi);
+	digitalWrite(_cs,LOW);
+	_spi->transfer(buf, len + 1);
+	digitalWrite(_cs,HIGH);
 
-	gpio_set_pin_level(_cs, false);
-	spi_m_os_transfer(_spi, send, recv, len + 1);
-	gpio_set_pin_level(_cs, true);
-
-	memcpy(reg_data, recv + 1, len);
+	memcpy(reg_data, buf + 1, len);
 
 	return 0;
 }
 
 int8_t BMP388::spi_write(uint8_t reg_addr, uint8_t *reg_data, uint16_t len)
 {
+	uint8_t buf[len + 1];
 
-	uint8_t send[len + 1];
-	uint8_t recv[len + 1];
+	buf[0] = reg_addr;
+	memcpy(buf + 1, reg_data, len);
 
-	memset(send, 0x00, len + 1);
-	memcpy(send + 1, reg_data, len);
-
-	send[0] = reg_addr;
-
-	spi_m_os_disable(_spi);
-	spi_m_os_set_mode(_spi, SPI_MODE_3);
-	spi_m_os_enable(_spi);
-
-	gpio_set_pin_level(_cs, false);
-	spi_m_os_transfer(_spi, send, recv, len + 1);
-	gpio_set_pin_level(_cs, true);
+	digitalWrite(_cs,LOW);
+	_spi->transfer(buf, len + 1);
+	digitalWrite(_cs,HIGH);
 
 	return 0;
 }

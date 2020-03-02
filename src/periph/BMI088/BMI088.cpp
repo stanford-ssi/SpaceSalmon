@@ -601,10 +601,10 @@ bool BMI088::writeFeatureConfig()
   unsigned int index_step = 16;
   // deactivate accel
   accel->setPower(false);
-  delay_ms(100);
+  delay(100);
   // disable config loading
   accel->writeRegister(ACC_INIT_CTRL_ADDR,ACC_DISABLE);
-  delay_ms(10);
+  delay(10);
   // write config file
   for (index = 0; index < sizeof(bmi_feature_config); index+=index_step) {
     msb = (uint8_t)((index / 2) >> 4);
@@ -615,7 +615,7 @@ bool BMI088::writeFeatureConfig()
   }
   // enable config loading
   accel->writeRegister(ACC_INIT_CTRL_ADDR,1);
-  delay_ms(1500);
+  delay(1500);
   // check config initialization status
   accel->readRegisters(ACC_INTERNAL_STATUS_ADDR,1,&status);
   // reactivate accel
@@ -636,7 +636,7 @@ void BMI088::updateFeatureConfig(uint8_t addr, uint8_t count, const uint16_t *da
 }
 
 /* BMI088 object, input the SPI bus and chip select pin */
-BMI088::BMI088(spi_m_os_descriptor *bus, uint8_t accel_cs, uint8_t gyro_cs, const char* id) : Sensor(id)
+BMI088::BMI088(SPIClass *bus, uint8_t accel_cs, uint8_t gyro_cs, const char* id) : Sensor(id)
 {
   accel = new BMI088Accel(bus,accel_cs);
   gyro = new BMI088Gyro(bus,gyro_cs);

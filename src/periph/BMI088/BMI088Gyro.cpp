@@ -4,7 +4,7 @@
 #define SET_FIELD(regval, regname, value) ((regval & ~regname##_MASK) | ((value << regname##_POS) & regname##_MASK))
 
 /* BMI088 object, input the SPI bus and chip select pin */
-BMI088Gyro::BMI088Gyro(struct spi_m_os_descriptor *bus, uint8_t csPin)
+BMI088Gyro::BMI088Gyro(SPIClass *bus, uint8_t csPin)
 {
   _spi = bus;     // SPI bus
   _csPin = csPin; // chip select pin
@@ -20,7 +20,7 @@ int BMI088Gyro::begin()
   }
   /* soft reset */
   softReset();
-  delay_ms(50);
+  delay(50);
   /* set default range */
   if (!setRange(RANGE_2000DPS))
   {
@@ -45,7 +45,7 @@ bool BMI088Gyro::setOdr(Odr odr)
   uint8_t writeReg = 0, readReg = 0;
   writeReg = SET_FIELD(writeReg, GYRO_ODR, odr);
   writeRegister(GYRO_ODR_ADDR, writeReg);
-  delay_ms(1);
+  delay(1);
   readRegisters(GYRO_ODR_ADDR, 1, &readReg);
   return (readReg == writeReg) ? true : false;
 }
@@ -56,7 +56,7 @@ bool BMI088Gyro::setRange(Range range)
   uint8_t writeReg = 0, readReg = 0;
   writeReg = SET_FIELD(writeReg, GYRO_RANGE, range);
   writeRegister(GYRO_RANGE_ADDR, writeReg);
-  delay_ms(1);
+  delay(1);
   readRegisters(GYRO_RANGE_ADDR, 1, &readReg);
   if (readReg == writeReg)
   {
@@ -140,7 +140,7 @@ bool BMI088Gyro::pinModeInt3(PinMode mode, PinLevel level)
   }
   writeReg = SET_FIELD(readReg, GYRO_INT3_IO_CTRL, (pin_mode | active_lvl));
   writeRegister(GYRO_INT3_IO_CTRL_ADDR, writeReg);
-  delay_ms(1);
+  delay(1);
   readRegisters(GYRO_INT3_IO_CTRL_ADDR, 1, &readReg);
   return (readReg == writeReg) ? true : false;
 }
@@ -189,7 +189,7 @@ bool BMI088Gyro::pinModeInt4(PinMode mode, PinLevel level)
   }
   writeReg = SET_FIELD(readReg, GYRO_INT4_IO_CTRL, (pin_mode | active_lvl));
   writeRegister(GYRO_INT4_IO_CTRL_ADDR, writeReg);
-  delay_ms(1);
+  delay(1);
   readRegisters(GYRO_INT4_IO_CTRL_ADDR, 1, &readReg);
   return (readReg == writeReg) ? true : false;
 }
@@ -201,7 +201,7 @@ bool BMI088Gyro::mapDrdyInt3(bool enable)
   readRegisters(GYRO_INT3_DRDY_ADDR, 1, &readReg);
   writeReg = SET_FIELD(readReg, GYRO_INT3_DRDY, enable);
   writeRegister(GYRO_INT3_DRDY_ADDR, writeReg);
-  delay_ms(1);
+  delay(1);
   readRegisters(GYRO_INT3_DRDY_ADDR, 1, &readReg);
   return (readReg == writeReg) ? true : false;
 }
@@ -213,7 +213,7 @@ bool BMI088Gyro::mapDrdyInt4(bool enable)
   readRegisters(GYRO_INT4_DRDY_ADDR, 1, &readReg);
   writeReg = SET_FIELD(readReg, GYRO_INT4_DRDY, enable);
   writeRegister(GYRO_INT4_DRDY_ADDR, writeReg);
-  delay_ms(1);
+  delay(1);
   readRegisters(GYRO_INT4_DRDY_ADDR, 1, &readReg);
   return (readReg == writeReg) ? true : false;
 }
@@ -256,7 +256,7 @@ bool BMI088Gyro::setDrdyInt(bool enable)
   uint8_t value = (enable) ? GYRO_ENABLE_DRDY_INT : GYRO_DIS_DRDY_INT;
   writeReg = SET_FIELD(writeReg, GYRO_INT_CNTRL, value);
   writeRegister(GYRO_INT_CNTRL_ADDR, writeReg);
-  delay_ms(1);
+  delay(1);
   readRegisters(GYRO_INT_CNTRL_ADDR, 1, &readReg);
   return (readReg == writeReg) ? true : false;
 }
@@ -267,7 +267,7 @@ void BMI088Gyro::softReset()
   uint8_t reg = 0;
   reg = SET_FIELD(reg, GYRO_SOFT_RESET, GYRO_RESET_CMD);
   writeRegister(GYRO_SOFT_RESET_ADDR, reg);
-  delay_ms(50);
+  delay(50);
 }
 
 /* checks the BMI088 gyro ID */
@@ -282,38 +282,25 @@ bool BMI088Gyro::isCorrectId()
 void BMI088Gyro::writeRegister(uint8_t subAddress, uint8_t data)
 {
   subAddress &= ~SPI_READ;
-  uint8_t send[] = {subAddress, data};
-  uint8_t recv[] = {0x00, 0x00};
+  uint8_t buf[] = {subAddress, data};
 
-  spi_m_os_disable(_spi); //likely not needed
-	spi_m_os_set_mode(_spi, SPI_MODE_3);
-  spi_m_os_enable(_spi);
-
-
-  gpio_set_pin_level(_csPin, false);
-  spi_m_os_transfer(_spi, send, recv, 2);
-  gpio_set_pin_level(_csPin, true);
+  digitalWrite(_csPin,LOW);
+	_spi->transfer(buf, 2);
+	digitalWrite(_csPin,HIGH);
 }
 
 /* reads registers from BMI088 given a starting register address, number of bytes, and a pointer to store data */
 void BMI088Gyro::readRegisters(uint8_t subAddress, uint8_t count, uint8_t *dest)
 {
-  uint8_t send[count + 1];
-  uint8_t recv[count + 1];
+  uint8_t buf[count + 2];
 
-  memset(send, 0x00, count + 1);
-  memset(recv, 0x00, count + 1);
+  memset(buf, 0x00, count + 2);
 
-  send[0] = subAddress | SPI_READ;
+  buf[0] = subAddress | SPI_READ;
 
-	spi_m_os_disable(_spi); //likely not needed
-	spi_m_os_set_mode(_spi, SPI_MODE_3);
-  spi_m_os_enable(_spi);
+  digitalWrite(_csPin,LOW);
+	_spi->transfer(buf, count + 2);
+	digitalWrite(_csPin,HIGH);
 
-
-  gpio_set_pin_level(_csPin, false);
-  spi_m_os_transfer(_spi, send, recv, count+1);
-  gpio_set_pin_level(_csPin, true);
-
-  memcpy(dest, recv + 1, count);
+  memcpy(dest, buf + 2, count);
 }

@@ -4,7 +4,7 @@
 #define	SET_FIELD(regval,regname,value) ((regval & ~regname##_MASK) | ((value << regname##_POS) & regname##_MASK))
 
 /* BMI088 object, input the SPI bus and chip select pin */
-BMI088Accel::BMI088Accel(struct spi_m_os_descriptor *bus, uint8_t csPin)
+BMI088Accel::BMI088Accel(SPIClass *bus, uint8_t csPin)
 {
   _spi = bus; // SPI bus
   _csPin = csPin; // chip select pin
@@ -41,7 +41,7 @@ int BMI088Accel::begin()
   if (!setMode(true)) {
     return -6;
   } 
-  delay_ms(50);
+  delay(50);
   /* set default range */
   if (!setRange(RANGE_24G)) {
     return -7;
@@ -169,7 +169,7 @@ bool BMI088Accel::setOdr(Odr odr)
   }
   writeReg = SET_FIELD(writeReg,ACC_ODR,value);
   writeRegister(ACC_ODR_ADDR,writeReg);
-  delay_ms(1);
+  delay(1);
   readRegisters(ACC_ODR_ADDR,1,&readReg);
   return (readReg == writeReg) ? true : false;
 }
@@ -181,7 +181,7 @@ bool BMI088Accel::setRange(Range range)
   readRegisters(ACC_RANGE_ADDR,1,&readReg);
   writeReg = SET_FIELD(readReg,ACC_RANGE,range);
   writeRegister(ACC_RANGE_ADDR,writeReg);
-  delay_ms(1);
+  delay(1);
   readRegisters(ACC_RANGE_ADDR,1,&readReg);
   if (readReg == writeReg) {
     switch (range) {
@@ -227,7 +227,7 @@ bool BMI088Accel::mapDrdyInt1(bool enable)
   readRegisters(ACC_INT1_DRDY_ADDR,1,&readReg);
   writeReg = SET_FIELD(readReg,ACC_INT1_DRDY,enable);
   writeRegister(ACC_INT1_DRDY_ADDR,writeReg);
-  delay_ms(1);
+  delay(1);
   readRegisters(ACC_INT1_DRDY_ADDR,1,&readReg);
   return (readReg == writeReg) ? true : false;  
 }
@@ -239,7 +239,7 @@ bool BMI088Accel::mapDrdyInt2(bool enable)
   readRegisters(ACC_INT2_DRDY_ADDR,1,&readReg);
   writeReg = SET_FIELD(readReg,ACC_INT2_DRDY,enable);
   writeRegister(ACC_INT2_DRDY_ADDR,writeReg);
-  delay_ms(1);
+  delay(1);
   readRegisters(ACC_INT2_DRDY_ADDR,1,&readReg);
   return (readReg == writeReg) ? true : false;
 }
@@ -346,7 +346,7 @@ bool BMI088Accel::pinModeInt1(PinIO io, PinMode mode, PinLevel level)
   }
   writeReg = SET_FIELD(readReg,ACC_INT1_IO_CTRL,(pin_io | pin_mode | active_lvl));
   writeRegister(ACC_INT1_IO_CTRL_ADDR,writeReg);
-  delay_ms(1);
+  delay(1);
   readRegisters(ACC_INT1_IO_CTRL_ADDR,1,&readReg);
   return (readReg == writeReg) ? true : false;  
 }
@@ -401,7 +401,7 @@ bool BMI088Accel::pinModeInt2(PinIO io, PinMode mode, PinLevel level)
   }
   writeReg = SET_FIELD(readReg,ACC_INT2_IO_CTRL,(pin_io | pin_mode | active_lvl));
   writeRegister(ACC_INT2_IO_CTRL_ADDR,writeReg);
-  delay_ms(1);
+  delay(1);
   readRegisters(ACC_INT2_IO_CTRL_ADDR,1,&readReg);
   return (readReg == writeReg) ? true : false;  
 }
@@ -416,12 +416,12 @@ bool BMI088Accel::selfTest()
   /* set 1.6 kHz ODR, 4x oversampling */
   setOdr(ODR_1600HZ_BW_145HZ);
   /* wait >2 ms */
-  delay_ms(3);
+  delay(3);
   /* enable self test, positive polarity */
   writeReg = SET_FIELD(writeReg,ACC_SELF_TEST,ACC_POS_SELF_TEST);
   writeRegister(ACC_SELF_TEST_ADDR,writeReg);
   /* wait >50 ms */
-  delay_ms(51);
+  delay(51);
   /* read self test values */
   readSensor();
   for (uint8_t i = 0; i < 3; i++) {
@@ -431,7 +431,7 @@ bool BMI088Accel::selfTest()
   writeReg = SET_FIELD(writeReg,ACC_SELF_TEST,ACC_NEG_SELF_TEST);
   writeRegister(ACC_SELF_TEST_ADDR,writeReg);
   /* wait >50 ms */
-  delay_ms(51);
+  delay(51);
   /* read self test values */
   readSensor();
   for (uint8_t i = 0; i < 3; i++) {
@@ -441,7 +441,7 @@ bool BMI088Accel::selfTest()
   writeReg = SET_FIELD(writeReg,ACC_SELF_TEST,ACC_DIS_SELF_TEST);
   writeRegister(ACC_SELF_TEST_ADDR,writeReg);
   /* wait >50 ms */
-  delay_ms(51); 
+  delay(51); 
   /* check self test results */
   if ((fabs(accel_pos_mg[0] - accel_neg_mg[0]) >= 1000) && (fabs(accel_pos_mg[1] - accel_neg_mg[1]) >= 1000) && (fabs(accel_pos_mg[2] - accel_neg_mg[2]) >= 500)) {
     return true;
@@ -457,7 +457,7 @@ bool BMI088Accel::setMode(bool active)
   uint8_t value = (active) ? ACC_ACTIVE_MODE_CMD : ACC_SUSPEND_MODE_CMD;
   writeReg = SET_FIELD(writeReg,ACC_PWR_CONF,value);
   writeRegister(ACC_PWR_CONF_ADDR,writeReg);
-  delay_ms(5); // 5 ms wait after power mode changes
+  delay(5); // 5 ms wait after power mode changes
   readRegisters(ACC_PWR_CONF_ADDR,1,&readReg);
   return (readReg == writeReg) ? true : false;
 }
@@ -469,7 +469,7 @@ bool BMI088Accel::setPower(bool enable)
   uint8_t value = (enable) ? ACC_ENABLE_CMD : ACC_DISABLE_CMD;
   writeReg = SET_FIELD(writeReg,ACC_PWR_CNTRL,value);
   writeRegister(ACC_PWR_CNTRL_ADDR,writeReg);
-  delay_ms(5); // 5 ms wait after power mode changes
+  delay(5); // 5 ms wait after power mode changes
   readRegisters(ACC_PWR_CNTRL_ADDR,1,&readReg);
   return (readReg == writeReg) ? true : false;
 }
@@ -480,9 +480,9 @@ void BMI088Accel::softReset()
   uint8_t reg = 0;
   reg = SET_FIELD(reg,ACC_SOFT_RESET,ACC_RESET_CMD);
   writeRegister(ACC_SOFT_RESET_ADDR,reg);
-  delay_ms(50);
-  gpio_set_pin_level(_csPin,false);
-  gpio_set_pin_level(_csPin,true);
+  delay(50);
+  digitalWrite(_csPin,LOW);
+  digitalWrite(_csPin,HIGH);
   
 }
 
@@ -514,59 +514,39 @@ bool BMI088Accel::isCorrectId()
 void BMI088Accel::writeRegister(uint8_t subAddress, uint8_t data)
 {
   subAddress &= ~SPI_READ;
-  uint8_t send[] = {subAddress, data};
-  uint8_t recv[] = {0x00, 0x00};
+  uint8_t buf[] = {subAddress, data};
 
-  spi_m_os_disable(_spi);
-	spi_m_os_set_mode(_spi, SPI_MODE_3);
-  spi_m_os_enable(_spi);
-
-
-  gpio_set_pin_level(_csPin, false);
-  spi_m_os_transfer(_spi, send, recv, 2);
-  gpio_set_pin_level(_csPin, true);
+  digitalWrite(_csPin,LOW);
+	_spi->transfer(buf, 2);
+	digitalWrite(_csPin,HIGH);
 }
 
 /* writes multiple bytes to BMI088 register given a register address and data */
 void BMI088Accel::writeRegisters(uint8_t subAddress, uint8_t count, const uint8_t *data)
 {
-  uint8_t send[count + 1];
-  uint8_t recv[count + 1];
+  uint8_t buf[count + 1];
 
-  send[0] = subAddress | SPI_READ;
+  buf[0] = subAddress | SPI_READ;
 
-  memcpy(send + 1, data, count);
+  memcpy(buf + 1, data, count);
 
-  	spi_m_os_disable(_spi); //TODO: probably not needed
-	spi_m_os_set_mode(_spi, SPI_MODE_3);
-    spi_m_os_enable(_spi);
-
-
-  gpio_set_pin_level(_csPin, false);
-  spi_m_os_transfer(_spi, send, recv, count+1);
-  gpio_set_pin_level(_csPin, true);
+  digitalWrite(_csPin,LOW);
+	_spi->transfer(buf, count + 1);
+	digitalWrite(_csPin,HIGH);
 }
 
 /* reads registers from BMI088 given a starting register address, number of bytes, and a pointer to store data */
 void BMI088Accel::readRegisters(uint8_t subAddress, uint8_t count, uint8_t* dest)
 {
-  uint8_t send[count + 2];
-  uint8_t recv[count + 2];
+  uint8_t buf[count + 2];
 
-  memset(send, 0x00, count + 2);
-  memset(recv, 0x00, count + 2);
+  memset(buf, 0x00, count + 2);
 
-  send[0] = subAddress | SPI_READ;
+  buf[0] = subAddress | SPI_READ;
 
-  	spi_m_os_disable(_spi); //TODO: probably not needed
-	spi_m_os_set_mode(_spi, SPI_MODE_3);
-    spi_m_os_enable(_spi);
+  digitalWrite(_csPin,LOW);
+	_spi->transfer(buf, count + 2);
+	digitalWrite(_csPin,HIGH);
 
-
-  gpio_set_pin_level(_csPin, false);
-  spi_m_os_transfer(_spi, send, recv, count+2);
-  gpio_set_pin_level(_csPin, true);
-
-  memcpy(dest, recv + 2, count);
-  
+  memcpy(dest, buf + 2, count);
 }
