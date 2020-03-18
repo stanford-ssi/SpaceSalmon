@@ -82,7 +82,7 @@ public:
   };
 
   ADXL375(SPIClass *SPI, uint8_t CS_PIN, const char* id);
-  void init();
+  int init();
   void startMeasuring();
   Data readSensor();
   uint8_t readRegister(uint8_t regAddress);

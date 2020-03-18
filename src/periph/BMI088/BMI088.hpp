@@ -23,7 +23,6 @@
 
 extern "C"
 {
-#include <hal_gpio.h>
 #include <math.h>
 #include <string.h>
 #include "../Sensor.hpp"

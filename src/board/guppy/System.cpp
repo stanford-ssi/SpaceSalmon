@@ -2,37 +2,55 @@
 
 System sys;
 
+extern "C" void __libc_init_array(void);
+
+#include "SPI.h"
+#include "periph/ADXL375/ADXL375.hpp"
+#include "periph/BMP388/BMP388.hpp"
+#include "periph/BMI088/BMI088.hpp"
+#include "periph/MC33797/Squib.hpp"
+
 int main(void)
 {
-	//Initializes MCU, drivers and middleware
-	atmel_start_init();
+	//Arduino initialization (clocks and such)
+	init();
+	
+	//libc initialization (do we need it? what's it for?)
+	__libc_init_array();
 
-	//hri_cmcc_write_CTRL_reg(CMCC, 1); //this seems to slow things down!
+	//magic sauce?
+	delay(1);
 
-	//Bootup LED Sequence
-	gpio_set_pin_level(LED1, true);
-	gpio_set_pin_level(LED2, true);
-	gpio_set_pin_level(LED3, true);
-	gpio_set_pin_level(LED4, true);
-	delay_ms(1000);
+	USBDevice.init();
+	USBDevice.attach();
 
-	gpio_set_pin_level(LED1, false);
-	gpio_set_pin_level(LED2, false);
-	gpio_set_pin_level(LED3, false);
-	gpio_set_pin_level(LED4, false);
-	delay_ms(1000);
 
-	printf("\n");
-	printf("#####################\n");
-	printf("   SpaceSalmon 2.0   \n");
-	printf("#####################\n");
-	printf("\n");
-	printf("Starting Tasks!\n\n\n");
+	pinMode(1, OUTPUT);
+	pinMode(2, OUTPUT);
+
+	Serial.begin(9600);
+
+	pinMode(11, OUTPUT);
+	pinMode(12, OUTPUT);
+	pinMode(13, OUTPUT);
+	pinMode(14, OUTPUT);
+
+	digitalWrite(11, HIGH);
+	digitalWrite(12, HIGH);
+	digitalWrite(13, HIGH);
+	digitalWrite(14, HIGH);
+
+	sys.sensors.spi.begin();
+	sys.sensors.spi.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
+
+	Serial.println("Time to go!");
+
+	delay(5000);
+
+	// for(auto s: sys.sensors.list){
+	// 	s->init();
+	// }
 
 	vTaskStartScheduler();
-}
 
-
-void HardFault_Handler(void){
-	assert(false);
 }

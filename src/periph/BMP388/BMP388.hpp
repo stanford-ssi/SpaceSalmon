@@ -3,7 +3,6 @@
 extern "C"
 {
 #include "bmp3_defs.h"
-#include <hal_gpio.h>
 #include <math.h>
 #include <string.h>
 #include "../Sensor.hpp"
@@ -20,7 +19,7 @@ class BMP388 : public Sensor
 
     BMP388(SPIClass *spi, int8_t cspin, const char* id);
 
-    bool init();
+    int init();
     bool setTemperatureOversampling(uint8_t os);
     bool setPressureOversampling(uint8_t os);
     bool setIIRFilterCoeff(uint8_t fs);

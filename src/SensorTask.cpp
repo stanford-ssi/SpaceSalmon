@@ -25,7 +25,7 @@ TaskHandle_t SensorTask::getTaskHandle()
 
 void SensorTask::activity(void *ptr)
 {
-    sys.tasks.logger.log("Initializing Sensors");
+    //sys.tasks.logger.log("Initializing Sensors");
 
     int rc;
     char str[100];
@@ -46,19 +46,19 @@ void SensorTask::activity(void *ptr)
 
     if (rc != true)
     {
-        sys.tasks.logger.log("Error Starting BMP1");
+        //sys.tasks.logger.log("Error Starting BMP1");
     }
 
     rc = sys.sensors.pres2.init();
 
     if (rc != true)
     {
-        sys.tasks.logger.log("Error Starting BMP2");
+        //sys.tasks.logger.log("Error Starting BMP2");
     }
 
-    gpio_set_pin_level(ACCEL_CS_1, false);
+    //gpio_set_pin_level(ACCEL_CS_1, false);
     vTaskDelay(1);
-    gpio_set_pin_level(ACCEL_CS_1, true);
+    //gpio_set_pin_level(ACCEL_CS_1, true);
     vTaskDelay(1);
 
     rc = sys.sensors.imu1.accel->begin();
@@ -66,12 +66,12 @@ void SensorTask::activity(void *ptr)
     if (rc != 1)
     {
         snprintf(str, sizeof(str), "Error Starting BMI1Accel: %i", rc);
-        sys.tasks.logger.log(str);
+        //sys.tasks.logger.log(str);
     }
 
-    gpio_set_pin_level(ACCEL_CS_2, false);
+    //gpio_set_pin_level(ACCEL_CS_2, false);
     vTaskDelay(1);
-    gpio_set_pin_level(ACCEL_CS_2, true);
+    //gpio_set_pin_level(ACCEL_CS_2, true);
     vTaskDelay(1);
 
     rc = sys.sensors.imu2.accel->begin();
@@ -79,7 +79,7 @@ void SensorTask::activity(void *ptr)
     if (rc != 1)
     {
         snprintf(str, sizeof(str), "Error Starting BMI2Accel: %i", rc);
-        sys.tasks.logger.log(str);
+        //sys.tasks.logger.log(str);
     }
 
     vTaskDelay(2); //but why...
@@ -90,7 +90,7 @@ void SensorTask::activity(void *ptr)
     if (rc != 1)
     {
         snprintf(str, sizeof(str), "Error Starting BMI1Gyro: %i", rc);
-        sys.tasks.logger.log(str);
+        //sys.tasks.logger.log(str);
     }
 
     vTaskDelay(2); //but why...
@@ -100,7 +100,7 @@ void SensorTask::activity(void *ptr)
     if (rc != 1)
     {
         snprintf(str, sizeof(str), "Error Starting BMI2Gyro: %i", rc);
-        sys.tasks.logger.log(str);
+        //sys.tasks.logger.log(str);
     }
 
     TickType_t lastSensorTime = xTaskGetTickCount();
@@ -109,7 +109,7 @@ void SensorTask::activity(void *ptr)
     {
         vTaskDelayUntil(&lastSensorTime, 10);
 
-        gpio_set_pin_level(SENSOR_LED, true);
+        digitalWrite(SENSOR_LED, true);
 
         StaticJsonDocument<1024> sensor_json;
 
@@ -133,7 +133,7 @@ void SensorTask::activity(void *ptr)
         //vTaskDelay(2); //but why...
         data.bmigyro2_data = sys.sensors.imu2.gyro->readSensor();
 
-        sys.tasks.filter.queueSensorData(data);
+        //sys.tasks.filter.queueSensorData(data);
 
         sensor_json["tick"] = data.tick;
 
@@ -184,8 +184,10 @@ void SensorTask::activity(void *ptr)
         adxl2_accel_json.add(data.adxl2_data.y);
         adxl2_accel_json.add(data.adxl2_data.z);
 
-        sys.tasks.logger.logJSON(sensor_json, "sensor");
+        //sys.tasks.logger.logJSON(sensor_json, "sensor");
 
-        gpio_set_pin_level(SENSOR_LED, false);
+        Serial.println(data.adxl1_data.x);
+
+        digitalWrite(SENSOR_LED, false);
     }
 }

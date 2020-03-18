@@ -14,10 +14,11 @@ ADXL375::ADXL375(SPIClass *SPI, uint8_t CS_PIN, const char* id) : Sensor(id) //T
   this->CS_PIN = CS_PIN;
 }
 
-void ADXL375::init()
+int ADXL375::init()
 {
   setDataRate(BW_12_5HZ);
   writeRegister(ADXL375_REG_DATA_FORMAT, 0x0B);
+  return 0;
 }
 
 void ADXL375::startMeasuring()

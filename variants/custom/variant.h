@@ -90,6 +90,9 @@ static const uint8_t A4  = PIN_A4;
 static const uint8_t A5  = PIN_A5;
 static const uint8_t A6  = PIN_A6 ;
 
+#define PIN_DAC0             PIN_A0
+#define PIN_DAC1             PIN_A0
+
 /*
  * USB
  */

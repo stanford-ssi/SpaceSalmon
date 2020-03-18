@@ -23,7 +23,7 @@ BMP388::BMP388(SPIClass *spi, int8_t cspin, const char *id) : Sensor(id)
 	_filterEnabled = _tempOSEnabled = _presOSEnabled = false;
 }
 
-bool BMP388::init()
+int BMP388::init()
 {
 
 	int8_t rslt = BMP3_OK;
