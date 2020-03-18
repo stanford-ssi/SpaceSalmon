@@ -24,9 +24,11 @@ int main(void)
 	USBDevice.init();
 	USBDevice.attach();
 
-
+	//LEDs
 	pinMode(1, OUTPUT);
 	pinMode(2, OUTPUT);
+	pinMode(3, OUTPUT);
+	pinMode(4, OUTPUT);
 
 	Serial.begin(9600);
 
@@ -43,13 +45,13 @@ int main(void)
 	sys.sensors.spi.begin();
 	sys.sensors.spi.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
 
-	Serial.println("Time to go!");
-
-	delay(5000);
-
-	// for(auto s: sys.sensors.list){
-	// 	s->init();
-	// }
+	for(int i = 0; i < 10; i++){
+		Serial.println("Bootup Timer...");
+		for(int j = 0; j<1000000; j++){
+			digitalWrite(4, HIGH);
+		}
+	}
+	Serial.println("Starting!");
 
 	vTaskStartScheduler();
 

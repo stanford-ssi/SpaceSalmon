@@ -75,7 +75,7 @@ void LoggerTask::format()
 
 void LoggerTask::activity(void *ptr)
 {
-    gpio_set_pin_level(DISK_LED, true);
+    digitalWrite(DISK_LED,true);
     FRESULT res;
 
     //Clear file system object
@@ -86,6 +86,7 @@ void LoggerTask::activity(void *ptr)
     {
         loggingEnabled = false;
         sys.tasks.logger.log("Could Not Mount Disk");
+        Serial.println(res);
     }
     else
     {
@@ -122,36 +123,38 @@ void LoggerTask::activity(void *ptr)
 
     if (loggingEnabled)
     {
-        printf("Logging to file: %s\n", file_name);
+        //printf("Logging to file: %s\n", file_name);
+        sys.tasks.logger.log("Trying to open log file");
 
         res = f_open(&file_object, file_name, FA_CREATE_ALWAYS | FA_WRITE);
         if (res != FR_OK)
         {
-            printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
+            sys.tasks.logger.log("Failed to Open File");
             loggingEnabled = false;
         }
 
         //SHITL-----
         if(sys.shitl){
-            printf("SHITL from file: shitl.txt\n");
+            sys.tasks.logger.log("SHITL from file: shitl.txt");
 
             res = f_open(&shitl_file_object, "shitl.txt", FA_READ);
             if (res == FR_OK)
             {
                 shitlEnabled = true;
-                printf("Starting in SHITL mode");
+                sys.tasks.logger.log("Starting in SHITL Mode");
             }
             else
             {
                 shitlEnabled = false;
-                printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
+                sys.tasks.logger.log("SHITL Read Error");
             }
         }
         
 
     }
 
-    gpio_set_pin_level(DISK_LED, false);
+    //gpio_set_pin_level(DISK_LED, false);
+    digitalWrite(DISK_LED, false);
 
     char* p = lineBuffer;
     TickType_t timeout = 0;
@@ -182,12 +185,12 @@ void LoggerTask::activity(void *ptr)
             }
         
         }else{ //if timeout is NEVER, we don't ever reach this (no SHITL)
-            readSHITL();
+            //readSHITL();
         }
     }
 }
 
-void LoggerTask::readSHITL(){
+/*void LoggerTask::readSHITL(){
 
     gpio_set_pin_level(SENSOR_LED, true);
     //read in next line
@@ -226,19 +229,14 @@ void LoggerTask::readSHITL(){
     }
 
     gpio_set_pin_level(SENSOR_LED, false);
-}
+}*/
 
 void LoggerTask::writeUSB(char* buf){
-    char endl = '\n';
-    uint32_t len = strlen(buf);
-    for(uint32_t i = 0; i < len; i++){
-        write_byte(0, &buf[i], 1);
-    }
-    write_byte(0, &endl , 1);
+    Serial.println(buf);
 }
 
 void LoggerTask::writeSD(char* buf){
-    gpio_set_pin_level(DISK_LED, true);
+    digitalWrite(DISK_LED, true);
 
     FRESULT res;
     UINT writen;
@@ -246,14 +244,14 @@ void LoggerTask::writeSD(char* buf){
 
     if (res != FR_OK)
     {
-        printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
+        sys.tasks.logger.log("SD Write Error");
     }
 
     res = f_sync(&file_object); //update file structure
     if (res != FR_OK)
     {
-        printf("WARN-%s-%u: 0x%X\n\r", __FILE__, __LINE__, res);
+        sys.tasks.logger.log("SD Flush Error");
     }
     
-    gpio_set_pin_level(DISK_LED, false);
+    digitalWrite(DISK_LED, false);
 }

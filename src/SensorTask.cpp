@@ -25,7 +25,7 @@ TaskHandle_t SensorTask::getTaskHandle()
 
 void SensorTask::activity(void *ptr)
 {
-    //sys.tasks.logger.log("Initializing Sensors");
+    sys.tasks.logger.log("Initializing Sensors");
 
     int rc;
     char str[100];
@@ -46,14 +46,14 @@ void SensorTask::activity(void *ptr)
 
     if (rc != true)
     {
-        //sys.tasks.logger.log("Error Starting BMP1");
+        sys.tasks.logger.log("Error Starting BMP1");
     }
 
     rc = sys.sensors.pres2.init();
 
     if (rc != true)
     {
-        //sys.tasks.logger.log("Error Starting BMP2");
+        sys.tasks.logger.log("Error Starting BMP2");
     }
 
     //gpio_set_pin_level(ACCEL_CS_1, false);
@@ -79,7 +79,7 @@ void SensorTask::activity(void *ptr)
     if (rc != 1)
     {
         snprintf(str, sizeof(str), "Error Starting BMI2Accel: %i", rc);
-        //sys.tasks.logger.log(str);
+        sys.tasks.logger.log(str);
     }
 
     vTaskDelay(2); //but why...
@@ -90,7 +90,7 @@ void SensorTask::activity(void *ptr)
     if (rc != 1)
     {
         snprintf(str, sizeof(str), "Error Starting BMI1Gyro: %i", rc);
-        //sys.tasks.logger.log(str);
+        sys.tasks.logger.log(str);
     }
 
     vTaskDelay(2); //but why...
@@ -100,14 +100,14 @@ void SensorTask::activity(void *ptr)
     if (rc != 1)
     {
         snprintf(str, sizeof(str), "Error Starting BMI2Gyro: %i", rc);
-        //sys.tasks.logger.log(str);
+        sys.tasks.logger.log(str);
     }
 
     TickType_t lastSensorTime = xTaskGetTickCount();
 
     while (true)
     {
-        vTaskDelayUntil(&lastSensorTime, 10);
+        vTaskDelayUntil(&lastSensorTime, 1000);
 
         digitalWrite(SENSOR_LED, true);
 
@@ -184,9 +184,7 @@ void SensorTask::activity(void *ptr)
         adxl2_accel_json.add(data.adxl2_data.y);
         adxl2_accel_json.add(data.adxl2_data.z);
 
-        //sys.tasks.logger.logJSON(sensor_json, "sensor");
-
-        Serial.println(data.adxl1_data.x);
+        sys.tasks.logger.logJSON(sensor_json, "sensor");
 
         digitalWrite(SENSOR_LED, false);
     }

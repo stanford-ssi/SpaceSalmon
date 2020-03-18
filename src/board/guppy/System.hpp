@@ -13,7 +13,7 @@ class System;
 
 
 #include "SensorTask.hpp"
-//#include "LoggerTask.hpp"
+#include "LoggerTask.hpp"
 
 
 class System
@@ -45,7 +45,7 @@ public:
     {
     public:
         SensorTask sensor; //reads data from sensors
- //       LoggerTask logger; //logs to USB/SD
+        LoggerTask logger; //logs to USB/SD
     };
 
     Sensors sensors;
