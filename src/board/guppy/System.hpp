@@ -12,6 +12,7 @@ class System;
 
 #include "SensorTask.hpp"
 #include "LoggerTask.hpp"
+#include "AltimeterTask.hpp"
 
 
 class System
@@ -21,8 +22,6 @@ public:
     const bool shitl = false;
 
     const bool silent = false;
-
-    
 
     class Sensors
     {
@@ -44,6 +43,7 @@ public:
     public:
         SensorTask sensor; //reads data from sensors
         LoggerTask logger; //logs to USB/SD
+        AltimeterTask alt;
     };
 
     Sensors sensors;
