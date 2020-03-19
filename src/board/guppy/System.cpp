@@ -10,11 +10,13 @@ extern "C" void __libc_init_array(void);
 #include "periph/BMI088/BMI088.hpp"
 #include "periph/MC33797/Squib.hpp"
 
+#include "SSISD.hpp"
+
 int main(void)
 {
 	//Arduino initialization (clocks and such)
 	init();
-	
+
 	//libc initialization (do we need it? what's it for?)
 	__libc_init_array();
 
@@ -42,17 +44,5 @@ int main(void)
 	digitalWrite(13, HIGH);
 	digitalWrite(14, HIGH);
 
-	sys.sensors.spi.begin();
-	sys.sensors.spi.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
-
-	for(int i = 0; i < 10; i++){
-		Serial.println("Bootup Timer...");
-		for(int j = 0; j<1000000; j++){
-			digitalWrite(4, HIGH);
-		}
-	}
-	Serial.println("Starting!");
-
 	vTaskStartScheduler();
-
 }

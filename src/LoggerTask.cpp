@@ -78,6 +78,9 @@ void LoggerTask::activity(void *ptr)
     digitalWrite(DISK_LED,true);
     FRESULT res;
 
+    SSISD sd;
+	sd.init();
+
     //Clear file system object
     memset(&fs, 0, sizeof(FATFS));
 

@@ -27,6 +27,9 @@ void SensorTask::activity(void *ptr)
 {
     sys.tasks.logger.log("Initializing Sensors");
 
+    sys.sensors.spi.begin();
+	sys.sensors.spi.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
+
     int rc;
     char str[100];
 
@@ -107,7 +110,7 @@ void SensorTask::activity(void *ptr)
 
     while (true)
     {
-        vTaskDelayUntil(&lastSensorTime, 1000);
+        vTaskDelayUntil(&lastSensorTime, 10);
 
         digitalWrite(SENSOR_LED, true);
 

@@ -8,6 +8,7 @@
 #include <string.h>
 #include "ff.h"
 #include "ArduinoJson.h"
+#include "SSISD.hpp"
 
 #define DISK_LED 3
 
