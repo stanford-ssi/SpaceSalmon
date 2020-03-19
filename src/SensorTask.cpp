@@ -146,7 +146,7 @@ void SensorTask::activity(void *ptr)
         //vTaskDelay(2); //but why...
         data.bmigyro2_data = sys.sensors.imu2.gyro->readSensor();
 
-        //sys.tasks.filter.queueSensorData(data);
+        sys.tasks.filter.queueSensorData(data);
 
         sensor_json["tick"] = data.tick;
 

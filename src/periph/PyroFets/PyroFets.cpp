@@ -1,5 +1,5 @@
 #include "PyroFets.h"
-#include "hal_gpio.h"
+//#include "hal_gpio.h"
 #include "main.hpp"
 
 PyroFets::PyroFets(uint8_t fire1, uint8_t sense1, uint8_t fire2, uint8_t sense2){
@@ -8,7 +8,7 @@ PyroFets::PyroFets(uint8_t fire1, uint8_t sense1, uint8_t fire2, uint8_t sense2)
     fire2_pin = fire2;
     sense2_pin = sense2;
 
-    gpio_set_pin_level(fire1_pin, false);
+    /*gpio_set_pin_level(fire1_pin, false);
 	gpio_set_pin_direction(fire1_pin, GPIO_DIRECTION_OFF);
 	gpio_set_pin_function(fire1_pin, GPIO_PIN_FUNCTION_OFF);
 
@@ -22,28 +22,30 @@ PyroFets::PyroFets(uint8_t fire1, uint8_t sense1, uint8_t fire2, uint8_t sense2)
 
     gpio_set_pin_level(sense2_pin, false);
 	gpio_set_pin_direction(sense2_pin, GPIO_DIRECTION_OFF);
-	gpio_set_pin_function(sense2_pin, GPIO_PIN_FUNCTION_OFF);
+	gpio_set_pin_function(sense2_pin, GPIO_PIN_FUNCTION_OFF);*/
 
 }
 
 void PyroFets::arm(){
     armed = true;
+    /*
     gpio_set_pin_level(fire1_pin, false);
     gpio_set_pin_level(fire2_pin, false);
     gpio_set_pin_direction(fire1_pin, GPIO_DIRECTION_OUT);
-    gpio_set_pin_direction(fire2_pin, GPIO_DIRECTION_OUT);
+    gpio_set_pin_direction(fire2_pin, GPIO_DIRECTION_OUT);*/
 }
 
 void PyroFets::disarm(){
     armed = false;
+    /*
     gpio_set_pin_level(fire1_pin, false);
     gpio_set_pin_level(fire2_pin, false);
     gpio_set_pin_direction(fire1_pin, GPIO_DIRECTION_OFF);
-    gpio_set_pin_direction(fire2_pin, GPIO_DIRECTION_OFF);
+    gpio_set_pin_direction(fire2_pin, GPIO_DIRECTION_OFF);*/
 }
 
 bool PyroFets::fire(PyroChannel channel){
-    if(armed){
+    /*if(armed){
         if(channel == SquibA){
             gpio_set_pin_level(fire2_pin, false);
             gpio_set_pin_level(fire1_pin, true);
@@ -57,17 +59,17 @@ bool PyroFets::fire(PyroChannel channel){
         return true;
     }else{
         return false;
-    }
+    }*/
 }
 
 bool PyroFets::getStatus(PyroChannel channel){
     uint16_t value = 0;
-    
+    /*
     if(channel == SquibA){
         value = sys.adc0.read(0x0D);
     }else if(channel == SquibB){
         value = sys.adc0.read(0x0C);
     }
-
+*/
     return (value > 400);
 }

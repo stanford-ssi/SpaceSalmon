@@ -10,14 +10,20 @@ class System;
 
 #include "SPI.h"
 
+#include "../../periph/PyroFets/PyroFets.h"
+
 #include "SensorTask.hpp"
 #include "LoggerTask.hpp"
 #include "AltimeterTask.hpp"
+#include "AltFilterTask.h"
 
 
 class System
 { 
 public:
+
+    PyroFets pyrofets = PyroFets(0, 0, 0, 0);
+    Pyro &pyro = pyrofets;
 
     const bool shitl = false;
 
@@ -43,7 +49,8 @@ public:
     public:
         SensorTask sensor; //reads data from sensors
         LoggerTask logger; //logs to USB/SD
-        AltimeterTask alt;
+        AltimeterTask alt; //monitors system health
+        AltFilterTask filter; //KF for altitude estimations
     };
 
     Sensors sensors;

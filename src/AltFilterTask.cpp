@@ -47,9 +47,9 @@ void AltFilterTask::activity(void *ptr)
     while (true)
         {   //Flight Control Loop: runs every sensor data cycle
             xMessageBufferReceive(bufferHandle, &data, sizeof(data), portMAX_DELAY);
-            gpio_set_pin_level(LED4,true);
+            digitalWrite(4,true);
             filter.update(data);
             plan.update(filter);
-            gpio_set_pin_level(LED4,false);
+            digitalWrite(4,false);
         }
 }

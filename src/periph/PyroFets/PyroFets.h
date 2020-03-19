@@ -1,7 +1,7 @@
 #pragma once
 #include "../Pyro.h"
 #include "stdint.h"
-#include "hal_adc_sync.h"
+//#include "hal_adc_sync.h"
 
 class PyroFets : public Pyro {
 
