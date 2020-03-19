@@ -78,6 +78,8 @@ void LoggerTask::activity(void *ptr)
     digitalWrite(DISK_LED,true);
     FRESULT res;
 
+    Serial.begin(9600);
+
     SSISD sd;
 	sd.init();
 

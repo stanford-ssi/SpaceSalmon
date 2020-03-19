@@ -113,7 +113,7 @@ BMP388::Data BMP388::readSensor(void)
 
 	/* Set the desired sensor configuration */
 #ifdef BMP3XX_DEBUG
-	Serial.println("Setting sensor settings");
+	//Serial.println("Setting sensor settings");
 #endif
 	rslt = set_sensor_settings(settings_sel);
 	if (rslt != BMP3_OK)
@@ -122,7 +122,7 @@ BMP388::Data BMP388::readSensor(void)
 	/* Set the power mode */
 	settings.op_mode = BMP3_FORCED_MODE;
 #ifdef BMP3XX_DEBUG
-	Serial.println("Setting power mode");
+	//Serial.println("Setting power mode");
 #endif
 	rslt = set_op_mode();
 	if (rslt != BMP3_OK)

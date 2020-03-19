@@ -10,8 +10,6 @@ extern "C" void __libc_init_array(void);
 #include "periph/BMI088/BMI088.hpp"
 #include "periph/MC33797/Squib.hpp"
 
-#include "SSISD.hpp"
-
 int main(void)
 {
 	//Arduino initialization (clocks and such)
@@ -31,18 +29,6 @@ int main(void)
 	pinMode(2, OUTPUT);
 	pinMode(3, OUTPUT);
 	pinMode(4, OUTPUT);
-
-	Serial.begin(9600);
-
-	pinMode(11, OUTPUT);
-	pinMode(12, OUTPUT);
-	pinMode(13, OUTPUT);
-	pinMode(14, OUTPUT);
-
-	digitalWrite(11, HIGH);
-	digitalWrite(12, HIGH);
-	digitalWrite(13, HIGH);
-	digitalWrite(14, HIGH);
 
 	vTaskStartScheduler();
 }

@@ -10,8 +10,6 @@ class System;
 
 #include "SPI.h"
 
-
-
 #include "SensorTask.hpp"
 #include "LoggerTask.hpp"
 

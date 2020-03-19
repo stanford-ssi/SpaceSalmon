@@ -27,6 +27,16 @@ void SensorTask::activity(void *ptr)
 {
     sys.tasks.logger.log("Initializing Sensors");
 
+    pinMode(11, OUTPUT);
+	pinMode(12, OUTPUT);
+	pinMode(13, OUTPUT);
+	pinMode(14, OUTPUT);
+
+	digitalWrite(11, HIGH);
+	digitalWrite(12, HIGH);
+	digitalWrite(13, HIGH);
+	digitalWrite(14, HIGH);
+
     sys.sensors.spi.begin();
 	sys.sensors.spi.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
 
