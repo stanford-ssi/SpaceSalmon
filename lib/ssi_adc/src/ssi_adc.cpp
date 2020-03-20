@@ -3,7 +3,7 @@
 ADC::ADC(Adc* hw_addr){
   hw = hw_addr;
   hri_mclk_set_APBDMASK_ADC0_bit(MCLK);
-	hri_gclk_write_PCHCTRL_reg(GCLK, ADC0_GCLK_ID, CONF_GCLK_ADC0_SRC | (1 << GCLK_PCHCTRL_CHEN_Pos));
+	hri_gclk_write_PCHCTRL_reg(GCLK, ADC0_GCLK_ID, 0 | (1 << GCLK_PCHCTRL_CHEN_Pos)); //Generator 0 = 120Mhz
   _adc_generic_init(hw);//ASF initialization code
   mutex_handle = mutex_init_static(&mutex_buf); //set up mutex
 }

@@ -1,7 +1,9 @@
 #pragma once
 #include "stdint.h"
-#include "driver_init.h"
-#include "hpl_adc_sync.h"
+#include "samd.h"
+#include "hri/hri_d51.h"
+#include "hal/include/hpl_adc_sync.h"
+#include "hal_rtos.h"
 
 class ADC{
     public:
