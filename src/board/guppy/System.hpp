@@ -38,11 +38,11 @@ public:
         SPIClass spi = SPIClass(&sercom0, 8, 9, 10, SPI_PAD_3_SCK_1, SERCOM_RX_PAD_0);
 
         ADXL375 adxl1 = ADXL375(&spi, 11, "adxl1");
-        ADXL375 adxl2 = ADXL375(&spi, 0, "adxl2");
+        ADXL375 adxl2 = ADXL375(&spi, 15, "adxl2");
         BMI088 imu1 = BMI088(&spi, 14, 13, "imu1");
-        BMI088 imu2 = BMI088(&spi, 0, 0, "imu2");
+        BMI088 imu2 = BMI088(&spi, 18, 17, "imu2");
         BMP388 pres1 = BMP388(&spi, 12, "pres1");
-        BMP388 pres2 = BMP388(&spi, 0, "pres2");
+        BMP388 pres2 = BMP388(&spi, 16, "pres2");
 
         Sensor *list[6] = {&imu1, &imu2, &adxl1, &adxl2, &pres1, &pres2};
     };
