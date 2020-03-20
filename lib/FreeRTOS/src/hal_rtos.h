@@ -132,7 +132,7 @@ void mutex_give(mutex_handle_t);
 #undef os_lock
 #undef os_unlock
 
-#include "hal_atomic.h"
+//#include "hal_atomic.h" //this created circular dependency issues
 
 static volatile hal_atomic_t interrupt_flags;
 static int                   lock_nesting;
