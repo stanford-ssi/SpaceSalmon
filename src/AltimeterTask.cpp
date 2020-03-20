@@ -29,7 +29,7 @@ void AltimeterTask::activity(void *ptr)
     
     TickType_t lastStatusTime = xTaskGetTickCount();
 
-    //OneBattery battery(sys.adc0);
+    OneBattery battery(sys.adc0);
 
     while(true){
 
@@ -52,25 +52,24 @@ void AltimeterTask::activity(void *ptr)
             tasks_json[tasks[i].pcTaskName] = percent;
         }
 
-        //OneBattery::cell_voltage_t voltage = battery.readVoltage();
+        OneBattery::cell_voltage_t voltage = battery.readVoltage();
 
         JsonObject bat_json = status_json.createNestedObject("bat");
-        //bat_json["main"] = voltage.cellMain;
-        //bat_json["bkp"] = voltage.cellBackup;
+        bat_json["main"] = voltage.cellMain;
+        bat_json["bkp"] = voltage.cellBackup;
 
         status_json["log"] = sys.tasks.logger.isLoggingEnabled();
 
         JsonArray pyro_json = status_json.createNestedArray("pyro");
 
-        //bool pyroA = sys.pyro.getStatus(Pyro::SquibA);
-        //bool pyroB = sys.pyro.getStatus(Pyro::SquibB);
+        bool pyroA = sys.pyro.getStatus(Pyro::SquibA);
+        bool pyroB = sys.pyro.getStatus(Pyro::SquibB);
 
-        //pyro_json.add(pyroA);
-        //pyro_json.add(pyroB);
+        pyro_json.add(pyroA);
+        pyro_json.add(pyroB);
 
         sys.tasks.logger.logJSON(status_json,"status");
-
-        //gpio_set_pin_level(ALT_LED,false);
+        
         digitalWrite(ALT_LED,false);
 
         /*if(!sys.silent){

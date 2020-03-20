@@ -1,6 +1,5 @@
 #pragma once
 
-#include "hal_adc_sync.h"
 #include "ssi_adc.h"
 #include <stdint.h>
 

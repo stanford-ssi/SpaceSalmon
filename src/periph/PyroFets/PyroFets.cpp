@@ -64,12 +64,10 @@ bool PyroFets::fire(PyroChannel channel){
 
 bool PyroFets::getStatus(PyroChannel channel){
     uint16_t value = 0;
-    /*
     if(channel == SquibA){
         value = sys.adc0.read(0x0D);
     }else if(channel == SquibB){
         value = sys.adc0.read(0x0C);
     }
-*/
     return (value > 400);
 }

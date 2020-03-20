@@ -17,6 +17,7 @@ class System;
 #include "AltimeterTask.hpp"
 #include "AltFilterTask.h"
 
+#include "ssi_adc.h"
 
 class System
 { 
@@ -24,6 +25,8 @@ public:
 
     PyroFets pyrofets = PyroFets(0, 0, 0, 0);
     Pyro &pyro = pyrofets;
+
+    ADC adc0 = ADC(ADC0);
 
     const bool shitl = false;
 
