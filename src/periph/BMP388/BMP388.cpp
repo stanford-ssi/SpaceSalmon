@@ -704,7 +704,7 @@ int8_t BMP388::get_calib_data()
 
 int8_t BMP388::set_sensor_settings(uint32_t desired_settings)
 {
-	int8_t rslt;
+	int8_t rslt = 0;
 
 	if (are_settings_changed(POWER_CNTL, desired_settings))
 	{

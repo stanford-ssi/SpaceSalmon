@@ -33,6 +33,8 @@
 
 #include "hal_rtos.h"
 
+#define ASSERT(arg)
+
 /* Semaphore */
 
 /**
@@ -84,10 +86,12 @@ int32_t sem_deinit(sem_handle_t *sem)
 	return ERR_NONE;
 }
 
+#if( configSUPPORT_DYNAMIC_ALLOCATION == 1 )
 int32_t mutex_init(mutex_t *mutex){
 	*mutex = xSemaphoreCreateMutex();
 	return *mutex ? ERR_NONE : ERR_NOT_INITIALIZED;
 }
+#endif
 
 mutex_handle_t mutex_init_static(mutex_buf_t *memory){
 	return xSemaphoreCreateMutexStatic(memory);

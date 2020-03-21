@@ -62,7 +62,9 @@ uint32_t vGetRunTimeCounterValue(void){
   return xTaskGetTickCount(); //TODO: this would be better if used systick precise time measurements
 }
 
+extern void xPortSysTickHandler( void );
+
 int sysTickHook(){
   xPortSysTickHandler();
-  SysTick_DefaultHandler();
+  return 0;
 }

@@ -37,17 +37,17 @@
 extern "C" {
 #endif
 
-#ifndef is_in_isr
-//#include "hpl_core.h"
-/* Extern function implemented to check if it's in ISR.
- * Can directly check CPU core register, e.g., for cortex-m0p:
- * (*(uint32_t*)0xE000ED04 & 0x1ff)
- */
-#define is_in_isr() _is_in_isr()
-#endif
-
 #include "rtos_port.h"
 #include "rtos_err_codes.h"
+#include "stdbool.h"
+#include "samd.h"
+
+#ifndef is_in_isr
+inline bool is_in_isr(void)
+{
+	return (SCB->ICSR & SCB_ICSR_VECTACTIVE_Msk);
+}
+#endif
 
 /* Semaphore */
 #ifdef SEMAPHORE_ENABLED
