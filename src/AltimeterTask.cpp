@@ -35,7 +35,7 @@ void AltimeterTask::activity(void *ptr)
 
         vTaskDelayUntil(&lastStatusTime, 1000);
 
-        gpio_set_pin_level(ALT_LED,true);
+        digitalWrite(ALT_LED,true);
 
         StaticJsonDocument<1000> status_json;
 
@@ -69,8 +69,8 @@ void AltimeterTask::activity(void *ptr)
         pyro_json.add(pyroB);
 
         sys.tasks.logger.logJSON(status_json,"status");
-
-        gpio_set_pin_level(ALT_LED,false);
+        
+        digitalWrite(ALT_LED,false);
 
         if(!sys.silent){
             if(pyroA && pyroB){

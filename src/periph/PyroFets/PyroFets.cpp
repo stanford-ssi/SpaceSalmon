@@ -1,5 +1,4 @@
 #include "PyroFets.h"
-#include "hal_gpio.h"
 #include "main.hpp"
 
 PyroFets::PyroFets(uint8_t fire1, uint8_t sense1, uint8_t fire2, uint8_t sense2){
@@ -8,51 +7,47 @@ PyroFets::PyroFets(uint8_t fire1, uint8_t sense1, uint8_t fire2, uint8_t sense2)
     fire2_pin = fire2;
     sense2_pin = sense2;
 
-    gpio_set_pin_level(fire1_pin, false);
-	gpio_set_pin_direction(fire1_pin, GPIO_DIRECTION_OFF);
-	gpio_set_pin_function(fire1_pin, GPIO_PIN_FUNCTION_OFF);
+    digitalWrite(fire1_pin, false);
+    pinMode(fire1_pin, INPUT);
 
-    gpio_set_pin_level(fire2_pin, false);
-	gpio_set_pin_direction(fire2_pin, GPIO_DIRECTION_OFF);
-	gpio_set_pin_function(fire2_pin, GPIO_PIN_FUNCTION_OFF);
+    digitalWrite(fire2_pin, false);
+    pinMode(fire2_pin,INPUT);
 
-    gpio_set_pin_level(sense1_pin, false);
-	gpio_set_pin_direction(sense1_pin, GPIO_DIRECTION_OFF);
-	gpio_set_pin_function(sense1_pin, GPIO_PIN_FUNCTION_OFF);
+    digitalWrite(sense1_pin, false);
+    pinMode(sense1_pin,INPUT);
 
-    gpio_set_pin_level(sense2_pin, false);
-	gpio_set_pin_direction(sense2_pin, GPIO_DIRECTION_OFF);
-	gpio_set_pin_function(sense2_pin, GPIO_PIN_FUNCTION_OFF);
+    digitalWrite(sense2_pin, false);
+    pinMode(sense2_pin,INPUT);
 
 }
 
 void PyroFets::arm(){
     armed = true;
-    gpio_set_pin_level(fire1_pin, false);
-    gpio_set_pin_level(fire2_pin, false);
-    gpio_set_pin_direction(fire1_pin, GPIO_DIRECTION_OUT);
-    gpio_set_pin_direction(fire2_pin, GPIO_DIRECTION_OUT);
+    digitalWrite(fire1_pin, false);
+    digitalWrite(fire2_pin, false);
+    pinMode(fire1_pin, OUTPUT);
+    pinMode(fire2_pin, OUTPUT);
 }
 
 void PyroFets::disarm(){
     armed = false;
-    gpio_set_pin_level(fire1_pin, false);
-    gpio_set_pin_level(fire2_pin, false);
-    gpio_set_pin_direction(fire1_pin, GPIO_DIRECTION_OFF);
-    gpio_set_pin_direction(fire2_pin, GPIO_DIRECTION_OFF);
+    digitalWrite(fire1_pin, false);
+    digitalWrite(fire2_pin, false);
+    pinMode(fire1_pin, INPUT);
+    pinMode(fire2_pin, INPUT);
 }
 
 bool PyroFets::fire(PyroChannel channel){
     if(armed){
         if(channel == SquibA){
-            gpio_set_pin_level(fire2_pin, false);
-            gpio_set_pin_level(fire1_pin, true);
+            digitalWrite(fire2_pin, false);
+            digitalWrite(fire1_pin, true);
         }else if(channel == SquibB){
-            gpio_set_pin_level(fire1_pin, false);
-            gpio_set_pin_level(fire2_pin, true);
+            digitalWrite(fire1_pin, false);
+            digitalWrite(fire2_pin, true);
         }else if (channel == SquibNone){
-            gpio_set_pin_level(fire1_pin, false);
-            gpio_set_pin_level(fire2_pin, false);
+            digitalWrite(fire1_pin, false);
+            digitalWrite(fire2_pin, false);
         }
         return true;
     }else{
@@ -62,12 +57,10 @@ bool PyroFets::fire(PyroChannel channel){
 
 bool PyroFets::getStatus(PyroChannel channel){
     uint16_t value = 0;
-    
     if(channel == SquibA){
         value = sys.adc0.read(0x0D);
     }else if(channel == SquibB){
         value = sys.adc0.read(0x0C);
     }
-
     return (value > 400);
 }

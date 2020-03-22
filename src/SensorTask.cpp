@@ -27,6 +27,27 @@ void SensorTask::activity(void *ptr)
 {
     sys.tasks.logger.log("Initializing Sensors");
 
+    pinMode(11, OUTPUT);
+	pinMode(12, OUTPUT);
+	pinMode(13, OUTPUT);
+	pinMode(14, OUTPUT);
+    pinMode(15, OUTPUT);
+	pinMode(16, OUTPUT);
+	pinMode(17, OUTPUT);
+	pinMode(18, OUTPUT);
+
+	digitalWrite(11, HIGH);
+	digitalWrite(12, HIGH);
+	digitalWrite(13, HIGH);
+	digitalWrite(14, HIGH);
+	digitalWrite(15, HIGH);
+	digitalWrite(16, HIGH);
+	digitalWrite(17, HIGH);
+	digitalWrite(18, HIGH);
+
+    sys.sensors.spi.begin();
+	sys.sensors.spi.beginTransaction(SPISettings(500000, MSBFIRST, SPI_MODE3));
+
     int rc;
     char str[100];
 
@@ -55,10 +76,10 @@ void SensorTask::activity(void *ptr)
     {
         sys.tasks.logger.log("Error Starting BMP2");
     }
-
-    gpio_set_pin_level(ACCEL_CS_1, false);
+    
+    digitalWrite(14, false);
     vTaskDelay(1);
-    gpio_set_pin_level(ACCEL_CS_1, true);
+    digitalWrite(14, true);
     vTaskDelay(1);
 
     rc = sys.sensors.imu1.accel->begin();
@@ -69,9 +90,9 @@ void SensorTask::activity(void *ptr)
         sys.tasks.logger.log(str);
     }
 
-    gpio_set_pin_level(ACCEL_CS_2, false);
+    digitalWrite(18, false);
     vTaskDelay(1);
-    gpio_set_pin_level(ACCEL_CS_2, true);
+    digitalWrite(18, true);
     vTaskDelay(1);
 
     rc = sys.sensors.imu2.accel->begin();
@@ -109,7 +130,7 @@ void SensorTask::activity(void *ptr)
     {
         vTaskDelayUntil(&lastSensorTime, 10);
 
-        gpio_set_pin_level(SENSOR_LED, true);
+        digitalWrite(SENSOR_LED, true);
 
         StaticJsonDocument<1024> sensor_json;
 
@@ -186,6 +207,6 @@ void SensorTask::activity(void *ptr)
 
         sys.tasks.logger.logJSON(sensor_json, "sensor");
 
-        gpio_set_pin_level(SENSOR_LED, false);
+        digitalWrite(SENSOR_LED, false);
     }
 }

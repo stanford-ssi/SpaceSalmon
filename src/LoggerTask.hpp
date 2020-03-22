@@ -5,14 +5,11 @@
 #include <message_buffer.h>
 #include <semphr.h>
 #include <hal_rtos.h>
-#include "driver_init.h"
-#include "printf.h"
 #include <string.h>
-#include "ff.h"
-#include "hal_gpio.h"
 #include "ArduinoJson.h"
+#include "SSISD.hpp"
 
-#define DISK_LED LED3
+#define DISK_LED 3
 
 class LoggerTask
 {

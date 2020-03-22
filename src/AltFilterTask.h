@@ -39,7 +39,4 @@ private:
 };
 
 #include "main.hpp"
-#include "driver_init.h"
-#include "printf.h"
-#include "atmel_start_pins.h"
 #include "ArduinoJson.h"

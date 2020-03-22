@@ -23,13 +23,13 @@
 
 extern "C"
 {
-#include <hal_spi_m_os.h>
-#include <hal_gpio.h>
 #include <math.h>
 #include <string.h>
-#include <hal_delay.h>
 #include "../Sensor.hpp"
 }
+
+#include "Arduino.h"
+#include "SPI.h"
 
 #include "BMI088Accel.hpp"
 #include "BMI088Gyro.hpp"
@@ -78,7 +78,7 @@ public:
     ACTIVE_HIGH,
     ACTIVE_LOW
   };
-  BMI088(struct spi_m_os_descriptor *bus, uint8_t accel_cs, uint8_t gyro_cs, const char* id);
+  BMI088(SPIClass *bus, uint8_t accel_cs, uint8_t gyro_cs, const char* id);
   int init();
   bool setOdr(Odr odr);
   bool setRange(AccelRange accel_range, GyroRange gyro_range);

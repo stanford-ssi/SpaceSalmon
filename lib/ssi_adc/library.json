@@ -1,0 +1,6 @@
+{
+    "name": "ssi_adc",
+    "build":{
+        "libArchive": false
+    }
+}

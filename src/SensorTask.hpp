@@ -1,6 +1,6 @@
 #pragma once
 
-#define SENSOR_LED LED2
+#define SENSOR_LED 2
 
 #include <FreeRTOS.h>
 #include <task.h>
@@ -24,12 +24,10 @@ public:
 };
 
 #include "main.hpp"
-#include "driver_init.h"
-#include "printf.h"
-#include "atmel_start_pins.h"
 #include "periph/ADXL375/ADXL375.hpp"
 #include "periph/BMP388/BMP388.hpp"
 #include "periph/BMI088/BMI088.hpp"
 #include "ArduinoJson.h"
-#include "AltFilterTask.h"
-#include "AltFilter.hpp"
+#include "SensorData.h"
+// #include "AltFilterTask.h"
+// #include "AltFilter.hpp"

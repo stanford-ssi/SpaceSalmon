@@ -8,16 +8,17 @@ This is one of the more put together sensor libraries. There are a few TODOs tha
 */
 #include "ADXL375.hpp"
 
-ADXL375::ADXL375(struct spi_m_os_descriptor *SPI, uint8_t CS_PIN, const char* id) : Sensor(id) //TODO: port to C++ SPI implementation.
+ADXL375::ADXL375(SPIClass *SPI, uint8_t CS_PIN, const char* id) : Sensor(id) //TODO: port to C++ SPI implementation.
 {
   this->SPI = SPI;
   this->CS_PIN = CS_PIN;
 }
 
-void ADXL375::init()
+int ADXL375::init()
 {
   setDataRate(BW_12_5HZ);
   writeRegister(ADXL375_REG_DATA_FORMAT, 0x0B);
+  return 0;
 }
 
 void ADXL375::startMeasuring()
@@ -112,35 +113,24 @@ void ADXL375::_multiReadRegister(uint8_t regAddress, uint8_t values[], uint8_t n
     regAddress |= 0x40;
   }
 
-  uint8_t send[numberOfBytes + 1];
-  uint8_t recv[numberOfBytes + 1];
+  uint8_t buf[numberOfBytes + 1];
 
-  memset(send, 0x00, numberOfBytes + 1);
-  memset(recv, 0x00, numberOfBytes + 1);
+  memset(buf, 0x00, numberOfBytes + 1);
 
-  send[0] = regAddress;
+  buf[0] = regAddress;
 
-  spi_m_os_disable(SPI); //TODO: this is probably not required
-	spi_m_os_set_mode(SPI, SPI_MODE_3);
-  spi_m_os_enable(SPI);
+  digitalWrite(CS_PIN,LOW);
+  SPI->transfer(buf, numberOfBytes + 1);
+  digitalWrite(CS_PIN,HIGH);
 
-  gpio_set_pin_level(CS_PIN, false);
-  spi_m_os_transfer(SPI, send, recv, numberOfBytes+1);
-  gpio_set_pin_level(CS_PIN, true);
-
-  memcpy(values, recv + 1, numberOfBytes);
+  memcpy(values, buf + 1, numberOfBytes);
 }
 
 void ADXL375::writeRegister(uint8_t regAddress, uint8_t value)
 {
   uint8_t send[] = {regAddress, value};
-  uint8_t recv[] = {0x00, 0x00};
 
-  spi_m_os_disable(SPI); //TODO: this is probably not required
-	spi_m_os_set_mode(SPI, SPI_MODE_3);
-  spi_m_os_enable(SPI);
-
-  gpio_set_pin_level(CS_PIN, false);
-  spi_m_os_transfer(SPI, send, recv, 2);
-  gpio_set_pin_level(CS_PIN, true);
+  digitalWrite(CS_PIN,LOW);
+  SPI->transfer(send,2);
+  digitalWrite(CS_PIN,HIGH);
 }

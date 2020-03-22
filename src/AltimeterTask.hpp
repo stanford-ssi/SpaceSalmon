@@ -5,7 +5,7 @@
 #include <semphr.h>
 #include <hal_rtos.h>
 
-#define ALT_LED LED1
+#define ALT_LED 1
 
 class AltimeterTask
 {
@@ -23,9 +23,6 @@ public:
     TaskHandle_t getTaskHandle();
 };
 
-#include "driver_init.h"
-#include "printf.h"
-#include "atmel_start_pins.h"
 #include "periph/ADXL375/ADXL375.hpp"
 #include "periph/BMP388/BMP388.hpp"
 #include "periph/BMI088/BMI088.hpp"

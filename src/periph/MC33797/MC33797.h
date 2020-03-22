@@ -28,13 +28,10 @@
 #ifndef MC33797_H_
 #define MC33797_H_
 
-#include "hal_spi_m_sync.h"
-#include "hal_gpio.h"
-#include "hal_delay.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 #include <stdint.h>
 
@@ -66,6 +63,30 @@ typedef enum {
 *           Configuration structures and types
 *
 ****************************************************************/
+
+/*********** Arming Commands & Masks ***********/
+
+#define CMD_ARM_1A_1B 0xA0U            /* ARM Squib drivers 1A and 1B */
+#define CMD_ARM_2A_2B 0xA1U            /* ARM Squib drivers 2A and 2B */
+#define CMD_ARM_1A_1B_2A_2B 0xA2U      /* ARM Squib drivers 1A, 1B, 2A and 2B */
+#define MASK_ARM_1A_1B_2A_2B 0xF0U     /* mask SQUIB 1A, 1B, 2A and 2B */
+#define MASK_ARM_1_LOW_HIGH_SIDE 0x50U /* mask SQUIB 1A and 1B */
+#define MASK_ARM_2_LOW_HIGH_SIDE 0xD0U /* mask SQUIB 2A and 2B */
+#define SQUIB_ARM_MASK 0xF0U           /* mask arming command */
+#define MASK_CMD_FIRE 0x0FU            /* mask firing command */
+#define CMD_FIRE 0x50U                 /* four most significant bits of the firing commands */
+
+/*********** Responses ***********/
+
+#define RESP_SPI_CHECK 0x69U /* response to SPI integrity check */
+
+
+/*********** Masking definition ***********/
+
+#define SQB_MASK_01_BITS 0x03U /* mask bits 0 and 1 */
+#define SQB_MASK_23_BITS 0x0CU /* mask bits 2 and 3 */
+#define SQB_MASK_45_BITS 0x30U /* mask bits 4 and 5 */
+#define SQB_MASK_67_BITS 0xC0U /* mask bits 6 and 7 */
 
 /*********************** DRIVER STATUS *************************/
 
@@ -521,31 +542,6 @@ typedef struct {
   Squib_StatLoopsShortsAddICType Squib_Stat2ALoopsShortsAddIC; /* SPI command 0xE8 */
   Squib_StatLoopsShortsAddICType Squib_Stat2BLoopsShortsAddIC; /* SPI command 0xE8 */
 } Squib_StatusType;
-
-
-/***************************************************************
-*
-*                   Function prototypes
-*
-****************************************************************/
-extern Squib_ReturnType Squib_Init(struct spi_m_sync_descriptor *spi, uint8_t cspin);
-
-extern Squib_ReturnType Squib_Fire(
-  Squib_FireType Squib_Fire
-);
-
-extern Squib_ReturnType Squib_GetStatus(
-  Squib_StatusType *Status
-);
-
-extern Squib_ReturnType Squib_ProgramCmd(
-  Squib_ProgCmdType Command,
-  uint8_t Data,  
-  uint8_t Delay,
-  uint8_t *SpiResponse
-);
-
-extern Squib_ReturnType Squib_SingleCmd(void);
 
 #ifdef __cplusplus
 }

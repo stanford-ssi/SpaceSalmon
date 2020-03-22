@@ -2,12 +2,13 @@
 
 extern "C"
 {
-#include <hal_spi_m_os.h>
-#include <hal_gpio.h>
 #include <stdint.h>
 #include <string.h>
 #include "../Sensor.hpp"
 }
+
+#include "Arduino.h"
+#include "SPI.h"
 
 #define ADXL375_REG_DEVID 0x00            // Device ID
 #define ADXL375_REG_THRESH_SHOCK 0x1D     // Shock threshold
@@ -80,8 +81,8 @@ public:
     BW_1600HZ = 15
   };
 
-  ADXL375(struct spi_m_os_descriptor *SPI, uint8_t CS_PIN, const char* id);
-  void init();
+  ADXL375(SPIClass *SPI, uint8_t CS_PIN, const char* id);
+  int init();
   void startMeasuring();
   Data readSensor();
   uint8_t readRegister(uint8_t regAddress);
@@ -95,6 +96,6 @@ public:
 
 private:
   void _multiReadRegister(uint8_t regAddress, uint8_t values[], uint8_t numberOfBytes = 1);
-  struct spi_m_os_descriptor *SPI;
+  struct SPIClass *SPI;
   uint8_t CS_PIN;
 };

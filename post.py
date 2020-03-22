@@ -1,15 +1,15 @@
-# Import("env","projenv")
+#Added by timv to fix PIO linker issues
 
-# from datetime import datetime
-# import getpass
-# import platform
-# import subprocess
+Import('projenv')
+projenv.ProcessUnFlags("\
+-Ilib/SSISD/src/diskio \
+-Ilib/SSISD/src/sd_mmc \
+-Ilib/SSISD/src/FatFs/source \
+-Ilib/SSISD/src/misc \
+-Ilib/SSISD/src/include \
+-Ilib/SSISD/src/hri \
+-Ilib/SSISD/src/hal/include \
+-Ilib/SSISD/src/hpl/port \
+-Ilib/SSISD/src/hal/utils/include")
 
-# git_attr = subprocess.check_output(['git', 'describe', '--long', '--dirty', '--tags']).decode("utf-8").strip()
-# time_attr = datetime.utcnow().strftime('%d/%m/%Y-%H:%M')
-# user_attr = getpass.getuser()
-# platform_attr = platform.uname()[1]
-
-# buildstr =  f"{git_attr}--{user_attr}@{platform_attr}--{time_attr}"
-# print("BUILD VERSION: " + buildstr)
-# projenv.Append(CPPDEFINES=[("PIO_BUILD", "\\\"" + buildstr + "\\\"")])
+print("Trimmed Projenv CPPPATH list")

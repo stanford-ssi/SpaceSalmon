@@ -2,37 +2,34 @@
 
 System sys;
 
+extern "C" void __libc_init_array(void);
+
+#include "SPI.h"
+#include "periph/ADXL375/ADXL375.hpp"
+#include "periph/BMP388/BMP388.hpp"
+#include "periph/BMI088/BMI088.hpp"
+#include "periph/MC33797/Squib.hpp"
+
 int main(void)
 {
-	//Initializes MCU, drivers and middleware
-	atmel_start_init();
+	//Arduino initialization (clocks and such)
+	init();
 
-	//hri_cmcc_write_CTRL_reg(CMCC, 1); //this seems to slow things down!
+	//libc initialization (do we need it? what's it for?)
+	__libc_init_array();
 
-	//Bootup LED Sequence
-	gpio_set_pin_level(LED1, true);
-	gpio_set_pin_level(LED2, true);
-	gpio_set_pin_level(LED3, true);
-	gpio_set_pin_level(LED4, true);
-	delay_ms(1000);
+	//magic sauce?
+	delay(1);
 
-	gpio_set_pin_level(LED1, false);
-	gpio_set_pin_level(LED2, false);
-	gpio_set_pin_level(LED3, false);
-	gpio_set_pin_level(LED4, false);
-	delay_ms(1000);
+	USBDevice.init();
+	USBDevice.attach();
 
-	printf("\n");
-	printf("#####################\n");
-	printf("   SpaceSalmon 2.0   \n");
-	printf("#####################\n");
-	printf("\n");
-	printf("Starting Tasks!\n\n\n");
+	//LEDs
+	pinMode(1, OUTPUT);
+	pinMode(2, OUTPUT);
+	pinMode(3, OUTPUT);
+	pinMode(4, OUTPUT);
 
+	//start all RTOS tasks (this never returns)
 	vTaskStartScheduler();
-}
-
-
-void HardFault_Handler(void){
-	assert(false);
 }
