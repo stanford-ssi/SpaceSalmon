@@ -65,3 +65,8 @@ bool testSquibSpi(spi_m_os_descriptor* spi)
 	
 	return recv == 0x69;
 }
+
+  char str[40];
+
+  snprintf(str,40,"sent: %.2x %.2x %.2x",buf[0],buf[1],buf[2]);
+  sys.tasks.logger.log(str);
