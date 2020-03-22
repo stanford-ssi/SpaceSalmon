@@ -295,7 +295,7 @@ to exclude the API function. */
 
 /* Normal assert() semantics without relying on the provision of an assert.h
 header file. */
-#define configASSERT(x)
+#define configASSERT(x) assert(x)
 //#define configASSERT(x) assert(x) #TODO: This should go to something
 
 /* Definitions that map the FreeRTOS port interrupt handlers to their CMSIS
