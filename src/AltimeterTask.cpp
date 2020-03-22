@@ -1,5 +1,7 @@
 #include "AltimeterTask.hpp"
 
+extern const char* build_version;
+
 TaskHandle_t AltimeterTask::taskHandle = NULL;
 StaticTask_t AltimeterTask::xTaskBuffer;
 StackType_t AltimeterTask::xStack[stackSize];
@@ -24,7 +26,7 @@ void AltimeterTask::activity(void *ptr)
 {
     char str[100];
 
-    snprintf(str,sizeof(str),"Altimeter Started\nBuild Version: %i", 420);
+    snprintf(str, sizeof(str), "Altimeter Started\nBuild Version: %s", build_version);
     sys.tasks.logger.log(str);
     
     TickType_t lastStatusTime = xTaskGetTickCount();
