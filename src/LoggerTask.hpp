@@ -6,7 +6,6 @@
 #include <semphr.h>
 #include <hal_rtos.h>
 #include <string.h>
-#include "ff.h"
 #include "ArduinoJson.h"
 #include "SSISD.hpp"
 

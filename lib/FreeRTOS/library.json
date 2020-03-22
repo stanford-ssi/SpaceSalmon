@@ -6,7 +6,7 @@
             "-Isrc",
             "-Isrc/Source/include",
             "-Isrc/Source/portable/GCC/ARM_CM4F/",
-            "-Iconfig"
+            "-Isrc/config"
         ],
         "libArchive": false
     }
