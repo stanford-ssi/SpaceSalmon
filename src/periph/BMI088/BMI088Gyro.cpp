@@ -292,15 +292,15 @@ void BMI088Gyro::writeRegister(uint8_t subAddress, uint8_t data)
 /* reads registers from BMI088 given a starting register address, number of bytes, and a pointer to store data */
 void BMI088Gyro::readRegisters(uint8_t subAddress, uint8_t count, uint8_t *dest)
 {
-  uint8_t buf[count + 2];
+  uint8_t buf[count + 1];
 
-  memset(buf, 0x00, count + 2);
+  memset(buf, 0x00, count + 1);
 
   buf[0] = subAddress | SPI_READ;
 
   digitalWrite(_csPin,LOW);
-	_spi->transfer(buf, count + 2);
+	_spi->transfer(buf, count + 1);
 	digitalWrite(_csPin,HIGH);
 
-  memcpy(dest, buf + 2, count);
+  memcpy(dest, buf + 1, count);
 }
