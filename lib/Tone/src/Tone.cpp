@@ -1,5 +1,9 @@
 #include "Tone.h"
-#include <peripheral_clk_config.h>
+#include "samd.h"
+#include "hri/hri_d51.h"
+#include "Arduino.h"
+#include "wiring_private.h"
+//#include <peripheral_clk_config.h>
 
 #define WAIT_TC16_REGS_SYNC(x) while(x->COUNT16.SYNCBUSY.bit.ENABLE);
 
@@ -30,9 +34,9 @@ Tone::Tone(uint32_t pin){
 void Tone::set(uint32_t frequency)
 {
   if(frequency){
-
-    gpio_set_pin_function(_pin, GPIO_PIN_FUNCTION_E);
-    uint16_t count = CONF_CPU_FREQUENCY / 8 / frequency;
+    pinMode(_pin, OUTPUT);
+    pinPeripheral(_pin, PIO_TIMER);
+    uint16_t count = F_CPU / 8 / frequency;
     TC3->COUNT16.CC[1].reg = count;
     TC3->COUNT16.CC[0].reg = count;
     TC3->COUNT16.CTRLA.bit.ENABLE = true;
@@ -40,8 +44,8 @@ void Tone::set(uint32_t frequency)
   }else{
 
     TC3->COUNT16.CTRLA.bit.ENABLE = false;
-    gpio_set_pin_function(_pin, GPIO_PIN_FUNCTION_OFF);
-    gpio_set_pin_level(_pin, false);
+    pinPeripheral(_pin, PIO_DIGITAL);
+    digitalWrite(_pin, false);
 
   }
 }

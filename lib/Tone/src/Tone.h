@@ -18,8 +18,6 @@
 
 #pragma once
 #include <stdint.h>
-#include <atmel_start_pins.h>
-#include <hal_gpio.h>
 
 class Tone
 {

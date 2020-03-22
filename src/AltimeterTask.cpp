@@ -72,7 +72,7 @@ void AltimeterTask::activity(void *ptr)
         
         digitalWrite(ALT_LED,false);
 
-        /*if(!sys.silent){
+        if(!sys.silent){
             if(pyroA && pyroB){
                 sys.buzzer.set(5000);
                 vTaskDelay(100);
@@ -82,6 +82,6 @@ void AltimeterTask::activity(void *ptr)
                 vTaskDelay(300);
                 sys.buzzer.set(0);
             }
-        }*/
+        }
     }
 }

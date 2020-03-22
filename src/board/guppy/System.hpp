@@ -9,6 +9,7 @@ class System;
 #include "../../periph/BMP388/BMP388.hpp"
 
 #include "SPI.h"
+#include "Tone.h"
 
 #include "../../periph/PyroFets/PyroFets.h"
 
@@ -27,6 +28,8 @@ public:
     Pyro &pyro = pyrofets;
 
     ADC adc0 = ADC(ADC0);
+
+    Tone buzzer = Tone(5);
 
     const bool shitl = false;
 
