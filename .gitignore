@@ -4,3 +4,4 @@
 .vscode
 *.code-workspace
 *.DS_Store
+src/version.cpp
