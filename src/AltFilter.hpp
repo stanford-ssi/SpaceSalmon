@@ -1,10 +1,12 @@
 #pragma once
 
 #include "SensorData.h"
-//#include <WProgram.h>
+
+//This needs to be in this order. We need to include Arduino.h (if not already included), then undefine the Arduino `abs` macro, then pull in Eigen. Pray Rust comes quickly.
+#include "Arduino.h"
+#undef abs
 #include <Eigen.h>
 #include <Eigen/Dense>
-
 
 using namespace Eigen;
 class AltFilter{
