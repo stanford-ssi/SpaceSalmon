@@ -158,7 +158,6 @@ void LoggerTask::activity(void *ptr)
 
     }
 
-    //gpio_set_pin_level(DISK_LED, false);
     digitalWrite(DISK_LED, false);
 
     char* p = lineBuffer;
@@ -190,20 +189,18 @@ void LoggerTask::activity(void *ptr)
             }
         
         }else{ //if timeout is NEVER, we don't ever reach this (no SHITL)
-            //readSHITL();
+            readSHITL();
         }
     }
 }
 
-/*void LoggerTask::readSHITL(){
-
-    gpio_set_pin_level(SENSOR_LED, true);
+void LoggerTask::readSHITL(){
+    digitalWrite(SENSOR_LED, true);
     //read in next line
     if(!f_eof(&shitl_file_object)){
         f_gets(inputLineBuffer, sizeof(inputLineBuffer), &shitl_file_object);
 
         StaticJsonDocument<1024> sensor_json;
-
         SensorData data;
 
         if(deserializeJson(sensor_json, inputLineBuffer) == DeserializationError::Ok){
@@ -232,9 +229,8 @@ void LoggerTask::activity(void *ptr)
             printf("Parsing Error!\n");
         }
     }
-
-    gpio_set_pin_level(SENSOR_LED, false);
-}*/
+    digitalWrite(SENSOR_LED, false);
+}
 
 void LoggerTask::writeUSB(char* buf){
     Serial.println(buf);

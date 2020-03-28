@@ -24,7 +24,7 @@ void FlightPlan::update(AltFilter& filter){
             filter.logState();
         }else{
             pad_alt_counter++;
-            if(pad_alt_counter >= 1000){
+            if(pad_alt_counter >= 100){
                 pad_alt_counter = 0;
                 pad_alts[0] = pad_alts[1];
                 pad_alts[1] = filter.getAltitude();
@@ -32,7 +32,7 @@ void FlightPlan::update(AltFilter& filter){
         }
         break;
     case Flight:
-        if(state_timer > 200 && velocity < 0.0){ //apogee!
+        if(state_timer > 20 && velocity < 0.0){ //apogee!
             state = Falling;
             state_timer = 0;
             logState();
@@ -40,7 +40,7 @@ void FlightPlan::update(AltFilter& filter){
         }
         break;
     case Falling:
-        if(state_timer > 500 && velocity > -5.0){ //stopped falling
+        if(state_timer > 20 && velocity > -5.0){ //stopped falling
             state = Landed;
             state_timer = 0;
             sys.pyro.disarm();
