@@ -28,6 +28,10 @@ language: python
 python:
     - "3.7"
 
+env:
+  - TARGET=guppy
+  - TARGET=salmon
+
 sudo: false
 cache:
     directories:
@@ -38,7 +42,7 @@ install:
     - platformio update
 
 script:
-    - platformio run
+    - platformio run -e $TARGET
 
 
 #

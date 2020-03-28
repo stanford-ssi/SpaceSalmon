@@ -45,7 +45,7 @@
   "frameworks": [
     "arduino"
   ],
-  "name": "SpaceSalmon",
+  "name": "ThunderGuppy",
   "upload": {
     "disable_flushing": true,
     "maximum_ram_size": 196608,
