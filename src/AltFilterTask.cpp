@@ -13,13 +13,13 @@ SensorData AltFilterTask::data;
 AltFilter AltFilterTask::filter;
 FlightPlan AltFilterTask::plan;
 
-AltFilterTask::AltFilterTask()
+AltFilterTask::AltFilterTask(uint8_t priority)
 {
     AltFilterTask::taskHandle = xTaskCreateStatic(activity,                  //static function to run
                                                "AltFilter",                 //task name
                                                stackSize,                 //stack depth (words!)
                                                NULL,                      //parameters
-                                               4,                         //priority
+                                               priority,                         //priority
                                                AltFilterTask::xStack,        //stack object
                                                &AltFilterTask::xTaskBuffer); //TCB object
 

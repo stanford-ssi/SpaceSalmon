@@ -15,7 +15,7 @@
 class AltFilterTask
 {
 public:
-    AltFilterTask();
+    AltFilterTask(uint8_t priority);
     TaskHandle_t getTaskHandle();
     void queueSensorData(SensorData data);
 

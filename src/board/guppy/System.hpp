@@ -53,10 +53,10 @@ public:
     class Tasks
     {
     public:
-        SensorTask sensor; //reads data from sensors
-        LoggerTask logger; //logs to USB/SD
-        AltimeterTask alt; //monitors system health
-        AltFilterTask filter; //KF for altitude estimations
+        SensorTask sensor(3); //reads data from sensors
+        LoggerTask logger(1); //logs to USB/SD
+        AltimeterTask alt(2); //monitors system health
+        AltFilterTask filter(4); //KF for altitude estimations
     };
 
     Sensors sensors;

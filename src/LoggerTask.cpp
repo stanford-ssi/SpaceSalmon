@@ -19,13 +19,13 @@ FATFS LoggerTask::fs;
 FIL LoggerTask::file_object;
 FIL LoggerTask::shitl_file_object;
 
-LoggerTask::LoggerTask()
+LoggerTask::LoggerTask(uint8_t priority)
 {
     LoggerTask::taskHandle = xTaskCreateStatic(activity,                  //static function to run
                                                "Logger",                  //task name
                                                stackSize,                 //stack depth (words!)
                                                NULL,                      //parameters
-                                               1,                        //priority
+                                               priority,                        //priority
                                                LoggerTask::xStack,        //stack object
                                                &LoggerTask::xTaskBuffer); //TCB object
 

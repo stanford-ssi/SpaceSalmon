@@ -19,7 +19,7 @@ private:
     static void activity(void *p);
 
 public:
-    AltimeterTask();
+    AltimeterTask(uint8_t priority);
     TaskHandle_t getTaskHandle();
 };
 

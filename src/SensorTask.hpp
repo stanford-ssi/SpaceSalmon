@@ -19,7 +19,7 @@ private:
     static void activity(void *p);
 
 public:
-    SensorTask();
+    SensorTask(uint8_t priority);
     TaskHandle_t getTaskHandle();
 };
 

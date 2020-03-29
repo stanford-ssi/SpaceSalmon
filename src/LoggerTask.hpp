@@ -44,7 +44,7 @@ private:
   static void format();
 
 public:
-  LoggerTask();
+  LoggerTask(uint8_t priority);
   TaskHandle_t getTaskHandle();
   void log(const char *message);
   void logJSON(JsonDocument & jsonDoc, const char* id);

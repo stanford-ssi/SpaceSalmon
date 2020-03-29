@@ -6,13 +6,13 @@ TaskHandle_t AltimeterTask::taskHandle = NULL;
 StaticTask_t AltimeterTask::xTaskBuffer;
 StackType_t AltimeterTask::xStack[stackSize];
 
-AltimeterTask::AltimeterTask()
+AltimeterTask::AltimeterTask(uint8_t priority)
 {
     AltimeterTask::taskHandle = xTaskCreateStatic(activity,                  //static function to run
                                                "Altimeter",                 //task name
                                                stackSize,                 //stack depth (words!)
                                                NULL,                      //parameters
-                                               2,                         //priority
+                                               priority,                         //priority
                                                AltimeterTask::xStack,        //stack object
                                                &AltimeterTask::xTaskBuffer); //TCB object
 }
