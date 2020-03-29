@@ -17,6 +17,7 @@ class System;
 #include "LoggerTask.hpp"
 #include "AltimeterTask.hpp"
 #include "AltFilterTask.h"
+#include "BuzzerTask.hpp"
 
 #include "ssi_adc.h"
 
@@ -53,10 +54,11 @@ public:
     class Tasks
     {
     public:
-        SensorTask sensor = SensorTask(3); //reads data from sensors
+        SensorTask sensor = SensorTask(4); //reads data from sensors
         LoggerTask logger = LoggerTask(1); //logs to USB/SD
-        AltimeterTask alt = AltimeterTask(2); //monitors system health
-        AltFilterTask filter = AltFilterTask(4); //KF for altitude estimations
+        AltimeterTask alt = AltimeterTask(3); //monitors system health
+        AltFilterTask filter = AltFilterTask(5); //KF for altitude estimations
+        BuzzerTask buzz = BuzzerTask(2); //buzzes!
     };
 
     Sensors sensors;

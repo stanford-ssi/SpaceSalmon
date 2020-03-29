@@ -73,17 +73,5 @@ void AltimeterTask::activity(void *ptr)
         sys.tasks.logger.logJSON(status_json,"status");
         
         digitalWrite(ALT_LED,false);
-
-        if(!sys.silent){
-            if(pyroA && pyroB){
-                sys.buzzer.set(5000);
-                vTaskDelay(100);
-                sys.buzzer.set(0);
-            }else{
-                sys.buzzer.set(800);
-                vTaskDelay(300);
-                sys.buzzer.set(0);
-            }
-        }
     }
 }

@@ -52,6 +52,7 @@ class FlightPlan{
         void update(AltFilter& filter);
         void dumpConfig();
         void logState();
+        FlightState getState(); //TODO: this is unsafe...
 
     private:
         float pad_alts[2] = {0.0, 0.0}; //a buffer of past altitudes, the 0th of which will be the pad altitude

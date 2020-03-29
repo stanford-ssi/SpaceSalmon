@@ -123,3 +123,7 @@ void FlightPlan::dumpConfig(){
     }
     sys.tasks.logger.logJSON(flightplan_json, "flightplan");
 }
+
+FlightState FlightPlan::getState(){
+    return state;//TODO: Unsafe
+}

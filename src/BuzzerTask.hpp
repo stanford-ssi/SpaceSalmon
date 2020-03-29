@@ -6,35 +6,23 @@
 #include <semphr.h>
 #include <hal_rtos.h>
 
-//class AltFilterTask;
-
 #include "AltFilter.hpp"
 #include "FlightPlan.hpp"
 #include "SensorData.h"
 
-class AltFilterTask
+class BuzzerTask
 {
 public:
-    AltFilterTask(uint8_t priority);
+    BuzzerTask(uint8_t priority);
     TaskHandle_t getTaskHandle();
-    void queueSensorData(SensorData data);
-
-    static SensorData data;
-    static AltFilter filter;
-    static FlightPlan plan;
 
 private:
+
     static const size_t stackSize = 2000;
 
     static TaskHandle_t taskHandle;
     static StaticTask_t xTaskBuffer;
     static StackType_t xStack[stackSize];
-
-    static const size_t bufferSize = 1000;
-    static MessageBufferHandle_t bufferHandle;
-    static StaticMessageBuffer_t messageBufferStruct;
-    static uint8_t ucStorageBuffer[bufferSize];
-
 
     static void activity(void *p);
 
