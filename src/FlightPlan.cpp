@@ -86,6 +86,7 @@ void FlightPlan::update(AltFilter& filter){
 }
 
 void FlightPlan::logState(){
+    p_state.post(state);
     StaticJsonDocument<500> json;
     json["state"] = (uint8_t) state;
     json["pad_alt"] = pad_alts[0];
@@ -122,8 +123,4 @@ void FlightPlan::dumpConfig(){
         }
     }
     sys.tasks.logger.logJSON(flightplan_json, "flightplan");
-}
-
-FlightState FlightPlan::getState(){
-    return state;//TODO: Unsafe
 }

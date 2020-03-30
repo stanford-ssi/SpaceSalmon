@@ -29,7 +29,8 @@ void BuzzerTask::activity(void *ptr)
         bool pyroA = sys.pyro.getStatus(Pyro::SquibA);
         bool pyroB = sys.pyro.getStatus(Pyro::SquibB);
 
-        FlightState state = sys.tasks.filter.plan.getState();
+        FlightState state;
+        sys.tasks.filter.plan.p_state.get(state);
         
         //One beep: indicates power
         sys.buzzer.set(2500);

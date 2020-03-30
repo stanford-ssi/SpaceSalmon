@@ -45,6 +45,7 @@ static const FlightEvent eventList[] = {{Falling,   VelLess,    0.0,      AltNon
 
 #include "AltFilter.hpp"
 #include "stdint.h"
+#include "Poster.hpp"
 
 class FlightPlan{
     public:
@@ -52,7 +53,7 @@ class FlightPlan{
         void update(AltFilter& filter);
         void dumpConfig();
         void logState();
-        FlightState getState(); //TODO: this is unsafe...
+        Poster<FlightState> p_state;
 
     private:
         float pad_alts[2] = {0.0, 0.0}; //a buffer of past altitudes, the 0th of which will be the pad altitude
