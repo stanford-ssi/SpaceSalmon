@@ -1,6 +1,12 @@
 #pragma once
 #include "Mutex.hpp"
 
+/*
+Poster is a class template that allows safe access to a single variable in a post()/get() style.
+Use this if you want to provide a way to access the most recent value of a peice of data, but dont need every sample (in that case, you would use a buffer).
+This is useful for telemetry and diagnostic indicators. 
+*/
+
 template <typename T> 
 class Poster { 
 private: 
