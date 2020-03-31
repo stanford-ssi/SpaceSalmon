@@ -12,12 +12,14 @@
 #include "FlightPlan.hpp"
 #include "SensorData.h"
 
+#include "MsgBuffer.hpp"
+
 class AltFilterTask
 {
 public:
     AltFilterTask(uint8_t priority);
     TaskHandle_t getTaskHandle();
-    void queueSensorData(SensorData data);
+    void queueSensorData(SensorData &data);
 
     static SensorData data;
     static AltFilter filter;
@@ -30,14 +32,9 @@ private:
     static StaticTask_t xTaskBuffer;
     static StackType_t xStack[stackSize];
 
-    static const size_t bufferSize = 1000;
-    static MessageBufferHandle_t bufferHandle;
-    static StaticMessageBuffer_t messageBufferStruct;
-    static uint8_t ucStorageBuffer[bufferSize];
-
+    static MsgBuffer<SensorData, 1000> dataBuffer;
 
     static void activity(void *p);
-
 };
 
 #include "main.hpp"
