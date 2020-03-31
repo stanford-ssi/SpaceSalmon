@@ -35,12 +35,12 @@ void AltFilterTask::queueSensorData(SensorData &data)
 void AltFilterTask::activity(void *ptr)
 {
     plan.dumpConfig();
-    dataBuffer.receive(data);
+    dataBuffer.receive(data, true);
     filter.init(data);
 
     while (true)
     { //Flight Control Loop: runs every sensor data cycle
-        dataBuffer.receive(data);
+        dataBuffer.receive(data, true);
         digitalWrite(4, true);
         filter.update(data);
         plan.update(filter);

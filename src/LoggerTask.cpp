@@ -5,9 +5,7 @@ TaskHandle_t LoggerTask::taskHandle = NULL;
 StaticTask_t LoggerTask::xTaskBuffer;
 StackType_t LoggerTask::xStack[stackSize];
 
-MessageBufferHandle_t LoggerTask::bufferHandle;
-StaticMessageBuffer_t LoggerTask::messageBufferStruct;
-uint8_t LoggerTask::ucStorageBuffer[bufferSize];
+StrBuffer<10000> LoggerTask::strBuffer;
 
 char LoggerTask::lineBuffer[10000];
 char LoggerTask::inputLineBuffer[1000];
@@ -25,11 +23,9 @@ LoggerTask::LoggerTask(uint8_t priority)
                                                "Logger",                  //task name
                                                stackSize,                 //stack depth (words!)
                                                NULL,                      //parameters
-                                               priority,                        //priority
+                                               priority,                  //priority
                                                LoggerTask::xStack,        //stack object
                                                &LoggerTask::xTaskBuffer); //TCB object
-
-    LoggerTask::bufferHandle = xMessageBufferCreateStatic(bufferSize, LoggerTask::ucStorageBuffer, &LoggerTask::messageBufferStruct);
 }
 
 TaskHandle_t LoggerTask::getTaskHandle()
@@ -39,23 +35,23 @@ TaskHandle_t LoggerTask::getTaskHandle()
 
 void LoggerTask::log(const char *message)
 {
-    vPortEnterCritical();
-    xMessageBufferSend(bufferHandle, message, strlen(message) + 1, 0);
-    vPortExitCritical();
+    strBuffer.send(message, strlen(message) + 1);
 }
 
-void LoggerTask::logJSON(JsonDocument & jsonDoc, const char* id){
+void LoggerTask::logJSON(JsonDocument &jsonDoc, const char *id)
+{
     jsonDoc["id"] = id;
-    jsonDoc["stack"] = uxTaskGetStackHighWaterMark(NULL);//TODO: Check this for capacity... (dangerous!)
+    jsonDoc["stack"] = uxTaskGetStackHighWaterMark(NULL); //TODO: Check this for capacity... (dangerous!)
 
-    if (jsonDoc.getMember("tick") == NULL){
+    if (jsonDoc.getMember("tick") == NULL)
+    {
         jsonDoc["tick"] = xTaskGetTickCount();
     }
 
     //jsonDoc["la"] = xMessageBufferSpaceAvailable(bufferHandle);
-    
+
     size_t len = measureJson(jsonDoc);
-    char str[len+5]; //plenty of room!
+    char str[len + 5]; //plenty of room!
     serializeJson(jsonDoc, str, sizeof(str));
     log(str);
 }
@@ -75,13 +71,13 @@ void LoggerTask::format()
 
 void LoggerTask::activity(void *ptr)
 {
-    digitalWrite(DISK_LED,true);
+    digitalWrite(DISK_LED, true);
     FRESULT res;
 
     Serial.begin(9600);
 
     SSISD sd;
-	sd.init();
+    sd.init();
 
     //Clear file system object
     memset(&fs, 0, sizeof(FATFS));
@@ -139,7 +135,8 @@ void LoggerTask::activity(void *ptr)
         }
 
         //SHITL-----
-        if(sys.shitl){
+        if (sys.shitl)
+        {
             sys.tasks.logger.log("SHITL from file: shitl.txt");
 
             res = f_open(&shitl_file_object, "shitl.txt", FA_READ);
@@ -154,18 +151,16 @@ void LoggerTask::activity(void *ptr)
                 sys.tasks.logger.log("SHITL Read Error");
             }
         }
-        
-
     }
 
     digitalWrite(DISK_LED, false);
 
-    char* p = lineBuffer;
+    char *p = lineBuffer;
     TickType_t timeout = 0;
     while (true)
     {
         //Step 1: read in all the logs
-        if (xMessageBufferReceive(bufferHandle, p, 1000, shitlEnabled ? 0 : NEVER) > 0)
+        if (strBuffer.receive(p, 1000, !shitlEnabled) > 0)
         {
             p = lineBuffer + strlen(lineBuffer);
 
@@ -173,12 +168,14 @@ void LoggerTask::activity(void *ptr)
             p++;
             p[0] = '\0';
 
-            if(p - lineBuffer > 8999 || xTaskGetTickCount() > timeout ){ //we need to write!
+            if (p - lineBuffer > 8999 || xTaskGetTickCount() > timeout)
+            { //we need to write!
                 //Step 2: Write to USB
                 writeUSB(lineBuffer);
-                    
+
                 //Step 3: Write to SD card
-                if (loggingEnabled){
+                if (loggingEnabled)
+                {
                     writeSD(lineBuffer);
                 }
 
@@ -187,36 +184,47 @@ void LoggerTask::activity(void *ptr)
                 p = lineBuffer;
                 timeout = xTaskGetTickCount() + 1000; //if there are no logs for a bit, we should still flush every once and a while
             }
-        
-        }else{ //if timeout is NEVER, we don't ever reach this (no SHITL)
+        }
+        else
+        { //if timeout is NEVER, we don't ever reach this (no SHITL)
             readSHITL();
         }
     }
 }
 
-void LoggerTask::readSHITL(){
+void LoggerTask::readSHITL()
+{
     digitalWrite(SENSOR_LED, true);
     //read in next line
-    if(!f_eof(&shitl_file_object)){
+    if (!f_eof(&shitl_file_object))
+    {
         f_gets(inputLineBuffer, sizeof(inputLineBuffer), &shitl_file_object);
 
         StaticJsonDocument<1024> sensor_json;
         SensorData data;
 
-        if(deserializeJson(sensor_json, inputLineBuffer) == DeserializationError::Ok){
-        
+        if (deserializeJson(sensor_json, inputLineBuffer) == DeserializationError::Ok)
+        {
+
             JsonVariant tick = sensor_json["tick"];
             JsonVariant id = sensor_json["id"];
 
-            if (tick.isNull() || id.isNull()) {
+            if (tick.isNull() || id.isNull())
+            {
                 printf("frame was invalid\n");
-            }else{
-                if(strcmp(id, "sensor") == 0){
+            }
+            else
+            {
+                if (strcmp(id, "sensor") == 0)
+                {
                     JsonVariant adxl_a_2 = sensor_json["adxl"]["a"][2];
                     JsonVariant bmp_p = sensor_json["bmp"]["p"];
-                    if(adxl_a_2.isNull() || bmp_p.isNull()){
+                    if (adxl_a_2.isNull() || bmp_p.isNull())
+                    {
                         printf("sensor frame had invalid data\n");
-                    }else{
+                    }
+                    else
+                    {
                         data.tick = tick;
                         data.adxl1_data.y = adxl_a_2;
                         data.bmp1_data.pressure = bmp_p;
@@ -224,19 +232,23 @@ void LoggerTask::readSHITL(){
                         sys.tasks.filter.queueSensorData(data);
                     }
                 }
-            } 
-        }else{
+            }
+        }
+        else
+        {
             printf("Parsing Error!\n");
         }
     }
     digitalWrite(SENSOR_LED, false);
 }
 
-void LoggerTask::writeUSB(char* buf){
+void LoggerTask::writeUSB(char *buf)
+{
     Serial.println(buf);
 }
 
-void LoggerTask::writeSD(char* buf){
+void LoggerTask::writeSD(char *buf)
+{
     digitalWrite(DISK_LED, true);
 
     FRESULT res;
@@ -253,6 +265,6 @@ void LoggerTask::writeSD(char* buf){
     {
         sys.tasks.logger.log("SD Flush Error");
     }
-    
+
     digitalWrite(DISK_LED, false);
 }

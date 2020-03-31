@@ -12,40 +12,31 @@ private:
 
 public:
     StrBuffer();
-    void send(const char *data, size_t len);
-    void tryReceive(const char *data, size_t len);
-    void receive(const char *data, size_t len);
+    size_t send(const char *data, size_t len);
+    size_t receive(char *data, size_t len, bool block);
 };
 
 template <int sz>
 StrBuffer<sz>::StrBuffer()
 {
-    xMessagebuffer = xMessageBufferCreateStatic(sizeof(ucStorageBuffer),
+    xMessageBuffer = xMessageBufferCreateStatic(sizeof(ucStorageBuffer),
                                                 ucStorageBuffer,
                                                 &xMessageBufferStruct);
 }
 
 template <int sz>
 //this is not blocking, and is safe to call from anywhere
-void StrBuffer<sz>::send(const char *data, size_t len)
+size_t StrBuffer<sz>::send(const char *data, size_t len)
 {
     vPortEnterCritical();
-    xMessageBufferSend(xMessageBuffer, data, len, 0);
+    size_t ret = xMessageBufferSend(xMessageBuffer, data, len, 0);
     vPortExitCritical();
+    return ret;
 }
 
 template <int sz>
-//this is not blocking, and is safe to call from anywhere
-void StrBuffer<sz>::tryReceive(const char *data, size_t len)
+//WARN: this is not reentrant! Only call from one thread!
+size_t StrBuffer<sz>::receive(char *data, size_t len, bool block)
 {
-    vPortEnterCritical();
-    xMessageBufferReceive(xMessageBuffer, data, len, 0);
-    vPortExitCritical();
-}
-
-template <int sz>
-//WARN: this will block forever, and is not reentrant! Only call from one place!
-void StrBuffer<sz>::receive(const char *data, size_t len)
-{
-    xMessageBufferReceive(xMessageBuffer, data, len, NEVER);
+    return xMessageBufferReceive(xMessageBuffer, data, len, block ? NEVER : 0);
 }

@@ -12,9 +12,8 @@ private:
 
 public:
     MsgBuffer();
-    void send(T &data);
-    void tryReceive(T &data);
-    void receive(T &data);
+    bool send(T &data);
+    bool receive(T &data, bool block);
 };
 
 template <typename T, int sz>
@@ -27,25 +26,18 @@ MsgBuffer<T, sz>::MsgBuffer()
 
 template <typename T, int sz>
 //this is not blocking, and is safe to call from anywhere
-void MsgBuffer<T, sz>::send(T &data)
+bool MsgBuffer<T, sz>::send(T &data)
 {
     vPortEnterCritical();
-    xMessageBufferSend(xMessageBuffer, &data, sizeof(T), 0);
+    size_t ret = xMessageBufferSend(xMessageBuffer, &data, sizeof(T), 0);
     vPortExitCritical();
+    return (ret == sizeof(T));
 }
 
 template <typename T, int sz>
-//This is not blocking, and is safe to call from anywhere.
-void MsgBuffer<T, sz>::tryReceive(T &data)
+//WARN: this is not reentrant! Only call from one thread!
+bool MsgBuffer<T, sz>::receive(T &data, bool block)
 {
-    vPortEnterCritical();
-    xMessageBufferReceive(xMessageBuffer, &data, sizeof(T), 0);
-    vPortExitCritical();
-}
-
-template <typename T, int sz>
-//WARN: this will block forever, and is not reentrant! Only call from one place!
-void MsgBuffer<T, sz>::receive(T &data)
-{
-    xMessageBufferReceive(xMessageBuffer, &data, sizeof(T), NEVER);
+    size_t ret = xMessageBufferReceive(xMessageBuffer, &data, sizeof(T), block ? NEVER : 0);
+    return (ret == sizeof(T));
 }
