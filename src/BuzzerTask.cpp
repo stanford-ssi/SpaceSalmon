@@ -6,13 +6,16 @@ StackType_t BuzzerTask::xStack[stackSize];
 
 BuzzerTask::BuzzerTask(uint8_t priority)
 {
-    BuzzerTask::taskHandle = xTaskCreateStatic(activity,                  //static function to run
-                                               "BuzzerTask",              //task name
-                                               stackSize,                 //stack depth (words!)
-                                               NULL,                      //parameters
-                                               priority,                  //priority
-                                               BuzzerTask::xStack,        //stack object
-                                               &BuzzerTask::xTaskBuffer); //TCB object
+    if (!sys.silent)
+    {
+        BuzzerTask::taskHandle = xTaskCreateStatic(activity,                  //static function to run
+                                                   "BuzzerTask",              //task name
+                                                   stackSize,                 //stack depth (words!)
+                                                   NULL,                      //parameters
+                                                   priority,                  //priority
+                                                   BuzzerTask::xStack,        //stack object
+                                                   &BuzzerTask::xTaskBuffer); //TCB object
+    }
 }
 
 TaskHandle_t BuzzerTask::getTaskHandle()
@@ -23,7 +26,8 @@ TaskHandle_t BuzzerTask::getTaskHandle()
 void BuzzerTask::activity(void *ptr)
 {
     uint32_t timer = 0;
-    while(true){
+    while (true)
+    {
         vTaskDelayUntil(&timer, 5000);
 
         bool pyroA = sys.pyro.getStatus(Pyro::SquibA);
@@ -31,7 +35,7 @@ void BuzzerTask::activity(void *ptr)
 
         FlightState state;
         sys.tasks.filter.plan.p_state.get(state);
-        
+
         //One beep: indicates power
         sys.buzzer.set(2500);
         vTaskDelay(300);
@@ -79,29 +83,34 @@ void BuzzerTask::activity(void *ptr)
 
         vTaskDelay(500);
 
-        if(pyroA){
+        if (pyroA)
+        {
             sys.buzzer.set(5000);
             vTaskDelay(100);
             sys.buzzer.set(0);
             vTaskDelay(300);
-        }else{
+        }
+        else
+        {
             sys.buzzer.set(800);
             vTaskDelay(300);
             sys.buzzer.set(0);
             vTaskDelay(100);
         }
 
-        if(pyroB){
+        if (pyroB)
+        {
             sys.buzzer.set(5000);
             vTaskDelay(100);
             sys.buzzer.set(0);
             vTaskDelay(300);
-        }else{
+        }
+        else
+        {
             sys.buzzer.set(800);
             vTaskDelay(300);
             sys.buzzer.set(0);
             vTaskDelay(100);
         }
-        
     }
 }
