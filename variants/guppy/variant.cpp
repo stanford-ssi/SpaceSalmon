@@ -30,6 +30,9 @@ const PinDescription g_APinDescription[]=
   { PORTA, 3, PIO_DIGITAL, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, NOT_AN_INTERRUPT }, // BMP_CS_2
   { PORTB, 4, PIO_DIGITAL, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, NOT_AN_INTERRUPT }, // GYRO_CS_2
   { PORTB, 5, PIO_DIGITAL, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, NOT_AN_INTERRUPT }, // ACCEL_CS_2
+  //19-20
+  { PORTA, 12, PIO_SERCOM, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, NOT_AN_INTERRUPT }, // GPS_TX
+  { PORTA, 13, PIO_SERCOM, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, NOT_AN_INTERRUPT }, // GPS_RX
 } ;
 
 const void* g_apTCInstances[TCC_INST_NUM+TC_INST_NUM]={ TCC0, TCC1, TCC2, TCC3, TCC4, TC0, TC1, TC2, TC3, TC4, TC5 } ;
@@ -41,3 +44,22 @@ SERCOM sercom2( SERCOM2 ) ;
 SERCOM sercom3( SERCOM3 ) ;
 SERCOM sercom4( SERCOM4 ) ;
 SERCOM sercom5( SERCOM5 ) ;
+
+Uart GPSSerial(&sercom2, 20, 19, SERCOM_RX_PAD_1, UART_TX_PAD_0) ;
+
+void SERCOM2_0_Handler()
+{
+  GPSSerial.IrqHandler();
+}
+void SERCOM2_1_Handler()
+{
+  GPSSerial.IrqHandler();
+}
+void SERCOM2_2_Handler()
+{
+  GPSSerial.IrqHandler();
+}
+void SERCOM2_3_Handler()
+{
+  GPSSerial.IrqHandler();
+}

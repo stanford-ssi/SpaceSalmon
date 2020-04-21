@@ -121,7 +121,7 @@ extern SERCOM sercom3;
 extern SERCOM sercom4;
 extern SERCOM sercom5;
 
-extern Uart Serial1;
+extern Uart GPSSerial;
 
 #endif
 
