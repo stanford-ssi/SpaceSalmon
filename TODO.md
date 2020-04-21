@@ -1,8 +1,14 @@
 ## 2020 TODOs
  - Get SpaceSalmon Hardware working
  - Get Radio Telemetry working
+ - Get GPS Working
  - Get CAN Working
  - Better Data/Filter math (multi-sensor?)
+
+ ### LoggerTask
+ - printf() method
+ - make "Task" wrapper
+ - semaphore wrapper
 
 ## Old TODOs
 - Test Bus Messaging
