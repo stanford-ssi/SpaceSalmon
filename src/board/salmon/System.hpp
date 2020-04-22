@@ -17,6 +17,7 @@ class System;
 #include "LoggerTask.hpp"
 #include "AltimeterTask.hpp"
 #include "AltFilterTask.h"
+#include "TelemetryTask.hpp"
 
 #include "ssi_adc.h"
 
@@ -57,6 +58,7 @@ public:
         LoggerTask logger = LoggerTask(1); //logs to USB/SD
         AltimeterTask alt = AltimeterTask(2); //monitors system health
         AltFilterTask filter = AltFilterTask(4); //KF for altitude estimations
+        TelemetryTask telem = TelemetryTask(3);
     };
 
     Sensors sensors;
