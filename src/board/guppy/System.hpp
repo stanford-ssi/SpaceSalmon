@@ -19,6 +19,7 @@ class System;
 #include "AltFilterTask.h"
 #include "BuzzerTask.hpp"
 #include "GPSTask.hpp"
+#include "TelemetryTask.hpp"
 
 #include "ssi_adc.h"
 
@@ -61,6 +62,7 @@ public:
         AltFilterTask filter = AltFilterTask(6); //KF for altitude estimations
         BuzzerTask buzz = BuzzerTask(2); //buzzes!
         GPSTask gps = GPSTask(3);
+        TelemetryTask telem = TelemetryTask(3);
     };
 
     Sensors sensors;
