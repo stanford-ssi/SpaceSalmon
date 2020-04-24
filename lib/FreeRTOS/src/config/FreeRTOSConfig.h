@@ -288,7 +288,7 @@ to exclude the API function. */
 // <q> Include the function to pend timer call
 // <id> freertos_xtimerpendfunctioncall
 #ifndef INCLUDE_xTimerPendFunctionCall
-#define INCLUDE_xTimerPendFunctionCall 0
+#define INCLUDE_xTimerPendFunctionCall 1
 #endif
 
 // </e>

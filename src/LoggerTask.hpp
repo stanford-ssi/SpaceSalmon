@@ -12,6 +12,16 @@
 
 #define DISK_LED 3
 
+enum log_type
+{
+  fatal = 1,
+  error = 2,
+  warning = 4,
+  stats = 8,
+  data = 16,
+  info = 32
+};
+
 class LoggerTask
 {
 private:
@@ -44,6 +54,7 @@ public:
   LoggerTask(uint8_t priority);
   TaskHandle_t getTaskHandle();
   void log(const char *message);
+  void log(JsonDocument &jsonDoc);
   void logJSON(JsonDocument &jsonDoc, const char *id);
   bool isLoggingEnabled() { return loggingEnabled; };
 };

@@ -20,6 +20,7 @@ class System;
 #include "BuzzerTask.hpp"
 #include "GPSTask.hpp"
 #include "TelemetryTask.hpp"
+#include "RadioTask.hpp"
 
 #include "ssi_adc.h"
 
@@ -63,6 +64,7 @@ public:
         BuzzerTask buzz = BuzzerTask(2); //buzzes!
         GPSTask gps = GPSTask(3);
         TelemetryTask telem = TelemetryTask(3);
+        RadioTask radio = RadioTask(3);
     };
 
     Sensors sensors;
