@@ -71,6 +71,7 @@ radio_settings_t RadioTask::getSettings()
 
 void RadioTask::activity()
 {
+    spi.begin();
     while (true)
     {
         int state = lora.begin(settings.freq, settings.bw, settings.sf, settings.cr, settings.syncword, settings.power, settings.currentLimit, settings.preambleLength, 1.8F, false);

@@ -57,7 +57,7 @@ private:
   EventGroupHandle_t evgroup;
 
   SPIClass spi = SPIClass(&sercom4, 21, 23, 22, SPI_PAD_0_SCK_1, SERCOM_RX_PAD_2);
-  Module mod = Module(24, 25, 0, 26, spi, SPISettings(2000000, MSBFIRST, SPI_MODE0));
+  Module mod = Module(24, 25, 0, 26, spi, SPISettings());
   SX1262S lora = SX1262S(&mod);
 
   MsgBuffer<radio_settings_t, 1000> settingsBuf;
