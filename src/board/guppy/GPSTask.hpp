@@ -9,13 +9,13 @@
 
 struct
 {
-    bool valid;
-    uint32_t time;
-    double lat;
-    double lon;
-    double alt;
-    uint8_t sats;
-    double hdop;
+    bool valid = false;
+    uint32_t time = 0;
+    double lat = 0.0;
+    double lon = 0.0;
+    double alt = 0.0;
+    uint8_t sats = 0;
+    double hdop = 0.0;
 } typedef gps_data_t;
 
 class GPSTask
