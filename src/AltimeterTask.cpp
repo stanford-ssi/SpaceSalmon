@@ -44,8 +44,8 @@ void AltimeterTask::activity(void *ptr)
         status_json["tick"] = xTaskGetTickCount();
 
         uint32_t runtime;
-        TaskStatus_t tasks[6];
-        uint8_t count = uxTaskGetSystemState(tasks, 6, &runtime);
+        TaskStatus_t tasks[10];
+        uint8_t count = uxTaskGetSystemState(tasks, 10, &runtime);
 
         JsonObject tasks_json = status_json.createNestedObject("tasks");
 
@@ -55,6 +55,7 @@ void AltimeterTask::activity(void *ptr)
         }
 
         OneBattery::cell_voltage_t voltage = battery.readVoltage();
+        sys.tasks.alt.batt_poster.post(voltage);
 
         JsonObject bat_json = status_json.createNestedObject("bat");
         bat_json["main"] = voltage.cellMain;

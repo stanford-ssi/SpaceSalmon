@@ -4,6 +4,8 @@
 #include <task.h>
 #include <semphr.h>
 #include <hal_rtos.h>
+#include "Poster.hpp"
+#include "./periph/OneBattery/OneBattery.hpp"
 
 #define ALT_LED 1
 
@@ -21,6 +23,7 @@ private:
 public:
     AltimeterTask(uint8_t priority);
     TaskHandle_t getTaskHandle();
+    Poster<OneBattery::cell_voltage_t> batt_poster;
 };
 
 #include "periph/ADXL375/ADXL375.hpp"
