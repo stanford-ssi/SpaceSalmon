@@ -23,7 +23,7 @@ private:
 public:
     AltimeterTask(uint8_t priority);
     TaskHandle_t getTaskHandle();
-    Poster<OneBattery::cell_voltage_t> batt_poster;
+    Poster<OneBattery::cell_voltage_t> battData;
 };
 
 #include "periph/ADXL375/ADXL375.hpp"

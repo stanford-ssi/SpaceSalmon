@@ -23,7 +23,7 @@ class GPSTask
 public:
     GPSTask(uint8_t priority);
     TaskHandle_t getTaskHandle();
-    Poster<gps_data_t> data_post;
+    Poster<gps_data_t> locationData;
 
 private:
     static const size_t stackSize = 2000;

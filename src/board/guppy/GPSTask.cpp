@@ -49,7 +49,7 @@ void GPSTask::activity(){
             data.sats = parser.satellites.value();
             data.hdop = parser.hdop.hdop();
             data.valid = parser.location.isValid();
-            data_post.post(data);
+            locationData.post(data);
 
             StaticJsonDocument<1024> gps_json;
             gps_json["updated"] = true;

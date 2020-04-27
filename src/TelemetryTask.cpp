@@ -29,12 +29,9 @@ void TelemetryTask::activity(){
     while(true){
         vTaskDelay(1000);
         
-        gps_data_t data;
-        sys.tasks.gps.data_post.get(data);
-        OneBattery::cell_voltage_t batt;
-        sys.tasks.alt.batt_poster.get(batt);
+        gps_data_t data = sys.tasks.gps.locationData;
+        OneBattery::cell_voltage_t batt = sys.tasks.alt.battData;
 
-        packet_t pkt;
         StaticJsonDocument<1000> doc;
         doc["lat"] = data.lat;
         doc["lon"] = data.lon;
@@ -42,9 +39,11 @@ void TelemetryTask::activity(){
         doc["bat"] = batt.cellMain;
         char str[200];
         serializeJson(doc, str, 200);
-        sys.tasks.logger.log(str);
+
+        packet_t pkt;
         strcpy((char*)pkt.data, str);
         pkt.len = strlen(str);
+        
         sys.tasks.radio.sendPacket(pkt);
     }
 }
