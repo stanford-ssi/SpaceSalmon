@@ -5,6 +5,7 @@
 #include <message_buffer.h>
 #include <semphr.h>
 #include <hal_rtos.h>
+#include "Task.hpp"
 
 //class AltFilterTask;
 
@@ -14,11 +15,10 @@
 
 #include "MsgBuffer.hpp"
 
-class AltFilterTask
+class AltFilterTask : Task<2000>
 {
 public:
     AltFilterTask(uint8_t priority);
-    TaskHandle_t getTaskHandle();
     void queueSensorData(SensorData &data);
 
     static SensorData data;
@@ -26,15 +26,10 @@ public:
     static FlightPlan plan;
 
 private:
-    static const size_t stackSize = 2000;
-
-    static TaskHandle_t taskHandle;
-    static StaticTask_t xTaskBuffer;
-    static StackType_t xStack[stackSize];
 
     static MsgBuffer<SensorData, 1000> dataBuffer;
 
-    static void activity(void *p);
+    void activity();
 };
 
 #include "main.hpp"

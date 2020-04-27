@@ -7,6 +7,7 @@
 #include "event_groups.h"
 #include "LoggerTask.hpp"
 #include "Mutex.hpp"
+#include "Task.hpp"
 
 #define RADIOLIB_STATIC_ONLY
 #define RADIOLIB_GODMODE
@@ -33,17 +34,12 @@ struct
   uint8_t log_mask = fatal | error | warning | stats | data | info;
 } typedef radio_settings_t;
 
-class RadioTask
+class RadioTask : public Task<1000>
 {
 private:
 
   static RadioTask& glob_ptr;
-  static const size_t stackSize = 1000;
-  static TaskHandle_t taskHandle;
-  static StaticTask_t xTaskBuffer;
-  static StackType_t xStack[stackSize];
 
-  static void activity_wrapper(void *p);
   void activity();
 
   static void radioISR();
@@ -78,7 +74,6 @@ private:
 
 public:
   RadioTask(uint8_t priority);
-  TaskHandle_t getTaskHandle();
   bool sendPacket(packet_t &packet);
   void waitForPacket(packet_t &packet);
   void setSettings(radio_settings_t &settings);

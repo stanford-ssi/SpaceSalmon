@@ -1,52 +1,37 @@
 #include "SensorTask.hpp"
 #include "main.hpp"
 
-TaskHandle_t SensorTask::taskHandle = NULL;
-StaticTask_t SensorTask::xTaskBuffer;
-StackType_t SensorTask::xStack[stackSize];
+SensorTask::SensorTask(uint8_t priority) : Task(priority, "Sensor") {}
 
-SensorTask::SensorTask(uint8_t priority)
+void SensorTask::activity()
 {
-    if(!sys.shitl){
-        SensorTask::taskHandle = xTaskCreateStatic(activity,                  //static function to run
-                                                "Sensors",                 //task name
-                                                stackSize,                 //stack depth (words!)
-                                                NULL,                      //parameters
-                                                priority,                         //priority
-                                                SensorTask::xStack,        //stack object
-                                                &SensorTask::xTaskBuffer); //TCB object
+    if (sys.shitl)
+    {
+        vTaskSuspend(getTaskHandle());
     }
-}
 
-TaskHandle_t SensorTask::getTaskHandle()
-{
-    return taskHandle;
-}
-
-void SensorTask::activity(void *ptr)
-{
     sys.tasks.logger.log("Initializing Sensors");
 
     pinMode(11, OUTPUT);
-	pinMode(12, OUTPUT);
-	pinMode(13, OUTPUT);
-	pinMode(14, OUTPUT);
+    pinMode(12, OUTPUT);
+    pinMode(13, OUTPUT);
+    pinMode(14, OUTPUT);
     pinMode(15, OUTPUT);
-	pinMode(16, OUTPUT);
-	pinMode(17, OUTPUT);
-	pinMode(18, OUTPUT);
+    pinMode(16, OUTPUT);
+    pinMode(17, OUTPUT);
+    pinMode(18, OUTPUT);
 
-	digitalWrite(11, HIGH);
-	digitalWrite(12, HIGH);
-	digitalWrite(13, HIGH);
-	digitalWrite(14, HIGH);
-	digitalWrite(15, HIGH);
-	digitalWrite(16, HIGH);
-	digitalWrite(17, HIGH);
-	digitalWrite(18, HIGH);
+    digitalWrite(11, HIGH);
+    digitalWrite(12, HIGH);
+    digitalWrite(13, HIGH);
+    digitalWrite(14, HIGH);
+    digitalWrite(15, HIGH);
+    digitalWrite(16, HIGH);
+    digitalWrite(17, HIGH);
+    digitalWrite(18, HIGH);
 
     sys.sensors.spi.begin();
-	sys.sensors.spi.beginTransaction(SPISettings(500000, MSBFIRST, SPI_MODE3));
+    sys.sensors.spi.beginTransaction(SPISettings(500000, MSBFIRST, SPI_MODE3));
 
     int rc;
     char str[100];
@@ -76,7 +61,7 @@ void SensorTask::activity(void *ptr)
     {
         sys.tasks.logger.log("Error Starting BMP2");
     }
-    
+
     digitalWrite(14, false);
     vTaskDelay(1);
     digitalWrite(14, true);
@@ -107,7 +92,6 @@ void SensorTask::activity(void *ptr)
 
     rc = sys.sensors.imu1.gyro->begin();
 
-    
     if (rc != 1)
     {
         snprintf(str, sizeof(str), "Error Starting BMI1Gyro: %i", rc);
@@ -179,7 +163,6 @@ void SensorTask::activity(void *ptr)
         adxl1_accel_json.add(data.adxl1_data.x);
         adxl1_accel_json.add(data.adxl1_data.y);
         adxl1_accel_json.add(data.adxl1_data.z);
-
 
         //second set!
 

@@ -6,21 +6,15 @@
 #include <semphr.h>
 #include <hal_rtos.h>
 #include "Poster.hpp"
+#include "Task.hpp"
 
-class TelemetryTask
+class TelemetryTask : Task<2000>
 {
 public:
     TelemetryTask(uint8_t priority);
-    TaskHandle_t getTaskHandle();
 
 private:
-    static const size_t stackSize = 2000;
 
-    static TaskHandle_t taskHandle;
-    static StaticTask_t xTaskBuffer;
-    static StackType_t xStack[stackSize];
-
-    static void activityWrapper(void *p);
     void activity();
 };
 

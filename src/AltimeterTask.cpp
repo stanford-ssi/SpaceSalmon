@@ -1,43 +1,26 @@
 #include "AltimeterTask.hpp"
 
-extern const char* build_version;
+extern const char *build_version;
 
-TaskHandle_t AltimeterTask::taskHandle = NULL;
-StaticTask_t AltimeterTask::xTaskBuffer;
-StackType_t AltimeterTask::xStack[stackSize];
+AltimeterTask::AltimeterTask(uint8_t priority) : Task(priority, "Altimeter") {}
 
-AltimeterTask::AltimeterTask(uint8_t priority)
-{
-    AltimeterTask::taskHandle = xTaskCreateStatic(activity,                  //static function to run
-                                               "Altimeter",                 //task name
-                                               stackSize,                 //stack depth (words!)
-                                               NULL,                      //parameters
-                                               priority,                         //priority
-                                               AltimeterTask::xStack,        //stack object
-                                               &AltimeterTask::xTaskBuffer); //TCB object
-}
-
-TaskHandle_t AltimeterTask::getTaskHandle()
-{
-    return taskHandle;
-}
-
-void AltimeterTask::activity(void *ptr)
+void AltimeterTask::activity()
 {
     char str[100];
 
     snprintf(str, sizeof(str), "Altimeter Started\nBuild Version: %s", build_version);
     sys.tasks.logger.log(str);
-    
+
     TickType_t lastStatusTime = xTaskGetTickCount();
 
     OneBattery battery(sys.adc0);
 
-    while(true){
+    while (true)
+    {
 
         vTaskDelayUntil(&lastStatusTime, 1000);
 
-        digitalWrite(ALT_LED,true);
+        digitalWrite(ALT_LED, true);
 
         StaticJsonDocument<1000> status_json;
 
@@ -49,8 +32,9 @@ void AltimeterTask::activity(void *ptr)
 
         JsonObject tasks_json = status_json.createNestedObject("tasks");
 
-        for(uint8_t i = 0; i < count; i++){
-            float percent = ((float)tasks[i].ulRunTimeCounter)/((float)runtime)*100.0;
+        for (uint8_t i = 0; i < count; i++)
+        {
+            float percent = ((float)tasks[i].ulRunTimeCounter) / ((float)runtime) * 100.0;
             tasks_json[tasks[i].pcTaskName] = percent;
         }
 
@@ -71,8 +55,8 @@ void AltimeterTask::activity(void *ptr)
         pyro_json.add(pyroA);
         pyro_json.add(pyroB);
 
-        sys.tasks.logger.logJSON(status_json,"status");
-        
-        digitalWrite(ALT_LED,false);
+        sys.tasks.logger.logJSON(status_json, "status");
+
+        digitalWrite(ALT_LED, false);
     }
 }

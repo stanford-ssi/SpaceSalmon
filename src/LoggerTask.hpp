@@ -9,6 +9,7 @@
 #include "ArduinoJson.h"
 #include "SSISD.hpp"
 #include "StrBuffer.hpp"
+#include "Task.hpp"
 
 #define DISK_LED 3
 
@@ -22,15 +23,9 @@ enum log_type
   info = 32
 };
 
-class LoggerTask
+class LoggerTask : public Task<1000>
 {
 private:
-  static const size_t stackSize = 1000;
-
-  static TaskHandle_t taskHandle;
-  static StaticTask_t xTaskBuffer;
-  static StackType_t xStack[stackSize];
-
   static StrBuffer<10000> strBuffer;
 
   static char lineBuffer[10000];
@@ -44,7 +39,7 @@ private:
   static bool loggingEnabled;
   static bool shitlEnabled;
 
-  static void activity(void *p);
+  void activity();
   static void readSHITL();
   static void writeUSB(char *buf);
   static void writeSD(char *buf);
@@ -52,7 +47,6 @@ private:
 
 public:
   LoggerTask(uint8_t priority);
-  TaskHandle_t getTaskHandle();
   void log(const char *message);
   void log(JsonDocument &jsonDoc);
   void logJSON(JsonDocument &jsonDoc, const char *id);

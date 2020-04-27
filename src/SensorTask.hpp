@@ -6,21 +6,15 @@
 #include <task.h>
 #include <semphr.h>
 #include <hal_rtos.h>
+#include "Task.hpp"
 
-class SensorTask
+class SensorTask : Task<2000>
 {
 private:
-    static const size_t stackSize = 2000;
-
-    static TaskHandle_t taskHandle;
-    static StaticTask_t xTaskBuffer;
-    static StackType_t xStack[stackSize];
-
-    static void activity(void *p);
+    void activity();
 
 public:
     SensorTask(uint8_t priority);
-    TaskHandle_t getTaskHandle();
 };
 
 #include "main.hpp"

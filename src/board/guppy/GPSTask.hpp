@@ -6,6 +6,7 @@
 #include <semphr.h>
 #include <hal_rtos.h>
 #include "Poster.hpp"
+#include "Task.hpp"
 
 struct
 {
@@ -18,21 +19,13 @@ struct
     double hdop = 0.0;
 } typedef gps_data_t;
 
-class GPSTask
+class GPSTask : Task<2000>
 {
 public:
     GPSTask(uint8_t priority);
-    TaskHandle_t getTaskHandle();
     Poster<gps_data_t> locationData;
 
 private:
-    static const size_t stackSize = 2000;
-
-    static TaskHandle_t taskHandle;
-    static StaticTask_t xTaskBuffer;
-    static StackType_t xStack[stackSize];
-
-    static void activityWrapper(void *p);
     void activity();
 };
 

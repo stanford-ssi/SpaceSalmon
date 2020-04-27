@@ -2,10 +2,6 @@
 #include "main.hpp"
 #include <rBase64.h>
 
-TaskHandle_t RadioTask::taskHandle = NULL;
-StaticTask_t RadioTask::xTaskBuffer;
-StackType_t RadioTask::xStack[stackSize];
-
 void RadioTask::radioISR(void)
 {
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -13,23 +9,9 @@ void RadioTask::radioISR(void)
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
-void RadioTask::activity_wrapper(void *p) { sys.tasks.radio.activity(); };
-
-RadioTask::RadioTask(uint8_t priority)
+RadioTask::RadioTask(uint8_t priority) : Task(priority, "Radio")
 {
-    RadioTask::taskHandle = xTaskCreateStatic(activity_wrapper,         //static function to run
-                                              "radio",                  //task name
-                                              stackSize,                //stack depth (words!)
-                                              NULL,                     //parameters
-                                              priority,                 //priority
-                                              RadioTask::xStack,        //stack object
-                                              &RadioTask::xTaskBuffer); //TCB object
     evgroup = xEventGroupCreateStatic(&evbuf);
-}
-
-TaskHandle_t RadioTask::getTaskHandle()
-{
-    return taskHandle;
 }
 
 bool RadioTask::sendPacket(packet_t &packet)
@@ -79,7 +61,7 @@ void RadioTask::activity()
         if (state != ERR_NONE)
         {
             StaticJsonDocument<1000> doc;
-            doc["id"] = pcTaskGetName(taskHandle);
+            doc["id"] = pcTaskGetName(getTaskHandle());
             doc["msg"] = "Init Failed";
             doc["code"] = state;
             doc["tick"] = xTaskGetTickCount();
@@ -91,9 +73,9 @@ void RadioTask::activity()
             break;
         }
     }
-    NVIC_SetPriority(EIC_2_IRQn,1);
+    NVIC_SetPriority(EIC_2_IRQn, 1);
     lora.setDio1Action(radioISR);
-    NVIC_SetPriority(EIC_2_IRQn,1);
+    NVIC_SetPriority(EIC_2_IRQn, 1);
 
     lora.setDioIrqParams(SX126X_IRQ_TX_DONE | SX126X_IRQ_RX_DONE | SX126X_IRQ_PREAMBLE_DETECTED | SX126X_IRQ_HEADER_VALID | SX126X_IRQ_HEADER_ERR | SX126X_IRQ_CRC_ERR | SX126X_IRQ_TIMEOUT | SX126X_IRQ_CAD_DETECTED | SX126X_IRQ_CAD_DONE,
                          SX126X_IRQ_TX_DONE | SX126X_IRQ_RX_DONE | SX126X_IRQ_PREAMBLE_DETECTED | SX126X_IRQ_HEADER_VALID | SX126X_IRQ_HEADER_ERR | SX126X_IRQ_CRC_ERR | SX126X_IRQ_TIMEOUT | SX126X_IRQ_CAD_DETECTED | SX126X_IRQ_CAD_DONE);
@@ -243,7 +225,7 @@ void RadioTask::log(log_type t, const char *msg)
     if (t & settings.log_mask)
     {
         StaticJsonDocument<1000> doc;
-        doc["id"] = pcTaskGetName(taskHandle);
+        doc["id"] = pcTaskGetName(getTaskHandle());
         doc["msg"] = msg;
         doc["level"] = (uint8_t)t;
         doc["tick"] = xTaskGetTickCount();
@@ -256,7 +238,7 @@ void RadioTask::logPacket(const char *msg, packet_t &packet)
     if (settings.log_mask & data)
     {
         StaticJsonDocument<1000> doc;
-        doc["id"] = pcTaskGetName(taskHandle);
+        doc["id"] = pcTaskGetName(getTaskHandle());
         doc["msg"] = msg;
         doc["level"] = (uint8_t)data;
         doc["tick"] = xTaskGetTickCount();
@@ -275,7 +257,7 @@ void RadioTask::logStats()
     if (settings.log_mask & stats)
     {
         StaticJsonDocument<1000> doc;
-        doc["id"] = pcTaskGetName(taskHandle);
+        doc["id"] = pcTaskGetName(getTaskHandle());
         doc["msg"] = "stats";
         doc["level"] = (uint8_t)stats;
         doc["tick"] = xTaskGetTickCount();
