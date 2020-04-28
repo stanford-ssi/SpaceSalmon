@@ -1,10 +1,6 @@
 #include "LoggerTask.hpp"
 #include "main.hpp"
 
-TaskHandle_t LoggerTask::taskHandle = NULL;
-StaticTask_t LoggerTask::xTaskBuffer;
-StackType_t LoggerTask::xStack[stackSize];
-
 StrBuffer<10000> LoggerTask::strBuffer;
 
 char LoggerTask::lineBuffer[10000];
@@ -17,21 +13,7 @@ FATFS LoggerTask::fs;
 FIL LoggerTask::file_object;
 FIL LoggerTask::shitl_file_object;
 
-LoggerTask::LoggerTask(uint8_t priority)
-{
-    LoggerTask::taskHandle = xTaskCreateStatic(activity,                  //static function to run
-                                               "Logger",                  //task name
-                                               stackSize,                 //stack depth (words!)
-                                               NULL,                      //parameters
-                                               priority,                  //priority
-                                               LoggerTask::xStack,        //stack object
-                                               &LoggerTask::xTaskBuffer); //TCB object
-}
-
-TaskHandle_t LoggerTask::getTaskHandle()
-{
-    return taskHandle;
-}
+LoggerTask::LoggerTask(uint8_t priority) : Task(priority, "Logger") {}
 
 void LoggerTask::log(const char *message)
 {
@@ -56,6 +38,21 @@ void LoggerTask::logJSON(JsonDocument &jsonDoc, const char *id)
     log(str);
 }
 
+void LoggerTask::log(JsonDocument &jsonDoc)
+{
+    jsonDoc["stack"] = uxTaskGetStackHighWaterMark(NULL); //TODO: Check this for capacity... (dangerous!)
+
+    if (jsonDoc.getMember("tick") == NULL)
+    {
+        jsonDoc["tick"] = xTaskGetTickCount();
+    }
+
+    size_t len = measureJson(jsonDoc);
+    char str[len + 5]; //plenty of room!
+    serializeJson(jsonDoc, str, sizeof(str));
+    log(str);
+}
+
 void LoggerTask::format()
 {
     FRESULT res = FR_OK;
@@ -69,7 +66,7 @@ void LoggerTask::format()
     }
 }
 
-void LoggerTask::activity(void *ptr)
+void LoggerTask::activity()
 {
     digitalWrite(DISK_LED, true);
     FRESULT res;

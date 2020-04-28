@@ -1,32 +1,10 @@
 #include "GPSTask.hpp"
 #include "TinyGPS++.h"
 
-TaskHandle_t GPSTask::taskHandle = NULL;
-StaticTask_t GPSTask::xTaskBuffer;
-StackType_t GPSTask::xStack[stackSize];
+GPSTask::GPSTask(uint8_t priority) : Task(priority, "GPSTask") {}
 
-GPSTask::GPSTask(uint8_t priority)
+void GPSTask::activity()
 {
-    GPSTask::taskHandle = xTaskCreateStatic(activityWrapper,               //static function to run
-                                            "GPSTask",              //task name
-                                            stackSize,              //stack depth (words!)
-                                            NULL,                   //parameters
-                                            priority,               //priority
-                                            GPSTask::xStack,        //stack object
-                                            &GPSTask::xTaskBuffer); //TCB object
-}
-
-TaskHandle_t GPSTask::getTaskHandle()
-{
-    return taskHandle;
-}
-
-void GPSTask::activityWrapper(void *ptr)
-{
-    sys.tasks.gps.activity();
-}
-
-void GPSTask::activity(){
     GPSSerial.begin(9600);
     TinyGPSPlus parser;
     TickType_t updateTimer = xTaskGetTickCount();
@@ -49,7 +27,7 @@ void GPSTask::activity(){
             data.sats = parser.satellites.value();
             data.hdop = parser.hdop.hdop();
             data.valid = parser.location.isValid();
-            data_post.post(data);
+            locationData.post(data);
 
             StaticJsonDocument<1024> gps_json;
             gps_json["updated"] = true;

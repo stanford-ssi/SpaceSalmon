@@ -1,11 +1,11 @@
 #pragma once
 
 #ifdef GUPPY
-    #include "board/guppy/System.hpp"
+    #include "guppy/System.hpp"
 #endif
 
 #ifdef SALMON
-    #include "board/salmon/System.hpp"
+    #include "salmon/System.hpp"
 #endif
 
 extern System sys;

@@ -1,30 +1,13 @@
 #include "BuzzerTask.hpp"
 
-TaskHandle_t BuzzerTask::taskHandle = NULL;
-StaticTask_t BuzzerTask::xTaskBuffer;
-StackType_t BuzzerTask::xStack[stackSize];
+BuzzerTask::BuzzerTask(uint8_t priority) : Task(priority, "Buzzer"){};
 
-BuzzerTask::BuzzerTask(uint8_t priority)
+void BuzzerTask::activity()
 {
-    if (!sys.silent)
-    {
-        BuzzerTask::taskHandle = xTaskCreateStatic(activity,                  //static function to run
-                                                   "BuzzerTask",              //task name
-                                                   stackSize,                 //stack depth (words!)
-                                                   NULL,                      //parameters
-                                                   priority,                  //priority
-                                                   BuzzerTask::xStack,        //stack object
-                                                   &BuzzerTask::xTaskBuffer); //TCB object
+    if(sys.silent){
+        vTaskSuspend(getTaskHandle());
     }
-}
-
-TaskHandle_t BuzzerTask::getTaskHandle()
-{
-    return taskHandle;
-}
-
-void BuzzerTask::activity(void *ptr)
-{
+    
     uint32_t timer = 0;
     while (true)
     {
@@ -33,8 +16,7 @@ void BuzzerTask::activity(void *ptr)
         bool pyroA = sys.pyro.getStatus(Pyro::SquibA);
         bool pyroB = sys.pyro.getStatus(Pyro::SquibB);
 
-        FlightState state;
-        sys.tasks.filter.plan.p_state.get(state);
+        FlightState state = sys.tasks.filter.plan.p_state;
 
         //One beep: indicates power
         sys.buzzer.set(2500);

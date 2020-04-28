@@ -4,14 +4,14 @@ class System;
 
 #include <Arduino.h>
 
-#include "../../periph/ADXL375/ADXL375.hpp"
-#include "../../periph/BMI088/BMI088.hpp"
-#include "../../periph/BMP388/BMP388.hpp"
+#include "../periph/ADXL375/ADXL375.hpp"
+#include "../periph/BMI088/BMI088.hpp"
+#include "../periph/BMP388/BMP388.hpp"
 
 #include "SPI.h"
 #include "Tone.h"
 
-#include "../../periph/PyroFets/PyroFets.h"
+#include "../periph/PyroFets/PyroFets.h"
 
 #include "SensorTask.hpp"
 #include "LoggerTask.hpp"
@@ -20,6 +20,7 @@ class System;
 #include "BuzzerTask.hpp"
 #include "GPSTask.hpp"
 #include "TelemetryTask.hpp"
+#include "RadioTask.hpp"
 
 #include "ssi_adc.h"
 
@@ -56,13 +57,14 @@ public:
     class Tasks
     {
     public:
-        //SensorTask sensor = SensorTask(5); //reads data from sensors
+        SensorTask sensor = SensorTask(5); //reads data from sensors
         LoggerTask logger = LoggerTask(1); //logs to USB/SD
         AltimeterTask alt = AltimeterTask(4); //monitors system health
         AltFilterTask filter = AltFilterTask(6); //KF for altitude estimations
         BuzzerTask buzz = BuzzerTask(2); //buzzes!
         GPSTask gps = GPSTask(3);
         TelemetryTask telem = TelemetryTask(3);
+        RadioTask radio = RadioTask(3);
     };
 
     Sensors sensors;

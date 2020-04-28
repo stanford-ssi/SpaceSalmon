@@ -14,6 +14,7 @@ public:
     MsgBuffer();
     bool send(T &data);
     bool receive(T &data, bool block);
+    bool empty();
 };
 
 template <typename T, int sz>
@@ -40,4 +41,11 @@ bool MsgBuffer<T, sz>::receive(T &data, bool block)
 {
     size_t ret = xMessageBufferReceive(xMessageBuffer, &data, sizeof(T), block ? NEVER : 0);
     return (ret == sizeof(T));
+}
+
+template <typename T, int sz>
+//WARN: this is not reentrant! Only call from one thread!
+bool MsgBuffer<T, sz>::empty()
+{
+    return xMessageBufferIsEmpty(xMessageBuffer);
 }

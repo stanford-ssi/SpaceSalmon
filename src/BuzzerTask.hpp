@@ -6,26 +6,19 @@
 #include <semphr.h>
 #include <hal_rtos.h>
 
+#include "Task.hpp"
+
 #include "AltFilter.hpp"
 #include "FlightPlan.hpp"
 #include "SensorData.h"
 
-class BuzzerTask
+class BuzzerTask : public Task<2000>
 {
 public:
     BuzzerTask(uint8_t priority);
-    TaskHandle_t getTaskHandle();
 
 private:
-
-    static const size_t stackSize = 2000;
-
-    static TaskHandle_t taskHandle;
-    static StaticTask_t xTaskBuffer;
-    static StackType_t xStack[stackSize];
-
-    static void activity(void *p);
-
+    void activity();
 };
 
 #include "main.hpp"
