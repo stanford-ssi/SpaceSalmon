@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SensorData.h"
+#include "Poster.hpp"
 
 //This needs to be in this order. We need to include Arduino.h (if not already included), then undefine the Arduino `abs` macro, then pull in Eigen. Pray Rust comes quickly.
 #include "Arduino.h"
@@ -17,6 +18,8 @@ public:
   float getAltitude();
   float getVelocity();
   void logState();
+  Poster<float> p_alt;
+  Poster<float> p_vel;
 
 private:
 

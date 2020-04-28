@@ -2,6 +2,22 @@
 
 TelemetryTask::TelemetryTask(uint8_t priority) : Task(priority, "Telem"){}
 
+const char* str(FlightState state){
+    switch (state)
+    {
+    case Waiting:
+        return "Waiting";
+    case Flight:
+        return "Flight";
+    case Falling:
+        return "Falling";
+    case Landed:
+        return "Landed";
+    default:
+        return "?";
+    }
+}
+
 void TelemetryTask::activity(){
     while(true){
         vTaskDelay(1000);
@@ -14,6 +30,9 @@ void TelemetryTask::activity(){
         doc["lon"] = data.lon;
         doc["alt"] = data.alt;
         doc["bat"] = batt.cellMain;
+        doc["state"] = str(sys.tasks.filter.plan.p_state);
+        doc["alt"] = (float) sys.tasks.filter.filter.p_alt;
+        doc["vel"] = (float) sys.tasks.filter.filter.p_vel;
         char str[200];
         serializeJson(doc, str, 200);
 

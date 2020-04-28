@@ -50,6 +50,9 @@ void AltFilter::update(SensorData& data){
     print_timer = xTaskGetTickCount();
     logState();
   }
+  
+  p_alt.post(X(0));
+  p_vel.post(X(1));
 }
 
 float AltFilter::getAltitude(){ //meters, ASL
