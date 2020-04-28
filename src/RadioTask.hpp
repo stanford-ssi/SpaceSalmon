@@ -9,8 +9,6 @@
 #include "Mutex.hpp"
 #include "Task.hpp"
 
-#define RADIOLIB_STATIC_ONLY
-#define RADIOLIB_GODMODE
 #include "SX1262S.hpp"
 
 struct

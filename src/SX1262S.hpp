@@ -1,4 +1,6 @@
 #pragma once
+#define RADIOLIB_STATIC_ONLY
+#define RADIOLIB_GODMODE
 #include "RadioLib.h"
 
 /*
