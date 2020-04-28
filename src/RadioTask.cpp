@@ -2,15 +2,18 @@
 #include "main.hpp"
 #include <rBase64.h>
 
+RadioTask * RadioTask::glob_ptr = nullptr;
+
 void RadioTask::radioISR(void)
 {
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    xEventGroupSetBitsFromISR(sys.tasks.radio.evgroup, 0b01, &xHigherPriorityTaskWoken);
+    xEventGroupSetBitsFromISR(glob_ptr->evgroup, 0b01, &xHigherPriorityTaskWoken);
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
 RadioTask::RadioTask(uint8_t priority) : Task(priority, "Radio")
 {
+    glob_ptr = this;
     evgroup = xEventGroupCreateStatic(&evbuf);
 }
 

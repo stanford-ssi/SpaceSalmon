@@ -36,7 +36,7 @@ class RadioTask : public Task<1000>
 {
 private:
 
-  static RadioTask& glob_ptr;
+  static RadioTask * glob_ptr;
 
   void activity();
 
