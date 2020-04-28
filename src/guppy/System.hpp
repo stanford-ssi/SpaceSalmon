@@ -4,14 +4,14 @@ class System;
 
 #include <Arduino.h>
 
-#include "../../periph/ADXL375/ADXL375.hpp"
-#include "../../periph/BMI088/BMI088.hpp"
-#include "../../periph/BMP388/BMP388.hpp"
+#include "../periph/ADXL375/ADXL375.hpp"
+#include "../periph/BMI088/BMI088.hpp"
+#include "../periph/BMP388/BMP388.hpp"
 
 #include "SPI.h"
 #include "Tone.h"
 
-#include "../../periph/PyroFets/PyroFets.h"
+#include "../periph/PyroFets/PyroFets.h"
 
 #include "SensorTask.hpp"
 #include "LoggerTask.hpp"

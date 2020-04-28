@@ -4,20 +4,19 @@ class System;
 
 #include <Arduino.h>
 
-#include "../../periph/ADXL375/ADXL375.hpp"
-#include "../../periph/BMI088/BMI088.hpp"
-#include "../../periph/BMP388/BMP388.hpp"
+#include "../periph/ADXL375/ADXL375.hpp"
+#include "../periph/BMI088/BMI088.hpp"
+#include "../periph/BMP388/BMP388.hpp"
 
 #include "SPI.h"
 #include "Tone.h"
 
-#include "../../periph/PyroFets/PyroFets.h"
+#include "../periph/PyroFets/PyroFets.h"
 
 #include "SensorTask.hpp"
 #include "LoggerTask.hpp"
 #include "AltimeterTask.hpp"
 #include "AltFilterTask.h"
-#include "TelemetryTask.hpp"
 
 #include "ssi_adc.h"
 
@@ -58,7 +57,6 @@ public:
         LoggerTask logger = LoggerTask(1); //logs to USB/SD
         AltimeterTask alt = AltimeterTask(2); //monitors system health
         AltFilterTask filter = AltFilterTask(4); //KF for altitude estimations
-        TelemetryTask telem = TelemetryTask(3);
     };
 
     Sensors sensors;
