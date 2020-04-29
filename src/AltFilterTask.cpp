@@ -17,6 +17,12 @@ void AltFilterTask::queueSensorData(SensorData &data)
 void AltFilterTask::activity()
 {
     plan.dumpConfig();
+
+    for (int i = 0; i < 10; i++)
+    {
+        dataBuffer.receive(data, true);
+    }
+
     dataBuffer.receive(data, true);
     filter.init(data);
 

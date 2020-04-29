@@ -29,7 +29,7 @@ void TelemetryTask::activity(){
         doc["time"] = xTaskGetTickCount();
         doc["lat"] = data.lat;
         doc["lon"] = data.lon;
-        doc["alt"] = data.alt;
+        doc["gps_alt"] = data.alt;
         doc["bat"] = batt.cellMain;
         doc["state"] = str(sys.tasks.filter.plan.p_state);
         doc["alt"] = (float) sys.tasks.filter.filter.p_alt;
