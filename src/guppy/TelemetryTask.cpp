@@ -34,6 +34,7 @@ void TelemetryTask::activity(){
         doc["state"] = str(sys.tasks.filter.plan.p_state);
         doc["alt"] = (float) sys.tasks.filter.filter.p_alt;
         doc["vel"] = (float) sys.tasks.filter.filter.p_vel;
+        doc["arm"] = (bool) sys.armed;
         char str[200];
         serializeJson(doc, str, 200);
 

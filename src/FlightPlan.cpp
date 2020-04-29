@@ -16,7 +16,7 @@ void FlightPlan::update(AltFilter& filter){
     switch (state)
     {
     case Waiting:
-        if(state_timer > 200 && velocity > 100.0){ //launch!
+        if(state_timer > 200 && velocity > 100.0 && (bool) sys.armed){ //launch!
             state = Flight;
             state_timer = 0;
             sys.pyro.arm();
