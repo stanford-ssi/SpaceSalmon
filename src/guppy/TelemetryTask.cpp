@@ -26,6 +26,7 @@ void TelemetryTask::activity(){
         OneBattery::cell_voltage_t batt = sys.tasks.alt.battData;
 
         StaticJsonDocument<1000> doc;
+        doc["time"] = xTaskGetTickCount();
         doc["lat"] = data.lat;
         doc["lon"] = data.lon;
         doc["alt"] = data.alt;
