@@ -15,7 +15,14 @@ private:
     Mutex m;
 
 public:
-    void post(T &data)
+    Poster() {}
+
+    Poster(const T &data)
+    {
+        post(data);
+    }
+
+    void post(const T &data)
     {
         m.take(NEVER);
         safe = data;
