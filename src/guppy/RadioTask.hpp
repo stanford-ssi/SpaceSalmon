@@ -22,11 +22,11 @@ struct
 struct
 {
   float freq = 433.551F;
-  float bw = 125.0F;
-  uint8_t sf = 7;
+  float bw = 10.4F;
+  uint8_t sf = 12;
   uint8_t cr = 8;
   uint8_t syncword = SX126X_SYNC_WORD_PRIVATE;
-  int8_t power = 0;
+  int8_t power = 22;
   float currentLimit = 139.0F;
   uint8_t preambleLength = 8;
   uint8_t log_mask = fatal | error | warning | stats | data | info;
@@ -75,4 +75,5 @@ public:
   bool sendPacket(packet_t &packet);
   void waitForPacket(packet_t &packet);
   void setSettings(radio_settings_t &settings);
+  bool isIdle();
 };

@@ -17,6 +17,10 @@ RadioTask::RadioTask(uint8_t priority) : Task(priority, "Radio")
     evgroup = xEventGroupCreateStatic(&evbuf);
 }
 
+bool RadioTask::isIdle(){
+    return txbuf.empty();
+}
+
 bool RadioTask::sendPacket(packet_t &packet)
 {
     bool ret = txbuf.send(packet);     //this puts the packet in the buffer
@@ -146,6 +150,11 @@ void RadioTask::activity()
             if (irq & SX126X_IRQ_RX_DONE) //packet is ready, we can grab it
             {
                 log(info, "RxDone");
+
+                if ((irq & SX126X_IRQ_CRC_ERR) || (irq & SX126X_IRQ_CRC_ERR)) {
+                    log(warning, "CRC Error");
+                }
+
                 packet_t packet;
                 lora.readData(packet.data, 255);
                 packet.len = lora.getPacketLength();
@@ -154,6 +163,7 @@ void RadioTask::activity()
                 rxbuf.send(packet);
                 logPacket("RX", packet);
                 rx_success_counter++;
+                
             }
             else
             {
