@@ -22,7 +22,7 @@ struct
 struct
 {
   float freq = 433.551F;
-  float bw = 10.4F;
+  float bw = 125.0F;
   uint8_t sf = 12;
   uint8_t cr = 8;
   uint8_t syncword = SX126X_SYNC_WORD_PRIVATE;
