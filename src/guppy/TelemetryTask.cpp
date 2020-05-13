@@ -23,7 +23,6 @@ const char *str(FlightState state)
 
 void TelemetryTask::activity()
 {
-    bool a = true;
     while (true)
     {
         vTaskDelay(1000);
@@ -48,6 +47,9 @@ void TelemetryTask::activity()
             down_packet.gps_lock = data.valid;
             down_packet.armed = sys.armed;
             down_packet.state = sys.tasks.filter.plan.p_state;
+
+            down_packet.pyroA = sys.pyro.getStatus(Pyro::SquibA);
+            down_packet.pyroB = sys.pyro.getStatus(Pyro::SquibB);
 
             packet_t pkt;
             memcpy(pkt.data, &down_packet, sizeof(down_packet));
