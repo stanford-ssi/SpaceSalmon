@@ -35,6 +35,8 @@ public:
 
     const bool silent = true;
 
+    Poster<bool> armed = Poster<bool>(false);
+
     class Sensors
     {
     public:
