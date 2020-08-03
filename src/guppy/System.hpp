@@ -8,7 +8,7 @@ class System;
 #include "../periph/BMI088/BMI088.hpp"
 #include "../periph/BMP388/BMP388.hpp"
 
-#include "SPI.h"
+#include "RTOSPI.h"
 #include "Tone.h"
 
 #include "../periph/PyroFets/PyroFets.h"
@@ -45,7 +45,7 @@ public:
     class Sensors
     {
     public:
-        SPIClass spi = SPIClass(&sercom0, 8, 9, 10, SPI_PAD_3_SCK_1, SERCOM_RX_PAD_0);
+        RTOSPI spi = RTOSPI(&sercom0, 8, 9, 10, SPI_PAD_3_SCK_1, SERCOM_RX_PAD_0);
 
         ADXL375 adxl1 = ADXL375(&spi, 11, "adxl1");
         ADXL375 adxl2 = ADXL375(&spi, 15, "adxl2");
