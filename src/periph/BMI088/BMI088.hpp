@@ -29,7 +29,7 @@ extern "C"
 }
 
 #include "Arduino.h"
-#include "SPI.h"
+#include "RTOSPI.h"
 
 #include "BMI088Accel.hpp"
 #include "BMI088Gyro.hpp"
@@ -78,7 +78,7 @@ public:
     ACTIVE_HIGH,
     ACTIVE_LOW
   };
-  BMI088(SPIClass *bus, uint8_t accel_cs, uint8_t gyro_cs, const char* id);
+  BMI088(RTOSPI *bus, uint8_t accel_cs, uint8_t gyro_cs, const char* id);
   int init();
   bool setOdr(Odr odr);
   bool setRange(AccelRange accel_range, GyroRange gyro_range);

@@ -8,7 +8,7 @@ extern "C"
 }
 
 #include "Arduino.h"
-#include "SPI.h"
+#include "RTOSPI.h"
 
 class BMI088Gyro
 {
@@ -48,7 +48,7 @@ public:
     ACTIVE_HIGH,
     ACTIVE_LOW
   };
-  BMI088Gyro(SPIClass *bus, uint8_t csPin);
+  BMI088Gyro(RTOSPI *bus, uint8_t csPin);
   int begin();
   bool setOdr(Odr odr);
   bool setRange(Range range);
@@ -70,7 +70,7 @@ private:
   };
   // spi
   uint8_t _csPin;
-  SPIClass *_spi;
+  RTOSPI *_spi;
   bool _useSPI;
   const uint8_t SPI_READ = 0x80;
   const uint32_t SPI_CLOCK = 10000000; // 10 MHz

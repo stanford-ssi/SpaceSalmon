@@ -9,7 +9,7 @@ extern "C"
 }
 
 #include "Arduino.h"
-#include "SPI.h"
+#include "RTOSPI.h"
 
 class BMP388 : public Sensor
 {
@@ -17,7 +17,7 @@ class BMP388 : public Sensor
 
     typedef bmp3_data Data;
 
-    BMP388(SPIClass *spi, int8_t cspin, const char* id);
+    BMP388(RTOSPI *spi, int8_t cspin, const char* id);
 
     int init();
     bool setTemperatureOversampling(uint8_t os);
@@ -32,7 +32,7 @@ class BMP388 : public Sensor
 
   private:
     int8_t _cs;
-    SPIClass *_spi;
+    RTOSPI *_spi;
 
 
     /*! Chip Id */

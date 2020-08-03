@@ -22,7 +22,7 @@ TODO: This library works, but can only be used once. It needs to be re-writen as
 // map delay function to RTOS sleep
 #define delay_ms(x) vTaskDelay(x)
 
-BMP388::BMP388(SPIClass *spi, int8_t cspin, const char *id) : Sensor(id)
+BMP388::BMP388(RTOSPI *spi, int8_t cspin, const char *id) : Sensor(id)
 {
 	_spi = spi;
 	_cs = cspin;
@@ -235,30 +235,34 @@ bool BMP388::setOutputDataRate(uint8_t odr)
 int8_t BMP388::spi_read(uint8_t reg_addr, uint8_t *reg_data, uint16_t len)
 {
 
-	uint8_t buf[len + 1];
+	uint8_t txbuf[len + 1];
+	uint8_t rxbuf[len + 1];
 
-	memset(buf, 0x00, len + 1);
+	memset(txbuf, 0x00, len + 1);
 
-	buf[0] = reg_addr | 0x80;
+	txbuf[0] = reg_addr | 0x80;
 
 	digitalWrite(_cs,LOW);
-	_spi->transfer(buf, len + 1);
+	//_spi->transfer(buf, len + 1);
+	_spi->dmaTransfer(txbuf, rxbuf, len+1);
 	digitalWrite(_cs,HIGH);
 
-	memcpy(reg_data, buf + 1, len);
+	memcpy(reg_data, rxbuf + 1, len);
 
 	return 0;
 }
 
 int8_t BMP388::spi_write(uint8_t reg_addr, uint8_t *reg_data, uint16_t len)
 {
-	uint8_t buf[len + 1];
+	uint8_t txbuf[len + 1];
+	uint8_t rxbuf[len + 1];
 
-	buf[0] = reg_addr;
-	memcpy(buf + 1, reg_data, len);
+	txbuf[0] = reg_addr;
+	memcpy(txbuf + 1, reg_data, len);
 
 	digitalWrite(_cs,LOW);
-	_spi->transfer(buf, len + 1);
+	//_spi->transfer(buf, len + 1);
+	_spi->dmaTransfer(txbuf,rxbuf,len + 1);
 	digitalWrite(_cs,HIGH);
 
 	return 0;

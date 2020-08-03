@@ -4,7 +4,7 @@
 #define	SET_FIELD(regval,regname,value) ((regval & ~regname##_MASK) | ((value << regname##_POS) & regname##_MASK))
 
 /* BMI088 object, input the SPI bus and chip select pin */
-BMI088Accel::BMI088Accel(SPIClass *bus, uint8_t csPin)
+BMI088Accel::BMI088Accel(RTOSPI *bus, uint8_t csPin)
 {
   _spi = bus; // SPI bus
   _csPin = csPin; // chip select pin
@@ -514,39 +514,42 @@ bool BMI088Accel::isCorrectId()
 void BMI088Accel::writeRegister(uint8_t subAddress, uint8_t data)
 {
   subAddress &= ~SPI_READ;
-  uint8_t buf[] = {subAddress, data};
+  uint8_t txbuf[] = {subAddress, data};
+  uint8_t rxbuf[2] = {0};
 
   digitalWrite(_csPin,LOW);
-	_spi->transfer(buf, 2);
+	_spi->dmaTransfer(txbuf, rxbuf, 2);
 	digitalWrite(_csPin,HIGH);
 }
 
 /* writes multiple bytes to BMI088 register given a register address and data */
 void BMI088Accel::writeRegisters(uint8_t subAddress, uint8_t count, const uint8_t *data)
 {
-  uint8_t buf[count + 1];
+  uint8_t txbuf[count + 1];
+  uint8_t rxbuf[count + 1];
 
-  buf[0] = subAddress | SPI_READ;
+  txbuf[0] = subAddress | SPI_READ;
 
-  memcpy(buf + 1, data, count);
+  memcpy(txbuf + 1, data, count);
 
   digitalWrite(_csPin,LOW);
-	_spi->transfer(buf, count + 1);
+	_spi->dmaTransfer(txbuf, rxbuf, count + 1);
 	digitalWrite(_csPin,HIGH);
 }
 
 /* reads registers from BMI088 given a starting register address, number of bytes, and a pointer to store data */
 void BMI088Accel::readRegisters(uint8_t subAddress, uint8_t count, uint8_t* dest)
 {
-  uint8_t buf[count + 2];
+  uint8_t txbuf[count + 2];
+  uint8_t rxbuf[count + 2];
 
-  memset(buf, 0x00, count + 2);
+  memset(txbuf, 0x00, count + 2);
 
-  buf[0] = subAddress | SPI_READ;
+  txbuf[0] = subAddress | SPI_READ;
 
   digitalWrite(_csPin,LOW);
-	_spi->transfer(buf, count + 2);
+	_spi->transfer(txbuf, rxbuf, count + 2);
 	digitalWrite(_csPin,HIGH);
 
-  memcpy(dest, buf + 2, count);
+  memcpy(dest, rxbuf + 2, count);
 }

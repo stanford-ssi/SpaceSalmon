@@ -8,7 +8,7 @@ extern "C"
 }
 
 #include "Arduino.h"
-#include "SPI.h"
+#include "RTOSPI.h"
 
 #define ADXL375_REG_DEVID 0x00            // Device ID
 #define ADXL375_REG_THRESH_SHOCK 0x1D     // Shock threshold
@@ -81,7 +81,7 @@ public:
     BW_1600HZ = 15
   };
 
-  ADXL375(SPIClass *SPI, uint8_t CS_PIN, const char* id);
+  ADXL375(RTOSPI *SPI, uint8_t CS_PIN, const char* id);
   int init();
   void startMeasuring();
   Data readSensor();
@@ -96,6 +96,6 @@ public:
 
 private:
   void _multiReadRegister(uint8_t regAddress, uint8_t values[], uint8_t numberOfBytes = 1);
-  struct SPIClass *SPI;
+  struct RTOSPI *SPI;
   uint8_t CS_PIN;
 };

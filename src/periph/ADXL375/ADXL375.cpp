@@ -8,7 +8,7 @@ This is one of the more put together sensor libraries. There are a few TODOs tha
 */
 #include "ADXL375.hpp"
 
-ADXL375::ADXL375(SPIClass *SPI, uint8_t CS_PIN, const char* id) : Sensor(id) //TODO: port to C++ SPI implementation.
+ADXL375::ADXL375(RTOSPI *SPI, uint8_t CS_PIN, const char* id) : Sensor(id) //TODO: port to C++ SPI implementation.
 {
   this->SPI = SPI;
   this->CS_PIN = CS_PIN;
@@ -113,24 +113,26 @@ void ADXL375::_multiReadRegister(uint8_t regAddress, uint8_t values[], uint8_t n
     regAddress |= 0x40;
   }
 
-  uint8_t buf[numberOfBytes + 1];
+  uint8_t txbuf[numberOfBytes + 1];
+  uint8_t rxbuf[numberOfBytes + 1];
 
-  memset(buf, 0x00, numberOfBytes + 1);
+  memset(txbuf, 0x00, numberOfBytes + 1);
 
-  buf[0] = regAddress;
+  txbuf[0] = regAddress;
 
   digitalWrite(CS_PIN,LOW);
-  SPI->transfer(buf, numberOfBytes + 1);
+  SPI->dmaTransfer(txbuf, rxbuf, numberOfBytes + 1);
   digitalWrite(CS_PIN,HIGH);
 
-  memcpy(values, buf + 1, numberOfBytes);
+  memcpy(values, rxbuf + 1, numberOfBytes);
 }
 
 void ADXL375::writeRegister(uint8_t regAddress, uint8_t value)
 {
-  uint8_t send[] = {regAddress, value};
+  uint8_t txbuf[] = {regAddress, value};
+  uint8_t rxbuf[2] = {0};
 
   digitalWrite(CS_PIN,LOW);
-  SPI->transfer(send,2);
+  SPI->dmaTransfer(txbuf, rxbuf, 2);
   digitalWrite(CS_PIN,HIGH);
 }

@@ -7,7 +7,7 @@ extern "C"
 }
 
 #include "Arduino.h"
-#include "SPI.h"
+#include "RTOSPI.h"
 
 class BMI088Accel
 {
@@ -69,7 +69,7 @@ class BMI088Accel
         ACTIVE_LOW
     };
 
-    BMI088Accel(SPIClass *bus, uint8_t csPin);
+    BMI088Accel(RTOSPI *bus, uint8_t csPin);
     int begin();
     bool setOdr(Odr odr);
     bool setRange(Range range);
@@ -94,7 +94,7 @@ class BMI088Accel
     };
     // spi
     uint8_t _csPin;
-    SPIClass *_spi;
+    RTOSPI *_spi;
     const uint8_t SPI_READ = 0x80;
     const uint32_t SPI_CLOCK = 10000000; // 10 MHz
     // buffer for reading from sensor
