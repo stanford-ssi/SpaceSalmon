@@ -5,6 +5,9 @@ TODO: This library works, but can only be used once. It needs to be re-writen as
 
 #include "BMP388.hpp"
 
+#include "FreeRTOS.h"
+#include "hal_rtos.h"
+
 /***************** Internal macros ******************************/
 
 /*! Power control settings */
@@ -15,6 +18,9 @@ TODO: This library works, but can only be used once. It needs to be re-writen as
 #define INT_CTRL UINT16_C(0x0708)
 /*! Advance settings */
 #define ADV_SETT UINT16_C(0x1800)
+
+// map delay function to RTOS sleep
+#define delay_ms(x) vTaskDelay(x)
 
 BMP388::BMP388(SPIClass *spi, int8_t cspin, const char *id) : Sensor(id)
 {
@@ -343,7 +349,7 @@ int8_t BMP388::soft_reset()
 		if (rslt == BMP3_OK)
 		{
 			/* Wait for 2 ms */
-			//delay_ms(2); //TODO FIX!
+			delay_ms(2);
 			/* Read for command error status */
 			rslt = get_regs(BMP3_ERR_REG_ADDR, &cmd_err_status, 1);
 			/* check for command error status */
@@ -378,7 +384,7 @@ int8_t BMP388::set_op_mode()
 			   forced mode or normal mode */
 		rslt = put_device_to_sleep();
 		/* Give some time for device to go into sleep mode */
-		//TODO FIX! delay_ms(5);
+		delay_ms(5);
 	}
 	/* Set the power mode */
 	if (rslt == BMP3_OK)
