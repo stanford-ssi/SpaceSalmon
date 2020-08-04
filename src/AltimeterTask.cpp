@@ -6,7 +6,7 @@ AltimeterTask::AltimeterTask(uint8_t priority) : Task(priority, "Altimeter") {}
 
 void AltimeterTask::activity()
 {
-    char str[100];
+    char str[150];
 
     snprintf(str, sizeof(str), "Altimeter Started\nBuild Version: %s", build_version);
     sys.tasks.logger.log(str);
@@ -27,8 +27,8 @@ void AltimeterTask::activity()
         status_json["tick"] = xTaskGetTickCount();
 
         uint32_t runtime;
-        TaskStatus_t tasks[10];
-        uint8_t count = uxTaskGetSystemState(tasks, 10, &runtime);
+        TaskStatus_t tasks[15];
+        uint8_t count = uxTaskGetSystemState(tasks, 15, &runtime);
 
         JsonObject tasks_json = status_json.createNestedObject("tasks");
 
