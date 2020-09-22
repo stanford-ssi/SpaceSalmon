@@ -125,7 +125,8 @@ void RadioTask::activity()
             {
                 log(warning, "Missed Header");
                 rx_failure_counter++;
-                continue; //it failed
+                goto tx_block;
+                //continue; //it failed
             }
 
             irq = lora.getIrqStatus();
@@ -141,7 +142,8 @@ void RadioTask::activity()
                 {
                     log(warning, "Missed RxDone");
                     rx_failure_counter++;
-                    continue; //it failed
+                    goto tx_block;
+                    //continue; //it failed
                 }
 
                 irq = lora.getIrqStatus();
@@ -170,9 +172,11 @@ void RadioTask::activity()
             {
                 log(warning, "Missed RxDone");
                 rx_failure_counter++;
-                continue;
+                goto tx_block;
             }
         }
+        
+        tx_block:
 
         //TRANSMIT BLOCK
         if (txbuf.empty())
