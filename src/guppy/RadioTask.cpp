@@ -43,6 +43,7 @@ void RadioTask::applySettings(radio_settings_t &settings)
     lora.setOutputPower(settings.power);
     lora.setCurrentLimit(settings.currentLimit);
     lora.setPreambleLength(settings.preambleLength);
+    lora.setTCXO(settings.TcxoVoltage);
 }
 
 void RadioTask::setSettings(radio_settings_t &settings)
@@ -63,7 +64,7 @@ void RadioTask::activity()
     spi.begin();
     while (true)
     {
-        int state = lora.begin(settings.freq, settings.bw, settings.sf, settings.cr, settings.syncword, settings.power, settings.currentLimit, settings.preambleLength, 1.8F, false);
+        int state = lora.begin(settings.freq, settings.bw, settings.sf, settings.cr, settings.syncword, settings.power, settings.currentLimit, settings.preambleLength, settings.TcxoVoltage, false);
 
         if (state != ERR_NONE)
         {
@@ -80,9 +81,9 @@ void RadioTask::activity()
             break;
         }
     }
-    NVIC_SetPriority(EIC_2_IRQn, 1);
+    NVIC_SetPriority(EIC_15_IRQn, 1);
     lora.setDio1Action(radioISR);
-    NVIC_SetPriority(EIC_2_IRQn, 1);
+    NVIC_SetPriority(EIC_15_IRQn, 1);
 
     lora.setDioIrqParams(SX126X_IRQ_TX_DONE | SX126X_IRQ_RX_DONE | SX126X_IRQ_PREAMBLE_DETECTED | SX126X_IRQ_HEADER_VALID | SX126X_IRQ_HEADER_ERR | SX126X_IRQ_CRC_ERR | SX126X_IRQ_TIMEOUT | SX126X_IRQ_CAD_DETECTED | SX126X_IRQ_CAD_DONE,
                          SX126X_IRQ_TX_DONE | SX126X_IRQ_RX_DONE | SX126X_IRQ_PREAMBLE_DETECTED | SX126X_IRQ_HEADER_VALID | SX126X_IRQ_HEADER_ERR | SX126X_IRQ_CRC_ERR | SX126X_IRQ_TIMEOUT | SX126X_IRQ_CAD_DETECTED | SX126X_IRQ_CAD_DONE);

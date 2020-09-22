@@ -29,6 +29,7 @@ struct
   int8_t power = 22;
   float currentLimit = 139.0F;
   uint8_t preambleLength = 8;
+  float TcxoVoltage = 0.0F;
   uint8_t log_mask = fatal | error | warning | stats | data | info;
 } typedef radio_settings_t;
 
@@ -50,8 +51,8 @@ private:
   StaticEventGroup_t evbuf;
   EventGroupHandle_t evgroup;
 
-  SPIClass spi = SPIClass(&sercom4, 21, 23, 22, SPI_PAD_0_SCK_1, SERCOM_RX_PAD_2);
-  Module mod = Module(24, 25, 0, 26, spi, SPISettings());
+  SPIClass spi = SPIClass(&sercom3, 27, 25, 26, SPI_PAD_0_SCK_1, SERCOM_RX_PAD_2);
+  Module mod = Module(28, 29, 0, 30, spi, SPISettings());
   SX1262S lora = SX1262S(&mod);
 
   MsgBuffer<radio_settings_t, 1000> settingsBuf;
