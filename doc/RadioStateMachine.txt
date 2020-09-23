@@ -1,0 +1,62 @@
+Update - Update Settings and Print Stats
+RXPre  - Listen for Preamble
+RXHead - Listen for Header
+RXPkt  - Listen for Packet
+TXWait - Wait for Quiet
+TXSend - Transmit
+
+while true:
+    switch state:
+    
+        Update:
+            update settings
+            log stats
+            state = RXPre
+
+        RXPre:
+            start listening
+            wait forever for any irq
+            if preamble irq:
+                state = RXHead
+                continue;
+            else:
+                state = TXWait
+                continue;
+        
+        RXHead:
+            wait 32 symbols for a radio IRQ
+            if timed out:
+                state = TXWait
+                continue;
+            if header irq:
+                state = RXPkt
+                continue;
+
+        RXPkt:
+            calculate TOA for 255 bytes
+            wait TOA for a radio IRQ
+            if timed out:
+                state = TXWait
+                continue
+            if rxdone
+                if crc error
+                    RIP
+                read packet
+                save packet
+
+        TXWait:
+            Activate CAD
+            Wait for radio IRQ for 12 symbols
+            if CAD_Done and !CAD_Detected
+                state = TXSend
+                continue;
+            continue;
+
+        TXSend:
+            Get packet
+            Calculate TOA
+            Send it
+            Wait TOA for radio IRQ
+            update counters
+            state = Update
+            continue;
