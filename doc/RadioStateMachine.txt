@@ -1,62 +1,98 @@
-Update - Update Settings and Print Stats
-RXPre  - Listen for Preamble
-RXHead - Listen for Header
-RXPkt  - Listen for Packet
-TXWait - Wait for Quiet
-TXSend - Transmit
+States:  
+* Backoff - listen extra hard for a packet following TX
+* Listen - listen for incoming or outgoing packet, without backoff
+* RX - Listen for Header, then Packet, and ingest data
+* TX - do housekeeping, then try to send a packet if one is queued
 
 while true:
     switch state:
-    
-        Update:
-            update settings
-            log stats
-            state = RXPre
 
-        RXPre:
+        Backoff:
+            start listening
+            wait 32 symbols for a radio IRQ
+            if timeout:
+                wait forever for any IRQ
+                read IRQ register
+                if preamble irq:
+                    state = RX
+                    continue;
+                else:
+                    state = TX
+                    continue;
+            else:
+                read IRQ register
+                if preamble irq:
+                    state = RX
+                    continue;
+                else:
+                    state = TX
+                    continue;
+                
+        Listen:
             start listening
             wait forever for any irq
+            read IRQ register
             if preamble irq:
-                state = RXHead
+                state = RX
                 continue;
             else:
-                state = TXWait
+                state = TX
                 continue;
         
-        RXHead:
+        RX:
             wait 32 symbols for a radio IRQ
             if timed out:
-                state = TXWait
+                log warning
+                state = TX
                 continue;
-            if header irq:
-                state = RXPkt
+            else:
+                read IRQ register
+                    if header irq:
+                        calculate TOA for 255 bytes
+                        wait TOA for a radio IRQ
+                        if timed out:
+                            state = TX
+                            continue;
+                        else:
+                            read IRQ register
+                                if rxdone irq:
+                                    if crc error:
+                                        RIP
+                                    read packet
+                                    save packet
+                                    state = TX
+                                    continue;
+                                else:
+                                    log warning
+                                    state = TX
+                                    continue;
+                    else:
+                        log warning
+                        state = TX
+                        continue;
+
+        TX:
+            if new settings available:
+                update settings
+
+            if it's been a hot sec:
+                log stats
+
+            if packet:
+                loop:
+                    Activate CAD
+                    Wait for radio IRQ for 12 symbols
+                    if CAD_Done and !CAD_Detected:
+                        break;
+                
+                Get packet
+                Calculate TOA
+                Send it
+                Wait TOA for radio IRQ
+                update counters
+                state = Backoff
                 continue;
-
-        RXPkt:
-            calculate TOA for 255 bytes
-            wait TOA for a radio IRQ
-            if timed out:
-                state = TXWait
-                continue
-            if rxdone
-                if crc error
-                    RIP
-                read packet
-                save packet
-
-        TXWait:
-            Activate CAD
-            Wait for radio IRQ for 12 symbols
-            if CAD_Done and !CAD_Detected
-                state = TXSend
+            else:
+                state = Listen
                 continue;
-            continue;
-
-        TXSend:
-            Get packet
-            Calculate TOA
-            Send it
-            Wait TOA for radio IRQ
-            update counters
-            state = Update
-            continue;
+            
