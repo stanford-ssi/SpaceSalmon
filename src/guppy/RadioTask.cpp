@@ -64,7 +64,7 @@ void RadioTask::activity()
     spi.begin();
     while (true)
     {
-        int state = lora.begin(settings.freq, settings.bw, settings.sf, settings.cr, settings.syncword, settings.power, settings.currentLimit, settings.preambleLength, settings.TcxoVoltage, false);
+        int state = lora.begin(settings.freq, settings.bw, settings.sf, settings.cr, settings.syncword, settings.power, settings.preambleLength, settings.TcxoVoltage, false);
 
         if (state != ERR_NONE)
         {
