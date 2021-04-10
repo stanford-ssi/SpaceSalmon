@@ -13,10 +13,10 @@ class System;
 
 #include "../periph/PyroFets/PyroFets.h"
 
-#include "SensorTask.hpp"
-#include "LoggerTask.hpp"
-#include "AltimeterTask.hpp"
-#include "AltFilterTask.h"
+#include "fc/SensorTask.hpp"
+#include "fc/LoggerTask.hpp"
+#include "fc/AltimeterTask.hpp"
+#include "fc/AltFilterTask.h"
 
 #include "ssi_adc.h"
 
@@ -24,7 +24,7 @@ class System
 { 
 public:
 
-    PyroFets pyrofets = PyroFets(0, 0, 0, 0);
+    PyroFets pyrofets = PyroFets(0, 0, 0, 0, adc0);
     Pyro &pyro = pyrofets;
 
     ADC adc0 = ADC(ADC0);
