@@ -1,26 +1,18 @@
-## 2020 TODOs
+## Quail 2021 Bringup TODOs:
+ - Get SAME54N20A chip support set up (currently using similar chip number)
+ - Write IO abstractions for Quail 3.0 Hardware
+ - Set up AD7124-8 driver
+ - Get Ethernet working
+
+## 2021 General TODOs:
  - Get SpaceSalmon Hardware working
- - Get Radio Telemetry working
- - Get GPS Working
  - Get CAN Working
  - Better Data/Filter math (multi-sensor?)
 
- ### LoggerTask
- - printf() method
- - make "Task" wrapper
- - semaphore wrapper
-
 ## Old TODOs
-- Test Bus Messaging
-- add event timer to sensorTask, to define timing
-- make battery/adc threaded
-- make squib threaded
-- fix assert warnings
-- enable ECC ram!
-
-- Some heuristic for sensor health. A way to tell when the sensor is not giving realistic data.
-- Some form of error detection, logging and recovery. Explore watchdog timers, an global error code buffer, or something
-- Improve performance: Increase SPI clock speed, async SD interface
-- I2C stack development: Work on piping the GPS data from the RF carrier, and telemetry to the radio
-- Filter Development: used data from logging flight to develop altitude filter
-- Flight Management: write code to manage chute deployment etc.
+ - Some heuristic for sensor health. A way to tell when the sensor is not giving realistic data.
+ - Some form of error detection, logging and recovery. Explore watchdog timers, an global error code buffer, or something
+ - Improve performance: Increase SPI clock speed, async SD interface
+ - I2C stack development: Work on piping the GPS data from the RF carrier, and telemetry to the radio
+ - Filter Development: used data from logging flight to develop altitude filter
+ - Flight Management: write code to manage chute deployment etc.
