@@ -5,7 +5,7 @@
 #include "ArduinoJson.h"
 #include "MsgBuffer.hpp"
 #include "event_groups.h"
-#include "LoggerTask.hpp"
+#include "fc/LoggerTask.hpp"
 #include "Mutex.hpp"
 #include "Task.hpp"
 

@@ -1,7 +1,9 @@
 #include "PyroFets.h"
 #include "main.hpp"
 
-PyroFets::PyroFets(uint8_t fire1, uint8_t sense1, uint8_t fire2, uint8_t sense2){
+PyroFets::PyroFets(uint8_t fire1, uint8_t sense1, uint8_t fire2, uint8_t sense2, ADC &adc) : adc{adc} {
+    adc = adc;
+
     fire1_pin = fire1;
     sense1_pin = sense1;
     fire2_pin = fire2;
@@ -58,9 +60,9 @@ bool PyroFets::fire(PyroChannel channel){
 bool PyroFets::getStatus(PyroChannel channel){
     uint16_t value = 0;
     if(channel == SquibA){
-        value = sys.adc0.read(0x0D);
+        value = adc.read(0x0D);
     }else if(channel == SquibB){
-        value = sys.adc0.read(0x0C);
+        value = adc.read(0x0C);
     }
     return (value > 400);
 }

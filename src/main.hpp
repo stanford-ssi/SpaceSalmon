@@ -8,4 +8,8 @@
     #include "salmon/System.hpp"
 #endif
 
+#ifdef QUAIL
+    #include "quail/System.hpp"
+#endif
+
 extern System sys;
