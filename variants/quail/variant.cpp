@@ -11,6 +11,13 @@ const PinDescription g_APinDescription[]=
   { PORTB, 17, PIO_DIGITAL, PIN_ATTR_DIGITAL, No_ADC_Channel, TCC3_CH1, NOT_ON_TIMER, EXTERNAL_INT_1 },
   { PORTB, 18, PIO_DIGITAL, PIN_ATTR_DIGITAL, No_ADC_Channel, TCC1_CH0, NOT_ON_TIMER, EXTERNAL_INT_2 },
   { PORTB, 19, PIO_DIGITAL, PIN_ATTR_DIGITAL, No_ADC_Channel, TCC1_CH1, NOT_ON_TIMER, EXTERNAL_INT_3 },
+  //5-9 ADC SPI and GPIO, SERCOM1, IOSET3,
+  { PORTB, 23, PIO_SERCOM, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, NOT_AN_INTERRUPT }, // MISO: SERCOM1/PAD[3]
+  { PORTC, 28, PIO_SERCOM, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, NOT_AN_INTERRUPT }, // SCK: SERCOM1/PAD[1]
+  { PORTC, 27, PIO_SERCOM, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, NOT_AN_INTERRUPT }, // MOSI: SERCOM1/PAD[0]
+  { PORTB, 21, PIO_DIGITAL, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, NOT_AN_INTERRUPT }, // CS
+  { PORTA, 27, PIO_DIGITAL, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, NOT_AN_INTERRUPT }, // ADC_SYNC
+
   //5 Buzzer
   //{ PORTA, 15, PIO_TIMER, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, NOT_AN_INTERRUPT },
   //6-7 Bat Sense
@@ -59,21 +66,21 @@ SERCOM sercom3( SERCOM3 ) ;
 SERCOM sercom4( SERCOM4 ) ;
 SERCOM sercom5( SERCOM5 ) ;
 
-Uart GPSSerial(&sercom2, 20, 19, SERCOM_RX_PAD_1, UART_TX_PAD_0) ;
+//Uart GPSSerial(&sercom2, 20, 19, SERCOM_RX_PAD_1, UART_TX_PAD_0) ;
 
 void SERCOM2_0_Handler()
 {
-  GPSSerial.IrqHandler();
+  //GPSSerial.IrqHandler();
 }
 void SERCOM2_1_Handler()
 {
-  GPSSerial.IrqHandler();
+  //GPSSerial.IrqHandler();
 }
 void SERCOM2_2_Handler()
 {
-  GPSSerial.IrqHandler();
+  //GPSSerial.IrqHandler();
 }
 void SERCOM2_3_Handler()
 {
-  GPSSerial.IrqHandler();
+  //GPSSerial.IrqHandler();
 }
