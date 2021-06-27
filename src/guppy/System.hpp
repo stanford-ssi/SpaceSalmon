@@ -29,7 +29,7 @@ class System
 { 
 public:
 
-    PyroFets pyrofets = PyroFets(0, 0, 0, 0, adc0);
+    PyroFets pyrofets = PyroFets(31,33,32,34,adc0);
     Pyro &pyro = pyrofets;
 
     ADC adc0 = ADC(ADC0);
