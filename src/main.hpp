@@ -12,4 +12,8 @@
     #include "quail/System.hpp"
 #endif
 
+#ifdef GROUND
+    #include "ground/System.hpp"
+#endif
+
 extern System sys;
