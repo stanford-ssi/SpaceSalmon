@@ -5,7 +5,7 @@ TaskHandle_t LoggerTask::taskHandle = NULL;
 StaticTask_t LoggerTask::xTaskBuffer;
 StackType_t LoggerTask::xStack[stackSize];
 
-StrBuffer<10000> LoggerTask::logBuffer;
+StrBuffer<1000> LoggerTask::logBuffer;
 StrBuffer<3000> LoggerTask::inputBuffer;
 
 char LoggerTask::logLineBuffer[10000];

@@ -30,7 +30,7 @@ private:
   static StaticTask_t xTaskBuffer;
   static StackType_t xStack[stackSize];
 
-  static StrBuffer<10000> logBuffer;
+  static StrBuffer<1000> logBuffer; // when this gets big, it breaks. why?
 
 
   static char logLineBuffer[10000];
