@@ -41,7 +41,7 @@ void LoggerTask::log(JsonDocument &jsonDoc)
     log(str);
 }
 
-void LoggerTask::activity(void *ptr)
+void LoggerTask::activity()
 {
 
     Serial.begin(9600);

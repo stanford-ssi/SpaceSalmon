@@ -34,7 +34,7 @@ private:
   bool loggingEnabled;
   bool shitlEnabled;
 
-  void activity(void *p);
+  void activity();
   void readSHITL();
   void writeUSB(char *buf);
   void format();
