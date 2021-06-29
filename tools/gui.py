@@ -91,7 +91,7 @@ serBuffer = ""
 
 def process(line):
     data = json.loads(line)
-    if data["id"] == "radio":
+    if data["id"] == "Radio":
         for key in data:
             if key in data_feilds:
                 data_feilds[key][0].set(str(data[key]) + data_feilds[key][1])
