@@ -25,6 +25,7 @@ If BOSSAC uploading fails, use this:
 ### Lessons Learned
 * You can't write data into a buffer into another task, beacause you don't know that its constructor has been initialized! The main case is logging. Don't try logging from the constructors! We should probably prevent the logger from taking input before its initialized...
 * Libraries work best when they don't export a bunch of header files. The internal header structure should use relative include paths, and careful attention should be paid to what headers end up in the project search path.
+* Sometimes if you have too many static things, stuff goes very wrong. Particularly really big StrBuffers? idk.
 
 ### SHITL
 The code supports SHITL (Some Hardware in the Loop) testing. This allows you to feed a log of sensor data from a past flight into the hardware in the place of live sensor data. To perform SHTIL you must do the following. The logs from a SHITL test are treated the same as flight logs.

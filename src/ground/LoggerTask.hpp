@@ -8,6 +8,7 @@
 #include <string.h>
 #include "ArduinoJson.h"
 #include "StrBuffer.hpp"
+#include "Task.hpp"
 
 #define DISK_LED 3
 
@@ -21,33 +22,26 @@ enum log_type
   info = 32
 };
 
-class LoggerTask
+class LoggerTask : public Task<1000>
 {
 private:
-  static const size_t stackSize = 1000;
 
-  static TaskHandle_t taskHandle;
-  static StaticTask_t xTaskBuffer;
-  static StackType_t xStack[stackSize];
+  StrBuffer<10000> logBuffer;
 
-  static StrBuffer<1000> logBuffer; // when this gets big, it breaks. why?
+  char logLineBuffer[10000];
+  char inputLineBuffer[3000];
 
+  bool loggingEnabled;
+  bool shitlEnabled;
 
-  static char logLineBuffer[10000];
-  static char inputLineBuffer[3000];
-
-  static bool loggingEnabled;
-  static bool shitlEnabled;
-
-  static void activity(void *p);
-  static void readSHITL();
-  static void writeUSB(char *buf);
-  static void format();
+  void activity(void *p);
+  void readSHITL();
+  void writeUSB(char *buf);
+  void format();
 
 public:
-  static StrBuffer<3000> inputBuffer;
+  StrBuffer<3000> inputBuffer;
   LoggerTask(uint8_t priority);
-  TaskHandle_t getTaskHandle();
   void log(const char *message);
   void log(JsonDocument &jsonDoc);
   void logJSON(JsonDocument &jsonDoc, const char *id);

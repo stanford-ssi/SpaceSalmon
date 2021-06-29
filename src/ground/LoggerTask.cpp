@@ -1,34 +1,7 @@
 #include "LoggerTask.hpp"
 #include "main.hpp"
 
-TaskHandle_t LoggerTask::taskHandle = NULL;
-StaticTask_t LoggerTask::xTaskBuffer;
-StackType_t LoggerTask::xStack[stackSize];
-
-StrBuffer<1000> LoggerTask::logBuffer;
-StrBuffer<3000> LoggerTask::inputBuffer;
-
-char LoggerTask::logLineBuffer[10000];
-char LoggerTask::inputLineBuffer[3000];
-
-bool LoggerTask::loggingEnabled = false;
-bool LoggerTask::shitlEnabled = false;
-
-LoggerTask::LoggerTask(uint8_t priority)
-{
-    LoggerTask::taskHandle = xTaskCreateStatic(activity,                  //static function to run
-                                               "Logger",                  //task name
-                                               stackSize,                 //stack depth (words!)
-                                               NULL,                      //parameters
-                                               priority,                  //priority
-                                               LoggerTask::xStack,        //stack object
-                                               &LoggerTask::xTaskBuffer); //TCB object
-}
-
-TaskHandle_t LoggerTask::getTaskHandle()
-{
-    return taskHandle;
-}
+LoggerTask::LoggerTask(uint8_t priority) : Task(priority, "Logger") {}
 
 void LoggerTask::log(const char *message)
 {
