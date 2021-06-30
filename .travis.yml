@@ -32,7 +32,8 @@ env:
   - TARGET=guppy
   - TARGET=salmon
   - TARGET=quail
-  - TARGET=ground
+  - TARGET=quail-ground
+  - TARGET=guppy-ground
 
 sudo: false
 cache:

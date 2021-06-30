@@ -12,8 +12,12 @@
     #include "quail/System.hpp"
 #endif
 
-#ifdef GROUND
-    #include "ground/System.hpp"
+#ifdef GUPPY_GROUND
+    #include "guppy-ground/System.hpp"
+#endif
+
+#ifdef QUAIL_GROUND
+    #include "quail-ground/System.hpp"
 #endif
 
 extern System sys;
