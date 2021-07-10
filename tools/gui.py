@@ -79,7 +79,7 @@ Radiobutton(dataFrame, text="ThunderGuppy Telem",
 data_row += 1
 
 # latitude and longitude correction feilds
-pos = (IntVar(), IntVar())
+pos = (IntVar(None,35), IntVar(None,-117))
 
 Label(dataFrame, text="Latitude").grid(column=0, row=data_row)
 lat_entry = Entry(dataFrame, textvariable=pos[0])
