@@ -7,6 +7,14 @@ import telem
 
 import tkinter as tk
 
+
+import logging
+logging.basicConfig(filename="gui.log",
+                            filemode='a',
+                            format='%(asctime)s.%(msecs)d | %(name)s | %(levelname)s | %(message)s',
+                            datefmt='%H:%M:%S',
+                            level=logging.DEBUG)
+
 serialPort = sys.argv[1]
 baudRate = 9600
 ser = Serial(serialPort, baudRate, timeout=0,
@@ -90,6 +98,7 @@ serBuffer = ""
 
 
 def process(line):
+    logging.info("Got Msg: " + line.strip())
     data = json.loads(line)
     if data["id"] == "Radio":
         for key in data:
@@ -103,12 +112,14 @@ def process(line):
                 except UnicodeDecodeError as e:
                     msg = "<invalid base64>"
 
+                logging.info("Decoded Text: " + msg)
                 msg = data["msg"] + ">> " + msg + "\n"
                 console.insert(END, msg)
 
             elif msgtype.get() == 1:
-                msg = telem.decodeTelem(data["data"], pos) + "\n"
-                console.insert(END, msg)
+                msg = telem.decodeTelem(data["data"], pos)
+                console.insert(END, msg + "\n")
+                logging.info("Decoded Telem: " + msg)
 
             console.see(END)
 
@@ -148,13 +159,16 @@ def callback(event):
     msg = e.get()
     if(len(prefix.get()) > 0):
         msg = prefix.get() + ": " + msg
-
+    
     data = base64.b64encode(msg.encode("utf-8")).decode("utf-8")
     data = json.dumps({"id": "tx", "data": data}, separators=(',', ':'))
+    logging.info("Sent Msg: " + data)
     data += '\n'
     ser.write(data.encode('utf-8'))
     e.delete(0, END)
 
+
+logging.info("GUI started, opening serial port " + serialPort)
 
 # after initializing serial, an arduino may need a bit of time to reset
 root.after(100, readSerial)
