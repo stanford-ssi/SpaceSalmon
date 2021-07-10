@@ -11,8 +11,8 @@ import tkinter as tk
 import logging
 logging.basicConfig(filename="gui.log",
                             filemode='a',
-                            format='%(asctime)s.%(msecs)d | %(name)s | %(levelname)s | %(message)s',
-                            datefmt='%H:%M:%S',
+                            format='%(asctime)s | %(name)s | %(levelname)s | %(message)s',
+                            # datefmt='%H:%M:%S',
                             level=logging.DEBUG)
 
 serialPort = sys.argv[1]

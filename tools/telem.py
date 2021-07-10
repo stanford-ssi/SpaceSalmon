@@ -16,9 +16,9 @@ def decodeTelem(data, pos):
 
     data["battery"] = expand_float(data["battery"], 1.0, 6.0, 8)
     data["lat"] = expand_float(
-        data["lat"], 0.0, 10.0, 18) + math.floor(pos[0].get()/10)*10
+        data["lat"], 0.0, 10.0, 18, math.floor(pos[0].get()/10)*10)
     data["lon"] = expand_float(
-        data["lon"], 0.0, 10.0, 18) + math.floor(pos[1].get()/10)*10
+        data["lon"], 0.0, 10.0, 18, math.floor(pos[1].get()/10)*10)
     data["gps_alt"] = expand_float(data["gps_alt"], -2000.0, 40000.0, 15)
     data["filter_alt"] = expand_float(data["filter_alt"], -2000.0, 40000.0, 15)
     data["filter_vel"] = expand_float(data["filter_vel"], -1000.0, 1000.0, 11)
@@ -26,9 +26,9 @@ def decodeTelem(data, pos):
     return str(data)
 
 
-def expand_float(input, min, max, bits):
+def expand_float(input, min, max, bits, offset=0):
     in_max = (2**bits) - 1
     value = (input/in_max)*(max - min) + min
     quant = (max - min) / in_max
     digits = math.floor(math.log10(quant))
-    return round(value, -digits)
+    return round(value + offset, -digits)
