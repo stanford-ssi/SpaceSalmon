@@ -37,7 +37,7 @@ typedef struct {
     float altitude; //meters AGL
     EventAction action;
     SquibChannel squib;
-    TickType_t time; //time to fire for (min)
+    TickType_t time; //minimum time to fire for
 } FlightEvent;
 
 static const FlightEvent eventList[] = {{Falling,   VelLess,    0.0,      AltNone,    0.0,      BlowSquib,  Pyro::PyroChannel::SquibA,  2000    },  //Apogee Event, at velocity 0-crossing
