@@ -28,6 +28,9 @@ language: python
 python:
     - "3.7"
 
+git:
+    depth: false
+
 env:
   - TARGET=guppy
   - TARGET=salmon
