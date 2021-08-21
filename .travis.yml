@@ -28,10 +28,15 @@ language: python
 python:
     - "3.7"
 
+git:
+    depth: false
+
 env:
   - TARGET=guppy
   - TARGET=salmon
   - TARGET=quail
+  - TARGET=quail-ground
+  - TARGET=guppy-ground
 
 sudo: false
 cache:

@@ -46,6 +46,10 @@ void AltimeterTask::activity()
         bat_json["bkp"] = voltage.cellBackup;
 
         status_json["log"] = sys.tasks.logger.isLoggingEnabled();
+        
+        bool armed;
+        sys.armed.get(armed);
+        status_json["armed"] = armed;
 
         JsonArray pyro_json = status_json.createNestedArray("pyro");
 

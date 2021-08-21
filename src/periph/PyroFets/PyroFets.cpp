@@ -60,9 +60,9 @@ bool PyroFets::fire(PyroChannel channel){
 bool PyroFets::getStatus(PyroChannel channel){
     uint16_t value = 0;
     if(channel == SquibA){
-        value = adc.read(0x0D);
+        value = adc.read(0x0D); //hardcoded AIN[13]
     }else if(channel == SquibB){
-        value = adc.read(0x0C);
+        value = adc.read(0x0C); //hardcoded AIN[12]
     }
     return (value > 400);
 }

@@ -14,6 +14,7 @@ public:
     StrBuffer();
     size_t send(const char *data, size_t len);
     size_t receive(char *data, size_t len, bool block);
+    size_t receiveTimeout(char *data, size_t len, uint32_t block);
 };
 
 template <int sz>
@@ -39,4 +40,11 @@ template <int sz>
 size_t StrBuffer<sz>::receive(char *data, size_t len, bool block)
 {
     return xMessageBufferReceive(xMessageBuffer, data, len, block ? NEVER : 0);
+}
+
+template <int sz>
+//WARN: this is not reentrant! Only call from one thread!
+size_t StrBuffer<sz>::receiveTimeout(char *data, size_t len, uint32_t block)
+{
+    return xMessageBufferReceive(xMessageBuffer, data, len, block);
 }

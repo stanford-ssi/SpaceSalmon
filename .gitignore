@@ -5,3 +5,7 @@
 *.code-workspace
 *.DS_Store
 src/version.cpp
+
+*.pyc
+*.pyo
+tools/gui.log

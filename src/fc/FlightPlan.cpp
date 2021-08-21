@@ -40,7 +40,7 @@ void FlightPlan::update(AltFilter& filter){
         }
         break;
     case Falling:
-        if(state_timer > 20 && velocity > -5.0){ //stopped falling
+        if(state_timer > 200 && velocity > -5.0){ //stopped falling
             state = Landed;
             state_timer = 0;
             sys.pyro.disarm();

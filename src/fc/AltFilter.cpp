@@ -76,7 +76,8 @@ void AltFilter::kalmanUpdate(){
 
 void AltFilter::prefilter(SensorData& data){
   data_time = data.tick;
-  double pres = (data.bmp1_data.pressure + data.bmp2_data.pressure)/2;
+  //double pres = (data.bmp1_data.pressure + data.bmp2_data.pressure)/2;
+  double pres = data.bmp2_data.pressure;
   
   if(signbit(pres)){
     pres = 0.0;
@@ -84,7 +85,7 @@ void AltFilter::prefilter(SensorData& data){
 
   Z(0) = p2alt(pres);  //LOL gotta convert to meters oops
   Z(1) = (data.adxl1_data.y * -1.0) - 9.807; //NEGATIVE! If the accelerometers read -9.8 when the rocket is vertical,
-  //then you should have a -1.0 term here, so that at rest the filter sees normal force accleratrion upwards (positive).
+  //then you should have a -1.0 term here, so that at rest the filter sees normal force accleration upwards (positive).
 }
 
 float AltFilter::p2alt(float p){
