@@ -4,27 +4,16 @@ class System;
 
 #include <Arduino.h>
 
-#include "../periph/ADXL375/ADXL375.hpp"
-#include "../periph/BMI088/BMI088.hpp"
-#include "../periph/BMP388/BMP388.hpp"
-
 #include "SPI.h"
-#include "Tone.h"
 
 #include "LEDTask.hpp"
 
-#include "ssi_adc.h"
 
 class System
 { 
 public:
 
-    // const bool shitl = false;
-
-    // const bool silent = true;
-
-    // Poster<bool> armed = Poster<bool>(false);
-
+    SPIClass adc_spi = SPIClass(&sercom1, 5, 6, 7, SPI_PAD_0_SCK_1, SERCOM_RX_PAD_3);
     
     class Tasks
     {
