@@ -72,6 +72,7 @@ Ad7124Driver::init (uint8_t slaveDeviceId, bool lsbFirst,
   }
   
    sys.adc_spi.begin();
+   setSS(id);
   return true;
 }
 
@@ -80,11 +81,11 @@ int
 Ad7124Driver::read (uint8_t* data, uint8_t len) {
 
   sys.adc_spi.beginTransaction (SPISettings (speedMaximum, dataOrder, dataMode));
-  setSS(id);
+  //setSS(id);
   for (uint8_t i = 0; i < len; i++) {
     data[i] = sys.adc_spi.transfer (data[i]);
   }
-  clearSS(id);
+  //clearSS(id);
   sys.adc_spi.endTransaction();
   return len;
 }
@@ -94,11 +95,11 @@ int
 Ad7124Driver::write (const uint8_t * data, uint8_t len) {
 
   sys.adc_spi.beginTransaction (SPISettings (speedMaximum, dataOrder, dataMode));
-  setSS(id);
+  //setSS(id);
   for (uint8_t i = 0; i < len; i++) {
     sys.adc_spi.transfer (data[i]);
   }
-  clearSS(id);
+  //clearSS(id);
   sys.adc_spi.endTransaction();
   return len;
 }

@@ -221,9 +221,10 @@ class Ad7124Chip {
      * the internal reference is enabled and available at the REFOUT pin.
      * When this bit is cleared, the internal reference is disabled.
      * @param clk_sel select the clock source for the ADC
+     * @param data_staus include data status byte after each ADC read
      * @return 0 for success or negative error code
      */
-    int setAdcControl (Ad7124::OperatingMode mode, Ad7124::PowerMode power_mode, bool ref_en = true, Ad7124::ClkSel clk_sel = Ad7124::InternalClk);
+    int setAdcControl (Ad7124::OperatingMode mode, Ad7124::PowerMode power_mode, bool ref_en = true, Ad7124::ClkSel clk_sel = Ad7124::InternalClk, bool data_status = false);
 
     /**
      * @brief Control the mode of operation for ADC
@@ -375,7 +376,7 @@ class Ad7124Chip {
      * @brief Returns the last sample
      * @return sample or negative error code
      */
-    long getData();
+    long getData(uint32_t &data, uint8_t &ch);
 
     /**
      * @brief Returns the last sampling channel
@@ -437,6 +438,12 @@ class Ad7124Chip {
      * @return 0, negative for error.
      */
     int setRegister (Ad7124::RegisterId id, long value);
+
+    /**
+     * @brief Waits for RDY signal, then read ADC data.
+     * @return 0, negative for error.
+     */
+    int waitThenReadData();
 
 #ifndef __DOXYGEN__
   protected:

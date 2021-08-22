@@ -15,6 +15,8 @@
  */
 /* ========================================================================== */
 #include "ad7124.h"
+#include "main.hpp"
+#include "wiring_private.h"
 
 using namespace Ad7124;
 
@@ -233,7 +235,7 @@ Ad7124Chip::setBiasPins (uint16_t pinMask) {
 int
 Ad7124Chip::setAdcControl (OperatingMode mode,
                            PowerMode power_mode,
-                           bool ref_en, ClkSel clk_sel) {
+                           bool ref_en, ClkSel clk_sel, bool data_status) {
   Ad7124Register * r;
 
   r = &reg[ADC_Control];
@@ -241,7 +243,8 @@ Ad7124Chip::setAdcControl (OperatingMode mode,
              AD7124_ADC_CTRL_REG_POWER_MODE (power_mode) |
              AD7124_ADC_CTRL_REG_CLK_SEL (clk_sel) |
              (ref_en ? AD7124_ADC_CTRL_REG_REF_EN : 0) |
-             AD7124_ADC_CTRL_REG_DOUT_RDY_DEL;
+             AD7124_ADC_CTRL_REG_DOUT_RDY_DEL |
+             (data_status ? AD7124_ADC_CTRL_REG_DATA_STATUS : 0);
 
   return writeRegister (ADC_Control);
 }
@@ -266,15 +269,13 @@ Ad7124Chip::waitEndOfConversion (uint32_t timeout_ms) {
 
 // -----------------------------------------------------------------------------
 long
-Ad7124Chip::getData() {
-  int32_t value;
+Ad7124Chip::getData(uint32_t &data, uint8_t &ch) {
   int ret;
 
-  ret = d.readData (&value);
+  ret = d.readData (data,ch);
   if (ret < 0) {
     return ret;
   }
-  return (long) value;
 }
 
 // -----------------------------------------------------------------------------
@@ -315,7 +316,7 @@ Ad7124Chip::read (uint8_t ch) {
   if (ret < 0) {
     return ret;
   }
-  return getData();
+  //return getData();
 }
 
 // -----------------------------------------------------------------------------
@@ -411,6 +412,16 @@ Ad7124Chip::toVoltage (long value, int gain, double vref, bool bipolar) {
 
   voltage = voltage * vref / (double) gain;
   return voltage;
+}
+
+int Ad7124Chip::waitThenReadData(){
+  //sys.adc_spi._uc_pinMiso //need getter for this
+  uint32_t rdyPin = 5; //TODO
+  //pinPeripheral(rdyPin, g_APinDescription[rdyPin].ulPinType);
+  while(digitalRead(rdyPin) == HIGH);
+  return 0;
+  //done!
+
 }
 
 // -----------------------------------------------------------------------------

@@ -81,7 +81,7 @@ public:
     /**
      * @brief Reads the conversion result from the device
      */
-    int readData (int32_t* pData);
+    int readData (uint32_t &pData, uint8_t &channel);
 
     /**
      * @brief Reads the value of the specified register

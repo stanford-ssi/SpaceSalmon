@@ -364,16 +364,72 @@ Ad7124Private::waitForConvReady (uint32_t timeout) {
 * @return Returns 0 for success or negative error code.
 *******************************************************************************/
 int
-Ad7124Private::readData (int32_t* pData) {
-  int ret;
+Ad7124Private::readData (uint32_t& pData, uint8_t& channel) {
 
   /* Read the value of the Data Register */
-  ret = readRegister (&reg[Data]);
+  //ret = readRegister (&reg[Data]);
+  //ret = noCheckReadRegister (&reg[Data]);
+
+  Ad7124Register * pReg = &reg[Data];
+
+  int ret       = 0;
+  uint8_t buffer[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+  uint8_t i         = 0;
+  uint8_t check8    = 0;
+  uint8_t msgBuf[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+
+  if (!pReg) {
+
+    return AD7124_INVALID_VAL;
+  }
+
+  /* Build the Command word */
+  buffer[0] = AD7124_COMM_REG_WEN | AD7124_COMM_REG_RD |
+              AD7124_COMM_REG_RA (pReg->addr);
+
+  /* Read data from the device */
+  ret = drv.read (buffer,
+                  ( (useCRC != AD7124_DISABLE_CRC) ? pReg->size + 1
+                    : pReg->size) + 2);
+  if (ret < 0) {
+    return ret;
+  }
+
+  /* Check the CRC */
+  if (useCRC == AD7124_USE_CRC) {
+
+    msgBuf[0] = AD7124_COMM_REG_WEN | AD7124_COMM_REG_RD |
+                AD7124_COMM_REG_RA (pReg->addr);
+    for (i = 1; i < pReg->size + 2 + 1; ++i) {
+
+      msgBuf[i] = buffer[i];
+    }
+    check8 = computeCRC8 (msgBuf, pReg->size + 2 + 1);
+  }
+
+  if (check8 != 0) {
+    /* readRegister checksum failed. */
+    return AD7124_COMM_ERR;
+  }
+
+  /* Build the result */
+  pReg->value = 0;
+  for (i = 1; i < pReg->size + 1; i++) {
+
+    pReg->value <<= 8;
+    pReg->value += buffer[i];
+  }
 
   /* Get the read result */
-  *pData = reg[Data].value;
+  pData = reg[Data].value;
 
-  return ret;
+  channel = buffer[4] & 0x0F; //Just the ID bits
+
+  return ret < 0 ? ret : 0;
+
+
+
+
 }
 
 /***************************************************************************//**
@@ -425,7 +481,7 @@ Ad7124Private::init (int slave_select, Ad7124Register * regs) {
   reg = regs;
 
   /* Initialize the SPI communication. */
-  ret = drv.init (slave_select, false, 1000000, 1, 0);
+  ret = drv.init (slave_select, false, 5000000, 1, 0);
   if (ret == false) {
     return AD7124_SPI_ERR;
   }
