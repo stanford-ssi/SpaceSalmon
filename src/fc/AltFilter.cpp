@@ -85,7 +85,7 @@ void AltFilter::prefilter(SensorData& data){
 
   Z(0) = p2alt(pres);  //LOL gotta convert to meters oops
   Z(1) = (data.adxl1_data.y * -1.0) - 9.807; //NEGATIVE! If the accelerometers read -9.8 when the rocket is vertical,
-  //then you should have a -1.0 term here, so that at rest the filter sees normal force accleration upwards (positive).
+  //then you should have a -1.0 term here, so that at rest the filter sees normal force acceleration upwards (positive).
 }
 
 float AltFilter::p2alt(float p){
