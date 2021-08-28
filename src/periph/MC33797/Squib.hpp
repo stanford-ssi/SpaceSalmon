@@ -29,7 +29,7 @@ class Squib
 
     Ard_ComReturnType Ard_ComSendByte(uint8_t b, uint8_t *c);
 
-    Return_t Init(SPIClass *spi, uint8_t cspin);
+    Return_t Init();
 
     SPIClass *SquibSPI;
     uint8_t SquibCS;

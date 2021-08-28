@@ -5,20 +5,16 @@
   if (spi_ret != ARD_COM_OK)               \
   func_ret = SQB_NOT_OK
 
-#define debug(text) //printf_("%s\n",text) //do nothing
+#define debug(text)    //printf_("%s\n",text) //do nothing
 #define debug_hex(num) //printf_("0x%x\n",num)//do nothing
 //#define delay(ms) delay_ms(ms)
 #define delay_us(ms) delayMicroseconds(ms)
 
-
-Squib::Squib(SPIClass *spi, int8_t cspin)
-{
-    Init(spi, cspin);
-}
+Squib::Squib(SPIClass *spi, int8_t cspin) : SquibSPI(spi), SquibCS(cspin) {}
 
 Squib_ReturnType Squib::getStatus()
 {
-    return GetStatus(&status);
+  return GetStatus(&status);
 }
 
 Squib_ReturnType Squib::SingleCmd(void)
@@ -40,9 +36,9 @@ Squib_ReturnType Squib::SingleCmd(void)
 Ard_ComReturnType Squib::Ard_ComSendByte(uint8_t b, uint8_t *c)
 {
 
-  digitalWrite(SquibCS,LOW);
+  digitalWrite(SquibCS, LOW);
   *c = SquibSPI->transfer(b);
-  digitalWrite(SquibCS,HIGH);
+  digitalWrite(SquibCS, HIGH);
 
   delay_us(100);
 
@@ -83,47 +79,46 @@ Squib_ReturnType Squib::ProgramCmd(Squib_ProgCmdType Command, uint8_t Data, uint
   }
   else
   {
-      if ((Command != SQB_CMD_NOP) && (Command != SQB_1A_CURR_REG_RESET) && (Command != SQB_1B_CURR_REG_RESET) && (Command != SQB_2A_CURR_REG_RESET) && (Command != SQB_2B_CURR_REG_RESET) &&
-          (Command != SQB_UNLOCK_FEN1_COUNTER_REG) && (Command != SQB_UNLOCK_FEN2_COUNTER_REG) && (Command != SQB_UNLOCK_TO_TEST_HIGH_SQUIBS) &&
-          (Command != SQB_1A_HS_TRANSISTOR_TEST) && (Command != SQB_1B_HS_TRANSISTOR_TEST) && (Command != SQB_2A_HS_TRANSISTOR_TEST) && (Command != SQB_2B_HS_TRANSISTOR_TEST) &&
-          (Command != SQB_UNLOCK_TO_TEST_LOW_SQUIBS) && (Command != SQB_1A_LS_TRANSISTOR_TEST) && (Command != SQB_1B_LS_TRANSISTOR_TEST) && (Command != SQB_2A_LS_TRANSISTOR_TEST) && (Command != SQB_2B_LS_TRANSISTOR_TEST) &&
-          (Command != SQB_RFU_NVM_LOW) && (Command != SQB_RFU_NVM_HIGH) && (Command != SQB_RFU_NVM_ENAB) && (Command != SQB_RFU_TEST_MODE) && (Command != SQB_CMD_SHORT_STAT) && (Command != SQB_CMD_SPI_CHECK) &&
-          (Command != SQB_CMD_1A_CURR_TIME) && (Command != SQB_CMD_1B_CURR_TIME) && (Command != SQB_CMD_2A_CURR_TIME) && (Command != SQB_CMD_2B_CURR_TIME) && (Command != SQB_CMD_CURR_LIMIT_STAT) && (Command != SQB_CMD_THERM_STAT) &&
-          (Command != SQB_CMD_VDIAG_AND_HS_SAFING_STAT) && (Command != SQB_CMD_LS_CONTINUITY_STAT) && (Command != SQB_CMD_SHORT_GND_BAT_STAT) && (Command != SQB_CMD_VFIRE_1B_2B_STAT) && (Command != SQB_CMD_VDIAG) && (Command != SQB_CMD_FEN_RES_STAT) &&
-          (Command != SQB_CMD_VFIRE_RTN_STAT) && (Command != SQB_CMD_RES_1A_STAT) && (Command != SQB_CMD_RES_1B_STAT) && (Command != SQB_CMD_RES_2A_STAT) && (Command != SQB_CMD_RES_2B_STAT) && (Command != SQB_CMD_SHORTS_1A_STAT) &&
-          (Command != SQB_CMD_SHORTS_1B_STAT) && (Command != SQB_CMD_SHORTS_2A_STAT) && (Command != SQB_CMD_SHORTS_2B_STAT) && (Command != SQB_CMD_SHORT_LOOPS))
-      {
-        ret_val = SQB_NOT_OK;
-      }
-      else
-      {
+    if ((Command != SQB_CMD_NOP) && (Command != SQB_1A_CURR_REG_RESET) && (Command != SQB_1B_CURR_REG_RESET) && (Command != SQB_2A_CURR_REG_RESET) && (Command != SQB_2B_CURR_REG_RESET) &&
+        (Command != SQB_UNLOCK_FEN1_COUNTER_REG) && (Command != SQB_UNLOCK_FEN2_COUNTER_REG) && (Command != SQB_UNLOCK_TO_TEST_HIGH_SQUIBS) &&
+        (Command != SQB_1A_HS_TRANSISTOR_TEST) && (Command != SQB_1B_HS_TRANSISTOR_TEST) && (Command != SQB_2A_HS_TRANSISTOR_TEST) && (Command != SQB_2B_HS_TRANSISTOR_TEST) &&
+        (Command != SQB_UNLOCK_TO_TEST_LOW_SQUIBS) && (Command != SQB_1A_LS_TRANSISTOR_TEST) && (Command != SQB_1B_LS_TRANSISTOR_TEST) && (Command != SQB_2A_LS_TRANSISTOR_TEST) && (Command != SQB_2B_LS_TRANSISTOR_TEST) &&
+        (Command != SQB_RFU_NVM_LOW) && (Command != SQB_RFU_NVM_HIGH) && (Command != SQB_RFU_NVM_ENAB) && (Command != SQB_RFU_TEST_MODE) && (Command != SQB_CMD_SHORT_STAT) && (Command != SQB_CMD_SPI_CHECK) &&
+        (Command != SQB_CMD_1A_CURR_TIME) && (Command != SQB_CMD_1B_CURR_TIME) && (Command != SQB_CMD_2A_CURR_TIME) && (Command != SQB_CMD_2B_CURR_TIME) && (Command != SQB_CMD_CURR_LIMIT_STAT) && (Command != SQB_CMD_THERM_STAT) &&
+        (Command != SQB_CMD_VDIAG_AND_HS_SAFING_STAT) && (Command != SQB_CMD_LS_CONTINUITY_STAT) && (Command != SQB_CMD_SHORT_GND_BAT_STAT) && (Command != SQB_CMD_VFIRE_1B_2B_STAT) && (Command != SQB_CMD_VDIAG) && (Command != SQB_CMD_FEN_RES_STAT) &&
+        (Command != SQB_CMD_VFIRE_RTN_STAT) && (Command != SQB_CMD_RES_1A_STAT) && (Command != SQB_CMD_RES_1B_STAT) && (Command != SQB_CMD_RES_2A_STAT) && (Command != SQB_CMD_RES_2B_STAT) && (Command != SQB_CMD_SHORTS_1A_STAT) &&
+        (Command != SQB_CMD_SHORTS_1B_STAT) && (Command != SQB_CMD_SHORTS_2A_STAT) && (Command != SQB_CMD_SHORTS_2B_STAT) && (Command != SQB_CMD_SHORT_LOOPS))
+    {
+      ret_val = SQB_NOT_OK;
+    }
+    else
+    {
 
-        /* Command programing */
-        ret_com = Ard_ComSendByte((uint8_t)Command, &SquibCmdResp); /* send programming command "Command" */
-        SQUIB_SPI_ERROR(ret_com, ret_val);                          /* if SPI communication error? */
-        *SpiResponse = SquibCmdResp;                                /* response to SPI command */
-        /* If FEN UNLOCK command is sent to Squib driver - counter delay time data followed */
-        if ((Command == SQB_UNLOCK_FEN1_COUNTER_REG) || (Command == SQB_UNLOCK_FEN2_COUNTER_REG))
+      /* Command programing */
+      ret_com = Ard_ComSendByte((uint8_t)Command, &SquibCmdResp); /* send programming command "Command" */
+      SQUIB_SPI_ERROR(ret_com, ret_val);                          /* if SPI communication error? */
+      *SpiResponse = SquibCmdResp;                                /* response to SPI command */
+      /* If FEN UNLOCK command is sent to Squib driver - counter delay time data followed */
+      if ((Command == SQB_UNLOCK_FEN1_COUNTER_REG) || (Command == SQB_UNLOCK_FEN2_COUNTER_REG))
+      {
+        switch (Command)
         {
-          switch (Command)
-          {
-          case SQB_UNLOCK_FEN1_COUNTER_REG:
-            ret_com = Ard_ComSendByte(Data, &SquibCmdResp); /* send the programming information "SQUIB_FEN1_COUNTER" to set the required counter delay time (0 - 255 ms) */
-            break;
-          case SQB_UNLOCK_FEN2_COUNTER_REG:
-            ret_com = Ard_ComSendByte(Data, &SquibCmdResp); /* send the programming information "SQUIB_FEN2_COUNTER" to set the required counter delay time (0 - 255 ms) */
-            break;
-          default:
-            break;
-          }
-          SQUIB_SPI_ERROR(ret_com, ret_val); /* if SPI communication error? */
-          /* NOP command - Command 0x00 */
-          ret_com = Ard_ComSendByte(SQB_CMD_NOP, &SquibCmdResp); /* read last response from the SQUIB driver in this Init function */
-          SQUIB_SPI_ERROR(ret_com, ret_val);                     /* if SPI communication error? */
-          *SpiResponse = SquibCmdResp;                           /* response to SPI command */
+        case SQB_UNLOCK_FEN1_COUNTER_REG:
+          ret_com = Ard_ComSendByte(Data, &SquibCmdResp); /* send the programming information "SQUIB_FEN1_COUNTER" to set the required counter delay time (0 - 255 ms) */
+          break;
+        case SQB_UNLOCK_FEN2_COUNTER_REG:
+          ret_com = Ard_ComSendByte(Data, &SquibCmdResp); /* send the programming information "SQUIB_FEN2_COUNTER" to set the required counter delay time (0 - 255 ms) */
+          break;
+        default:
+          break;
         }
+        SQUIB_SPI_ERROR(ret_com, ret_val); /* if SPI communication error? */
+        /* NOP command - Command 0x00 */
+        ret_com = Ard_ComSendByte(SQB_CMD_NOP, &SquibCmdResp); /* read last response from the SQUIB driver in this Init function */
+        SQUIB_SPI_ERROR(ret_com, ret_val);                     /* if SPI communication error? */
+        *SpiResponse = SquibCmdResp;                           /* response to SPI command */
       }
-    
+    }
   }
   if (Delay == true)
     delay(SQB_MEASUREMENT_DELAY); /* measurement waiting */
@@ -150,11 +145,8 @@ Squib_ReturnType Squib::ProgramCmd(Squib_ProgCmdType Command, uint8_t Data, uint
 *
 *******************************************************************************/
 
-Squib_ReturnType Squib::Init(SPIClass *spi, uint8_t cspin)
+Squib_ReturnType Squib::Init()
 {
-  SquibSPI = spi;
-  SquibCS = cspin;
-
   Squib_ReturnType ret_val;
   Ard_ComReturnType ret_com;
   Squib_DeviceChannelType Device = SQB_FOUR_CHANNEL_DEVICE;
@@ -167,7 +159,6 @@ Squib_ReturnType Squib::Init(SPIClass *spi, uint8_t cspin)
   {
     debug("Already Initalized");
     ret_val = SQB_NOT_OK;
-    
   }
   else
   {
@@ -182,7 +173,7 @@ Squib_ReturnType Squib::Init(SPIClass *spi, uint8_t cspin)
     { /* if the SPI integrity check response is correct */
       /* NOP command - Command 0x00 */
       debug("Good SPI Response");
-      ret_com = Ard_ComSendByte(SQB_CMD_NOP, &SquibCmdResp);                   /* read last response from the SQUIB driver in this Init function */
+      ret_com = Ard_ComSendByte(SQB_CMD_NOP, &SquibCmdResp); /* read last response from the SQUIB driver in this Init function */
       debug_hex(SquibCmdResp);
       SQUIB_SPI_ERROR(ret_com, ret_val);                                       /* if SPI communication error? */
       SQUIB_GET_BOOL_STATUS(SquibCmdResp, 7, Device, Squib_DeviceChannelType); /* bit 7 - response to the previous command 0xC8 */
@@ -488,26 +479,26 @@ Squib_ReturnType Squib::GetStatus(Squib_StatusType *Status)
       Status->Squib_Stat2BResistance = SquibCmdResp;                    /* whole byte - response to the previous command 0xD3 */
 
       /* Shorts between Squib loops, Squib 1B - command 0xE1 */
-      ret_com = Ard_ComSendByte(SQB_CMD_SHORTS_1B_STAT, &SquibCmdResp); /* SPI command - shorts between Squib loops, Squib 1B */
-      delay(SQB_MEASUREMENT_DELAY);                                     /* measurement waiting */
-      SQUIB_SPI_ERROR(ret_com, ret_val);                                /* if SPI communication error? */
+      ret_com = Ard_ComSendByte(SQB_CMD_SHORTS_1B_STAT, &SquibCmdResp);                         /* SPI command - shorts between Squib loops, Squib 1B */
+      delay(SQB_MEASUREMENT_DELAY);                                                             /* measurement waiting */
+      SQUIB_SPI_ERROR(ret_com, ret_val);                                                        /* if SPI communication error? */
       Status->Squib_Stat1ALoopsShorts = static_cast<Squib_Stat1ALoopsShortsType>(SquibCmdResp); /* whole byte - response to the previous command 0xE0 */
 
       /* Shorts between Squib loops, Squib 2A - command 0xE2 */
-      ret_com = Ard_ComSendByte(SQB_CMD_SHORTS_2A_STAT, &SquibCmdResp); /* SPI command - shorts between Squib loops, Squib 2A */
-      delay(SQB_MEASUREMENT_DELAY);                                     /* measurement waiting */
-      SQUIB_SPI_ERROR(ret_com, ret_val);                                /* if SPI communication error? */
+      ret_com = Ard_ComSendByte(SQB_CMD_SHORTS_2A_STAT, &SquibCmdResp);                         /* SPI command - shorts between Squib loops, Squib 2A */
+      delay(SQB_MEASUREMENT_DELAY);                                                             /* measurement waiting */
+      SQUIB_SPI_ERROR(ret_com, ret_val);                                                        /* if SPI communication error? */
       Status->Squib_Stat1BLoopsShorts = static_cast<Squib_Stat1BLoopsShortsType>(SquibCmdResp); /* whole byte - response to the previous command 0xE1 */
 
       /* Shorts between Squib loops, Squib 2B - command 0xE3 */
-      ret_com = Ard_ComSendByte(SQB_CMD_SHORTS_2B_STAT, &SquibCmdResp); /* SPI command - shorts between Squib loops, Squib 2B */
-      delay(SQB_MEASUREMENT_DELAY);                                     /* measurement waiting */
-      SQUIB_SPI_ERROR(ret_com, ret_val);                                /* if SPI communication error? */
+      ret_com = Ard_ComSendByte(SQB_CMD_SHORTS_2B_STAT, &SquibCmdResp);                         /* SPI command - shorts between Squib loops, Squib 2B */
+      delay(SQB_MEASUREMENT_DELAY);                                                             /* measurement waiting */
+      SQUIB_SPI_ERROR(ret_com, ret_val);                                                        /* if SPI communication error? */
       Status->Squib_Stat2ALoopsShorts = static_cast<Squib_Stat2ALoopsShortsType>(SquibCmdResp); /* whole byte - response to the previous command 0xE2 */
 
       /* NOP command - command 0x00 */
-      ret_com = Ard_ComSendByte(SQB_CMD_NOP, &SquibCmdResp); /* read last response from the SQUIB driver and stop diagnostics */
-      SQUIB_SPI_ERROR(ret_com, ret_val);                     /* if SPI communication error? */
+      ret_com = Ard_ComSendByte(SQB_CMD_NOP, &SquibCmdResp);                                    /* read last response from the SQUIB driver and stop diagnostics */
+      SQUIB_SPI_ERROR(ret_com, ret_val);                                                        /* if SPI communication error? */
       Status->Squib_Stat2BLoopsShorts = static_cast<Squib_Stat2BLoopsShortsType>(SquibCmdResp); /* whole byte - response to the previous command 0xE3 */
 
       /* Shorts between Squib loops for additional ICs - command 0xE8 */
