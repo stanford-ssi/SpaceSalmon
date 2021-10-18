@@ -5,12 +5,12 @@
   if (spi_ret != ARD_COM_OK)               \
   func_ret = SQB_NOT_OK
 
-#define debug(text)    //printf_("%s\n",text) //do nothing
-#define debug_hex(num) //printf_("0x%x\n",num)//do nothing
+#define debug(text)    Serial.println(text) //printf_("%s\n",text) //do nothing
+#define debug_hex(num) Serial.println(num) //printf_("0x%x\n",num)//do nothing
 //#define delay(ms) delay_ms(ms)
 #define delay_us(ms) delayMicroseconds(ms)
 
-Squib::Squib(SPIClass *spi, int8_t cspin) : SquibSPI(spi), SquibCS(cspin) {}
+Squib::Squib(SPIClass &spi, int8_t cspin) : SquibSPI(spi), SquibCS(cspin) {}
 
 Squib_ReturnType Squib::getStatus()
 {
@@ -37,7 +37,7 @@ Ard_ComReturnType Squib::Ard_ComSendByte(uint8_t b, uint8_t *c)
 {
 
   digitalWrite(SquibCS, LOW);
-  *c = SquibSPI->transfer(b);
+  *c = SquibSPI.transfer(b);
   digitalWrite(SquibCS, HIGH);
 
   delay_us(100);
@@ -150,6 +150,9 @@ Squib_ReturnType Squib::Init()
   Squib_ReturnType ret_val;
   Ard_ComReturnType ret_com;
   Squib_DeviceChannelType Device = SQB_FOUR_CHANNEL_DEVICE;
+
+  SquibSPI.begin();
+  pinMode(SquibCS,OUTPUT);
 
   ret_val = SQB_OK;
   //printf_("ret_val: %d",ret_val);

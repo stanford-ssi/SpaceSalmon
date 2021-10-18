@@ -8,10 +8,10 @@
 
 #include "Task.hpp"
 
-class LEDTask : public Task<2000>
+class ADCTask : public Task<2000>
 {
 public:
-    LEDTask(uint8_t priority);
+    ADCTask(uint8_t priority);
 
 private:
     void activity();

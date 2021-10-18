@@ -13,7 +13,7 @@ class Squib
     typedef Squib_StatusType Status_t;
     typedef Squib_ProgCmdType ProgCmd_t;
     //contructor, provide SPI interface and cspin
-    Squib(SPIClass *spi, int8_t cspin);
+    Squib(SPIClass &spi, int8_t cspin);
     //fire some squibs!
     Return_t fire(Fire_t fire);
     //read the status
@@ -31,7 +31,7 @@ class Squib
 
     Return_t Init();
 
-    SPIClass *SquibSPI;
+    SPIClass &SquibSPI;
     uint8_t SquibCS;
     uint8_t SquibCmdResp;
     DriverMode_t SquibDriverStatus = SQB_UNINIT; /* status of the SQUIB1 driver - default value is uninitialized */
