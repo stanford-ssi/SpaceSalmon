@@ -8,6 +8,13 @@
 
 #include "Task.hpp"
 
+typedef enum
+{
+    PRESSURE_CFG,
+    LOAD_CFG,
+    THERMAL_CFG
+} sensorcfg_t; // sensor config types
+
 class ADCTask : public Task<2000>
 {
 public:
