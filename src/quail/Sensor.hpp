@@ -13,7 +13,7 @@ public:
     Sensor(uint8_t channel, std::string ch_name, Ad7124::InputSel ainp, Ad7124::InputSel ainm)
     : channel(channel), ch_name(ch_name), ainp(ainp), ainm(ainm){}; 
 
-    float convertToFloat(uint32_t adc_dataword){return 0.0;}; //over-written by inheritors, returns SI unit value of reading from ADC bin count
+    virtual float convertToFloat(uint32_t adc_dataword); //over-written by inheritors, returns SI unit value of reading from ADC bin count
     void initialize(); 
 
     const uint8_t channel; // ADC channel ID

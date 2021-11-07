@@ -31,7 +31,7 @@ public:
     public:
         ADCTask adctask = ADCTask(2); //reads from ADC
         //FireTask firetask = FireTask(3); //fires MC33797
-        StateTask statetask = StateTask(1); //collects & logs state information
+        //StateTask statetask = StateTask(1); //collects & logs state information
         //TelemTask telemtask = TelemTask(3); // passes state data to output (TX)
         //USBTask usbtask = USBTask(4); //collects and sends information over USB
         //RadioTask radiotask = RadioTask(4); //collects and sends information over radio

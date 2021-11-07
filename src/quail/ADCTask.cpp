@@ -31,12 +31,20 @@ void ADCTask::activity()
     // Set adc timeout
     sys.adc.setTimeout(1);
 
+    bool led = HIGH;
     while(true)
     {
+        vTaskDelay(1000);
+        led = !led;
+        digitalWrite(1, led);
         // TODO: Make this non-blocking.
         sys.adc.waitThenReadData();
         adcdata_t adc_data;
         sys.adc.getData(adc_data.dataword, adc_data.channel);
+        Serial.println("Data Channel");
+        Serial.println(adc_data.channel);
+        Serial.println(adc_data.dataword);
+
         sys.tasks.sensortask.addADCData(adc_data);
     }
 
