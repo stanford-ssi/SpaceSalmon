@@ -11,10 +11,9 @@
 #include "Task.hpp"
 
 struct
-{   // struct type that includes:
-    // sensor type (PT, LC, TC) 
+{  
     float value = 0.0;
-    std::string ch_name = "PT1";
+    char* ch_id;
 } typedef sensordata_t;
 
 class StateTask : public Task<1000>

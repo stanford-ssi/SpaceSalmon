@@ -10,7 +10,7 @@ public:
         RANGE_1000,
         RANGE_2000
     } PressureRange;
-    PressureSensor(uint8_t channel, std::string ch_name, Ad7124::InputSel ainp, PressureRange range):
+    PressureSensor(uint8_t channel, const char* ch_name, Ad7124::InputSel ainp, PressureRange range):
         Sensor(channel,ch_name,ainp,Ad7124::AVSSInput)
     {
         this->range = range;

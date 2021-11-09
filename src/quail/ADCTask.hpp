@@ -20,7 +20,6 @@ class ADCTask : public Task<2000>
 public:
     ADCTask(uint8_t priority);
 
-private:
     void activity();
 };
 

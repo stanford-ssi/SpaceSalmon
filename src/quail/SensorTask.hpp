@@ -23,9 +23,9 @@ public:
     SensorTask(uint8_t priority);
     static void initialize(); // set up all sensor adc channels based on static sensors array
     void addADCData(adcdata_t adcdata); // adds an adc packet to the msgbuf to be processed and sent to state
+    void activity();
     
 private:
-    void activity();
     MsgBuffer<adcdata_t, 1000>  adcbuf; //buffer for adc data
     static Sensor* sensors[NUM_SENSORS];
 };
