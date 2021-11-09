@@ -7,10 +7,10 @@ void PressureSensor::configure() {
     sys.adc.setConfigFilter(cfg, Ad7124::Sinc3Filter, 1);
 }
 
-PressureSensor::PressureSensor(std::string ch_name, Ad7124::InputSel ainp) : Sensor(ch_name, ainp, Ad7124::AVSSInput) {
-    sys.adc.setChannel(channel, cfg, ainp, Ad7124::AVSSInput, true);
-    sys.adc.enableChannel(channel, true);
-};
+PressureSensor::PressureSensor(char* ch_name, Ad7124::InputSel ainp) : Sensor(ch_name, ainp, Ad7124::AVSSInput) {  
+    sys.adc.setChannel(ch_id, cfg, ainp, Ad7124::AVSSInput, true);
+    sys.adc.enableChannel(ch_id, true); 
+}
 
 float PressureSensor::convertToFloat(uint32_t adc_dataword)
 {
@@ -19,4 +19,4 @@ float PressureSensor::convertToFloat(uint32_t adc_dataword)
     //TODO: make this calculation variable based on range, set by this->range
     float pressure = (voltage - 0.5) / 4.0 * 1000;
     return pressure;
-};
+}

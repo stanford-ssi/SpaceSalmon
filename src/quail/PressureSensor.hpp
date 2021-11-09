@@ -6,7 +6,7 @@
 
 class PressureSensor: public Sensor{
     public:
-        PressureSensor(std::string ch_name, Ad7124::InputSel ainp);
+        PressureSensor(char* ch_name, Ad7124::InputSel ainp);
 
         float convertToFloat(uint32_t adc_dataword);
         static void configure();
