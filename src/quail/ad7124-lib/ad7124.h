@@ -196,6 +196,14 @@ class Ad7124Chip {
 
   public:
     /**
+     * @brief Constructor for AD7124Chip
+     * @param IRQ_PIN The Interrupt Request PIN to be used for data-ready interrupt
+     * @param SS_PIN The Slave Chip Select Id to be passed to the SPI begin() call
+     * @param spi The SPIClass object associated with this ADC chip
+     */
+    Ad7124Chip(uint8_t IRQ_PIN, uint8_t SS_PIN, SPIClass spi);
+
+    /**
      * @brief Initializes the AD7124
      * @param slave_select The Slave Chip Select Id to be passed to the SPI calls
      * @return 0 for success or negative error code
@@ -451,6 +459,9 @@ class Ad7124Chip {
     int writeRegister (Ad7124::RegisterId id);
 
   private:
+    SPIClass adc_spi;
+    uint8_t IRQ;
+    uint8_t SS;
     Ad7124Private d;
     Ad7124Register reg[Ad7124::Reg_No];
 #endif
