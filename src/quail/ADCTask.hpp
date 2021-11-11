@@ -4,9 +4,12 @@
 #include <task.h>
 #include <message_buffer.h>
 #include <semphr.h>
+#include "event_groups.h"
 #include <hal_rtos.h>
 
 #include "Task.hpp"
+
+#define ADC_READY 0b1
 
 typedef enum
 {
@@ -21,6 +24,11 @@ public:
     ADCTask(uint8_t priority);
 
     void activity();
+
+private:
+    static void adcISR();
+    StaticEventGroup_t evbuf;
+    EventGroupHandle_t evgroup;
 };
 
 #include "main.hpp"

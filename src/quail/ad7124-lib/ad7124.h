@@ -453,6 +453,17 @@ class Ad7124Chip {
     int waitThenReadData();
 
     /**
+     * @brief Attaches IRQ to trigger the desired function.
+     * @param func void function to be called on IRQ.
+     */
+    static void setIRQAction(void (*func)(void));
+
+    /**
+     * @brief Detaches the IRQ from any function call.
+     */
+    static void clearIRQAction();
+
+    /**
      * @brief adc_spi class associated with the Ad7124 chip instance. For speed, declared 
      * statically and assumed that only one Ad7124 instance exists at a time.
      */
@@ -464,8 +475,8 @@ class Ad7124Chip {
     int writeRegister (Ad7124::RegisterId id);
 
   private:
-    uint8_t IRQ;
-    uint8_t SS;
+    static uint8_t IRQ;
+    static uint8_t SS;
     Ad7124Private d;
     Ad7124Register reg[Ad7124::Reg_No];
 #endif

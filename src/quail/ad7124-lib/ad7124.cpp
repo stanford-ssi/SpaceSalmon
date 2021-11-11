@@ -27,8 +27,8 @@ using namespace Ad7124;
 // -----------------------------------------------------------------------------
 
 Ad7124Chip::Ad7124Chip(uint8_t IRQ_PIN, uint8_t SS_PIN, SPIClass* spi) {
-  this->IRQ = IRQ_PIN;
-  this->SS = SS_PIN;
+  IRQ = IRQ_PIN;
+  SS = SS_PIN;
   adc_spi = spi;
 };
 
@@ -39,7 +39,7 @@ Ad7124Chip::begin () {
   int ret;
 
   Ad7124Register::fillAllRegsWithDefault (reg);
-  ret = d.init (this->SS, reg);
+  ret = d.init (SS, reg);
   if (ret < 0) {
     return ret;
   }
@@ -429,6 +429,14 @@ int Ad7124Chip::waitThenReadData(){
   return 0;
   //done!
 
+}
+
+void Ad7124Chip::setIRQAction(void (*func)(void)) {
+  attachInterrupt(IRQ, func, FALLING);
+}
+
+void Ad7124Chip::clearIRQAction() {
+  detachInterrupt(IRQ);
 }
 
 // -----------------------------------------------------------------------------

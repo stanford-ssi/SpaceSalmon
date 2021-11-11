@@ -1,14 +1,21 @@
 #include "ADCTask.hpp"
 
-ADCTask::ADCTask(uint8_t priority) : Task(priority, "LED"){};
+ADCTask::ADCTask(uint8_t priority) : Task(priority, "LED"){
+    evgroup = xEventGroupCreateStatic(&evbuf);
+};
+
+
+void ADCTask::adcISR(void)
+{
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    xEventGroupSetBitsFromISR(sys.tasks.adctask.evgroup, ADC_READY, &xHigherPriorityTaskWoken);
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+}
 
 void ADCTask::activity()
 {
-    vTaskDelay(6000);
-    Serial.println("Starting Now!");
-
     // Set up adc overall
-    sys.adc.begin(8);
+    sys.adc.begin();
     sys.adc.setAdcControl(Ad7124::ContinuousMode, Ad7124::FullPower, true, Ad7124::InternalClk, true);
     sys.adc.setMode(Ad7124::ContinuousMode);
 
@@ -31,20 +38,23 @@ void ADCTask::activity()
     // Set adc timeout
     sys.adc.setTimeout(1);
 
-    bool led = HIGH;
+    
+    // attach interrupt to trigger isr function
+    sys.adc.setIRQAction(adcISR);
     while(true)
     {
-        vTaskDelay(1000);
-        led = !led;
-        digitalWrite(1, led);
-        // TODO: Make this non-blocking.
-        sys.adc.waitThenReadData();
+        // wait for ADC ready
+        uint32_t flags = xEventGroupWaitBits(evgroup, ADC_READY, true, false, NEVER);
+        // turn off interrupt to read data
+        sys.adc.clearIRQAction();
+        // read data
         adcdata_t adc_data;
         sys.adc.getData(adc_data.dataword, adc_data.channel);
+        sys.adc.setIRQAction(adcISR);
+        // do thing with data
         Serial.println("Data Channel");
         Serial.println(adc_data.channel);
         Serial.println(adc_data.dataword);
-
-        sys.tasks.sensortask.addADCData(adc_data);
+        //sys.tasks.sensortask.addADCData(adc_data);
     }
 }
