@@ -26,13 +26,20 @@ using namespace Ad7124;
 //
 // -----------------------------------------------------------------------------
 
+Ad7124Chip::Ad7124Chip(uint8_t IRQ_PIN, uint8_t SS_PIN, SPIClass* spi) {
+  this->IRQ = IRQ_PIN;
+  this->SS = SS_PIN;
+  adc_spi = spi;
+};
+
+
 // -----------------------------------------------------------------------------
 int
-Ad7124Chip::begin (int slave_select) {
+Ad7124Chip::begin () {
   int ret;
 
   Ad7124Register::fillAllRegsWithDefault (reg);
-  ret = d.init (slave_select, reg);
+  ret = d.init (this->SS, reg);
   if (ret < 0) {
     return ret;
   }

@@ -1,8 +1,4 @@
-#include "PressureSensor.hpp"
-#include "LoadSensor.hpp"
-#include "ThermalSensor.hpp"
 #include "SensorTask.hpp"
-#include "Task.hpp"
 
 SensorTask::SensorTask(uint8_t priority) : Task(priority, "Sensor"){};
 

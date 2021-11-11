@@ -13,7 +13,7 @@
 struct
 {  
     float value = 0.0;
-    char* ch_id;
+    const char* ch_id;
 } typedef sensordata_t;
 
 class StateTask : public Task<1000>
