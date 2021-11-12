@@ -44,6 +44,7 @@ Ad7124Chip::begin () {
     return ret;
   }
 
+  setTimeout(1); // set IO timeout to be 1ms
   return setAdcControl (StandbyMode, LowPower, false);
 }
 

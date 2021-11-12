@@ -11,12 +11,10 @@
 
 #define ADC_READY 0b1
 
-typedef enum
-{
-    PRESSURE_CFG,
-    LOAD_CFG,
-    THERMAL_CFG
-} sensorcfg_t; // sensor config types
+ struct {
+    uint8_t channel = 0;
+    uint32_t dataword = 0;
+} typedef adcdata_t;
 
 class ADCTask : public Task<2000>
 {
