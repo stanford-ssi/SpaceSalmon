@@ -1,27 +1,43 @@
 #include "StateTask.hpp"
 
-StateTask::StateTask(uint8_t priority) : Task(priority, "State"){};
-
 StaticJsonDocument<1024> StateTask::getState()
 {
-    return this->state;
+    // Update statepacket from sensor, solenoid, and ematch statuses
+    for(uint8_t i = 0; i < Sensor::num_sensors; i++)
+        statepacket[(sys.sensors[i])->ch_name] = getSensorState(i);
+    statepacket["SV"] = solenoidstate; // most efficient way to send is just as the raw uint, can decode on groundside
+    statepacket["EM"] = ematchstate; // most efficient way to send is just as the raw uint, can decode on groundside
+    return statepacket;
 };
 
-void StateTask::updateSensorState(sensordata_t sensedata)
+void StateTask::setSensorState(uint8_t ch_id, float ch_val)
 {
-    this->sensorbuf.send(sensedata);
+    sensorstate[ch_id] = ch_val;
 };
 
-void StateTask::activity()
+void StateTask::setSolenoidState(uint8_t sol_ch, bool solenoid_open)
 {
-    while(true)
-    {
-        vTaskDelay(1000); // run through this loop as fast as we can sample and still write to SD
-        sensordata_t sensedata;
-        while(!this->sensorbuf.empty())
-            this->sensorbuf.receive(sensedata, 0); // shouldn't have to wait at all
-        // TODO: add logger and put a log call here, passing an encoded state to logger
-        // TODO: add a multiplicative function that sets the relative rate of telem downlink, pass encoded state to 
-        // telem task on those iterations where mod(iteration, multiplicate factor) = 0
-    }
+    // left shift the bit indicator for status to the correct location and set that bit
+    solenoidstate |= (solenoid_open << sol_ch);
+};
+
+void StateTask::setEmatchState(uint8_t ematch_ch, bool fire_ematch)
+{
+    // left shift the bit indicator for status to the correct location and set that bit
+    ematchstate |= (fire_ematch << ematch_ch);
+};
+
+float StateTask::getSensorState(uint8_t ch_id)
+{
+    return sensorstate[ch_id];
+};
+
+bool StateTask::getSolenoidState(uint8_t sol_ch)
+{
+    return (solenoidstate & (0b1 << sol_ch) ) >> sol_ch;
+};
+
+bool StateTask::getEmatchState(uint8_t ematch_ch)
+{
+    return (ematchstate & (0b1 << ematch_ch) ) >> ematch_ch;
 };

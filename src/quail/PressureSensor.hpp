@@ -1,10 +1,13 @@
 #pragma once
 
+#include "Task.hpp"
 #include "Sensor.hpp"
 
+#define PSI_TO_PA 6894.7572931783
+
 typedef enum {
-    RANGE_1000,
-    RANGE_2000
+    RANGE_1000 = 1000,
+    RANGE_2000 = 2000
 } PressureRange;
 
 class PressureSensor: public Sensor{
@@ -16,7 +19,7 @@ class PressureSensor: public Sensor{
         void configure();
 
     private:
-        PressureRange range; //TODO - make different conversion function based on range
+        const PressureRange range; //TODO - make different conversion function based on range
 
         static uint8_t cfg; // this sensor type's configuration
 };

@@ -7,12 +7,13 @@ class System;
 #include "SPI.h"
 #include "ad7124-lib/ad7124.h"
 
-// #include "StateTask.hpp"
+
 #include "Sensor.hpp"
 #include "PressureSensor.hpp"
 //#include "ThermalSensor.hpp"
 //#include "LoadSensor.hpp"
 #include "ADCTask.hpp"
+#include "StateTask.hpp"
 //#include "TelemTask.hpp"
 //#include "RadioTask.hpp"
 //#include "USBTask.hpp"
@@ -39,9 +40,9 @@ public:
     {
     public:
         ADCTask adctask = ADCTask(2); //reads from ADC
+        StateTask statetask = StateTask(); //holds state information, not actually a task?
         //FireTask firetask = FireTask(3); //fires squibs for ematches
         //SolenoidTask soltask = SolenoidTask(3); //sets solenoid states
-        //StateTask statetask = StateTask(1); //collects & logs state information
         //TelemTask telemtask = TelemTask(3, TELEM_MODE); // passes state data to output (TX) based on mode selection
             //USBTask usbtask = USBTask(4); //collects and sends information over USB
             //RadioTask radiotask = RadioTask(4); //collects and sends information over radio
