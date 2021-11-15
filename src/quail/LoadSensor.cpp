@@ -18,8 +18,8 @@ float LoadSensor::convertToFloat(uint32_t adc_dataword)
 {
     // TODO - make this actually right for load cell conversion!
     double voltage = Ad7124Chip::toVoltage(adc_dataword, 1, 2.5, false);
-    voltage = voltage * 1.5;
+    voltage = voltage / 5.0;
     //TODO: make this calculation variable based on range, set by this->range
-    float load = (voltage - 0.5) / 4.0 * 1000;
+    float load = voltage / 0.030 * 1000.0;
     return load;
 };
