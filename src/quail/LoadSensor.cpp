@@ -2,7 +2,7 @@
 
 uint8_t LoadSensor::cfg = UNCONFIGURED; // initially unconfigured
 
-LoadSensor::LoadSensor(char* ch_name, Ad7124::InputSel ainp, Ad7124::InputSel ainm) : Sensor(ch_name, ainp, ainm) {};
+LoadSensor::LoadSensor(char* ch_name, Ad7124::InputSel ainp) : Sensor(ch_name, ainp, Ad7124::AIN0Input) {};
 
 void LoadSensor::configure() {
     if(cfg == UNCONFIGURED){

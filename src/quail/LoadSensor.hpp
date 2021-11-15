@@ -6,7 +6,7 @@
 
 class LoadSensor: public Sensor{
     public:
-        LoadSensor(char* ch_name, Ad7124::InputSel ainp, Ad7124::InputSel ainm);
+        LoadSensor(char* ch_name, Ad7124::InputSel ainp);
 
         float convertToFloat(uint32_t adc_dataword);
         void configure();
