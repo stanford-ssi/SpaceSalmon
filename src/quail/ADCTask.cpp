@@ -2,10 +2,6 @@
 
 ADCTask::ADCTask(uint8_t priority) : Task(priority, "LED"){
     evgroup = xEventGroupCreateStatic(&evbuf);
-    // Set up adc overall
-    sys.adc.begin();
-    sys.adc.setAdcControl(Ad7124::ContinuousMode, Ad7124::FullPower, true, Ad7124::InternalClk, true);
-    sys.adc.setMode(Ad7124::ContinuousMode);
 };
 
 
@@ -18,12 +14,13 @@ void ADCTask::adcISR(void)
 
 void ADCTask::activity()
 {
-    // Set up configurations
-    // PressureSensor::configure();
-    //ThermalSensor::configure();
-    //LoadSensor::configure();
-    
-    // attach interrupt to trigger isr function
+    // Set up adc overall
+    sys.adc.begin();
+    sys.adc.setAdcControl(Ad7124::ContinuousMode, Ad7124::FullPower, true, Ad7124::InternalClk, true);
+    sys.adc.setMode(Ad7124::ContinuousMode);
+    sys.adc.setTimeout(1); // set IO timeout to be 1ms
+
+    vTaskDelay(2000); // put this task to sleep for a bit to allow sensors time to configure & initialize 
     sys.adc.setIRQAction(adcISR);
     while(true)
     {

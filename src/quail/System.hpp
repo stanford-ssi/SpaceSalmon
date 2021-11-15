@@ -8,6 +8,7 @@ class System;
 #include "ad7124-lib/ad7124.h"
 
 // #include "StateTask.hpp"
+#include "Sensor.hpp"
 #include "PressureSensor.hpp"
 //#include "ThermalSensor.hpp"
 //#include "LoadSensor.hpp"
@@ -28,7 +29,7 @@ public:
 
     Ad7124Chip adc = Ad7124Chip(5,8,&adc_spi);
 
-    PressureSensor PT1 = PressureSensor("PT1",Ad7124::AIN0Input);
+    PressureSensor PT1 = PressureSensor("PT1",Ad7124::AIN0Input, RANGE_1000);
 
     Sensor* sensors [1] = {
         &PT1
