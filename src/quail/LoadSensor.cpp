@@ -13,7 +13,6 @@ void LoadSensor::configure() {
     }
     sys.adc.setChannel(ch_id, cfg, ainp, ainm, true);
     sys.adc.enableChannel(ch_id, true);
-    Sensor::initialized(); // indicate that another sensor has been initialized
 }
 
 float LoadSensor::convertToFloat(uint32_t adc_dataword)

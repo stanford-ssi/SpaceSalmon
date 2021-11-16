@@ -14,7 +14,6 @@ void PressureSensor::configure() {
     }
     sys.adc.setChannel(ch_id, cfg, ainp, Ad7124::AVSSInput, true);
     sys.adc.enableChannel(ch_id, true); 
-    Sensor::initialized(); // indicate that another sensor has been initialized
 };
 
 float PressureSensor::convertToFloat(uint32_t adc_dataword)

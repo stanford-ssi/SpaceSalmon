@@ -22,6 +22,9 @@ class ADCTask : public Task<2000>
 public:
     ADCTask(uint8_t priority);
 
+    /**
+     * @brief set flag to indicate that all sensor channels have been configured
+     */
     void sensorsConfigured();
 
     void activity();

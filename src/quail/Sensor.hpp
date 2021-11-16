@@ -35,17 +35,13 @@ class Sensor:Task<1000> {
          */
         void addADCdata(uint32_t adc_data){ adcbuf.send(adc_data); };
 
-        /**
-         * @brief indicate that a sensor has been initialized
-         */
-        static void initialized();
-
         void activity();
 
         static uint8_t num_sensors; // running count of number of sensors initialized
         const char* ch_name; // data channel name
 
     protected:
+        static void _configure(Sensor* this_sense); //wrapper function for children's implementation of configure()
         static uint8_t add_config(){return ++num_cfgs;};
 
         float sensor_value; // actual value of sensor reading

@@ -7,7 +7,7 @@ uint8_t Sensor::num_cfgs = 0;
 uint8_t Sensor::num_sensors = 0;
 
 void Sensor::activity(){
-    this->configure(); // configure this sensor
+    _configure(this); // configure this sensor
     while(true){
         uint32_t adc_data;
         adcbuf.receive(adc_data, true); // wait for data to arrive
@@ -18,8 +18,9 @@ void Sensor::activity(){
     }
 }
 
-void Sensor::initialized(){
-    num_sens_cfgd++;
-    if(num_sens_cfgd == num_sensors)
-        sys.tasks.adctask.sensorsConfigured();
+void Sensor::_configure(Sensor* sensor){
+    sensor->configure(); // call the child's implementation of configure()
+    num_sens_cfgd++; // record that another sensor has been configured
+    if(num_sens_cfgd == num_sensors) // check if all sensors have been configured
+        sys.tasks.adctask.sensorsConfigured(); // tell ADC task to get goin
 }
