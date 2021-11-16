@@ -1,5 +1,5 @@
 #include "PressureSensor.hpp"
-
+#include "main.hpp"
 uint8_t PressureSensor::cfg = UNCONFIGURED; // this sensor type is initially unconfigured
 
 PressureSensor::PressureSensor(const char* ch_name, Ad7124::InputSel ainp, PressureRange range) : 

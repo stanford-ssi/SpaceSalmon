@@ -53,5 +53,3 @@ class Sensor:Task<1000> {
         const Ad7124::InputSel ainp; // ADC positive input
         const Ad7124::InputSel ainm; // ADC negative input     
 };
-
-#include "main.hpp"

@@ -8,7 +8,7 @@ class System;
 #include "ad7124-lib/ad7124.h"
 
 
-#include "Sensor.hpp"
+//#include "Sensor.hpp"
 #include "PressureSensor.hpp"
 //#include "ThermalSensor.hpp"
 //#include "LoadSensor.hpp"
