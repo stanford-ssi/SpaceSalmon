@@ -9,16 +9,26 @@
 #include <string>
 #include "ArduinoJson.h"
 
+typedef enum{
+    OPEN = true,
+    CLOSED = false,
+} SVState_t; // state indicators for SVs to keep the nomenclature consistent
+
+typedef enum{
+    FIRED = true,
+    UNFIRED = false,
+} EMState_t; // state indicators for EMs to keep the nomenclature consistent
+
 class StateData
 {
 public:
-    StaticJsonDocument<1024> getState(); // returns data packet of current state for telem output
+    StaticJsonDocument<1024> getState(); // returns json data packet of current state for telem output
     void setSensorState(uint8_t ch_id, float ch_val); // sets the corresponding state value for a given sensor
-    void setSolenoidState(uint8_t sol_ch, bool solenoid_open); // sets the corresponding desired state for a given solenoid
-    void setEmatchState(uint8_t ematch_ch, bool fire_ematch); // sets the corresponding desired state for a given ematch
+    void setSolenoidState(uint8_t sol_ch, SVState_t solenoid_state); // sets the corresponding desired state for a given solenoid
+    void setEmatchState(uint8_t ematch_ch, EMState_t ematch_state); // sets the corresponding desired state for a given ematch
     float getSensorState(uint8_t ch_id); // returns the corresponding state value for a given sensor
-    bool getSolenoidState(uint8_t sol_ch); // returns the corresponding state for a given solenoid
-    bool getEmatchState(uint8_t ematch_ch); // returns the corresponding desired state for a given ematch
+    bool getSolenoidState(); // returns the bit map showing state of 
+    bool getEmatchState(); // returns the corresponding desired state for a given ematch
     
 private:
     float sensorstate [16]; // array of floats storing sensor values using their ADC channel id as index (16 possible channels)
