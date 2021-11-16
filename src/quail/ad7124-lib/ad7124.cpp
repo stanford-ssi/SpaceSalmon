@@ -20,6 +20,10 @@
 
 using namespace Ad7124;
 
+uint8_t Ad7124Chip::IRQ;
+uint8_t Ad7124Chip::SS;
+SPIClass* Ad7124Chip::adc_spi;
+
 // -----------------------------------------------------------------------------
 //
 //                            Ad7124Chip class

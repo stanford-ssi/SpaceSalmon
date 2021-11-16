@@ -7,10 +7,11 @@ class System;
 #include "SPI.h"
 #include "ad7124-lib/ad7124.h"
 
-#include "Sensor.hpp"
+
+//#include "Sensor.hpp"
 #include "PressureSensor.hpp"
 // #include "ThermalSensor.hpp"
-// #include "LoadSensor.hpp"
+#include "LoadSensor.hpp"
 #include "ADCTask.hpp"
 #include "StateTask.hpp"
 //#include "TelemTask.hpp"
@@ -30,12 +31,23 @@ public:
     StateTask st = StateTask();
 
     Ad7124Chip adc{5,8,&adc_spi};
-    // Sensor::adc = adc;
 
-    PressureSensor PT1{"PT1", Ad7124::AIN0Input, RANGE_1000};
+    PressureSensor PT0 = PressureSensor("PT0", Ad7124::AIN0Input, RANGE_1000);
+    PressureSensor PT1 =  PressureSensor("PT1", Ad7124::AIN1Input, RANGE_1000);
+    PressureSensor PT2 =  PressureSensor("PT2", Ad7124::AIN2Input, RANGE_1000);
+    PressureSensor PT3 =  PressureSensor("PT3", Ad7124::AIN3Input, RANGE_1000);
+    PressureSensor PT4 =  PressureSensor("PT4", Ad7124::AIN4Input, RANGE_1000);
+    LoadSensor LC0 = LoadSensor("LC0", Ad7124::AIN5Input);
+    LoadSensor LC1 = LoadSensor("LC1", Ad7124::AIN7Input);
 
-    Sensor* sensors [1] = {
-        &PT1
+    Sensor* sensors [8] = {
+        &PT0,
+        &PT1,
+        &PT2,
+        &PT3,
+        &PT4,
+        &LC0,
+        &LC1
     };
     
     class Tasks

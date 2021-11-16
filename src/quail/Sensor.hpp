@@ -56,5 +56,3 @@ class Sensor:Task<1000> {
         // shared ADC chip between all sensors
         // static Ad7124Chip adc; 
 };
-
-#include "main.hpp"

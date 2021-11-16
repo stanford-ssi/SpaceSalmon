@@ -1,4 +1,5 @@
 #include "LoadSensor.hpp"
+#include "main.hpp"
 
 uint8_t LoadSensor::cfg = UNCONFIGURED; // initially unconfigured
 
