@@ -438,7 +438,9 @@ int Ad7124Chip::waitThenReadData(){
 }
 
 void Ad7124Chip::setIRQAction(void (*func)(void)) {
+   NVIC_SetPriority(EIC_7_IRQn, 1);
   attachInterrupt(IRQ, func, FALLING);
+   NVIC_SetPriority(EIC_7_IRQn, 1);
 }
 
 void Ad7124Chip::clearIRQAction() {

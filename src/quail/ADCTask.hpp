@@ -9,7 +9,7 @@
 
 #include "Task.hpp"
 
-#define ADC_READY 0b1
+#define ADC_READY 0x01
 
  struct {
     uint8_t channel = 0;
