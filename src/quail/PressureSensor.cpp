@@ -1,4 +1,5 @@
 #include "PressureSensor.hpp"
+#include "main.hpp"
 
 uint8_t PressureSensor::cfg = UNCONFIGURED; // this sensor type is initially unconfigured
 
@@ -12,7 +13,8 @@ void PressureSensor::configure() {
         sys.adc.setConfigFilter(cfg, Ad7124::Sinc3Filter, 1);
     }
     sys.adc.setChannel(ch_id, cfg, ainp, Ad7124::AVSSInput, true);
-    sys.adc.enableChannel(ch_id, true); };
+    sys.adc.enableChannel(ch_id, true); 
+};
 
 float PressureSensor::convertToFloat(uint32_t adc_dataword)
 {

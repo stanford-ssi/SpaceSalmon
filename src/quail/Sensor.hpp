@@ -1,5 +1,6 @@
 #pragma once
 
+#include "SPI.h"
 #include "ad7124-lib/ad7124.h"
 #include "Task.hpp"
 #include "MsgBuffer.hpp"
@@ -48,10 +49,12 @@ class Sensor:Task<1000> {
         static uint8_t num_cfgs; // running count of number of configurations
         static uint8_t sensor_priority; // priority of all sensor classes
 
-
         const uint8_t ch_id; // ADC channel ID
         const Ad7124::InputSel ainp; // ADC positive input
-        const Ad7124::InputSel ainm; // ADC negative input     
+        const Ad7124::InputSel ainm; // ADC negative input    
+
+        // shared ADC chip between all sensors
+        // static Ad7124Chip adc; 
 };
 
 #include "main.hpp"

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Task.hpp"
 #include "Sensor.hpp"
 
 #define PSI_TO_PA 6894.7572931783
@@ -23,5 +22,3 @@ class PressureSensor: public Sensor{
 
         static uint8_t cfg; // this sensor type's configuration
 };
-
-#include "main.hpp"

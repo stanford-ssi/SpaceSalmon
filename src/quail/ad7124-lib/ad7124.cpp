@@ -26,6 +26,9 @@ using namespace Ad7124;
 //
 // -----------------------------------------------------------------------------
 
+uint8_t SS = 0;
+
+
 Ad7124Chip::Ad7124Chip(uint8_t IRQ_PIN, uint8_t SS_PIN, SPIClass* spi) {
   IRQ = IRQ_PIN;
   SS = SS_PIN;

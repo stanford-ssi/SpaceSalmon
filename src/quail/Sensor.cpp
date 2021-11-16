@@ -1,3 +1,4 @@
+#include "main.hpp"
 #include "Sensor.hpp"
 
 uint8_t Sensor::sensor_priority = 2;
