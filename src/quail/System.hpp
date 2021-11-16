@@ -13,7 +13,7 @@ class System;
 // #include "ThermalSensor.hpp"
 //#include "LoadSensor.hpp"
 #include "ADCTask.hpp"
-#include "StateTask.hpp"
+#include "StateData.hpp"
 //#include "TelemTask.hpp"
 //#include "RadioTask.hpp"
 //#include "USBTask.hpp"
@@ -47,12 +47,13 @@ public:
         // &LC0,
         // &LC1
     };
+
+    StateData statedata = StateData(); //holds current state of sensors/SVs/ematches systems for output + control
     
     class Tasks
     {
     public:
         ADCTask adctask = ADCTask(3); //reads from ADC
-        StateTask statetask = StateTask(); //holds state information, not actually a task?
         //FireTask firetask = FireTask(3); //fires squibs for ematches
         //SolenoidTask soltask = SolenoidTask(3); //sets solenoid states
         //TelemTask telemtask = TelemTask(3, TELEM_MODE); // passes state data to output (TX) based on mode selection

@@ -3,12 +3,13 @@
 #include <FreeRTOS.h>
 #include <task.h>
 #include "MsgBuffer.hpp"
+#include "Mutex.hpp"
 #include <semphr.h>
 #include <hal_rtos.h>
 #include <string>
 #include "ArduinoJson.h"
 
-class StateTask
+class StateData
 {
 public:
     StaticJsonDocument<1024> getState(); // returns data packet of current state for telem output
@@ -23,7 +24,8 @@ private:
     float sensorstate [16]; // array of floats storing sensor values using their ADC channel id as index (16 possible channels)
     uint8_t solenoidstate; // 8bit indicator of solenoid status (LSB is first solenoid channel, MSB is last channel)
     uint8_t ematchstate; // 8bit indicator of ematch status (LSB is first ematch channel, MSB is last channel)
+    Mutex SVmutex; // mutex for solenoid valve state
+    Mutex EMmutex; // mutex for ematch state
+    Mutex senseMutex; // mutex for sensor state
     StaticJsonDocument<1024> statepacket;
 };
-
-#include "main.hpp"

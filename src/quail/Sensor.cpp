@@ -12,7 +12,7 @@ void Sensor::activity(){
         uint32_t adc_data;
         adcbuf.receive(adc_data, true); // wait for data to arrive
         sensor_value = this->convertToFloat(adc_data); // convert data to sensor pressure in metric unit
-        sys.tasks.statetask.setSensorState(ch_id, sensor_value); // post new value to state
+        sys.statedata.setSensorState(ch_id, sensor_value); // post new value to state
         Serial.println(ch_name);
         Serial.println(sensor_value);
     }
