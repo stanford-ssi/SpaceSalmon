@@ -28,9 +28,9 @@ public:
     SPIClass adc_spi = SPIClass(&sercom1, 5, 6, 7, SPI_PAD_0_SCK_1, SERCOM_RX_PAD_3);
     SPIClass squib_spi = SPIClass(&sercom0, 17, 18, 19, SPI_PAD_0_SCK_1, SERCOM_RX_PAD_3);
 
-    Ad7124Chip adc{5,8,&adc_spi};
+    Ad7124Chip adc = Ad7124Chip(5,8,&adc_spi);
 
-    PressureSensor PT0 = PressureSensor("PT0", Ad7124::AIN0Input, RANGE_1000);
+    //PressureSensor PT0 = PressureSensor("PT0", Ad7124::AIN0Input, RANGE_1000);
     // PressureSensor PT1 =  PressureSensor("PT1", Ad7124::AIN1Input, RANGE_1000);
     // PressureSensor PT2 =  PressureSensor("PT2", Ad7124::AIN2Input, RANGE_1000);
     // PressureSensor PT3 =  PressureSensor("PT3", Ad7124::AIN3Input, RANGE_1000);
@@ -38,8 +38,8 @@ public:
     // LoadSensor LC0 = LoadSensor("LC0", Ad7124::AIN5Input);
     // LoadSensor LC1 = LoadSensor("LC1", Ad7124::AIN7Input);
 
-    Sensor* sensors [1] = {
-        &PT0,
+    Sensor* sensors [0] = {
+        // &PT0,
         // &PT1,
         // &PT2,
         // &PT3,
@@ -51,7 +51,7 @@ public:
     class Tasks
     {
     public:
-        ADCTask adctask = ADCTask(2); //reads from ADC
+        ADCTask adctask = ADCTask(3); //reads from ADC
         StateTask statetask = StateTask(); //holds state information, not actually a task?
         //FireTask firetask = FireTask(3); //fires squibs for ematches
         //SolenoidTask soltask = SolenoidTask(3); //sets solenoid states
