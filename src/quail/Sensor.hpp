@@ -35,18 +35,24 @@ class Sensor:Task<1000> {
          */
         void addADCdata(uint32_t adc_data){ adcbuf.send(adc_data); };
 
+        /**
+         * @brief indicate that a sensor has been initialized
+         */
+        static void initialized();
+
         void activity();
 
-        static uint8_t num_sensors; // running count of number of sensors
+        static uint8_t num_sensors; // running count of number of sensors initialized
         const char* ch_name; // data channel name
 
     protected:
-        static uint8_t add_config() {return ++num_cfgs;}
+        static uint8_t add_config(){return ++num_cfgs;};
 
         float sensor_value; // actual value of sensor reading
         MsgBuffer<uint32_t, 100> adcbuf; // buffer of raw adc data, filled via addADCdata()
 
-        static uint8_t num_cfgs; // running count of number of configurations
+        static uint8_t num_cfgs; // running count of number of ADC configurations 
+        static uint8_t num_sens_cfgd; // running count of the number of sensors initialized and configured
         static uint8_t sensor_priority; // priority of all sensor classes
 
         const uint8_t ch_id; // ADC channel ID

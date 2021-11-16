@@ -19,8 +19,8 @@ void ADCTask::activity()
     sys.adc.setAdcControl(Ad7124::ContinuousMode, Ad7124::FullPower, true, Ad7124::InternalClk, true);
     sys.adc.setMode(Ad7124::ContinuousMode);
     sys.adc.setTimeout(1); // set IO timeout to be 1ms
-
-    vTaskDelay(2000); // put this task to sleep for a bit to allow sensors time to configure & initialize 
+    // Wait for sensors to be configured!
+    uint32_t flags = xEventGroupWaitBits(evgroup, SENSORS_READY, true, false, NEVER);
     sys.adc.setIRQAction(adcISR);
     while(true)
     {
@@ -41,3 +41,7 @@ void ADCTask::activity()
         //sys.tasks.sensortask.addADCData(adc_data);
     }
 }
+
+void ADCTask::sensorsConfigured(){
+    xEventGroupSetBits(evgroup, SENSORS_READY);
+};

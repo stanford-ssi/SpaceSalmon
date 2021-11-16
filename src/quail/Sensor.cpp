@@ -17,3 +17,9 @@ void Sensor::activity(){
         Serial.println(sensor_value);
     }
 }
+
+void Sensor::initialized(){
+    num_sens_cfgd++;
+    if(num_sens_cfgd == num_sensors)
+        sys.tasks.adctask.sensorsConfigured();
+}

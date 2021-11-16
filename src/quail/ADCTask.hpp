@@ -9,7 +9,8 @@
 
 #include "Task.hpp"
 
-#define ADC_READY 0b1
+#define ADC_READY 0b01
+#define SENSORS_READY 0b10
 
  struct {
     uint8_t channel = 0;
@@ -20,6 +21,8 @@ class ADCTask : public Task<2000>
 {
 public:
     ADCTask(uint8_t priority);
+
+    void sensorsConfigured();
 
     void activity();
 
