@@ -32,5 +32,5 @@ void FireTask::activity()
 }
 
 void FireTask::fireEmatch(uint8_t ch){
-    xEventGroupSetBits(evgroup, ch); // set event group flag to be the channel to fire
+    xEventGroupSetBits(evgroup, 1UL<<ch); // set event group flag to be the channel to fire
 }
