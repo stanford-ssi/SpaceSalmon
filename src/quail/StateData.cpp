@@ -26,12 +26,13 @@ void StateData::setSolenoidState(uint8_t sol_ch, SVState_t solenoid_state)
     SVmutex.give();
 };
 
-void StateData::setEmatchState(uint8_t ematch_ch, EMState_t ematch_state)
+void StateData::fireEmatch(uint8_t ematch_ch)
 {
     EMmutex.take(NEVER);
     // clear then set the bit corresponding to the desired sol_ch (zero indexed)
-    ematchstate = (ematchstate & ~(1U << ematch_ch)) | (ematch_state << ematch_ch); 
+    ematchstate = (ematchstate | (FIRED << ematch_ch)); // set channelto indicate fired status
     EMmutex.give();
+    sys.tasks.firetask.fireEmatch(ematch_ch); // send signal to firetask that ematch state has changed
 };
 
 float StateData::getSensorState(uint8_t ch_id)

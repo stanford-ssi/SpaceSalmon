@@ -12,9 +12,9 @@
 #define ADC_READY 0b01
 #define SENSORS_READY 0b10
 
- struct {
-    uint8_t channel = 0;
-    uint32_t dataword = 0;
+struct {
+    uint8_t channel;
+    uint32_t dataword;
 } typedef adcdata_t;
 
 class ADCTask : public Task<2000>

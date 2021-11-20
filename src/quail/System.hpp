@@ -19,7 +19,7 @@ class System;
 //#include "USBTask.hpp"
 //#include "CmdTask.hpp"
 //#include "SolenoidTask.hpp"
-//#include "FireTask.hpp"
+#include "FireTask.hpp"
 
 
 class System
@@ -54,7 +54,7 @@ public:
     {
     public:
         ADCTask adctask = ADCTask(3); //reads from ADC
-        //FireTask firetask = FireTask(3); //fires squibs for ematches
+        FireTask firetask = FireTask(3, 20, 21); //fires squibs for ematches
         //SolenoidTask soltask = SolenoidTask(3); //sets solenoid states
         //TelemTask telemtask = TelemTask(3, TELEM_MODE); // passes state data to output (TX) based on mode selection
         //USBTask usbtask = USBTask(4); //collects and sends information over USB
