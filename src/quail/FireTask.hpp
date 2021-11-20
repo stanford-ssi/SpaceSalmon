@@ -27,9 +27,9 @@ public:
     Squib squib1; // squib controlling E1-E4
     Squib squib2; // squib controlling E5-E8
     void fireEmatch(uint8_t ch); // fire the ematch at zero-indexed ch
+    void activity();
 
 private:
-    void activity();
     squibChannel_t ch_map [NUM_EM_CHANNELS];
     StaticEventGroup_t evbuf;
     EventGroupHandle_t evgroup;
