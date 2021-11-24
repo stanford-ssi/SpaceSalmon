@@ -14,6 +14,7 @@ class System;
 //#include "LoadSensor.hpp"
 #include "ADCTask.hpp"
 #include "StateData.hpp"
+#include "LoggerTask.hpp"
 //#include "TelemTask.hpp"
 //#include "RadioTask.hpp"
 //#include "USBTask.hpp"
@@ -21,6 +22,7 @@ class System;
 //#include "SolenoidTask.hpp"
 #include "FireTask.hpp"
 
+// #define RADIO_TXRX // uncomment this to use Radio for TX/RX
 
 class System
 { 
@@ -53,14 +55,15 @@ public:
     class Tasks
     {
     public:
-        ADCTask adctask = ADCTask(3); //reads from ADC
+        ADCTask adctask = ADCTask(3); // passes ADC raw data to the appropriate sensor
+        //SolenoidTask soltask = SolenoidTask(3); //updates solenoid states 
         FireTask firetask = FireTask(3, 20, 21); //fires squibs for ematches
-        //SolenoidTask soltask = SolenoidTask(3); //sets solenoid states
-        //TelemTask telemtask = TelemTask(3, TELEM_MODE); // passes state data to output (TX) based on mode selection
-        //USBTask usbtask = USBTask(4); //collects and sends information over USB
-        //RadioTask radiotask = RadioTask(4); //collects and sends information over radio
-        //CmdTask cmdtask = CmdTask(3); //processes commands from radio/usb (RX)
-        //SensorTask sensortask = SensorTask(1); //processes ADC values depending on sensor type
+        #ifdef RADIO_TXRX
+        RadioTask radiotask = RadioTask(2); //collects and sends information over radio
+        #endif
+        //TXTask txtask = TXTask(2, 10); //regularly collects state data, logs and sends over USB or radio
+        //RXTask rxtask = RXTask(3); //processes commands from USB or radio
+        LoggerTask logger = LoggerTask(1); // logs data to SD during idle time, writes USB data as available
     };
 
     Tasks tasks;
