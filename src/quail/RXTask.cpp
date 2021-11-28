@@ -74,7 +74,7 @@ void RXTask::close_solenoid(uint8_t sol_ch){
 };
 
 void RXTask::close_solenoid(TimerHandle_t xTimer){
-    sys.statedata.setSolenoidState((uint8_t) pvTimerGetTimerID(xTimer), CLOSED);
+    sys.statedata.setSolenoidState((long) pvTimerGetTimerID(xTimer), CLOSED);
 };
 
 void RXTask::fire_ematch(uint8_t em_ch){
