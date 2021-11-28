@@ -13,7 +13,7 @@
 
 #define DISK_LED 3
 
-enum log_type
+typedef enum
 {
   fatal = 1,
   error = 2,
@@ -21,7 +21,7 @@ enum log_type
   stats = 8,
   data = 16,
   info = 32
-};
+} log_type;
 
 class LoggerTask : public Task<1000>
 {

@@ -10,6 +10,9 @@
 #include "ArduinoJson.h"
 #include "Task.hpp"
 
+#define MAX_CMD_LENGTH 10 // maximum length of a command, in bytes
+#define CMD_ENDLINE 0 // endline indicator for a command - null char
+
 typedef enum {
     CLOSE_SV = 2, // cmd = 2X - close solenoid on chanel X, zero-indexed
     OPEN_SV = 3, // cmd = 3X - open solenoid on channel X, zero-indexed
@@ -30,6 +33,9 @@ public:
     void activity();
 private:
     const uint8_t rx_interval_ms; // time to wait before checking command buffer
+    bool readInput(); // check if input is available, returns true if successful read
+    uint8_t readByte(); // read a byte from the input buffer (radio or serial)
+    MsgBuffer<uint8_t, 100> cmdbuf; // buffer for input 
 
     TimerHandle_t pulseTimers[8]; // xTimers for callback (timer IDS correspond to the array index & solenoid channel)
     StaticTimer_t pulsebufs[8]; // xTimer static buffer for pulse timers

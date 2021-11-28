@@ -19,18 +19,18 @@ void RXTask::activity(){
     Serial.setTimeout(rx_interval_ms/2); // set serial timeout
     TickType_t lastSensorTime = xTaskGetTickCount();
     // every rx_interval_ms, get all commands sent since last checked and process them
+    uint8_t cmd;
     while(true){
-        char buf[3];
-        while(Serial.available()){ // typically we won't send such frequent commands that this becomes overly blocking
-            Serial.readBytes(buf, 1); // read a single byte
-            uint8_t cmd_rcvd = buf[0]; // convert that byte to uint
-            if(cmd_rcvd > 19) {// new lines characters or other return characters are ignored
-                process_cmd(cmd_rcvd); // if a valid command, pass to process_cmd  
-                if(Serial.available())
-                    Serial.readBytesUntil('\n', buf, 2); // all commands end in newline char, clear to next command
+        readInput(); // update cmdbuf from input, either radio or serial
+        while(!cmdbuf.empty()){
+            cmdbuf.receive(cmd, false);
+            if(cmd != CMD_ENDLINE) // if you received a non-endline byte
+                process_cmd(cmd);
+            while(cmd != CMD_ENDLINE && !cmdbuf.empty()){ // after processing a command, clear until an endline
+                cmdbuf.receive(cmd, false);
             }
         }
-        vTaskDelayUntil(&lastSensorTime, rx_interval_ms); // wait for a bit
+        vTaskDelayUntil(&lastSensorTime, rx_interval_ms); // wait for a while to allow other tasks time to operate
     }
 };
 
@@ -51,18 +51,13 @@ void RXTask::process_cmd(uint8_t cmd){
 };
 
 void RXTask::pulse_solenoid(uint8_t sol_ch){
-    uint16_t pulse_dur;
-    if(Serial.available()){ // if you got here, you should have a pulse time character following
-        char q;
-        Serial.readBytes(&q,1); // read a single byte
-        pulse_dur = 10* ((uint8_t) q); // get pulse time in 10s of milliseconds
-    } 
-    else
-        return; // if you don't specify a pulse time, don't do anything
-    // TODO: send error indication that pulse attempt failed
-    xTimerChangePeriod(pulseTimers[sol_ch], pulse_dur, NEVER); // set new pulse period
-    open_solenoid(sol_ch); // open solenoid
-    xTimerStart(pulseTimers[sol_ch], NEVER); // start the timer to close this solenoid
+    uint8_t byte_in;
+    if(cmdbuf.receive(byte_in, false) && byte_in > 0){  // if receieved a valid pulse time
+        uint16_t pulse_dur = 10*byte_in; // pulse time is 10* received value in ms
+        xTimerChangePeriod(pulseTimers[sol_ch], pulse_dur, NEVER); // set new pulse period
+        open_solenoid(sol_ch); // open solenoid
+        xTimerStart(pulseTimers[sol_ch], NEVER); // start the timer to close this solenoid
+    }
 };
 
 void RXTask::open_solenoid(uint8_t sol_ch){
@@ -79,4 +74,34 @@ void RXTask::close_solenoid(TimerHandle_t xTimer){
 
 void RXTask::fire_ematch(uint8_t em_ch){
     sys.statedata.fireEmatch(em_ch);
+};
+
+bool RXTask::readInput(){
+    #ifdef RADIO_TXRX
+        while(sys.tasks.radiotask.packetAvailable()){
+            packet_t packet_in;
+            sys.tasks.radiotask.waitForPacket(packet_in); 
+            if(packet_in.data[packet_in.length-1] == CMD_ENDLINE) // ensure cmd is terminated (multi-cmd packets allowed, but final one must be terminated)
+                for(uint8_t i = 0; i < packet_in.length; i++)
+                    cmdbuf.send(packet_in.data[i]); // add data byte to the cmd buffer
+        }
+    #else
+        uint8_t bytes_in[MAX_CMD_LENGTH+1];
+        bool missed_endline = false;
+        while(Serial.available()){
+            if(Serial.readBytesUntil(0,bytes_in,MAX_CMD_LENGTH+1) < (MAX_CMD_LENGTH+1)) { // try to read a command terminated by null byte
+                if(missed_endline) { // if you missed an endline on your last read attempt, discard commands until a new endline
+                    for(uint8_t i = 0; i < MAX_CMD_LENGTH; i ++) {                 
+                        cmdbuf.send(bytes_in[i]); // add byte to the cmd buffer
+                        if(bytes_in[i] != CMD_ENDLINE)
+                            break; // if reached an endline, finished processing command!
+                    }
+                }
+                missed_endline = false; // if you got here, you received an endline-terminated cmd
+            }
+            else {
+                missed_endline = true; // if you got here, you timed-out or read too much waiting for an endline
+            }
+        }
+    #endif
 };
