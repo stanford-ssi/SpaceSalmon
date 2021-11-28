@@ -1,4 +1,5 @@
 #include "ADCTask.hpp"
+#include "main.hpp"
 
 ADCTask::ADCTask(uint8_t priority) : Task(priority, "LED"){
     evgroup = xEventGroupCreateStatic(&evbuf);
