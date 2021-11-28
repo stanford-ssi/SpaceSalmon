@@ -33,7 +33,7 @@ public:
     void activity();
 private:
     const uint8_t rx_interval_ms; // time to wait before checking command buffer
-    bool readInput(); // check if input is available, returns true if successful read
+    void readInput(); // check if input is available, returns true if successful read
     uint8_t readByte(); // read a byte from the input buffer (radio or serial)
     MsgBuffer<uint8_t, 100> cmdbuf; // buffer for input 
 

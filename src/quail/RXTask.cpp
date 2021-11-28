@@ -3,11 +3,11 @@
 
 RXTask::RXTask(uint8_t priority, uint8_t rx_interval):Task(priority, "RX"), rx_interval_ms(rx_interval){
     for(uint8_t i = 0; i < 8; i++) {
-        char svname[4] = {'S','V','0'+i,'\0'};
+        char svname[4] = {'S','V',(char)((uint8_t)'0'+i),'\0'};
         pulseTimers[i] = xTimerCreateStatic(svname, // timer identifier
                                             100, // default pulse time (always modified before calling)
                                             pdFALSE, // timer does NOT auto-reload
-                                            (void *) i, // timer ID, used to know which solenoid to close on callback
+                                            (void *) (long)i, // timer ID, used to know which solenoid to close on callback
                                             RXTask::close_solenoid, // callback
                                             &(pulsebufs[i])); // static buffer
 
@@ -76,7 +76,7 @@ void RXTask::fire_ematch(uint8_t em_ch){
     sys.statedata.fireEmatch(em_ch);
 };
 
-bool RXTask::readInput(){
+void RXTask::readInput(){
     #ifdef RADIO_TXRX
         while(sys.tasks.radiotask.packetAvailable()){
             packet_t packet_in;
