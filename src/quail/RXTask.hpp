@@ -2,7 +2,7 @@
 
 #include <FreeRTOS.h>
 #include <task.h>
-#include <message_buffer.h>
+#include "MsgBuffer.hpp"
 #include <semphr.h>
 #include <timers.h>
 #include <hal_rtos.h>
