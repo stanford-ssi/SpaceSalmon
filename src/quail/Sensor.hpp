@@ -6,6 +6,9 @@
 #include "MsgBuffer.hpp"
 
 #define UNCONFIGURED UINT8_MAX
+#ifndef SENSOR_PRIORITY
+    #define SENSOR_PRIORITY 2
+#endif
 
 class Sensor:Task<1000> {
     public:

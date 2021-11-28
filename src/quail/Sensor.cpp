@@ -2,7 +2,7 @@
 #include "Sensor.hpp"
 #include "main.hpp"
 
-uint8_t Sensor::sensor_priority = 2;
+uint8_t Sensor::sensor_priority = SENSOR_PRIORITY; // set default sensor priority
 uint8_t Sensor::num_cfgs = 0;
 uint8_t Sensor::num_sensors = 0;
 

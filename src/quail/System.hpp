@@ -7,22 +7,23 @@ class System;
 #include "SPI.h"
 #include "ad7124-lib/ad7124.h"
 
+// #define RADIO_TXRX // uncomment this to use Radio for TX/RX
+#define SENSOR_PRIORITY 3 // set sensor priority
 
-//#include "Sensor.hpp"
+// #include "Sensor.hpp"
 #include "PressureSensor.hpp"
 // #include "ThermalSensor.hpp"
-//#include "LoadSensor.hpp"
+#include "LoadSensor.hpp"
 #include "ADCTask.hpp"
 #include "StateData.hpp"
 #include "LoggerTask.hpp"
-//#include "TelemTask.hpp"
-//#include "RadioTask.hpp"
-//#include "USBTask.hpp"
-//#include "CmdTask.hpp"
+#include "TXTask.hpp"
+#include "RXTask.hpp"
+#ifdef RADIO_TXRX
+    #include "RadioTask.hpp"
+#endif
 //#include "SolenoidTask.hpp"
 #include "FireTask.hpp"
-
-// #define RADIO_TXRX // uncomment this to use Radio for TX/RX
 
 class System
 { 
@@ -55,14 +56,14 @@ public:
     class Tasks
     {
     public:
-        ADCTask adctask = ADCTask(3); // passes ADC raw data to the appropriate sensor
-        //SolenoidTask soltask = SolenoidTask(3); //updates solenoid states 
-        FireTask firetask = FireTask(3, 20, 21); //fires squibs for ematches
-        #ifdef RADIO_TXRX
-        RadioTask radiotask = RadioTask(2); //collects and sends information over radio
+        ADCTask adctask = ADCTask(2); // passes ADC raw data to the appropriate sensor
+        //SolenoidTask soltask = SolenoidTask(6); //updates solenoid states 
+        FireTask firetask = FireTask(6, 20, 21); //fires squibs for ematches
+        #ifdef RADIO_TXRX // if using radio, create a RadioTask
+        RadioTask radiotask = RadioTask(4); //collects and sends information over radio
         #endif
-        //TXTask txtask = TXTask(2, 10); //regularly collects state data, logs and sends over USB or radio
-        //RXTask rxtask = RXTask(3); //processes commands from USB or radio
+        //TXTask txtask = TXTask(4, 10); //regularly collects state data, logs and sends over USB or radio
+        //RXTask rxtask = RXTask(5); //processes commands from USB or radio
         LoggerTask logger = LoggerTask(1); // logs data to SD during idle time, writes USB data as available
     };
 
