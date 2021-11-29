@@ -20,7 +20,7 @@ void FireTask::activity()
     squib1.Init();
     squib2.Init();
     while(true) {
-        uint32_t flags = xEventGroupWaitBits(evgroup, UINT32_MAX, true, false, NEVER); // any flag should be inspected
+        uint32_t flags = xEventGroupWaitBits(evgroup, 0xFF, true, false, NEVER); // any flag should be inspected
         for(uint8_t i = 0; i < NUM_EM_CHANNELS; i++) {
             if((flags & 0b1)) { // if the lsb bit is 1
                 squibChannel_t firedsquib = ch_map[i];

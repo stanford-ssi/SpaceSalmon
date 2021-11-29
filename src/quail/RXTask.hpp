@@ -11,7 +11,7 @@
 #include "Task.hpp"
 
 #define MAX_CMD_LENGTH 10 // maximum length of a command, in bytes
-#define CMD_ENDLINE 0 // endline indicator for a command - null char
+#define CMD_ENDLINE 0x0A // endline indicator for a command - null char
 
 typedef enum {
     CLOSE_SV = 2, // cmd = 2X - close solenoid on chanel X, zero-indexed
