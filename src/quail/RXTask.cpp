@@ -43,7 +43,6 @@ void RXTask::process_cmd(cmd_packet_t cmd){
 };
 
 void RXTask::pulse_solenoid(uint8_t sol_ch, uint16_t pulse_dur){
-    uint8_t byte_in;
     xTimerChangePeriod(pulseTimers[sol_ch], pulse_dur, NEVER); // set new pulse period
     open_solenoid(sol_ch); // open solenoid
     xTimerStart(pulseTimers[sol_ch], NEVER); // start the timer to close this solenoid
