@@ -14,6 +14,7 @@ StaticJsonDocument<1024>* StateData::getState()
     stateJSON["SV"] = sys.statedata.getSolenoidState(); // most efficient way to send is just as the raw uint, can decode on groundside
     stateJSON["EM"] = sys.statedata.getEmatchState(); // most efficient way to send is just as the raw uint, can decode on groundside
     stateJSON["lastcmd"] = sys.statedata.getLastCommand();
+    stateJSON["logging"] = sys.tasks.logger.isLoggingEnabled();
     return &stateJSON;
 };
 

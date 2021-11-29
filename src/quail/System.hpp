@@ -10,21 +10,19 @@ class System;
 // #define RADIO_TXRX // uncomment this to use Radio for TX/RX
 #define SENSOR_PRIORITY 3 // set sensor priority
 
-// #include "Sensor.hpp"
 #include "PressureSensor.hpp"
 // #include "ThermalSensor.hpp"
 #include "LoadSensor.hpp"
 #include "ADCTask.hpp"
 #include "StateData.hpp"
 #include "FireTask.hpp"
-// #include "LoggerTask.hpp"
+#include "LoggerTask.hpp"
 #include "TXTask.hpp"
 #include "RXTask.hpp"
 #ifdef RADIO_TXRX
     #include "RadioTask.hpp"
 #endif
 //#include "SolenoidTask.hpp"
-// #include "FireTask.hpp"
 
 class System
 { 
@@ -65,7 +63,7 @@ public:
         #endif
         TXTask txtask = TXTask(4, 3000); //regularly collects state data, logs and sends over USB or radio
         RXTask rxtask = RXTask(5, 100); //processes commands from USB or radio
-        //LoggerTask logger = LoggerTask(1); // logs data to SD during idle time, writes USB data as available
+        LoggerTask logger = LoggerTask(1); // logs data to SD during idle time, writes USB data as available
     };
 
     Tasks tasks;
