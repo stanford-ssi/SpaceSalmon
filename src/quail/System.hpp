@@ -25,6 +25,7 @@ class System;
 #endif
 //#include "SolenoidTask.hpp"
 // #include "FireTask.hpp"
+#include "ValveTask.hpp"
 
 class System
 { 
@@ -57,6 +58,7 @@ public:
     class Tasks
     {
     public:
+        ValveTask valvetask = ValveTask(3, 1);
         ADCTask adctask = ADCTask(2); // passes ADC raw data to the appropriate sensor
         //SolenoidTask soltask = SolenoidTask(6); //updates solenoid states 
         FireTask firetask = FireTask(6, 20, 21); //fires squibs for ematches
