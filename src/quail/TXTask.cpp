@@ -28,13 +28,12 @@ void TXTask::activity() {
 
 void TXTask::send(const char* msg){
     #ifdef RADIO_TXRX
-                packet_t pkt; // create radio packet type
-                memcpy(pkt.data, &msg, sizeof(msg)); // copy state data into packet
-                pkt.len = sizeof(msg); // set packet size
-                sys.tasks.radiotask.sendPacket(pkt); // add packet to radio transmission queue
-    #else
-        writeUSB(msg); // add state data to Serial transmission queue
+        packet_t pkt; // create radio packet type
+        memcpy(pkt.data, &msg, sizeof(msg)); // copy state data into packet
+        pkt.len = sizeof(msg); // set packet size
+        sys.tasks.radiotask.sendPacket(pkt); // add packet to radio transmission queue
     #endif
+    writeUSB(msg); // add state data to Serial transmission queue
 };
 
 void TXTask::send(JsonDocument &jsonDoc){

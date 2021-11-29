@@ -13,18 +13,7 @@
 #define MAX_CMD_LENGTH 10 // maximum length of a command, in bytes
 #define CMD_ENDLINE 0x0A // endline indicator for a command - null char
 
-typedef enum {
-    CLOSE_SV = 2, // cmd = 2X - close solenoid on chanel X, zero-indexed
-    OPEN_SV = 3, // cmd = 3X - open solenoid on channel X, zero-indexed
-    PULSE_SV = 4, // cmd = 4X - pulse solenoid on channel X, zero-indexed
-    FIRE_EM = 5, // cmd = 5X - fire ematch on channel X, zero-indexed
-    RADIOCONFIG = 6, // cmd = 6X - radio settings update incoming
-    ABORTOX = 7, // cmd = 7X - abort ox side only (close fill, open vent, open ox bleed)
-    ABORTFUEL = 8, // cmd = 8X - abort fuel side only (close fill, open fuel-side main valve, open fuel bleed)
-    ABORT = 9, // cmd = 9X - abort both fuel and ox 
-    LAUNCH = 10, // cmd = 10X - closes both fill, waits 10 seconds, then starts igniter; delays another 4 seconds, and opens main valves
-    CANCELLAUNCH = 11, // cmd = 11X - cancels launch command
-} CMD_PREFIX_t;
+typedef struct { uint8_t data[255]; } cmd_packet_t;
 
 class RXTask: public Task<1000>
 {
@@ -35,19 +24,20 @@ private:
     const uint16_t rx_interval_ms; // time to wait before checking command buffer
     void readInput(); // check if input is available, returns true if successful read
     uint8_t readByte(); // read a byte from the input buffer (radio or serial)
-    MsgBuffer<uint8_t, 100> cmdbuf; // buffer for input 
+    MsgBuffer<cmd_packet_t, 2550> cmdbuf; // buffer for input - can hold 10 commands before getting full
+    StaticJsonDocument<255> curr_cmd; // storage for most recently received json
 
     TimerHandle_t pulseTimers[8]; // xTimers for callback (timer IDS correspond to the array index & solenoid channel)
     StaticTimer_t pulsebufs[8]; // xTimer static buffer for pulse timers
     // TimerHandle_t launchTimer; // xTimer for launch
     // StaticTimer_t launchbuf; // xTimer static buffer for launch timer
 
-    void process_cmd(uint8_t cmd); // uses the command defs from above to determine what to do with a received command
+    void process_cmd(cmd_packet_t cmd); // uses the command defs from above to determine what to do with a received command
 
     // functions used for executing commands
     static void open_solenoid(uint8_t sol_ch); // sets solenoid state to open
     static void close_solenoid(uint8_t sol_ch); // sets solenoid state of given channel to closed
-    void pulse_solenoid(uint8_t sol_ch); // reads a time in milliseconds from serial, opens solenoid, sets a timer to close solenoid after specified duration
+    void pulse_solenoid(uint8_t sol_ch, uint16_t pulse_dur_ms); // reads a time in milliseconds from serial, opens solenoid, sets a timer to close solenoid after specified duration
     static void close_solenoid(TimerHandle_t xTimer); //close the solenoid associated with the given xTimer
     static void fire_ematch(uint8_t em_ch);
 

@@ -23,12 +23,12 @@ void ADCTask::activity()
     Sensor::ADCbegin(); // tell sensors that they are ready for configuration
 
     // Wait for sensors to be configured!
-    uint32_t flags = xEventGroupWaitBits(evgroup, SENSORS_READY, true, false, NEVER);
+    xEventGroupWaitBits(evgroup, SENSORS_READY, true, false, NEVER);
     sys.adc.setIRQAction(adcISR);
     while(true)
     {
         // wait for ADC ready
-        uint32_t flags = xEventGroupWaitBits(evgroup, ADC_READY, true, false, NEVER);
+        xEventGroupWaitBits(evgroup, ADC_READY, true, false, NEVER);
         // turn off interrupt to read data
         sys.adc.clearIRQAction();
         

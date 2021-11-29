@@ -13,6 +13,7 @@ class System;
 #include "PressureSensor.hpp"
 // #include "ThermalSensor.hpp"
 #include "LoadSensor.hpp"
+#include "ValveTask.hpp"
 #include "ADCTask.hpp"
 #include "StateData.hpp"
 #include "FireTask.hpp"
@@ -22,7 +23,6 @@ class System;
 #ifdef RADIO_TXRX
     #include "RadioTask.hpp"
 #endif
-//#include "SolenoidTask.hpp"
 
 class System
 { 
@@ -56,7 +56,7 @@ public:
     {
     public:
         ADCTask adctask = ADCTask(2); // passes ADC raw data to the appropriate sensor
-        //SolenoidTask soltask = SolenoidTask(6); //updates solenoid states 
+        ValveTask valvetask = ValveTask(6, 22); // controls solenoids 
         FireTask firetask = FireTask(6, 20, 21); //fires squibs for ematches
         #ifdef RADIO_TXRX // if using radio, create a RadioTask
             RadioTask radiotask = RadioTask(4); //collects and sends information over radio
