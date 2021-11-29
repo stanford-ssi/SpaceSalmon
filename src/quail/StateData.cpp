@@ -1,6 +1,8 @@
 #include "StateData.hpp"
 #include "main.hpp"
 
+StaticJsonDocument<1024> StateData::stateJSON;
+
 StaticJsonDocument<1024>* StateData::getState()
 {
     //stateJSON.clear(); // clear memory pool of JSON
@@ -37,7 +39,7 @@ void StateData::fireEmatch(uint8_t ematch_ch)
     // clear then set the bit corresponding to the desired sol_ch (zero indexed)
     ematchstate = (ematchstate | (FIRED << ematch_ch)); // set channelto indicate fired status
     EMmutex.give();
-    sys.tasks.firetask.fireEmatch(ematch_ch); // send signal to firetask that ematch state has changed
+    //sys.tasks.firetask.fireEmatch(ematch_ch); // send signal to firetask that ematch state has changed
 };
 
 void StateData::setLastCommand(uint8_t last_cmd)

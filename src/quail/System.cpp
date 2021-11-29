@@ -24,6 +24,8 @@ int main(void)
 	pinMode(3, OUTPUT);
 	pinMode(4, OUTPUT);
 
+	digitalWrite(1, HIGH); // turn on power LED
+
 	//start all RTOS tasks (this never returns)
 	vTaskStartScheduler();
 }

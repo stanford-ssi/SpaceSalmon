@@ -29,10 +29,10 @@ typedef enum {
 class RXTask: public Task<1000>
 {
 public:
-    RXTask(uint8_t priority, uint8_t rx_interval_ms);
+    RXTask(uint8_t priority, uint16_t rx_interval_ms);
     void activity();
 private:
-    const uint8_t rx_interval_ms; // time to wait before checking command buffer
+    const uint16_t rx_interval_ms; // time to wait before checking command buffer
     void readInput(); // check if input is available, returns true if successful read
     uint8_t readByte(); // read a byte from the input buffer (radio or serial)
     MsgBuffer<uint8_t, 100> cmdbuf; // buffer for input 

@@ -1,7 +1,7 @@
 #include "RXTask.hpp"
 #include "main.hpp"
 
-RXTask::RXTask(uint8_t priority, uint8_t rx_interval):Task(priority, "RX"), rx_interval_ms(rx_interval){
+RXTask::RXTask(uint8_t priority, uint16_t rx_interval):Task(priority, "RX"), rx_interval_ms(rx_interval){
     for(uint8_t i = 0; i < 8; i++) {
         char svname[4] = {'S','V',(char)((uint8_t)'0'+i),'\0'};
         pulseTimers[i] = xTimerCreateStatic(svname, // timer identifier
@@ -22,10 +22,14 @@ void RXTask::activity(){
     uint8_t cmd;
     while(true){
         readInput(); // update cmdbuf from input, either radio or serial
+        
         while(!cmdbuf.empty()){
+
             cmdbuf.receive(cmd, false);
-            if(cmd != CMD_ENDLINE) // if you received a non-endline byte
+            if(cmd != CMD_ENDLINE) {// if you received a non-endline byte
+                Serial.println(cmd);
                 process_cmd(cmd);
+            }
             while(cmd != CMD_ENDLINE && !cmdbuf.empty()){ // after processing a command, clear until an endline
                 cmdbuf.receive(cmd, false);
             }
@@ -91,7 +95,7 @@ void RXTask::readInput(){
         while(Serial.available()){
             if(Serial.readBytesUntil(0,bytes_in,MAX_CMD_LENGTH+1) < (MAX_CMD_LENGTH+1)) { // try to read a command terminated by null byte
                 if(missed_endline) { // if you missed an endline on your last read attempt, discard commands until a new endline
-                    for(uint8_t i = 0; i < MAX_CMD_LENGTH; i ++) {                 
+                    for(uint8_t i = 0; i < MAX_CMD_LENGTH; i++) {                 
                         cmdbuf.send(bytes_in[i]); // add byte to the cmd buffer
                         if(bytes_in[i] != CMD_ENDLINE)
                             break; // if reached an endline, finished processing command!

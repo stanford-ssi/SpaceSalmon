@@ -1,7 +1,7 @@
 #include "TXTask.hpp"
 #include "main.hpp"
 
-TXTask::TXTask(uint8_t priority, uint8_t tx_interval_ms):
+TXTask::TXTask(uint8_t priority, uint16_t tx_interval_ms):
 Task(priority, "TX"), tx_interval_ms(tx_interval_ms){};
 
 void TXTask::activity() {
@@ -17,7 +17,7 @@ void TXTask::activity() {
         char str[len + 5]; //create char buffer with space
         serializeJson(*stateJSON, str, sizeof(str));
         // log
-        sys.tasks.logger.log(str); // adds to queue to be written to SD card
+        // sys.tasks.logger.log(str); // adds to queue to be written to SD card
         // if at tx_interval, write over selected TX
         if(i == LOG_FACTOR){
             send(str);

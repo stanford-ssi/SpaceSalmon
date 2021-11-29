@@ -286,9 +286,7 @@ Ad7124Chip::getData(uint32_t &data, uint8_t &ch) {
   int ret;
 
   ret = d.readData (data,ch);
-  if (ret < 0) {
-    return ret;
-  }
+  return ret;
 }
 
 // -----------------------------------------------------------------------------
@@ -445,6 +443,7 @@ void Ad7124Chip::setIRQAction(void (*func)(void)) {
 
 void Ad7124Chip::clearIRQAction() {
   detachInterrupt(IRQ);
+  pinPeripheral(IRQ,PIO_SERCOM);
 }
 
 // -----------------------------------------------------------------------------

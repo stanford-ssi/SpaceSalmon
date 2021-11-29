@@ -78,9 +78,7 @@ Ad7124Driver::init (uint8_t slaveDeviceId, bool lsbFirst,
 // -----------------------------------------------------------------------------
 int
 Ad7124Driver::read (uint8_t* data, uint8_t len) {
-
-  sys.adc_spi.beginTransaction (SPISettings (speedMaximum, dataOrder, dataMode));
-  //Ad7124Chip::adc_spi->beginTransaction (SPISettings (speedMaximum, dataOrder, dataMode));
+  Ad7124Chip::adc_spi->beginTransaction (SPISettings (speedMaximum, dataOrder, dataMode));
   //setSS(id);
   for (uint8_t i = 0; i < len; i++) {
     data[i] = Ad7124Chip::adc_spi->transfer (data[i]);

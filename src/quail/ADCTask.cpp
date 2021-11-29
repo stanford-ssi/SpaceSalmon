@@ -1,5 +1,6 @@
 #include "ADCTask.hpp"
 #include "main.hpp"
+#include "wiring_private.h"
 
 ADCTask::ADCTask(uint8_t priority) : Task(priority, "LED"){
     evgroup = xEventGroupCreateStatic(&evbuf);
@@ -19,7 +20,8 @@ void ADCTask::activity()
     sys.adc.begin();
     sys.adc.setAdcControl(Ad7124::ContinuousMode, Ad7124::FullPower, true, Ad7124::InternalClk, true);
     sys.adc.setMode(Ad7124::ContinuousMode);
-    sys.adc.setTimeout(1); // set IO timeout to be 1ms
+    Sensor::ADCbegin(); // tell sensors that they are ready for configuration
+
     // Wait for sensors to be configured!
     uint32_t flags = xEventGroupWaitBits(evgroup, SENSORS_READY, true, false, NEVER);
     sys.adc.setIRQAction(adcISR);
@@ -29,17 +31,16 @@ void ADCTask::activity()
         uint32_t flags = xEventGroupWaitBits(evgroup, ADC_READY, true, false, NEVER);
         // turn off interrupt to read data
         sys.adc.clearIRQAction();
+        
         // read data
         adcdata_t adc_data;
-        sys.adc.getData(adc_data.dataword, adc_data.channel);
+        long ret = sys.adc.getData(adc_data.dataword, adc_data.channel);
         // turn interrupt back on to catch new ready indicator
         sys.adc.setIRQAction(adcISR);
-        // do thing with data
-        Serial.println("Data Channel");
-        Serial.println(adc_data.channel);
-        Serial.println(adc_data.dataword);
-        (sys.sensors[adc_data.channel])->addADCdata(adc_data.dataword);
-        //sys.tasks.sensortask.addADCData(adc_data);
+        if( ret >= 0) {
+            // do thing with data
+            (sys.sensors[adc_data.channel])->addADCdata(adc_data.dataword);
+        }
     }
 }
 
