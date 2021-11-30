@@ -196,11 +196,18 @@ class Ad7124Chip {
 
   public:
     /**
+     * @brief Constructor for AD7124Chip
+     * @param IRQ_PIN The Interrupt Request PIN to be used for data-ready interrupt
+     * @param SS_PIN The Slave Chip Select Id to be passed to the SPI begin() call
+     * @param spi The SPIClass object associated with this ADC chip
+     */
+    Ad7124Chip(uint8_t IRQ_PIN, uint8_t SS_PIN, SPIClass* spi);
+
+    /**
      * @brief Initializes the AD7124
-     * @param slave_select The Slave Chip Select Id to be passed to the SPI calls
      * @return 0 for success or negative error code
      */
-    int begin (int slave_select);
+    int begin ();
 
     /**
      * @brief Resets the device
@@ -445,12 +452,31 @@ class Ad7124Chip {
      */
     int waitThenReadData();
 
+    /**
+     * @brief Attaches IRQ to trigger the desired function.
+     * @param func void function to be called on IRQ.
+     */
+    static void setIRQAction(void (*func)(void));
+
+    /**
+     * @brief Detaches the IRQ from any function call.
+     */
+    static void clearIRQAction();
+
+    /**
+     * @brief adc_spi class associated with the Ad7124 chip instance. For speed, declared 
+     * statically and assumed that only one Ad7124 instance exists at a time.
+     */
+    static SPIClass* adc_spi; // assigned on construction, only permits 1X Ad7124 instance at a time
+
 #ifndef __DOXYGEN__
   protected:
     int readRegister (Ad7124::RegisterId id);
     int writeRegister (Ad7124::RegisterId id);
 
   private:
+    static uint8_t IRQ;
+    static uint8_t SS;
     Ad7124Private d;
     Ad7124Register reg[Ad7124::Reg_No];
 #endif

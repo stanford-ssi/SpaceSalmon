@@ -1,36 +1,36 @@
 #include "FireTask.hpp"
 
-FireTask::FireTask(uint8_t priority) : Task(priority, "Fire"), squib1(sys.squib_spi,20){};
+FireTask::FireTask(uint8_t priority, uint8_t Squib1_SS, uint8_t Squib2_SS) : Task(priority, "Fire"), squib1(sys.squib_spi,Squib1_SS), squib2(sys.squib_spi,Squib2_SS)
+{
+    evgroup = xEventGroupCreateStatic(&evbuf);
+    // TODO: make this less gross? and maybe settable at System level
+    ch_map[0] = {&squib1, CMD_FIRE_1B};
+    ch_map[1] = {&squib1, CMD_FIRE_2B};
+    ch_map[2] = {&squib1, CMD_FIRE_2A};
+    ch_map[3] = {&squib1, CMD_FIRE_1A};
+    ch_map[4] = {&squib2, CMD_FIRE_1B};
+    ch_map[5] = {&squib2, CMD_FIRE_2B};
+    ch_map[6] = {&squib2, CMD_FIRE_2A};
+    ch_map[7] = {&squib2, CMD_FIRE_1A};
+};
 
 void FireTask::activity()
 {
-    
-    uint8_t send = 0x96;
-	uint8_t recv = 0x00;
     sys.squib_spi.begin();
-    pinMode(20,OUTPUT);
-    digitalWrite(20,HIGH);
-
-    vTaskDelay(6000);
-    
-    digitalWrite(20,LOW);
-    recv = sys.squib_spi.transfer(send);
-    digitalWrite(20,HIGH);
-	Serial.println(recv);
-    while (true)
-    {
-        vTaskDelay(500);
-        Serial.println("done");
+    squib1.Init();
+    squib2.Init();
+    while(true) {
+        uint32_t flags = xEventGroupWaitBits(evgroup, 0xFF, true, false, NEVER); // any flag should be inspected
+        for(uint8_t i = 0; i < NUM_EM_CHANNELS; i++) {
+            if((flags & 0b1)) { // if the lsb bit is 1
+                squibChannel_t firedsquib = ch_map[i];
+                (firedsquib.squib)->fire(firedsquib.firecmd);
+            }
+            flags = flags >> 1; // shift right to check next lsb
+        }
     }
-    
-    // squib1.Init();
-    // while (true)
-    // {
-    //     digitalWrite(2,HIGH);
-    //     squib1.fire(Squib::Fire_t::CMD_FIRE_1A2A1B2B);
-    //     vTaskDelay(500);
-    //     digitalWrite(2,LOW);
-    //     squib1.fire(Squib::Fire_t::CMD_FIRE_NO_SQUIBS);
-    //     vTaskDelay(500);
-    // }
+}
+
+void FireTask::fireEmatch(uint8_t ch){
+    xEventGroupSetBits(evgroup, 1UL<<ch); // set event group flag to be the channel to fire
 }

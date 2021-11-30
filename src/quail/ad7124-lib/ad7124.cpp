@@ -20,23 +20,36 @@
 
 using namespace Ad7124;
 
+uint8_t Ad7124Chip::IRQ;
+uint8_t Ad7124Chip::SS;
+SPIClass* Ad7124Chip::adc_spi;
+
 // -----------------------------------------------------------------------------
 //
 //                            Ad7124Chip class
 //
 // -----------------------------------------------------------------------------
 
+uint8_t SS = 0;
+
+
+Ad7124Chip::Ad7124Chip(uint8_t IRQ_PIN, uint8_t SS_PIN, SPIClass* spi) {
+  IRQ = IRQ_PIN;
+  SS = SS_PIN;
+  adc_spi = spi;
+};
+
+
 // -----------------------------------------------------------------------------
 int
-Ad7124Chip::begin (int slave_select) {
+Ad7124Chip::begin () {
   int ret;
 
   Ad7124Register::fillAllRegsWithDefault (reg);
-  ret = d.init (slave_select, reg);
+  ret = d.init (SS, reg);
   if (ret < 0) {
     return ret;
   }
-
   return setAdcControl (StandbyMode, LowPower, false);
 }
 
@@ -273,9 +286,7 @@ Ad7124Chip::getData(uint32_t &data, uint8_t &ch) {
   int ret;
 
   ret = d.readData (data,ch);
-  if (ret < 0) {
-    return ret;
-  }
+  return ret;
 }
 
 // -----------------------------------------------------------------------------
@@ -422,6 +433,17 @@ int Ad7124Chip::waitThenReadData(){
   return 0;
   //done!
 
+}
+
+void Ad7124Chip::setIRQAction(void (*func)(void)) {
+   NVIC_SetPriority(EIC_7_IRQn, 1);
+  attachInterrupt(IRQ, func, FALLING);
+   NVIC_SetPriority(EIC_7_IRQn, 1);
+}
+
+void Ad7124Chip::clearIRQAction() {
+  detachInterrupt(IRQ);
+  pinPeripheral(IRQ,PIO_SERCOM);
 }
 
 // -----------------------------------------------------------------------------

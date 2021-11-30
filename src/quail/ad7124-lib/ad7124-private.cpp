@@ -426,10 +426,6 @@ Ad7124Private::readData (uint32_t& pData, uint8_t& channel) {
   channel = buffer[4] & 0x0F; //Just the ID bits
 
   return ret < 0 ? ret : 0;
-
-
-
-
 }
 
 /***************************************************************************//**
