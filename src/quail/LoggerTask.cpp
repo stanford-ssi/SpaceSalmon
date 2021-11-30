@@ -12,12 +12,8 @@ LoggerTask::LoggerTask(uint8_t priority) : Task(priority, "Logger") {
 
     if (res != FR_OK) {
         loggingEnabled = false;
-        Serial.println("Could Not Mount Disk");
-        Serial.println(res);
-    } else {
-        loggingEnabled = true;
-        Serial.println("Mounted SD card");
-    }
+        sys.tasks.txtask.send("Could Not Mount Disk");
+    } 
 }
 
 void LoggerTask::log(const char* message) {
@@ -27,8 +23,7 @@ void LoggerTask::log(const char* message) {
 void LoggerTask::log(JsonDocument& jsonDoc) {
     jsonDoc["stack"] = uxTaskGetStackHighWaterMark(NULL); //TODO: Check this for capacity... (dangerous!)
 
-    if (jsonDoc.getMember("tick") == NULL)
-    {
+    if (jsonDoc.getMember("tick") == NULL) {
         jsonDoc["tick"] = xTaskGetTickCount();
     }
 
@@ -43,25 +38,25 @@ void LoggerTask::logJSON(JsonDocument& jsonDoc, const char* id) {
     log(jsonDoc);
 }
 
-char* LoggerTask::findFile(int& lognum) {
-    char file_name[20];
-    for(FRESULT res; res != FR_NO_FILE; lognum++) {
-        snprintf(file_name, sizeof(file_name), "log%u.txt", lognum);
-        res = f_stat(file_name, NULL);
+void LoggerTask::findFile(char* filename, size_t filesize, int* lognum) {
+    for(FRESULT res = FR_OK; res != FR_NO_FILE; (*lognum)++) {
+        snprintf(filename, filesize, "log%u.txt", *lognum);
+        res = f_stat(filename, NULL);
         if (res != FR_OK) {
             sys.tasks.txtask.send("A log file is corrupted");
         }
     }
-    return file_name;
 }
 
 void LoggerTask::activity()
 {
-    char* filename;
+    if(!loggingEnabled) return; // failed to mount SD
+
+    char file_name[20];
     int file_num = 0;
     FRESULT res;
     do {
-        char* file_name = findFile(file_num);
+        findFile(file_name, 20, &file_num);
         sys.tasks.txtask.send("Trying to open log file");
         res = f_open(&file_object, file_name, FA_CREATE_ALWAYS | FA_WRITE);
 
@@ -73,7 +68,7 @@ void LoggerTask::activity()
     // read or more than 1000ms elapsed since last dump)
     char* p = lineBuffer; // start at beginning of buffer
     TickType_t timeout = xTaskGetTickCount();
-    while (true) {
+    while (loggingEnabled) {
         if (strBuffer.receive(p, 1000, !shitlEnabled) > 0) { // adds data onto buffer, blocking
             // denote end of one message with new line
             p = lineBuffer + strlen(lineBuffer);
@@ -120,14 +115,15 @@ void LoggerTask::writeSD(char *buf) {
     res = f_write(&file_object, buf, strlen(buf), &writen);
 
     if (res != FR_OK) {
+        loggingEnabled = false;
         digitalWrite(DISK_LED, false);
         sys.tasks.logger.log("SD Write Error");
     }
 
     res = f_sync(&file_object); //update file structure
     if (res != FR_OK) {
+        loggingEnabled = false;
         digitalWrite(DISK_LED, false);
         sys.tasks.logger.log("SD Flush Error");
     }
-
 }

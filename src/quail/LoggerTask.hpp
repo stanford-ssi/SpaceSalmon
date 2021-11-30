@@ -26,25 +26,21 @@ typedef enum
 class LoggerTask : public Task<1000>
 {
 private:
-  static StrBuffer<10000> strBuffer;
-
-  static char lineBuffer[10000];
-
-  static char inputLineBuffer[1000];
-
-  static FATFS fs;
-  static FIL file_object;
-  static FIL shitl_file_object;
-
-  static bool loggingEnabled = false;
-  static bool shitlEnabled = false;
+  StrBuffer<10000> strBuffer;
+  char lineBuffer[10000];
+  char inputLineBuffer[1000];
+  FATFS fs;
+  FIL file_object;
+  FIL shitl_file_object;
+  bool loggingEnabled = true;
+  bool shitlEnabled = false;
 
   void activity();
-  static void readSHITL();
-  static void writeUSB(char *buf);
-  static void writeSD(char *buf);
-  static void format();
-  static char* findFile(int& start);
+  void readSHITL();
+  void writeUSB(char *buf);
+  void writeSD(char *buf);
+  void format();
+  void findFile(char* filename, size_t filesize, int* lognum);
 
 public:
   LoggerTask(uint8_t priority);
