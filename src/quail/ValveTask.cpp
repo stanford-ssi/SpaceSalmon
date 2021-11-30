@@ -12,7 +12,12 @@ ValveTask::ValveTask(uint8_t priority) : Task(priority, "Valves"), numValves(MAX
 
 void ValveTask::configure() {
     valveManager = xEventGroupCreateStatic(&evBuf);
+    valves[0] = {"S3", 2, 122};
+    valves[0] = {"S4", 3, 122};
+    valves[0] = {"S5", 4, 122};
     valves[0] = {"S6", 5, 122};
+    valves[0] = {"S7", 6, 122};
+    valves[0] = {"S8", 7, 122};
     for (uint8_t i = 0; i < numValves; i++) {
         pinMode(SOLENOID_START + valves[i].num, OUTPUT);
     }
@@ -20,12 +25,10 @@ void ValveTask::configure() {
 
 
 void ValveTask::activity() {
-    openValve(5);
     while(true) {
         uint32_t flags = xEventGroupWaitBits(valveManager, 0xff, true, false, NEVER);
         for(uint8_t i = 0; i < numValves; i++) {
             if(flags & (1UL << valves[i].num)) { 
-                // digitalWrite(SOLENOID_START + valves[i].num, 1);
                 analogWrite(SOLENOID_START + valves[i].num, valves[i].pwm);
             }
         }
