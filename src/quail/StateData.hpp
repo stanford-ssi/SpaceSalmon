@@ -10,6 +10,8 @@
 
 #include "ValveTask.hpp"
 
+#define ERR_BUF_SIZE 20
+
 class StateData
 {
 public:
@@ -20,6 +22,9 @@ public:
     float getSensorState(uint8_t ch_id); // returns the corresponding state value for a given sensor
     uint8_t getSolenoidState(); // returns the bit map of ematch states
     uint8_t getEmatchState(); // returns the bit map of ematch states
+    void setError(const char* error_msg); // set the error string
+    char* getError(); // returns pointer to head of error string
+    void clearError(); // clear the error message
     
 private:
     float sensorstate [16]; // array of floats storing sensor values using their ADC channel id as index (16 possible channels)
@@ -29,4 +34,6 @@ private:
     Mutex SVmutex; // mutex for solenoid valve state
     Mutex EMmutex; // mutex for ematch state
     Mutex senseMutex; // mutex for sensor state
+    Mutex errMutex; // mutex for error
+    char error_buf[ERR_BUF_SIZE]; // string for storing errors
 };

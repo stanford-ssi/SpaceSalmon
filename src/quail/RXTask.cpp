@@ -29,9 +29,12 @@ void RXTask::activity(){
     }
 };
 
-void RXTask::process_cmd(cmd_packet_t cmd){
+void RXTask::process_cmd(const cmd_packet_t cmd){
     curr_cmd.clear();
-    deserializeJson(curr_cmd, cmd.data); // turn string data into a json
+    DeserializationError ret = deserializeMsgPack(curr_cmd, cmd.data); // turn string data into a json
+    if(ret != DeserializationError::Ok){
+        return; // failed to parse MsgPack, do nothing with this string
+    }
     if(curr_cmd.containsKey("openSV"))
         open_solenoid(curr_cmd["openSV"]);
     if(curr_cmd.containsKey("closeSV"))

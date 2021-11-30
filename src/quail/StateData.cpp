@@ -14,6 +14,11 @@ StaticJsonDocument<1024>* StateData::getState()
     stateJSON["SV"] = sys.statedata.getSolenoidState(); // most efficient way to send is just as the raw uint, can decode on groundside
     stateJSON["EM"] = sys.statedata.getEmatchState(); // most efficient way to send is just as the raw uint, can decode on groundside
     stateJSON["logging"] = sys.tasks.logger.isLoggingEnabled();
+    char err[ERR_BUF_SIZE];
+    char* err = sys.statedata.getError();
+    if(strlen(err)) {// if an error is present
+        stateJSON['error'] = err;
+    }
     return &stateJSON;
 };
 
@@ -65,3 +70,19 @@ uint8_t StateData::getEmatchState()
     EMmutex.give();
     return temp;
 };
+
+void StateData::setError(const char* error_msg){
+    errMutex.take(NEVER);
+    memcpy(error_buf, error_msg, ERR_BUF_SIZE);
+    errMutex.give();
+};
+
+char* StateData::getError(){
+    return error_buf;
+}
+
+void StateData::clearError(){
+    errMutex.take(NEVER);
+    error_buf[0] = '\0'; // clear error
+    errMutex.give();
+}
