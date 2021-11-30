@@ -11,7 +11,7 @@
 #include "StrBuffer.hpp"
 #include "Task.hpp"
 
-#define DISK_LED 3
+#define DISK_LED 4
 
 typedef enum
 {
@@ -36,14 +36,15 @@ private:
   static FIL file_object;
   static FIL shitl_file_object;
 
-  static bool loggingEnabled;
-  static bool shitlEnabled;
+  static bool loggingEnabled = false;
+  static bool shitlEnabled = false;
 
   void activity();
   static void readSHITL();
   static void writeUSB(char *buf);
   static void writeSD(char *buf);
   static void format();
+  static char* findFile(int& start);
 
 public:
   LoggerTask(uint8_t priority);
