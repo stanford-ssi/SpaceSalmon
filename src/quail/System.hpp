@@ -10,22 +10,25 @@ class System;
 // #define RADIO_TXRX // uncomment this to use Radio for TX/RX
 #define SENSOR_PRIORITY 3 // set sensor priority
 
-// #include "Sensor.hpp"
 #include "PressureSensor.hpp"
 // #include "ThermalSensor.hpp"
 #include "LoadSensor.hpp"
+#include "ValveTask.hpp"
 #include "ADCTask.hpp"
 #include "StateData.hpp"
 #include "FireTask.hpp"
-// #include "LoggerTask.hpp"
+#include "LoggerTask.hpp"
 #include "TXTask.hpp"
 #include "RXTask.hpp"
 #ifdef RADIO_TXRX
     #include "RadioTask.hpp"
 #endif
+<<<<<<< HEAD
 //#include "SolenoidTask.hpp"
 // #include "FireTask.hpp"
 #include "ValveTask.hpp"
+=======
+>>>>>>> origin/quail-dev-max
 
 class System
 { 
@@ -60,14 +63,14 @@ public:
     public:
         ValveTask valvetask = ValveTask(3, 1);
         ADCTask adctask = ADCTask(2); // passes ADC raw data to the appropriate sensor
-        //SolenoidTask soltask = SolenoidTask(6); //updates solenoid states 
+        ValveTask valvetask = ValveTask(6, 22); // controls solenoids 
         FireTask firetask = FireTask(6, 20, 21); //fires squibs for ematches
         #ifdef RADIO_TXRX // if using radio, create a RadioTask
             RadioTask radiotask = RadioTask(4); //collects and sends information over radio
         #endif
         TXTask txtask = TXTask(4, 3000); //regularly collects state data, logs and sends over USB or radio
         RXTask rxtask = RXTask(5, 100); //processes commands from USB or radio
-        //LoggerTask logger = LoggerTask(1); // logs data to SD during idle time, writes USB data as available
+        LoggerTask logger = LoggerTask(1); // logs data to SD during idle time, writes USB data as available
     };
 
     Tasks tasks;

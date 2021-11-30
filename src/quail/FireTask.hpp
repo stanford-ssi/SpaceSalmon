@@ -15,6 +15,11 @@
 
 #define FIRE_CMD_RCVD 0b01
 
+typedef enum{
+    FIRED = 1,
+    UNFIRED = 0,
+} ematch_state_t; // state indicators for EMs to keep the nomenclature consistent
+
 typedef struct {
     Squib* squib;
     Squib_FireType firecmd;
