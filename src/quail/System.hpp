@@ -23,12 +23,6 @@ class System;
 #ifdef RADIO_TXRX
     #include "RadioTask.hpp"
 #endif
-<<<<<<< HEAD
-//#include "SolenoidTask.hpp"
-// #include "FireTask.hpp"
-#include "ValveTask.hpp"
-=======
->>>>>>> origin/quail-dev-max
 
 class System
 { 
@@ -61,7 +55,6 @@ public:
     class Tasks
     {
     public:
-        ValveTask valvetask = ValveTask(3, 1);
         ADCTask adctask = ADCTask(2); // passes ADC raw data to the appropriate sensor
         ValveTask valvetask = ValveTask(6, 22); // controls solenoids 
         FireTask firetask = FireTask(6, 20, 21); //fires squibs for ematches
