@@ -12,7 +12,7 @@ LoggerTask::LoggerTask(uint8_t priority) : Task(priority, "Logger") {
 
     if (res != FR_OK) {
         loggingEnabled = false;
-        sys.tasks.txtask.send("Could Not Mount Disk");
+        sys.statedata.setError("Could Not Mount Disk");
     } 
 }
 
@@ -43,7 +43,7 @@ void LoggerTask::findFile(char* filename, size_t filesize, int* lognum) {
         snprintf(filename, filesize, "log%u.txt", *lognum);
         res = f_stat(filename, NULL);
         if (res != FR_OK) {
-            sys.tasks.txtask.send("A log file is corrupted");
+            sys.statedata.setError("A log file is corrupted");
         }
     }
 }
@@ -57,7 +57,7 @@ void LoggerTask::activity()
     FRESULT res;
     do {
         findFile(file_name, 20, &file_num);
-        sys.tasks.txtask.send("Trying to open log file");
+        sys.statedata.setError("Trying to open log file");
         res = f_open(&file_object, file_name, FA_CREATE_ALWAYS | FA_WRITE);
 
     } while(res != FR_OK);

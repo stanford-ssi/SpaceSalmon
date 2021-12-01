@@ -14,7 +14,6 @@ StaticJsonDocument<1024>* StateData::getState()
     stateJSON["SV"] = sys.statedata.getSolenoidState(); // most efficient way to send is just as the raw uint, can decode on groundside
     stateJSON["EM"] = sys.statedata.getEmatchState(); // most efficient way to send is just as the raw uint, can decode on groundside
     stateJSON["logging"] = sys.tasks.logger.isLoggingEnabled();
-    char err[ERR_BUF_SIZE];
     char* err = sys.statedata.getError();
     if(strlen(err)) {// if an error is present
         stateJSON['error'] = err;
@@ -29,7 +28,7 @@ void StateData::setSensorState(uint8_t ch_id, float ch_val)
     senseMutex.give();
 };
 
-void StateData::setSolenoidState(uint8_t sol_ch, solenoid_state_t solenoid_state,bool updateSVs = true)
+void StateData::setSolenoidState(uint8_t sol_ch, solenoid_state_t solenoid_state,bool updateSVs)
 {
     SVmutex.take(NEVER);
     // clear then set the bit corresponding to the desired sol_ch (zero indexed)
@@ -39,7 +38,7 @@ void StateData::setSolenoidState(uint8_t sol_ch, solenoid_state_t solenoid_state
         sys.tasks.valvetask.updateValves(); // send signal to valvetask that solenoid state has changed
 };
 
-void StateData::fireEmatch(uint8_t ematch_ch, bool updateEMs = true)
+void StateData::fireEmatch(uint8_t ematch_ch, bool updateEMs)
 {
     EMmutex.take(NEVER);
     // clear then set the bit corresponding to the desired sol_ch (zero indexed)
