@@ -19,9 +19,16 @@ typedef enum{
     NORMALLY_OPEN = CLOSED,
 } solenoid_normal_t; // defines when the solenoid ought to be powered
 
+typedef enum {
+    SMALL = 130,
+    MEDIUM = 220, // Edelbrook
+    LARGE = 180, // Pro BigShot
+    ABORT = 255
+} solenoid_pwm_t; // making solenoid pwm values more readable, values taken from old quail
+
 typedef struct {
     char* name;
-    uint8_t pwm;
+    solenoid_pwm_t pwm;
     solenoid_normal_t normal;
 } solenoid_t;
 
