@@ -17,8 +17,8 @@ class StateData
 public:
     static StaticJsonDocument<1024>* getState(); // returns json data packet of current state for telem output
     void setSensorState(uint8_t ch_id, float ch_val); // sets the corresponding state value for a given sensor
-    void setSolenoidState(uint8_t sol_ch, solenoid_state_t solenoid_state); // sets the corresponding desired state for a given solenoid
-    void fireEmatch(uint8_t ematch_ch); // sets an ematch state to "fired"
+    void setSolenoidState(uint8_t sol_ch, solenoid_state_t solenoid_state, bool updateSVs = true); // sets the corresponding desired state for a given solenoid
+    void fireEmatch(uint8_t ematch_ch, bool updateEMs = true); // sets an ematch state to "fired"
     float getSensorState(uint8_t ch_id); // returns the corresponding state value for a given sensor
     uint8_t getSolenoidState(); // returns the bit map of ematch states
     uint8_t getEmatchState(); // returns the bit map of ematch states

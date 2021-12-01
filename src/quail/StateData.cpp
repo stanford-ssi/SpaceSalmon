@@ -29,22 +29,24 @@ void StateData::setSensorState(uint8_t ch_id, float ch_val)
     senseMutex.give();
 };
 
-void StateData::setSolenoidState(uint8_t sol_ch, solenoid_state_t solenoid_state)
+void StateData::setSolenoidState(uint8_t sol_ch, solenoid_state_t solenoid_state,bool updateSVs = true)
 {
     SVmutex.take(NEVER);
     // clear then set the bit corresponding to the desired sol_ch (zero indexed)
     solenoidstate = (solenoidstate & ~(1U << sol_ch)) | (solenoid_state << sol_ch); 
     SVmutex.give();
-    sys.tasks.valvetask.updateValves(); // send signal to valvetask that solenoid state has changed
+    if(updateSVs)
+        sys.tasks.valvetask.updateValves(); // send signal to valvetask that solenoid state has changed
 };
 
-void StateData::fireEmatch(uint8_t ematch_ch)
+void StateData::fireEmatch(uint8_t ematch_ch, bool updateEMs = true)
 {
     EMmutex.take(NEVER);
     // clear then set the bit corresponding to the desired sol_ch (zero indexed)
     ematchstate = (ematchstate | (FIRED << ematch_ch)); // set channelto indicate fired status
     EMmutex.give();
-    sys.tasks.firetask.fireEmatch(ematch_ch); // send signal to firetask that ematch state has changed
+    if(updateEMs)
+        sys.tasks.firetask.fireEmatch(ematch_ch); // send signal to firetask that ematch state has changed
 };
 
 float StateData::getSensorState(uint8_t ch_id)

@@ -36,10 +36,14 @@ private:
 
     // functions used for executing commands
     static void open_solenoid(uint8_t sol_ch); // sets solenoid state to open
+    static void open_solenoids(JsonArrayConst sol_ch); // sets multiple solenoid state to open
     static void close_solenoid(uint8_t sol_ch); // sets solenoid state of given channel to closed
+    static void close_solenoids(JsonArrayConst sol_ch); // sets solenoid state of multiple channels to closed
     void pulse_solenoid(uint8_t sol_ch, uint16_t pulse_dur_ms); // reads a time in milliseconds from serial, opens solenoid, sets a timer to close solenoid after specified duration
-    static void close_solenoid(TimerHandle_t xTimer); //close the solenoid associated with the given xTimer
+    void pulse_solenoids(JsonArrayConst sol_ch, uint16_t pulse_dur_ms);
+    static void _close_solenoid(TimerHandle_t xTimer); //close the solenoid associated with the given xTimer
     static void fire_ematch(uint8_t em_ch);
+    static void fire_ematches(JsonArrayConst em_ch);
 
     // TODO: implement the following
     // void config_radio(); // reads radio settings from serial and sends to radio settings msgbuffer
