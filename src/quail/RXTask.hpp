@@ -10,29 +10,34 @@
 #include "ArduinoJson.h"
 #include "Task.hpp"
 
-#define MAX_CMD_LENGTH 10 // maximum length of a command, in bytes
+#define MAX_CMD_LENGTH 255 // maximum length of a command, in bytes (based on radio command max size)
 #define CMD_ENDLINE 0x0A // endline indicator for a command - null char
 
-typedef struct { uint8_t data[255]; } cmd_packet_t;
+typedef struct { uint8_t data[MAX_CMD_LENGTH]; } cmd_packet_t;
 
-class RXTask: public Task<1000>
+class RXTask: public Task<2000>
 {
 public:
     RXTask(uint8_t priority, uint16_t rx_interval_ms);
     void activity();
+    void sendcmd(const char* cmd); // manually write data to the input buffer for debugging
+
 private:
     const uint16_t rx_interval_ms; // time to wait before checking command buffer
     void readInput(); // check if input is available, returns true if successful read
     uint8_t readByte(); // read a byte from the input buffer (radio or serial)
-    MsgBuffer<cmd_packet_t, 2550> cmdbuf; // buffer for input - can hold 10 commands before getting full
-    StaticJsonDocument<255> curr_cmd; // storage for most recently received json
+    MsgBuffer<cmd_packet_t, MAX_CMD_LENGTH*2> cmdbuf; // buffer for input - can hold 10 commands before getting full
+    StaticJsonDocument<MAX_CMD_LENGTH> curr_cmd; // storage for most recently received json
+    StaticJsonDocument<MAX_CMD_LENGTH> wait_cmd; // storage for command used in waitThen callback
+    static StaticJsonDocument<1024> usercmds; // storage for usercmds, cmd strings defined by the user
 
     TimerHandle_t pulseTimers[8]; // xTimers for callback (timer IDS correspond to the array index & solenoid channel)
     StaticTimer_t pulsebufs[8]; // xTimer static buffer for pulse timers
-    // TimerHandle_t launchTimer; // xTimer for launch
-    // StaticTimer_t launchbuf; // xTimer static buffer for launch timer
+    TimerHandle_t waitTimer; // xTimer for waitThen commands
+    StaticTimer_t waitbuf; // xTimer static buffer for waitTimer
 
-    void process_cmd(cmd_packet_t cmd); // uses the command defs from above to determine what to do with a received command
+    void process_cmd_json(JsonObjectConst cmd); // uses the command defs from above to determine what to do with a received command
+    void process_cmd_array(JsonArrayConst cmd_arr);
 
     // functions used for executing commands
     static void open_solenoid(uint8_t sol_ch); // sets solenoid state to open
@@ -44,6 +49,8 @@ private:
     static void _close_solenoid(TimerHandle_t xTimer); //close the solenoid associated with the given xTimer
     static void fire_ematch(uint8_t em_ch);
     static void fire_ematches(JsonArrayConst em_ch);
+    void wait_then(JsonObjectConst cmd, uint16_t wait_time);
+    void wait_callback(TimerHandle_t xTimer);
 
     // TODO: implement the following
     // void config_radio(); // reads radio settings from serial and sends to radio settings msgbuffer

@@ -1,0 +1,42 @@
+// Quail primitives
+fire_ematch(channel); // fire ematch
+open_SV(channel); // open solenoid
+close_SV(channel); // close solenoid
+pulse_SV(channel, time); // pulse solenoid using xTimer for time
+wait_Then(channel, cmd); // use xTimer to set callback of process_JSON(cmd) or process_JSONarray(cmd) depending on cmd
+
+
+process_JSON(JsonObject cmd)
+	// if cmd contains openSV, 
+		// open_SV(cmd[openSV])
+	// if cmd contains closeSV, do
+		// close_SV(cmd[closeSV])
+	// if cmd contains pulseSV && pulseTime, do
+		// pulse_SV(cmd[pulseSV], cmd[pulseTime])
+	// if cmd contains fireEM, do
+		// fire_EM(cmd[fireEM])
+	// if cmd contains waitThen && waitTime, do
+		// wait_Then(cmd[waitTime],cmd[waitThen])
+	// if cmd contains userCmd,
+		// if usercmdJSON[cmd[userCmd]] exists
+			// if usercmdJSON[userCmd] is JSON, processJSON(usercmdJSON[userCmd])
+			// if usercmdJSON[userCmd] is JSONarray, processJSONArray(usercmdJSON[userCmd])
+
+process_array()
+	// for each cmd in array
+		// if cmd is array, process_array
+		// if cmd is JSON, process_JSON
+	
+e.g. usercmdJSON = {"abortOx":{"openSV":[1,2]},
+		    "launch":[{"closeSV":{2,3}}, {"waitThen":{"fireEM":1, "waitThen":{"openSV":[1,2]}, "waitTime":4000}, "waitTime":10000}],
+		   }
+
+// quail could receive these commands over serial
+{"openSV":[2,3], "closeSV":1}
+{"pulseSV":1, "pulseTime":100}
+{"userCmd":"launch"} // ~ equivalent to sending the following lines from the GUI
+		     // {"closeSV":{2,3}}
+		     // // waiting 10 seconds
+		     // {"fireEM":1}
+		     // // waiting 4 seconds
+		     // {"openSV":[1,2]}
