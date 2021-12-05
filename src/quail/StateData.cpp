@@ -9,7 +9,7 @@ Mutex StateData::errMutex; // mutex for error
 
 StaticJsonDocument<1024>* StateData::getState()
 {
-    //stateJSON.clear(); // clear memory pool of JSON
+    stateJSON.clear(); // clear memory pool of JSON
     // Update time
     stateJSON["tick"] = xTaskGetTickCount();
     // Update statepacket from sensor, solenoid, and ematch statuses
@@ -20,7 +20,7 @@ StaticJsonDocument<1024>* StateData::getState()
     stateJSON["logging"] = sys.tasks.logger.isLoggingEnabled();
     char* err = sys.statedata.getError();
     if(strlen(err)) {// if an error is present
-        stateJSON['error'] = err;
+        stateJSON["error"] = err;
     }
     return &stateJSON;
 };
@@ -78,7 +78,7 @@ uint8_t StateData::getEmatchState()
 
 void StateData::setError(const char* error_msg){
     errMutex.take(NEVER);
-    memcpy(error_buf, error_msg, ERR_BUF_SIZE);
+    memcpy(error_buf, error_msg, strlen(error_msg));
     errMutex.give();
 };
 

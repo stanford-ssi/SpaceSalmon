@@ -34,7 +34,7 @@ void TXTask::activity() {
                 sys.statedata.clearError(); // clear error after sending over radio
             }
             #else
-                sys.statedata.clearError(); // clear state data after sending once
+            sys.statedata.clearError(); // clear state data after sending once
             #endif
         }
     }

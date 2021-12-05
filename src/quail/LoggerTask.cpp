@@ -48,7 +48,7 @@ void LoggerTask::activity()
 
     if (res != FR_OK) {
         loggingEnabled = false;
-       // sys.statedata.setError("Could Not Mount Disk");
+        sys.statedata.setError("Could Not Mount Disk");
     } 
     while(!loggingEnabled){vTaskDelay(NEVER);}; // failed to mount SD
 
