@@ -17,7 +17,7 @@ StaticJsonDocument<1024>* StateData::getState()
         stateJSON["sense"][(sys.sensors[i])->ch_name] = sys.statedata.getSensorState(i);
     stateJSON["SV"] = sys.statedata.getSolenoidState(); // most efficient way to send is just as the raw uint, can decode on groundside
     stateJSON["EM"] = sys.statedata.getEmatchState(); // most efficient way to send is just as the raw uint, can decode on groundside
-    // stateJSON["logging"] = sys.tasks.logger.isLoggingEnabled();
+    stateJSON["logging"] = sys.tasks.logger.isLoggingEnabled();
     char* err = sys.statedata.getError();
     if(strlen(err)) {// if an error is present
         stateJSON['error'] = err;

@@ -2,18 +2,6 @@
 #include "main.hpp"
 
 LoggerTask::LoggerTask(uint8_t priority) : Task(priority, "Logger") {
-    SSISD sd;
-    sd.init();
-    vTaskDelay(6000); 
-
-    //Clear file system object
-    memset(&fs, 0, sizeof(FATFS));
-    FRESULT res = f_mount(&fs, "", 1);
-
-    if (res != FR_OK) {
-        loggingEnabled = false;
-        sys.statedata.setError("Could Not Mount Disk");
-    } 
 }
 
 void LoggerTask::log(const char* message) {
@@ -50,11 +38,22 @@ void LoggerTask::findFile(char* filename, size_t filesize, int* lognum) {
 
 void LoggerTask::activity()
 {
-    if(!loggingEnabled) return; // failed to mount SD
+    SSISD sd;
+    sd.init();
+    vTaskDelay(6000); 
+
+    // Clear file system object
+    memset(&fs, 0, sizeof(FATFS));
+    FRESULT res = f_mount(&fs, "", 1);
+
+    if (res != FR_OK) {
+        loggingEnabled = false;
+       // sys.statedata.setError("Could Not Mount Disk");
+    } 
+    while(!loggingEnabled){vTaskDelay(NEVER);}; // failed to mount SD
 
     char file_name[20];
     int file_num = 0;
-    FRESULT res;
     do {
         findFile(file_name, 20, &file_num);
         sys.statedata.setError("Trying to open log file");

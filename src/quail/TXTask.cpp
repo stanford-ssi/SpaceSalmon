@@ -15,7 +15,7 @@ void TXTask::activity() {
         // get state JSON
         StaticJsonDocument<1024>* stateJSON = sys.statedata.getState(); // updates and returns pointer to state JSON
         // log
-        // sys.tasks.logger.log(*stateJSON);    
+        sys.tasks.logger.log(*stateJSON);    
 
         if(i == LOG_FACTOR){
             i = 0;
