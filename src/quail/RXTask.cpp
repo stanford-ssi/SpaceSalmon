@@ -2,6 +2,15 @@
 #include "main.hpp"
 
 StaticJsonDocument<1024> RXTask::usercmds;
+StaticJsonDocument<MAX_CMD_LENGTH> RXTask::wait_cmd_doc; // storage for command used in waitThen callback
+StaticJsonDocument<MAX_CMD_LENGTH> RXTask::curr_cmd_doc; 
+JsonObject RXTask::wait_cmd;
+JsonObject RXTask::curr_cmd;
+TimerHandle_t RXTask::pulseTimers[8]; // xTimers for callback (timer IDS correspond to the array index & solenoid channel)
+StaticTimer_t RXTask::pulsebufs[8]; // xTimer static buffer for pulse timers
+TimerHandle_t RXTask::waitTimer; // xTimer for waitThen commands
+StaticTimer_t RXTask::waitbuf; // xTimer static buffer for waitTimer
+
 
 RXTask::RXTask(uint8_t priority, uint16_t rx_interval):Task(priority, "RX"), rx_interval_ms(rx_interval){
     for(uint8_t i = 0; i < 8; i++) {
@@ -14,8 +23,10 @@ RXTask::RXTask(uint8_t priority, uint16_t rx_interval):Task(priority, "RX"), rx_
                                             &(pulsebufs[i])); // static buffer
 
     }
-    waitTimer = xTimerCreateStatic("wait",10000,pdFALSE,(void*)0, RXTask::_close_solenoid, &waitbuf);
-    deserializeJson(RXTask::usercmds, "{\"abortOx\":{\"openSV\":[1,2]},\"launch\":[{\"closeSV\":{2,3}}, {\"waitThen\":{\"fireEM\":1, \"waitThen\":{\"openSV\":[1,2]}, \"waitTime\":4000}, \"waitTime\":10000}] }");
+    waitTimer = xTimerCreateStatic("wait",10000,pdFALSE,(void*)0, RXTask::wait_callback, &waitbuf);
+    curr_cmd = curr_cmd_doc.to<JsonObject>();
+    wait_cmd = wait_cmd_doc.to<JsonObject>();
+    deserializeJson(RXTask::usercmds, "{\"abortOx\":{\"closeSV\":[0,1,2,3,4,5]},\"launch\":[{\"closeSV\":{2,3}}, {\"waitThen\":{\"fireEM\":1, \"waitThen\":{\"openSV\":[1,2]}, \"waitTime\":4000}, \"waitTime\":10000}] }");
 };
 
 void RXTask::activity(){
@@ -27,13 +38,17 @@ void RXTask::activity(){
         while(!cmdbuf.empty()){
             cmdbuf.receive(cmd, false); // receive raw bit data
             // convert bit data to JSON
-            curr_cmd.clear();
-            DeserializationError ret = deserializeJson(curr_cmd, cmd.data);
-            if(ret == DeserializationError::Ok) // if successfully deserialized json
-                process_cmd_json(curr_cmd.to<JsonObject>());
+            curr_cmd_doc.clear();
+            DeserializationError ret = deserializeJson(curr_cmd_doc, cmd.data);
+            if(ret == DeserializationError::Ok){ // if successfully deserialized json
+                process_cmd_json(curr_cmd);
+            }
         }
         vTaskDelayUntil(&lastSensorTime, rx_interval_ms); // wait for a while to allow other tasks time to operate
     }
+    char cmdstr[MAX_CMD_LENGTH];
+    serializeJsonPretty(usercmds, cmdstr);
+    Serial.println(cmdstr);
 };
 
 void RXTask::process_cmd_array(JsonArrayConst cmd_array){
@@ -46,30 +61,44 @@ void RXTask::process_cmd_array(JsonArrayConst cmd_array){
 }
 
 void RXTask::process_cmd_json(JsonObjectConst cmd){ // parses a data string for quail primitive commands or user-defined commands
-
     if(cmd.containsKey("openSV")){
-        if(cmd["openSV"].is<int>())
+        if(cmd["openSV"].is<unsigned int>()){
             open_solenoid(curr_cmd["openSV"]);
+        }
         else if(cmd["openSV"].is<JsonArray>())
             open_solenoids(cmd["openSV"]);
     }
     if(cmd.containsKey("closeSV")){
-        if(cmd["closeSV"].is<int>())
+        if(cmd["closeSV"].is<unsigned int>())
             close_solenoid(cmd["closeSV"]);
         else if(cmd["closeSV"].is<JsonArray>())
             close_solenoids(cmd["closeSV"]);
     }
     if(cmd.containsKey("pulseSV") && cmd.containsKey("pulseTime")) {
-        if(cmd["pulseSV"].is<int>())
+        if(cmd["pulseSV"].is<unsigned int>())
             pulse_solenoid(cmd["pulseSV"], cmd["pulseTime"]);
         else if(cmd["pulseSV"].is<JsonArray>())
             pulse_solenoids(cmd["pulseSV"],  cmd["pulseTime"]);
     }
     if(cmd.containsKey("fireEM")){
-        if(cmd["fireEM"].is<int>())
+        if(cmd["fireEM"].is<unsigned int>())
             fire_ematch(cmd["fireEM"]);
         else if(cmd["fireEM"].is<JsonArray>())
             fire_ematches(cmd["fireEM"]);
+    }
+    if(cmd.containsKey("waitThen")&&cmd.containsKey("waitTime")){
+        wait_then(cmd["waitThen"], cmd["waitTime"]);
+    }
+    if(cmd.containsKey("userCmd")){
+        if(cmd["userCmd"].is<const char*>()){
+            const char* usercmd = cmd["userCmd"];
+            if(usercmds.containsKey(usercmd)){
+                if(usercmds[usercmd].is<JsonObject>())
+                    process_cmd_json(usercmds[usercmd]);
+                else if(usercmds[usercmd].is<JsonArray>())
+                    process_cmd_array(usercmds[usercmd]);
+            }
+        }
     }
 };
 
@@ -89,13 +118,13 @@ void RXTask::pulse_solenoids(JsonArrayConst sol_ch, uint16_t pulse_dur){
 };
 
 void RXTask::open_solenoid(uint8_t sol_ch){
-    sys.statedata.setSolenoidState(sol_ch, OPEN);
+    sys.statedata.setSolenoidState(sol_ch, OPEN, true);
 };
 
 void RXTask::open_solenoids(JsonArrayConst sol_ch){
     uint8_t num_ch = sol_ch.size();
     for(uint8_t i = 0; i < num_ch; i++)
-        sys.statedata.setSolenoidState(sol_ch[i], OPEN, i==num_ch); // update all solenoid states before flagging ValveTask
+        sys.statedata.setSolenoidState(sol_ch[i], OPEN, i==(num_ch-1)); // update all solenoid states before flagging ValveTask
 };
 
 void RXTask::close_solenoid(uint8_t sol_ch){
@@ -105,7 +134,7 @@ void RXTask::close_solenoid(uint8_t sol_ch){
 void RXTask::close_solenoids(JsonArrayConst sol_ch){
     uint8_t num_ch = sol_ch.size();
     for(uint8_t i = 0; i < num_ch; i++)
-        sys.statedata.setSolenoidState(sol_ch[i], CLOSED, i==num_ch);
+        sys.statedata.setSolenoidState(sol_ch[i], CLOSED, i==(num_ch-1));
 };
 
 void RXTask::_close_solenoid(TimerHandle_t xTimer){
@@ -119,22 +148,21 @@ void RXTask::fire_ematch(uint8_t em_ch){
 void RXTask::fire_ematches(JsonArrayConst em_ch){
     uint8_t num_ch = em_ch.size();
     for(uint8_t i = 0; i < num_ch; i++)
-        sys.statedata.fireEmatch(em_ch[i], i==num_ch);
+        sys.statedata.fireEmatch(em_ch[i], i==(num_ch-1));
 };
 
-// void RXTask::wait_then(JsonObjectConst cmd, uint16_t wait_time){
-//     // check that wait timer isn't already in use
-//     if(xTimerIsTimerActive(waitTimer) != pdFALSE)
-//         return; // if timer is already active, don't interrupt it - fail silently
-//     wait_cmd.clear();
-//     wait_cmd = cmd; // update the wait command
-//     xTimerChangePeriod(waitTimer, wait_time, NEVER); // set wait time
-//     xTimerStart(waitTimer, NEVER); // start the timer to close this solenoid
-// };
+void RXTask::wait_then(JsonObjectConst cmd, uint16_t wait_time){
+    // TODO: check that wait timer isn't already in use
+    wait_cmd_doc.clear();
+    wait_cmd.set(cmd); // update the wait command
+    xTimerChangePeriod(waitTimer, wait_time, NEVER); // set wait time
+    xTimerStart(waitTimer, NEVER); // start the timer to close this solenoid
+};
 
-// void RXTask::wait_callback(TimerHandle_t xTimer){
-//     process_cmd_json(wait_cmd.to<JsonObject>()); 
-// };
+void RXTask::wait_callback(TimerHandle_t xTimer){
+    xTimerStop(waitTimer, NEVER);
+    process_cmd_json(wait_cmd); 
+};
 
 void RXTask::sendcmd(const char* cmd){
     cmd_packet_t packet_in;

@@ -31,9 +31,9 @@ private:
     static StaticJsonDocument<1024> stateJSON; // static JSON used to store sensor data for TX
     uint8_t solenoidstate; // 8bit indicator of solenoid status (LSB is first solenoid channel, MSB is last channel)
     uint8_t ematchstate; // 8bit indicator of ematch status (LSB is first ematch channel, MSB is last channel)
-    Mutex SVmutex; // mutex for solenoid valve state
-    Mutex EMmutex; // mutex for ematch state
-    Mutex senseMutex; // mutex for sensor state
-    Mutex errMutex; // mutex for error
+    static Mutex SVmutex; // mutex for solenoid valve state
+    static Mutex EMmutex; // mutex for ematch state
+    static Mutex senseMutex; // mutex for sensor state
+    static Mutex errMutex; // mutex for error
     char error_buf[ERR_BUF_SIZE]; // string for storing errors
 };

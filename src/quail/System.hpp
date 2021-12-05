@@ -64,7 +64,7 @@ public:
         #endif
         TXTask txtask = TXTask(4, 3000); //regularly collects state data, logs and sends over USB or radio
         RXTask rxtask = RXTask(5, 1000); //processes commands from USB or radio
-        LoggerTask logger = LoggerTask(1); // logs data to SD during idle time, writes USB data as available
+        //LoggerTask logger = LoggerTask(1); // logs data to SD during idle time, writes USB data as available
         TestTask testing = TestTask(10); // test task for debugging
     };
 
