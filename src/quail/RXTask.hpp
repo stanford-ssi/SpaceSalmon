@@ -30,6 +30,7 @@ private:
     StaticJsonDocument<MAX_CMD_LENGTH> curr_cmd; // storage for most recently received json
     StaticJsonDocument<MAX_CMD_LENGTH> wait_cmd; // storage for command used in waitThen callback
     static StaticJsonDocument<1024> usercmds; // storage for usercmds, cmd strings defined by the user
+    //bool usercmds_valid; // true if usercmds are valid
 
     TimerHandle_t pulseTimers[8]; // xTimers for callback (timer IDS correspond to the array index & solenoid channel)
     StaticTimer_t pulsebufs[8]; // xTimer static buffer for pulse timers

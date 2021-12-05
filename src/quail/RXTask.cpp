@@ -14,8 +14,8 @@ RXTask::RXTask(uint8_t priority, uint16_t rx_interval):Task(priority, "RX"), rx_
                                             &(pulsebufs[i])); // static buffer
 
     }
-    //waitTimer = xTimerCreateStatic("wait",10000,pdFALSE,(void*)0, RXTask::_close_solenoid, &waitbuf);
-    //deserializeJson(RXTask::usercmds, "{\"abortOx\":{\"openSV\":[1,2]},\"launch\":[{\"closeSV\":{2,3}}, {\"waitThen\":{\"fireEM\":1, \"waitThen\":{\"openSV\":[1,2]}, \"waitTime\":4000}, \"waitTime\":10000}] }");
+    waitTimer = xTimerCreateStatic("wait",10000,pdFALSE,(void*)0, RXTask::_close_solenoid, &waitbuf);
+    deserializeJson(RXTask::usercmds, "{\"abortOx\":{\"openSV\":[1,2]},\"launch\":[{\"closeSV\":{2,3}}, {\"waitThen\":{\"fireEM\":1, \"waitThen\":{\"openSV\":[1,2]}, \"waitTime\":4000}, \"waitTime\":10000}] }");
 };
 
 void RXTask::activity(){
@@ -29,7 +29,7 @@ void RXTask::activity(){
             // convert bit data to JSON
             curr_cmd.clear();
             DeserializationError ret = deserializeJson(curr_cmd, cmd.data);
-            if(ret == DeserializationError::Ok)
+            if(ret == DeserializationError::Ok) // if successfully deserialized json
                 process_cmd_json(curr_cmd.to<JsonObject>());
         }
         vTaskDelayUntil(&lastSensorTime, rx_interval_ms); // wait for a while to allow other tasks time to operate
