@@ -2,14 +2,14 @@ name: PlatformIO Builds
 on: [push, pull_request]
 jobs:
   build:
-    matrix:
-      target:
-            - guppy
-            - salmon
-            - quail
-            - quail-ground
-            - guppy-ground
-
+    strategy:
+      matrix:
+        target:
+              - guppy
+              - salmon
+              - quail
+              - quail-ground
+              - guppy-ground
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
