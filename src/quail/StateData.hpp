@@ -10,7 +10,7 @@
 
 #include "ValveTask.hpp"
 
-#define ERR_BUF_SIZE 20
+#define ERR_BUF_SIZE 40
 
 class StateData
 {

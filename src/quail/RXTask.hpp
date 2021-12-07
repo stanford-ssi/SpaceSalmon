@@ -13,14 +13,19 @@
 #define MAX_CMD_LENGTH 255 // maximum length of a command, in bytes (based on radio command max size)
 #define CMD_ENDLINE 0x0A // endline indicator for a command - null char
 
-typedef struct { uint8_t data[MAX_CMD_LENGTH]; } cmd_packet_t;
+typedef struct cmd_packet{ 
+    StaticJsonDocument<MAX_CMD_LENGTH> cmdbuf; 
+    JsonObject cmd;
+    cmd_packet(){cmd = cmdbuf.to<JsonObject>();};
+} cmd_packet_t;
 
 class RXTask: public Task<2000>
 {
 public:
     RXTask(uint8_t priority, uint16_t rx_interval_ms);
     void activity();
-    void sendcmd(const char* cmd); // manually write data to the input buffer for debugging
+    void sendcmd(const char* cmd); // manually write command to the cmd buffer 
+    void sendcmdJSON(JsonObjectConst cmdJSON); // manually write JSON cmd to the cmd buffer
 
 private:
     const uint16_t rx_interval_ms; // time to wait before checking command buffer

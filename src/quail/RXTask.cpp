@@ -36,19 +36,11 @@ void RXTask::activity(){
     while(true){
         readInput(); // update cmdbuf from input, either radio or serial
         while(!cmdbuf.empty()){
-            cmdbuf.receive(cmd, false); // receive raw bit data
-            // convert bit data to JSON
-            curr_cmd_doc.clear();
-            DeserializationError ret = deserializeJson(curr_cmd_doc, cmd.data);
-            if(ret == DeserializationError::Ok){ // if successfully deserialized json
-                process_cmd_json(curr_cmd);
-            }
+            cmdbuf.receive(cmd, false); // receive JSON command
+            process_cmd_json(curr_cmd);
         }
         vTaskDelayUntil(&lastSensorTime, rx_interval_ms); // wait for a while to allow other tasks time to operate
     }
-    char cmdstr[MAX_CMD_LENGTH];
-    serializeJsonPretty(usercmds, cmdstr);
-    Serial.println(cmdstr);
 };
 
 void RXTask::process_cmd_array(JsonArrayConst cmd_array){
@@ -118,13 +110,15 @@ void RXTask::pulse_solenoids(JsonArrayConst sol_ch, uint16_t pulse_dur){
 };
 
 void RXTask::open_solenoid(uint8_t sol_ch){
-    sys.statedata.setSolenoidState(sol_ch, OPEN, true);
+    if(sol_ch >= 1 && sol_ch<=NUM_SOLENOIDS)
+        sys.statedata.setSolenoidState(sol_ch-1, OPEN, true);
 };
 
 void RXTask::open_solenoids(JsonArrayConst sol_ch){
     uint8_t num_ch = sol_ch.size();
     for(uint8_t i = 0; i < num_ch; i++)
-        sys.statedata.setSolenoidState(sol_ch[i], OPEN, i==(num_ch-1)); // update all solenoid states before flagging ValveTask
+        if(sol_ch >= 1 && sol_ch<=NUM_SOLENOIDS)
+            sys.statedata.setSolenoidState(sol_ch[i], OPEN, i==(num_ch-1)); // update all solenoid states before flagging ValveTask
 };
 
 void RXTask::close_solenoid(uint8_t sol_ch){
@@ -161,13 +155,22 @@ void RXTask::wait_then(JsonObjectConst cmd, uint16_t wait_time){
 
 void RXTask::wait_callback(TimerHandle_t xTimer){
     xTimerStop(waitTimer, NEVER);
-    process_cmd_json(wait_cmd); 
+    sys.tasks.rxtask.sendcmdJSON(wait_cmd); // on callback, send the command to the queue
+    // can't call the command directly here without creating huge timer callback stacks
 };
 
 void RXTask::sendcmd(const char* cmd){
-    cmd_packet_t packet_in;
-    memcpy(packet_in.data, cmd, MAX_CMD_LENGTH);
-    cmdbuf.send(packet_in);
+    cmd_packet_t cmdJSON;
+    DeserializationError ret = deserializeJson(cmdJSON.cmdbuf, cmd);
+    if(ret == DeserializationError::Ok){ // if successfully deserialized json
+            cmdbuf.send(cmdJSON);
+    }
+};
+
+void RXTask::sendcmdJSON(JsonObjectConst cmd){
+    cmd_packet_t cmdJSON;
+    cmdJSON.cmd.set(cmd); // copy this new command to get the right form factor
+    cmdbuf.send(cmdJSON);
 };
 
 void RXTask::readInput(){
@@ -175,12 +178,22 @@ void RXTask::readInput(){
         while(sys.tasks.radiotask.packetAvailable()){
             packet_t packet_in;
             sys.tasks.radiotask.waitForPacket(packet_in); 
-            cmdbuf.send(packet_in.data); // add data to the cmd buffer
+            cmd_packet_t cmdJSON;
+            DeserializationError ret = deserializeJson(cmdJSON.cmdbuf, packet_in.data);
+            if(ret == DeserializationError::Ok){ // if successfully deserialized json
+                    cmdbuf.send(cmdJSON);
+            }
         }
     #endif
     while(Serial.available()){
-        cmd_packet_t packet_in;
-        Serial.readBytesUntil('\n',packet_in.data,255); // endline indicates end of a json cmd
-        cmdbuf.send(packet_in);
+        char packet_in[MAX_CMD_LENGTH];
+        size_t chars_read = Serial.readBytesUntil('\n',packet_in, MAX_CMD_LENGTH); // endline indicates end of a json cmd
+        if(chars_read > 0 && chars_read < MAX_CMD_LENGTH){
+            cmd_packet_t cmdJSON;
+            DeserializationError ret = deserializeJson(cmdJSON.cmdbuf, packet_in);
+            if(ret == DeserializationError::Ok){ // if successfully deserialized json
+                    cmdbuf.send(cmdJSON);
+            }
+        }
     }
 };
