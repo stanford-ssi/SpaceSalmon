@@ -98,8 +98,6 @@ void RadioTask::activity()
 
     uint32_t time = xTaskGetTickCount();
 
-    digitalWrite(2,HIGH); // got past radio setup
-
     while (true)
     {
         //if new settings are available, apply them
