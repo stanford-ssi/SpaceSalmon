@@ -81,18 +81,15 @@ void RadioTask::activity()
             doc["tick"] = xTaskGetTickCount();
             sys.tasks.logger.log(doc);
             vTaskDelay(1000);
-            char buf[40];
-            sprintf(buf,"Failed radio init with code %i", state);
-            sys.statedata.setError(buf);
         }
         else
         {
             break;
         }
     }
-    NVIC_SetPriority(EIC_15_IRQn, 1);
+    NVIC_SetPriority(EIC_8_IRQn, 1); //TODO: this is hardcoded
     lora.setDio1Action(radioISR);
-    NVIC_SetPriority(EIC_15_IRQn, 1);
+    NVIC_SetPriority(EIC_8_IRQn, 1);
 
     lora.setDioIrqParams(SX126X_IRQ_TX_DONE | SX126X_IRQ_RX_DONE | SX126X_IRQ_PREAMBLE_DETECTED | SX126X_IRQ_HEADER_VALID | SX126X_IRQ_HEADER_ERR | SX126X_IRQ_CRC_ERR | SX126X_IRQ_TIMEOUT | SX126X_IRQ_CAD_DETECTED | SX126X_IRQ_CAD_DONE,
                          SX126X_IRQ_TX_DONE | SX126X_IRQ_RX_DONE | SX126X_IRQ_PREAMBLE_DETECTED | SX126X_IRQ_HEADER_VALID | SX126X_IRQ_HEADER_ERR | SX126X_IRQ_CRC_ERR | SX126X_IRQ_TIMEOUT | SX126X_IRQ_CAD_DETECTED | SX126X_IRQ_CAD_DONE);
@@ -198,7 +195,6 @@ void RadioTask::activity()
         }
         else
         {
-            digitalWrite(3,HIGH); // starting a TX!
             log(info, "Time to TX");
             do
             {
@@ -248,14 +244,12 @@ void RadioTask::activity()
                 log(warning, "TX Queue Failure");
                 tx_failure_counter++;
             }
-            digitalWrite(3,LOW); // done TXing
         }
     }
 }
 
 void RadioTask::log(log_type t, const char *msg)
 {
-    Serial.println(msg);
     if (t & settings.log_mask)
     {
         StaticJsonDocument<1000> doc;
