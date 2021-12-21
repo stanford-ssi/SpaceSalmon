@@ -13,30 +13,25 @@
 #define MAX_CMD_LENGTH 255 // maximum length of a command, in bytes (based on radio command max size)
 #define CMD_ENDLINE 0x0A // endline indicator for a command - null char
 
-typedef struct cmd_packet{ 
-    StaticJsonDocument<MAX_CMD_LENGTH> cmdbuf; 
-    JsonObject cmd;
-    cmd_packet(){cmd = cmdbuf.to<JsonObject>();};
-} cmd_packet_t;
+typedef struct{
+    StaticJsonDocument<MAX_CMD_LENGTH> doc;
+} cmd_t;
 
-class RXTask: public Task<2000>
+class RXTask: public Task<3000>
 {
 public:
     RXTask(uint8_t priority, uint16_t rx_interval_ms);
     void activity();
     void sendcmd(const char* cmd); // manually write command to the cmd buffer 
-    void sendcmdJSON(JsonObjectConst cmdJSON); // manually write JSON cmd to the cmd buffer
+    void sendcmdJSON(StaticJsonDocument<MAX_CMD_LENGTH> cmdJSON); // manually write JSON cmd to the cmd buffer
 
 private:
     const uint16_t rx_interval_ms; // time to wait before checking command buffer
     void readInput(); // check if input is available, returns true if successful read
-    uint8_t readByte(); // read a byte from the input buffer (radio or serial)
-    MsgBuffer<cmd_packet_t, MAX_CMD_LENGTH*2> cmdbuf; // buffer for input - can hold 10 commands before getting full
-    static StaticJsonDocument<MAX_CMD_LENGTH> curr_cmd_doc; // storage for most recently received json
-    static JsonObject curr_cmd;
-    static StaticJsonDocument<MAX_CMD_LENGTH> wait_cmd_doc; // storage for command used in waitThen callback
-    static JsonObject wait_cmd;
-    static StaticJsonDocument<1024> usercmds; // storage for usercmds, cmd strings defined by the user
+    MsgBuffer<cmd_t, sizeof(cmd_t)*10> cmdbuf; // buffer for input - can hold 10 commands before getting full
+    static StaticJsonDocument<MAX_CMD_LENGTH> curr_cmd;
+    static StaticJsonDocument<MAX_CMD_LENGTH> wait_cmd; // array of wait commands (size sets max number of )
+    static StaticJsonDocument<MAX_CMD_LENGTH*10> usercmds; // storage for usercmds, cmd strings defined by the user
     //bool usercmds_valid; // true if usercmds are valid
 
     static TimerHandle_t pulseTimers[8]; // xTimers for callback (timer IDS correspond to the array index & solenoid channel)
@@ -55,17 +50,15 @@ private:
     static void pulse_solenoid(uint8_t sol_ch, uint16_t pulse_dur_ms); // reads a time in milliseconds from serial, opens solenoid, sets a timer to close solenoid after specified duration
     static void pulse_solenoids(JsonArrayConst sol_ch, uint16_t pulse_dur_ms);
     static void _close_solenoid(TimerHandle_t xTimer); //close the solenoid associated with the given xTimer
-    static void fire_ematch(uint8_t em_ch);
-    static void fire_ematches(JsonArrayConst em_ch);
-    static void wait_then(JsonObjectConst cmd, uint16_t wait_time);
-    static void wait_callback(TimerHandle_t xTimer);
+    static void fire_ematch(uint8_t em_ch); //fire one ematch
+    static void fire_ematches(JsonArrayConst em_ch); // fire multiple ematches
+    static void wait_then(JsonObjectConst cmd, uint16_t wait_time_ms); // executes cmd after wait_time(ms)
+    static void wait_callback(TimerHandle_t xTimer); // the callback function
+    static void start_seq(const char* seq_name);
+    static void stop_seq(const char* seq_name);
+    static void pause_seq(const char* seq_name);
+    static void play_seq(const char* seq_name);
 
     // TODO: implement the following
     // void config_radio(); // reads radio settings from serial and sends to radio settings msgbuffer
-    // void abort_fuel(); // aborts fuel-side 
-    // void abort_ox(); // aborts ox-side
-    // void launch(); // starts launch sequence
-    // static void fire_igniter(TimerHandle_t xTimer); // fires engine igniter ematches
-    // static void open_main_valves(TimerHandle_t xTimer); // opens main engine valves
-    // void cancel_launch(); // cancels the launch sequence
 };

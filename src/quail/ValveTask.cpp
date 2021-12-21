@@ -4,12 +4,12 @@
 
 ValveTask::ValveTask(uint8_t priority, uint8_t valve_pin_start) : Task(priority, "Valves"), valve_pin_start(valve_pin_start){
     valveManager = xEventGroupCreateStatic(&evBuf);
-    valves[0] = {"S1", ABORT, NORMALLY_CLOSED};
-    valves[1] = {"S2", ABORT, NORMALLY_CLOSED};
-    valves[2] = {"S3", ABORT, NORMALLY_CLOSED};
-    valves[3] = {"S4", ABORT, NORMALLY_CLOSED};
-    valves[4] = {"S5", ABORT, NORMALLY_CLOSED};
-    valves[5] = {"S6", ABORT, NORMALLY_CLOSED};
+    valves[0] = {"S1", REAL_SMALL, NORMALLY_CLOSED};
+    valves[1] = {"S2", P_SMALL, NORMALLY_CLOSED};
+    valves[2] = {"S3", SMALL, NORMALLY_CLOSED};
+    valves[3] = {"S4", REAL_SMALL, NORMALLY_CLOSED};
+    valves[4] = {"S5", REAL_SMALL, NORMALLY_CLOSED};
+    valves[5] = {"S6", REAL_SMALL, NORMALLY_CLOSED};
     valves[6] = {"S7", ABORT, NORMALLY_CLOSED};
     valves[7] = {"S8", ABORT, NORMALLY_CLOSED};
     for (uint8_t i = 0; i < NUM_SOLENOIDS; i++) {

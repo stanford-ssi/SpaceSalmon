@@ -20,6 +20,8 @@ typedef enum{
 } solenoid_normal_t; // defines when the solenoid ought to be powered
 
 typedef enum {
+    REAL_SMALL = 10,
+    P_SMALL = 50,
     SMALL = 130,
     MEDIUM = 220, // Edelbrook
     LARGE = 180, // Pro BigShot
