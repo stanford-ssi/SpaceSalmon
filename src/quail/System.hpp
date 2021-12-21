@@ -15,15 +15,15 @@ class System;
 #include "sensors/LoadSensor.hpp"
 #include "sensors/ADCTask.hpp"
 #include "actuators/ValveTask.hpp"
-#include "StateData.hpp"
 #include "actuators/FireTask.hpp"
 #include "rx_tx_log/LoggerTask.hpp"
 #include "rx_tx_log/TXTask.hpp"
 #include "rx_tx_log/RXTask.hpp"
-#include "SequenceTask.hpp"
 #ifdef RADIO_TXRX
     #include "rx_tx_log/RadioTask.hpp"
 #endif
+#include "StateData.hpp"
+#include "SequenceTask.hpp"
 
 class System
 { 
