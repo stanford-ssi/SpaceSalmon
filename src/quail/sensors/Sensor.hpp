@@ -1,8 +1,8 @@
 #pragma once
 
 #include "SPI.h"
-#include "ad7124-lib/ad7124.h"
 #include "Task.hpp"
+#include "ad7124-lib/ad7124.h"
 #include "MsgBuffer.hpp"
 #include "event_groups.h"
 #include "Mutex.hpp"

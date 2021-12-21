@@ -5,24 +5,24 @@ class System;
 #include <Arduino.h>
 
 #include "SPI.h"
-#include "ad7124-lib/ad7124.h"
+#include "sensors/ad7124-lib/ad7124.h"
 
 #define RADIO_TXRX // uncomment this to use Radio for TX/RX
 #define SENSOR_PRIORITY 3 // set sensor priority
 
-#include "PressureSensor.hpp"
-#include "ThermalSensor.hpp"
-#include "LoadSensor.hpp"
-#include "ValveTask.hpp"
-#include "ADCTask.hpp"
+#include "sensors/PressureSensor.hpp"
+#include "sensors/ThermalSensor.hpp"
+#include "sensors/LoadSensor.hpp"
+#include "sensors/ADCTask.hpp"
+#include "actuators/ValveTask.hpp"
 #include "StateData.hpp"
-#include "FireTask.hpp"
-#include "LoggerTask.hpp"
-#include "TXTask.hpp"
-#include "RXTask.hpp"
+#include "actuators/FireTask.hpp"
+#include "rx_tx_log/LoggerTask.hpp"
+#include "rx_tx_log/TXTask.hpp"
+#include "rx_tx_log/RXTask.hpp"
 #include "SequenceTask.hpp"
 #ifdef RADIO_TXRX
-    #include "RadioTask.hpp"
+    #include "rx_tx_log/RadioTask.hpp"
 #endif
 
 class System

@@ -1,5 +1,4 @@
 #include "SequenceTask.hpp"
-#include "RXTask.hpp"
 #include "main.hpp"
 
 TimerHandle_t SequenceTask::delayTimer;

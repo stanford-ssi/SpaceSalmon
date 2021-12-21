@@ -9,7 +9,7 @@
 
 #include "Task.hpp"
 
-#include "../periph/MC33797/Squib.hpp"
+#include "../../periph/MC33797/Squib.hpp"
 
 #define NUM_EM_CHANNELS 8
 

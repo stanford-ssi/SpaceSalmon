@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Sensor.hpp"
-#include "ad7124-lib/ad7124.h"
 
 class LoadSensor: public Sensor{
     public:

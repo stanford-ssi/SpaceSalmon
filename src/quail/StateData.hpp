@@ -8,8 +8,8 @@
 #include <hal_rtos.h>
 #include "ArduinoJson.h"
 
-#include "SequenceTask.hpp"
-#include "ValveTask.hpp"
+#include "SequenceTask.hpp" // included for max size of sequence filename
+#include "actuators/ValveTask.hpp" // included for solenoid_state_t def
 
 #define ERR_BUF_SIZE 40
 
