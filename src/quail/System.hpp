@@ -11,7 +11,7 @@ class System;
 #define SENSOR_PRIORITY 3 // set sensor priority
 
 #include "PressureSensor.hpp"
-// #include "ThermalSensor.hpp"
+#include "ThermalSensor.hpp"
 #include "LoadSensor.hpp"
 #include "ValveTask.hpp"
 #include "ADCTask.hpp"
@@ -40,15 +40,17 @@ public:
     // PressureSensor PT5 =  PressureSensor("PT5", Ad7124::AIN4Input, RANGE_1000);
     LoadSensor LC1 = LoadSensor("LC1", Ad7124::AIN12Input);
     // LoadSensor LC2 = LoadSensor("LC2", Ad7124::AIN7Input);
+    ThermalSensor TS0 = ThermalSensor("TC0", Ad7124::AIN8Input); //samd51 # defines TC0-7 so don't use those
 
-    Sensor* sensors [3] = {
+    Sensor* sensors [4] = {
         &PT1,
         &PT2,
         // &PT3,
         // &PT4,
         // &PT5,
         &LC1,
-        // &LC2
+        // &LC2,
+        &TS0
     };
 
     StateData statedata = StateData(); //holds current state of sensors/SVs/ematches systems for output + control
