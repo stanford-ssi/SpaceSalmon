@@ -199,9 +199,14 @@ void RXTask::play_seq(const char* seq_name){
     sys.tasks.sequencetask.play_seq();
 };
 
-void RXTask::load_seq(const char* seq_name){s
-    sys.tasks.sequenctask.load_seq(seq_name);
+void RXTask::load_seq(const char* seq_name){
+    sys.tasks.sequencetask.load_seq(seq_name);
 };
+
+void RXTask::delay_seq(uint16_t ticks_to_wait){
+    sys.tasks.sequencetask.delay_seq(ticks_to_wait);
+};
+
 
 void RXTask::sendcmd(const char* cmd){
     StaticJsonDocument<MAX_CMD_LENGTH> cmdJSON;

@@ -20,7 +20,7 @@ class System;
 #include "LoggerTask.hpp"
 #include "TXTask.hpp"
 #include "RXTask.hpp"
-#include "SequenceTask.hpp""
+#include "SequenceTask.hpp"
 #ifdef RADIO_TXRX
     #include "RadioTask.hpp"
 #endif

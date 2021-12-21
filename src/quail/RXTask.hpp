@@ -32,7 +32,6 @@ private:
     static StaticJsonDocument<MAX_CMD_LENGTH> curr_cmd;
     static StaticJsonDocument<MAX_CMD_LENGTH> wait_cmd; // array of wait commands (size sets max number of )
     static StaticJsonDocument<MAX_CMD_LENGTH*10> usercmds; // storage for usercmds, cmd strings defined by the user
-    //bool usercmds_valid; // true if usercmds are valid
 
     static TimerHandle_t pulseTimers[8]; // xTimers for callback (timer IDS correspond to the array index & solenoid channel)
     static StaticTimer_t pulsebufs[8]; // xTimer static buffer for pulse timers
@@ -58,6 +57,8 @@ private:
     static void stop_seq(const char* seq_name);
     static void pause_seq(const char* seq_name);
     static void play_seq(const char* seq_name);
+    static void load_seq(const char* seq_name);
+    static void delay_seq(uint16_t ticks_to_wait);
 
     // TODO: implement the following
     // void config_radio(); // reads radio settings from serial and sends to radio settings msgbuffer

@@ -46,11 +46,13 @@ void LoggerTask::activity()
     memset(&fs, 0, sizeof(FATFS));
     FRESULT res = f_mount(&fs, "", 1);
 
-    if (res != FR_OK) {
+    while (res != FR_OK) {
         loggingEnabled = false;
         sys.statedata.setError("Could Not Mount Disk");
+        memset(&fs, 0, sizeof(FATFS));
+        res = f_mount(&fs, "", 1);
+        vTaskDelay(5000);
     } 
-    while(!loggingEnabled){vTaskDelay(NEVER);}; // failed to mount SD
 
     char file_name[20];
     int file_num = 0;
