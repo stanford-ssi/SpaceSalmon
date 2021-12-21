@@ -18,8 +18,8 @@ void ThermalSensor::configure() {
 float ThermalSensor::convertToFloat(uint32_t adc_dataword)
 {
     float voltage = Ad7124Chip::toVoltage(adc_dataword, 1, 2.5, false);
-    voltage = voltage * 1.5;
+    voltage = voltage * 2;
     //TODO: make this calculation variable based on range, set by this->range
-    float temp = (voltage - 0.5) / 4.0 * (PSI_TO_PA);
+    float temp = (voltage);
     return temp;
 };

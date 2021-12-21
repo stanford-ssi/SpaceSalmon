@@ -2,9 +2,6 @@
 
 #include "Sensor.hpp"
 
-#define PSI_TO_PA 6894.7572931783
-
-
 class ThermalSensor: public Sensor{
     public:
 

@@ -24,7 +24,15 @@ public:
     void play_seq();
     void delay_seq(uint16_t ticks_to_wait);
     void load_seq(const char* seq_name);
+
+    bool isSequenceStarted(){return playing;};
+    bool isSequencePlaying(){return started;};
+
 private:
+    bool playing = false;
+    bool started = false;
+
+    static SequenceTask* glob_ptr; // global pointer for accessing event group from callback
     static void _play_seq(TimerHandle_t xTimer);
     void _load_seq();
 
@@ -34,8 +42,8 @@ private:
 
     MsgBuffer<char[MAX_TEST_FILENAME_SIZE], MAX_TEST_FILENAME_SIZE*2> seqbuf; // message buffer for sending new sequence name
     
-    static StaticEventGroup_t evBuf;
-    static EventGroupHandle_t evGroup;
+    StaticEventGroup_t evBuf;
+    EventGroupHandle_t evGroup;
 
     static TimerHandle_t delayTimer; // xTimer for callback commands
     static StaticTimer_t delaybuf; // xTimer static buffer for waitTimer
