@@ -15,7 +15,7 @@ class SlateKey : public SlateKeyGeneric
     public:
         SlateKey(const std::string id, T init): SlateKeyGeneric(id){}
         
-        T get(void) {
+        const T get(void) {
             mutex.take(NEVER);
             return value;
             mutex.give();
@@ -26,6 +26,9 @@ class SlateKey : public SlateKeyGeneric
             value = to;
             mutex.give();
         }
+
+        operator T() { return get(); }
+        SlateKey &operator=(T const &in) { set(in); return *this; }
 
     private:
         T value;
