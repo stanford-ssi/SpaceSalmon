@@ -4,9 +4,9 @@ Slate slate;
 
 void mains(){
     
-    slate.solenoids.sol1.set(true);
-    slate.adc[0].get();
-    slate.squib.arm.set(true);
-    slate.squib.fire[0].set(true);
+    slate.solenoids.sol1 = true;
+    float f = slate.adc[0];
+    slate.squib.arm = true;
+    slate.squib.fire[0] = true;
 
 }
