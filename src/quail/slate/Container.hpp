@@ -11,4 +11,11 @@ class Container : public SlateKeyGeneric
         {
             return *list[index];
         }
+
+        void dump(JsonVariant dst){
+            const JsonObject obj = dst.createNestedObject(id);
+            for(SlateKeyGeneric *elem : list){
+                elem->dump(obj);
+            }
+        }
 };

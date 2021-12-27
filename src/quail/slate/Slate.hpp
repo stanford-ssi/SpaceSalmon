@@ -3,7 +3,7 @@
 #include "SlateKey.hpp"
 #include "Array.hpp"
 
-class Slate
+class Slate : public Container<3>
 {
 public:
 
@@ -46,7 +46,9 @@ public:
             SlateKeyGeneric *list[2] = {&arm, &fire};
             Squib(const std::string id): Container(id){};
     };
-
     Squib squib = Squib("squib");
+
+    SlateKeyGeneric *list[3] = {&solenoids, &adc, &squib};
+    Slate(const std::string id): Container(id){};
 };
 

@@ -1,4 +1,5 @@
 #include "SlateKey.hpp"
+#include "ArduinoJson.h"
 
 template <typename T>
 class Array : public SlateKeyGeneric
@@ -12,4 +13,10 @@ public:
         return *(list.begin() + index);
     }
 
+    void dump(JsonVariant dst){
+        const JsonArray arr = dst.createNestedArray(id);
+        for(auto elem : list){
+            arr.add(elem.get());
+        }
+    }
 };  
