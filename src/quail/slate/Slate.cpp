@@ -9,4 +9,7 @@ void mains(){
     slate.squib.arm = true;
     slate.squib.fire[0] = true;
 
+    for(auto i : slate.adc.list){
+        float a = i;
+    }
 }
