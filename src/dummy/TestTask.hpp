@@ -6,7 +6,7 @@
 #include "event_groups.h"
 #include <hal_rtos.h>
 
-class TestTask : public Task<2000>{
+class TestTask : public Task<4000>{
 public:
     TestTask(uint8_t priority):Task(priority, "Test"){};
     void activity();

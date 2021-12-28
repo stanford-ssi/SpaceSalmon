@@ -17,23 +17,35 @@ class SlateKey : public SlateKeyGeneric
     public:
         SlateKey(const std::string id, T init): SlateKeyGeneric(id){}
         
-        const T get(void) {
-            mutex.take(NEVER);
+        const T get(void){
+            //mutex.take(NEVER);
             return value;
-            mutex.give();
+            //mutex.give();
         }
 
         void set(T to) {
-            mutex.take(NEVER);
+            Serial.println("set A");
+            //mutex.take(NEVER);
+            Serial.println("set B");
             value = to;
-            mutex.give();
+            Serial.println("set C");
+            //mutex.give();
+            Serial.println("set D");
         }
 
         operator T() { return get(); }
         SlateKey &operator=(T const &in) { set(in); return *this; }
 
         void dump(JsonVariant dst){
-            dst[id] = get();
+
+            if (dst.is<JsonArray>()){
+                Serial.println("dump key into array");
+                dst.add(get());
+            }else{
+                Serial.println("dump key into object");
+                dst[id] = get();
+            }
+            Serial.println("dump key end");
         }
 
     private:
