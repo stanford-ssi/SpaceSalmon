@@ -2,27 +2,51 @@
 
 void TestTask::activity()
 {
-    vTaskDelay(6000);
-    
-    pinMode(LED_BUILTIN,OUTPUT);
-	digitalWrite(LED_BUILTIN,HIGH);
+    pinMode(LED_BUILTIN, OUTPUT);
+    Serial.begin(9600);
 
-	Serial.begin(9600);
-	Serial.println("Test!");
+    while (true)
+    {
+        vTaskDelay(6000);
 
-    // slate.solenoids[1] = true;
-    // float f = slate.adc[0];
-    // slate.squib.arm = true;
-    // slate.squib.fire[0] = true;
+        digitalWrite(LED_BUILTIN, HIGH);
 
-    // for(auto i : slate.adc.list){
-    //     float a = i;
-    // }
+        Serial.println("Test!");
 
-	Serial.println("OK");
+        //sys.slate.solenoids[1] = true;
+        //float f = sys.slate.adc[0];
+        sys.slate.arm = true;
 
-    // StaticJsonDocument<1000> doc;
-    // JsonVariant variant = doc.to<JsonVariant>();
-    // slate.dump(variant);
-    // serializeJson(doc,Serial);
+        Serial.println("hmm");
+
+        sys.slate.fire = true;
+
+        Serial.println(sys.slate.solenoid[0].id.c_str());
+        Serial.println(sys.slate.solenoid[1].id.c_str());
+        Serial.println(sys.slate.solenoid[2].id.c_str());
+        Serial.println(sys.slate.solenoid[3].id.c_str());
+        Serial.println(sys.slate.solenoid[4].id.c_str());
+
+
+
+        Serial.println("OK");
+
+        Serial.println(sys.slate.id.c_str());
+        Serial.println(sys.slate.arm.id.c_str());
+        Serial.println((uint32_t)&sys.slate.arm, HEX);
+        Serial.println((uint32_t)&(std::ref(sys.slate.arm).get()), HEX);
+
+        vTaskDelay(10);
+        StaticJsonDocument<1000> doc;
+        vTaskDelay(10);
+        JsonVariant variant = doc.to<JsonVariant>();
+        vTaskDelay(10);
+        sys.slate.solenoid.dump(variant);
+        vTaskDelay(10);
+        serializeJson(doc, Serial);
+        vTaskDelay(10);
+
+        Serial.println();
+        Serial.println("Done");
+    }
 };

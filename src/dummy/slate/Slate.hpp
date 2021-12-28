@@ -2,53 +2,42 @@
 #include "Container.hpp"
 #include "SlateKey.hpp"
 #include "Array.hpp"
+#include <functional>
 
-class Slate : public Container<3>
+class Slate : public Container<4>
 {
 public:
-
-    Array<SlateKey<bool>> solenoids = Array<SlateKey<bool>>("solenoids",{
-        SlateKey<bool>("1", false),
-        SlateKey<bool>("2", false),
-        SlateKey<bool>("3", false),
-        SlateKey<bool>("4", false),
-        SlateKey<bool>("5", false),
-        SlateKey<bool>("6", false),
-        SlateKey<bool>("7", false),
-        SlateKey<bool>("8", false)
-    });
-
-    Array<SlateKey<float>> adc = Array<SlateKey<float>>("adc",{
-        SlateKey<float>("1", 0.0),
-        SlateKey<float>("2", 0.0),
-        SlateKey<float>("3", 0.0),
-        SlateKey<float>("4", 0.0),
-        SlateKey<float>("5", 0.0),
-    });
-
-    class Squib : public Container<2>
+    class Squib : public Container<1>
     {
-        public:
+    public:
+        SlateKey<bool> lol = SlateKey<bool>("lol", false);
+        Squib(const std::string id) : Container(id, {std::ref(lol)}){};
+    } squib = Squib("squib");
 
-            SlateKey<bool> arm = SlateKey<bool>("arm", false);
+    SlateKey<bool> arm = SlateKey<bool>("arm", false);
+    SlateKey<bool> fire = SlateKey<bool>("fire", false);
+   
+    
+    class Solenoid : public Array<SlateKey<bool>,5>
+    {
+    public:
+        SlateKey<bool> s1 = SlateKey<bool>("1", false);
+        SlateKey<bool> s2 = SlateKey<bool>("2", false);
+        SlateKey<bool> s3 = SlateKey<bool>("3", false);
+        SlateKey<bool> s4 = SlateKey<bool>("4", false);
+        SlateKey<bool> s5 = SlateKey<bool>("5", false);
 
-            Array<SlateKey<bool>> fire = Array<SlateKey<bool>>("fire",{
-                SlateKey<bool>("1", false),
-                SlateKey<bool>("2", false),
-                SlateKey<bool>("3", false),
-                SlateKey<bool>("4", false),
-                SlateKey<bool>("5", false),
-                SlateKey<bool>("6", false),
-                SlateKey<bool>("7", false),
-                SlateKey<bool>("8", false)
-            });
+        Solenoid(const std::string id) : Array(id, {std::ref(s1),std::ref(s2),std::ref(s3),std::ref(s4),std::ref(s5)}){};
+    } solenoid = Solenoid("solenoid");
 
-            SlateKeyGeneric *list[2] = {&arm, &fire};
-            Squib(const std::string id): Container(id){};
-    };
-    Squib squib = Squib("squib");
+    // Array<SlateKey<bool>,5> solenoids = Array<SlateKey<bool>,5>("solenoids",{
+    //     SlateKey<bool>("1", false),
+    //     SlateKey<bool>("2", false),
+    //     SlateKey<bool>("3", false),
+    //     SlateKey<bool>("4", false),
+    //     SlateKey<bool>("5", false)
+    // });
 
-    SlateKeyGeneric *list[3] = {&solenoids, &adc, &squib};
-    Slate(const std::string id): Container(id){};
+    
+    Slate(const std::string id) : Container(id, {std::ref(arm), std::ref(fire), std::ref(squib), std::ref(solenoid)}){};
 };
-
