@@ -20,4 +20,8 @@
     #include "quail-ground/System.hpp"
 #endif
 
+#ifdef DUMMY
+    #include "dummy/System.hpp"
+#endif
+
 extern System sys;
