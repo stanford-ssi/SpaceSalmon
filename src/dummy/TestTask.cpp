@@ -41,7 +41,7 @@ void TestTask::activity()
         vTaskDelay(10);
         JsonVariant variant = doc.to<JsonVariant>();
         vTaskDelay(10);
-        sys.slate.solenoid.dump(variant);
+        sys.slate.dump(variant);
         vTaskDelay(10);
         serializeJson(doc, Serial);
         vTaskDelay(10);

@@ -21,23 +21,15 @@ public:
     class Solenoid : public Array<SlateKey<bool>,5>
     {
     public:
-        SlateKey<bool> s1 = SlateKey<bool>("1", false);
-        SlateKey<bool> s2 = SlateKey<bool>("2", false);
-        SlateKey<bool> s3 = SlateKey<bool>("3", false);
-        SlateKey<bool> s4 = SlateKey<bool>("4", false);
-        SlateKey<bool> s5 = SlateKey<bool>("5", false);
-
-        Solenoid(const std::string id) : Array(id, {std::ref(s1),std::ref(s2),std::ref(s3),std::ref(s4),std::ref(s5)}){};
+    std::array<SlateKey<bool>,5> list = {
+        SlateKey<bool>("1", false),
+        SlateKey<bool>("2", false),
+        SlateKey<bool>("3", false),
+        SlateKey<bool>("4", false),
+        SlateKey<bool>("5", false)
+    };
+    Solenoid(const std::string id) : Array(id, list){};
     } solenoid = Solenoid("solenoid");
-
-    // Array<SlateKey<bool>,5> solenoids = Array<SlateKey<bool>,5>("solenoids",{
-    //     SlateKey<bool>("1", false),
-    //     SlateKey<bool>("2", false),
-    //     SlateKey<bool>("3", false),
-    //     SlateKey<bool>("4", false),
-    //     SlateKey<bool>("5", false)
-    // });
-
     
     Slate(const std::string id) : Container(id, {std::ref(arm), std::ref(fire), std::ref(squib), std::ref(solenoid)}){};
 };
