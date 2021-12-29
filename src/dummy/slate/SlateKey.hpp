@@ -53,10 +53,7 @@ public:
             dst[id] = get();
         }
     }
-
-    //This is not actually safe. We count on the mutex not being used when the key is moved around...
-    SlateKey(SlateKey &&e) : SlateKeyGeneric(e.id), originalptr(e.originalptr), value(e.value) {}
-
+  
 private:
     T value;
     Mutex mutex;
