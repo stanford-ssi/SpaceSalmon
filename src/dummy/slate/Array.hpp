@@ -17,16 +17,11 @@ public:
 
     void dump(JsonVariant dst)
     {
-        Serial.println("dump array start");
         JsonArray arr = dst.createNestedArray(id);
-        Serial.println("dump array B");
-        for(T& elem : listref){
-            Serial.println("dump array Loop A");
-            Serial.println(static_cast<SlateKeyGeneric>(elem).id.c_str());
-            Serial.println("dump array Loop B");
-            SlateKeyGeneric& key = static_cast<SlateKeyGeneric&>(elem);
+        for (T &elem : listref)
+        {
+            SlateKeyGeneric &key = static_cast<SlateKeyGeneric &>(elem);
             key.dump(arr);
         }
-        Serial.println("dump array C");
     }
 };
