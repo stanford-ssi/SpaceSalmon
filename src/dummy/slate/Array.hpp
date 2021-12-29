@@ -6,9 +6,9 @@ template <class T, size_t N>
 class Array : public SlateKeyGeneric
 {
 public:
-    std::array<T, N> &listref;
+    std::array<T, N> listref;
 
-    Array(const std::string id, std::array<T, N> &list) : SlateKeyGeneric(id), listref(list){};
+    Array(const std::string id, std::array<T, N>&& list) : SlateKeyGeneric(id), listref(std::move(list)){};
 
     T &operator[](int index)
     {
