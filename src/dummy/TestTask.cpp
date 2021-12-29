@@ -13,13 +13,11 @@ void TestTask::activity()
 
         // Serial.println("Test!");
 
-        //sys.slate.solenoids[1] = true;
-        //float f = sys.slate.adc[0];
-        sys.slate.arm = true;
+        sys.slate.solenoid[1] = true;
+        float f = sys.slate.adc_in[0];
+        sys.slate.squib.arm = true;
 
         // Serial.println("hmm");
-
-        sys.slate.fire = true;
 
         // Serial.println();
 

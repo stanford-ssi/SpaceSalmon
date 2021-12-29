@@ -16,8 +16,7 @@ template <typename T>
 class SlateKey : public SlateKeyGeneric
 {
 public:
-    uint32_t originalptr;
-    SlateKey(const std::string id, T init) : SlateKeyGeneric(id), originalptr((uint32_t)this) {}
+    SlateKey(const std::string id, T init) : SlateKeyGeneric(id), value(init){}
 
     const T get(void)
     {
