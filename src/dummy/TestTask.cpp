@@ -11,23 +11,23 @@ void TestTask::activity()
 
         digitalWrite(LED_BUILTIN, HIGH);
 
-        Serial.println("Test!");
+        // Serial.println("Test!");
 
         //sys.slate.solenoids[1] = true;
         //float f = sys.slate.adc[0];
         sys.slate.arm = true;
 
-        Serial.println("hmm");
+        // Serial.println("hmm");
 
         sys.slate.fire = true;
 
         // Serial.println();
 
-        Serial.println(sys.slate.solenoid[0].originalptr , HEX);
-        Serial.println((uint32_t)&sys.slate.solenoid[0], HEX);
+        // Serial.println(sys.slate.solenoid[0].originalptr , HEX);
+        // Serial.println((uint32_t)&sys.slate.solenoid[0], HEX);
 
-        Serial.println(sys.slate.solenoid[4].originalptr , HEX);
-        Serial.println((uint32_t)&sys.slate.solenoid[4], HEX);
+        // Serial.println(sys.slate.solenoid[4].originalptr , HEX);
+        // Serial.println((uint32_t)&sys.slate.solenoid[4], HEX);
 
         // Serial.println(sys.slate.id.c_str());
         // Serial.println(sys.slate.arm.id.c_str());
@@ -45,6 +45,6 @@ void TestTask::activity()
         vTaskDelay(10);
 
         Serial.println();
-        Serial.println("Done");
+        // Serial.println("Done");
     }
 };

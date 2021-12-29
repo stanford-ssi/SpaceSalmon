@@ -3,7 +3,6 @@
 #include "Mutex.hpp"
 #include "ArduinoJson.h"
 
-// This is by-copy, so best for small data types, (less than the size of a reference).
 class SlateKeyGeneric
 {
 public:
@@ -12,6 +11,7 @@ public:
     virtual void dump(JsonVariant dst){};
 };
 
+// This is by-copy, so best for small data types, (less than the size of a reference).
 template <typename T>
 class SlateKey : public SlateKeyGeneric
 {
@@ -29,13 +29,9 @@ public:
 
     void set(T to)
     {
-        Serial.println("set A");
         mutex.take(NEVER);
-        Serial.println("set B");
         value = to;
-        Serial.println("set C");
         mutex.give();
-        Serial.println("set D");
     }
 
     operator T() { return get(); }
@@ -50,15 +46,12 @@ public:
 
         if (dst.is<JsonArray>())
         {
-            Serial.println("dump key into array");
             dst.add(get());
         }
         else
         {
-            Serial.println("dump key into object");
             dst[id] = get();
         }
-        Serial.println("dump key end");
     }
 
     //This is not actually safe. We count on the mutex not being used when the key is moved around...
