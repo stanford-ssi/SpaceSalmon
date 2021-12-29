@@ -21,20 +21,18 @@ void TestTask::activity()
 
         sys.slate.fire = true;
 
-        Serial.println(sys.slate.solenoid[0].id.c_str());
-        Serial.println(sys.slate.solenoid[1].id.c_str());
-        Serial.println(sys.slate.solenoid[2].id.c_str());
-        Serial.println(sys.slate.solenoid[3].id.c_str());
-        Serial.println(sys.slate.solenoid[4].id.c_str());
+        // Serial.println();
 
+        Serial.println(sys.slate.solenoid[0].originalptr , HEX);
+        Serial.println((uint32_t)&sys.slate.solenoid[0], HEX);
 
+        Serial.println(sys.slate.solenoid[4].originalptr , HEX);
+        Serial.println((uint32_t)&sys.slate.solenoid[4], HEX);
 
-        Serial.println("OK");
-
-        Serial.println(sys.slate.id.c_str());
-        Serial.println(sys.slate.arm.id.c_str());
-        Serial.println((uint32_t)&sys.slate.arm, HEX);
-        Serial.println((uint32_t)&(std::ref(sys.slate.arm).get()), HEX);
+        // Serial.println(sys.slate.id.c_str());
+        // Serial.println(sys.slate.arm.id.c_str());
+        // Serial.println((uint32_t)&sys.slate.arm, HEX);
+        // Serial.println((uint32_t)&(std::ref(sys.slate.arm).get()), HEX);
 
         vTaskDelay(10);
         StaticJsonDocument<1000> doc;

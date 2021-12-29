@@ -11,3 +11,7 @@ void Mutex::take(TickType_t block){
 void Mutex::give(){
     xSemaphoreGive(handle);
 }
+
+Mutex::~Mutex(){
+    vSemaphoreDelete(handle);
+}
