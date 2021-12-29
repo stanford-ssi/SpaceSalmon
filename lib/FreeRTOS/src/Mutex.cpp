@@ -15,3 +15,6 @@ void Mutex::give(){
 Mutex::~Mutex(){
     vSemaphoreDelete(handle);
 }
+
+//When copy-constructing, just make a new mutex:
+Mutex::Mutex(const Mutex& e): Mutex(){}
