@@ -32,17 +32,26 @@ void TestTask::activity()
         // Serial.println((uint32_t)&sys.slate.arm, HEX);
         // Serial.println((uint32_t)&(std::ref(sys.slate.arm).get()), HEX);
 
-        vTaskDelay(10);
-        StaticJsonDocument<1000> doc;
-        vTaskDelay(10);
-        JsonVariant variant = doc.to<JsonVariant>();
-        vTaskDelay(10);
-        sys.slate.dump(variant);
-        vTaskDelay(10);
-        serializeJson(doc, Serial);
-        vTaskDelay(10);
+        uint32_t time = xTaskGetTickCount();
 
-        Serial.println();
+        for (uint32_t i = 0; i < 1000; i++)
+        {
+            StaticJsonDocument<1000> doc;
+            char string[1000];
+            JsonVariant variant = doc.to<JsonVariant>();
+            sys.slate.dump(variant);
+            size_t pkt = serializeMsgPack(doc,string,1000);
+            
+        }
+
+        Serial.println(xTaskGetTickCount() - time);
         // Serial.println("Done");
     }
 };
+
+// some benchmarks:
+// - dump and print to USB (unbuffered): 1400us
+// - dump and print to USB (buffered): 389us
+// - dump: 223us
+// - dump with no mutex: 139us
+// - dump with msgpack: 176us
