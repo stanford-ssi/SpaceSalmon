@@ -28,8 +28,10 @@ void ValveTask::activity() {
                 else
                     digitalWrite(valve_pin_start + i, HIGH);
             }
-            else
+            else{
+                pinMode(valve_pin_start + i, OUTPUT);
                 digitalWrite(valve_pin_start + i, LOW);
+            }
         }
     }
 }

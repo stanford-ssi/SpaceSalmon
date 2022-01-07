@@ -115,7 +115,7 @@ void RXTask::pulse_solenoids(JsonArrayConst sol_ch, uint16_t pulse_dur){
     uint8_t num_ch = sol_ch.size();
     for(uint8_t i = 0; i < num_ch; i++)
         xTimerChangePeriod(pulseTimers[(uint8_t)sol_ch[i]-1], pulse_dur, NEVER); // set new pulse period
-    open_solenoid(sol_ch); // open solenoids
+    open_solenoids(sol_ch); // open solenoids
     for(uint8_t i = 0; i < num_ch; i++)
         xTimerStart(pulseTimers[(uint8_t)sol_ch[i]-1], NEVER); // start the timer to close this solenoid
 };
@@ -238,7 +238,7 @@ void RXTask::readInput(){
         char packet_in[MAX_CMD_LENGTH];
         size_t chars_read = Serial.readBytesUntil('\n',packet_in, MAX_CMD_LENGTH); // endline indicates end of a json cmd
         if(chars_read > 0 && chars_read < MAX_CMD_LENGTH){
-            sendcmd(packet_in);
+            sendcmd(packet_in); 
         }
     }
 };
