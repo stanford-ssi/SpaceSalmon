@@ -5,7 +5,7 @@ class System;
 #include <Arduino.h>
 
 #include "TestTask.hpp"
-#include "slate/Slate.hpp"
+#include "Slate.hpp"
 
 class System
 {
