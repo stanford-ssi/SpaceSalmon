@@ -9,7 +9,7 @@ ValveTask::ValveTask(uint8_t priority, uint8_t valve_pin_start) : Task(priority,
     valves[2] = {"S3", SMALL, NORMALLY_CLOSED};
     valves[3] = {"S4", REAL_SMALL, NORMALLY_CLOSED};
     valves[4] = {"S5", REAL_SMALL, NORMALLY_CLOSED};
-    valves[5] = {"S6", REAL_SMALL, NORMALLY_CLOSED};
+    valves[5] = {"S6", P_SMALL, NORMALLY_CLOSED};
     valves[6] = {"S7", ABORT, NORMALLY_CLOSED};
     valves[7] = {"S8", ABORT, NORMALLY_CLOSED};
     for (uint8_t i = 0; i < NUM_SOLENOIDS; i++) {
@@ -23,13 +23,17 @@ void ValveTask::activity() {
         uint8_t valvestate = sys.statedata.getSolenoidState();
         for(uint8_t i = 0; i < NUM_SOLENOIDS; i++) {
             if((valvestate>>i & 0b1) == valves[i].normal) { // if valve is in the state in which it should be powered
-                if(valves[i].pwm)
+                if(digitalPinHasPWM(valve_pin_start + i))
                     analogWrite(valve_pin_start + i, valves[i].pwm);
                 else
                     digitalWrite(valve_pin_start + i, HIGH);
             }
-            else
-                digitalWrite(valve_pin_start + i, LOW);
+            else{
+                if(digitalPinHasPWM(valve_pin_start + i))
+                    analogWrite(valve_pin_start + i, 0);
+                else
+                    digitalWrite(valve_pin_start + i, LOW);
+            }
         }
     }
 }
