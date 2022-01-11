@@ -25,7 +25,7 @@ typedef enum {
     SMALL = 130,
     MEDIUM = 220, // Edelbrook
     LARGE = 180, // Pro BigShot
-    ABORT = 0 // don't pwm, just digital write
+    ABORT = 255 // don't pwm, just digital write
 } solenoid_pwm_t; // making solenoid pwm values more readable, values taken from old quail
 
 typedef struct {

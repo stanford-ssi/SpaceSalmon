@@ -118,13 +118,13 @@ void LoggerTask::writeSD(char *buf) {
     if (res != FR_OK) {
         loggingEnabled = false;
         digitalWrite(DISK_LED, false);
-        sys.tasks.logger.log("SD Write Error");
+        this->log("SD Write Error");
     }
 
     res = f_sync(&file_object); //update file structure
     if (res != FR_OK) {
         loggingEnabled = false;
         digitalWrite(DISK_LED, false);
-        sys.tasks.logger.log("SD Flush Error");
+        this->log("SD Flush Error");
     }
 }
