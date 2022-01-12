@@ -5,7 +5,8 @@
   if (spi_ret != ARD_COM_OK)               \
   func_ret = SQB_NOT_OK
 
-#define debug(text)    Serial.println(text) //printf_("%s\n",text) //do nothing
+// #define debug(text)    Serial.println(text) //printf("%s\n",text)
+#define debug(text) {}  //do nothing
 #define debug_hex(num) Serial.println(num) //printf_("0x%x\n",num)//do nothing
 //#define delay(ms) delay_ms(ms)
 #define delay_us(ms) delayMicroseconds(ms)

@@ -1,5 +1,6 @@
 #include "RXTask.hpp"
 #include "main.hpp"
+#include <rBase64.h>
 
 StaticJsonDocument<MAX_CMD_LENGTH*10> RXTask::usercmds;
 StaticJsonDocument<MAX_CMD_LENGTH> RXTask::wait_cmd;
@@ -115,7 +116,7 @@ void RXTask::pulse_solenoids(JsonArrayConst sol_ch, uint16_t pulse_dur){
     uint8_t num_ch = sol_ch.size();
     for(uint8_t i = 0; i < num_ch; i++)
         xTimerChangePeriod(pulseTimers[(uint8_t)sol_ch[i]-1], pulse_dur, NEVER); // set new pulse period
-    open_solenoid(sol_ch); // open solenoids
+    open_solenoids(sol_ch); // open solenoids
     for(uint8_t i = 0; i < num_ch; i++)
         xTimerStart(pulseTimers[(uint8_t)sol_ch[i]-1], NEVER); // start the timer to close this solenoid
 };
@@ -227,6 +228,7 @@ void RXTask::sendcmdJSON(StaticJsonDocument<MAX_CMD_LENGTH> cmd){
 };
 
 void RXTask::readInput(){
+    // Should always receive the format {id:<some string>, data: <base64-encoded-string parsable as JSON>}
     #ifdef RADIO_TXRX
         while(sys.tasks.radiotask.packetAvailable()){
             packet_t packet_in;
@@ -238,7 +240,19 @@ void RXTask::readInput(){
         char packet_in[MAX_CMD_LENGTH];
         size_t chars_read = Serial.readBytesUntil('\n',packet_in, MAX_CMD_LENGTH); // endline indicates end of a json cmd
         if(chars_read > 0 && chars_read < MAX_CMD_LENGTH){
-            sendcmd(packet_in);
+            StaticJsonDocument<MAX_CMD_LENGTH> doc;
+            DeserializationError ret = deserializeJson(doc, packet_in);
+            if(ret == DeserializationError::Ok){ // if successfully deserialized json
+                JsonVariant id = doc["id"];
+                JsonVariant data = doc["data"];
+                if( !id.isNull() && !data.isNull()){
+                    char out[MAX_CMD_LENGTH];
+                    char temp[255];
+                    strcpy(temp,data.as<char *>());
+                    rbase64_decode(out, temp, strlen(temp)); // binary sent over serial has been decoded from base64
+                    sendcmd(out);
+                }
+            }
         }
     }
 };

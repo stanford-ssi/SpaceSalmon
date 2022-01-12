@@ -1,5 +1,6 @@
 #include "TXTask.hpp"
 #include "main.hpp"
+#include <rBase64.h>
 
 TXTask::TXTask(uint8_t priority, uint16_t tx_interval_ms):
 Task(priority, "TX"), tx_interval_ms(tx_interval_ms){};
@@ -43,4 +44,5 @@ void TXTask::activity() {
 void TXTask::writeUSB(const char* msg){
     // Serial.println is asynchronous so long as we don't over-fill the Serial buffer
     Serial.println(msg); // in theory, may want to consider checking buffer space first
+    Serial.flush();
 };
