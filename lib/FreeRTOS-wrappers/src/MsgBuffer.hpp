@@ -1,5 +1,4 @@
 #pragma once
-#include "hal_rtos.h"
 #include "message_buffer.h"
 
 template <typename T, int sz>

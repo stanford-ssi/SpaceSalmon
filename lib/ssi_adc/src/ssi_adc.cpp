@@ -5,12 +5,11 @@ ADC::ADC(Adc* hw_addr){
   hri_mclk_set_APBDMASK_ADC0_bit(MCLK);
 	hri_gclk_write_PCHCTRL_reg(GCLK, ADC0_GCLK_ID, 0 | (1 << GCLK_PCHCTRL_CHEN_Pos)); //Generator 0 = 120Mhz
   _adc_generic_init(hw);//ASF initialization code
-  mutex_handle = mutex_init_static(&mutex_buf); //set up mutex
 }
 
 uint16_t ADC::read(uint8_t pin){
 
-  mutex_take(mutex_handle, NEVER);
+  mx.take(NEVER);
 
   uint32_t valueRead;
   
@@ -39,7 +38,7 @@ uint16_t ADC::read(uint8_t pin){
   hw->CTRLA.bit.ENABLE = 0x00;             // Disable ADC
   while( hw->SYNCBUSY.reg & ADC_SYNCBUSY_ENABLE ); //wait for sync*/
 
-  mutex_give(mutex_handle);
+  mx.give();
 
   return valueRead;
 }

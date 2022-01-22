@@ -1,0 +1,10 @@
+{
+    "name": "FreeRTOS-wrappers",
+    "build":{
+        "flags":
+        [
+            "-Isrc"
+        ],
+        "libArchive": false
+    }
+}

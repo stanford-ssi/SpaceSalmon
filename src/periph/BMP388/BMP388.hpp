@@ -11,6 +11,8 @@ extern "C"
 #include "Arduino.h"
 #include "SPI.h"
 
+#include "hal_rtos.h"
+
 class BMP388 : public Sensor
 {
   public:

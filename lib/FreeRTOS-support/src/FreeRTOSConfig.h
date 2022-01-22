@@ -11,6 +11,8 @@
 void assert_triggered(const char *file, uint32_t line);
 #endif
 
+#define NEVER portMAX_DELAY
+
 // <h> Basic
 
 #ifndef configCPU_CLOCK_HZ
