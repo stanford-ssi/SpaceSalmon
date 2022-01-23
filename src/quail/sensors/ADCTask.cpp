@@ -25,10 +25,18 @@ void ADCTask::activity()
     // Wait for sensors to be configured!
     xEventGroupWaitBits(evgroup, SENSORS_READY, true, false, NEVER);
     sys.adc.setIRQAction(adcISR);
+    uint32_t timeout_count = 0;
+    uint32_t err_count = 0;
     while(true)
     {
         // wait for ADC ready
-        xEventGroupWaitBits(evgroup, ADC_READY, true, false, NEVER);
+        EventBits_t flags = xEventGroupWaitBits(evgroup, ADC_READY, true, false, 100);
+
+        if (!(flags & ADC_READY)){ //if timed out
+            timeout_count++;
+            continue;
+        }
+        
         // turn off interrupt to read data
         sys.adc.clearIRQAction();
         
@@ -40,6 +48,8 @@ void ADCTask::activity()
         if( ret >= 0) {
             // do thing with data
             (sys.sensors[adc_data.channel])->addADCdata(adc_data.dataword);
+        }else{
+            err_count++;
         }
     }
 }
