@@ -4,12 +4,12 @@
 
 ValveTask::ValveTask(uint8_t priority, uint8_t valve_pin_start) : Task(priority, "Valves"), valve_pin_start(valve_pin_start){
     valveManager = xEventGroupCreateStatic(&evBuf);
-    valves[0] = {"S1", REAL_SMALL, NORMALLY_CLOSED};
-    valves[1] = {"S2", P_SMALL, NORMALLY_CLOSED};
-    valves[2] = {"S3", SMALL, NORMALLY_CLOSED};
-    valves[3] = {"S4", REAL_SMALL, NORMALLY_CLOSED};
-    valves[4] = {"S5", REAL_SMALL, NORMALLY_CLOSED};
-    valves[5] = {"S6", P_SMALL, NORMALLY_CLOSED};
+    valves[0] = {"S1", MEDIUM, NORMALLY_CLOSED};
+    valves[1] = {"S2", MEDIUM, NORMALLY_CLOSED};
+    valves[2] = {"S3", MEDIUM, NORMALLY_CLOSED};
+    valves[3] = {"S4", MEDIUM, NORMALLY_CLOSED};
+    valves[4] = {"S5", MEDIUM, NORMALLY_CLOSED};
+    valves[5] = {"S6", MEDIUM, NORMALLY_CLOSED};
     valves[6] = {"S7", ABORT, NORMALLY_CLOSED}; // Warning: These can't do PWM
     valves[7] = {"S8", ABORT, NORMALLY_CLOSED}; // Warning: These can't do PWM
     for (uint8_t i = 0; i < NUM_SOLENOIDS; i++) {

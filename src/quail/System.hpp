@@ -35,18 +35,18 @@ public:
 
     PressureSensor PT1 = PressureSensor("PT1", Ad7124::AIN1Input, RANGE_1000);
     PressureSensor PT2 =  PressureSensor("PT2", Ad7124::AIN2Input, RANGE_1000);
-    // PressureSensor PT3 =  PressureSensor("PT3", Ad7124::AIN2Input, RANGE_1000);
-    // PressureSensor PT4 =  PressureSensor("PT4", Ad7124::AIN3Input, RANGE_1000);
+    PressureSensor PT3 =  PressureSensor("PT3", Ad7124::AIN3Input, RANGE_1000);
+    PressureSensor PT4 =  PressureSensor("PT4", Ad7124::AIN4Input, RANGE_1000);
     // PressureSensor PT5 =  PressureSensor("PT5", Ad7124::AIN4Input, RANGE_1000);
     LoadSensor LC1 = LoadSensor("LC1", Ad7124::AIN12Input);
     // LoadSensor LC2 = LoadSensor("LC2", Ad7124::AIN7Input);
     ThermalSensor TS1 = ThermalSensor("TC1", Ad7124::AIN8Input); //samd51 # defines TC0-7 so don't use those
 
-    Sensor* sensors [4] = {
+    Sensor* sensors [6] = {
         &PT1,
         &PT2,
-        // &PT3,
-        // &PT4,
+        &PT3,
+        &PT4,
         // &PT5,
         &LC1,
         // &LC2,
@@ -64,8 +64,8 @@ public:
         #ifdef RADIO_TXRX // if using radio, create a RadioTask
             RadioTask radiotask = RadioTask(2); //collects and sends information over radio
         #endif
-        TXTask txtask = TXTask(4, 1000); //regularly collects state data, logs and sends over USB or radio
-        RXTask rxtask = RXTask(5, 100); //processes commands from USB or radio
+        TXTask txtask = TXTask(4, 50); //regularly collects state data, logs and sends over USB or radio
+        RXTask rxtask = RXTask(5, 50); //processes commands from USB or radio
         LoggerTask logger = LoggerTask(1); // logs data to SD during idle time, writes USB data as available
         SequenceTask sequencetask = SequenceTask(10); // test task for debugging
     };
