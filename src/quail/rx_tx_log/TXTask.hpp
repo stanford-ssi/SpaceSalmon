@@ -16,8 +16,8 @@ class TXTask:Task<1000>{
 public:
     TXTask(uint8_t priority, uint16_t tx_interval_ms);
     void activity(); // every so often, collect state JSON, log and write to selected TX
-
+    static void writeUSB(const char* buf); // responsibly write to USB
 private:
     const uint16_t tx_interval_ms; // frequency, in milliseconds, of TX
-    static void writeUSB(const char* buf); // responsibly write to USB
+    
 };

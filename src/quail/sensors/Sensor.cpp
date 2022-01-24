@@ -10,13 +10,18 @@ EventGroupHandle_t Sensor::evgroup = xEventGroupCreateStatic(&evbuf);
 Mutex Sensor::config_mx;
 
 void Sensor::activity(){
-    xEventGroupWaitBits(evgroup, ADC_STARTED, pdFALSE, pdTRUE, NEVER); // wait for ADC to begin (don't clear bits)
-    _configure(this); // configure this sensor
     while(true){
-        uint32_t adc_data;
-        adcbuf.receive(adc_data, true); // wait for data to arrive, blocking
-        sensor_value = this->convertToFloat(adc_data); // convert data to sensor value in metric unit
-        sys.statedata.setSensorState(ch_id, sensor_value); // post new value to state
+        xEventGroupWaitBits(evgroup, ADC_STARTED, pdFALSE, pdTRUE, NEVER); // wait for ADC to begin (don't clear bits)
+        _configure(this); // configure this sensor
+        while(true){
+            uint32_t adc_data;
+            adcbuf.receive(adc_data, true); // wait for data to arrive, blocking
+            sensor_value = this->convertToFloat(adc_data); // convert data to sensor value in metric unit
+            sys.statedata.setSensorState(ch_id, sensor_value); // post new value to state
+            if (xEventGroupGetBits(evgroup) & ADC_STARTED){
+                break;
+            }
+        }
     }
 }
 

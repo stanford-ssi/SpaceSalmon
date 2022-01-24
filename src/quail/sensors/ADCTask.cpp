@@ -16,43 +16,54 @@ void ADCTask::adcISR(void)
 
 void ADCTask::activity()
 {
-    // Set up adc overall
-    sys.adc.begin();
-    sys.adc.setAdcControl(Ad7124::ContinuousMode, Ad7124::FullPower, true, Ad7124::InternalClk, true);
-    sys.adc.setMode(Ad7124::ContinuousMode);
-    Sensor::ADCbegin(); // tell sensors that they are ready for configuration
+    while(true){
+        // Set up adc overall
+        sys.adc.begin();
+        sys.adc.setAdcControl(Ad7124::ContinuousMode, Ad7124::FullPower, true, Ad7124::InternalClk, true);
+        sys.adc.setMode(Ad7124::ContinuousMode);
+        Sensor::ADCbegin(); // tell sensors that they are ready for configuration
 
-    // Wait for sensors to be configured!
-    xEventGroupWaitBits(evgroup, SENSORS_READY, true, false, NEVER);
-    sys.adc.setIRQAction(adcISR);
-    uint32_t timeout_count = 0;
-    uint32_t err_count = 0;
-    while(true)
-    {
-        // wait for ADC ready
-        EventBits_t flags = xEventGroupWaitBits(evgroup, ADC_READY, true, false, 100);
-
-        if (!(flags & ADC_READY)){ //if timed out
-            timeout_count++;
-            sys.tasks.logger.log("ADC Timed Out!");
-            continue;
-        }
-        
-        // turn off interrupt to read data
-        sys.adc.clearIRQAction();
-        
-        // read data
-        adcdata_t adc_data;
-        long ret = sys.adc.getData(adc_data.dataword, adc_data.channel);
-        // turn interrupt back on to catch new ready indicator
+        // Wait for sensors to be configured!
+        xEventGroupWaitBits(evgroup, SENSORS_READY, true, false, NEVER);
         sys.adc.setIRQAction(adcISR);
-        if( ret >= 0) {
-            // do thing with data
-            (sys.sensors[adc_data.channel])->addADCdata(adc_data.dataword);
-        }else{
-            err_count++;
-            sys.tasks.logger.log("ADC data read error!");
-        }
+        uint32_t timeout_count = 0;
+        uint32_t err_count = 0;
+        while(true)
+        {
+            // wait for ADC ready
+            EventBits_t flags = xEventGroupWaitBits(evgroup, ADC_READY, true, false, 100);
+
+            if (!(flags & ADC_READY)){ //if timed out
+                timeout_count++;
+                char str[50];
+                sprintf(str,"ADC Timed out %i times", timeout_count);
+                sys.tasks.txtask.writeUSB(str);
+                continue;
+            }
+            
+            // turn off interrupt to read data
+            sys.adc.clearIRQAction();
+            
+            // read data
+            adcdata_t adc_data;
+            long ret = sys.adc.getData(adc_data.dataword, adc_data.channel);
+            // turn interrupt back on to catch new ready indicator
+            sys.adc.setIRQAction(adcISR);
+            if( ret >= 0) {
+                // do thing with data
+                (sys.sensors[adc_data.channel])->addADCdata(adc_data.dataword);
+            }else{
+                err_count++;
+                char str[50];
+                sprintf(str,"ADC data error %i times", err_count);
+                sys.tasks.txtask.writeUSB(str);
+            }
+
+            if(err_count + timeout_count > 10){
+                sys.adc.reset();
+                break;
+            }
+        }    
     }
 }
 
