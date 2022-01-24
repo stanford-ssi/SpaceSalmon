@@ -34,6 +34,7 @@ void ADCTask::activity()
 
         if (!(flags & ADC_READY)){ //if timed out
             timeout_count++;
+            sys.tasks.logger.log("ADC Timed Out!");
             continue;
         }
         
@@ -50,6 +51,7 @@ void ADCTask::activity()
             (sys.sensors[adc_data.channel])->addADCdata(adc_data.dataword);
         }else{
             err_count++;
+            sys.tasks.logger.log("ADC data read error!");
         }
     }
 }
