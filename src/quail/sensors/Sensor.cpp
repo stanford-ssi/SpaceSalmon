@@ -27,10 +27,22 @@ void Sensor::activity(){
 
 void Sensor::_configure(Sensor* sensor){
     config_mx.take(NEVER);
-    sensor->configure(); // call the child's implementation of configure()
-    num_sens_cfgd++; // record that another sensor has been configured
-    if(num_sens_cfgd == num_sensors) // check if all sensors have been configured
+    Serial.print("Cfgd:");
+    Serial.print(num_sens_cfgd);
+    Serial.print("/");
+    Serial.print(num_sensors);
+    Serial.println("");
+    if(num_sens_cfgd < num_sensors){
+        sensor->configure(); // call the child's implementation of configure()
+        num_sens_cfgd++; // record that another sensor has been configuredred    
+    }
+
+    if (num_sens_cfgd == num_sensors){
+        num_sens_cfgd++;
         sys.tasks.adctask.sensorsConfigured(); // tell ADC task to get goin
+        xEventGroupClearBits(evgroup,ADC_STARTED);
+    }
+
     config_mx.give();
 }
 

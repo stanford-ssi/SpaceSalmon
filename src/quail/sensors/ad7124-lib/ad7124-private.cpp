@@ -184,7 +184,7 @@ Ad7124Private::readRegister (Ad7124Register* pReg) {
 
     ret = waitForSpiReady (responseTimeout);
     if (ret < 0) {
-
+      Serial.println("Spi not ready");
       return ret;
     }
   }
@@ -423,7 +423,18 @@ Ad7124Private::readData (uint32_t& pData, uint8_t& channel) {
   /* Get the read result */
   pData = reg[Data].value;
 
-  channel = buffer[4] & 0x0F; //Just the ID bits
+  channel = AD7124_STATUS_REG_CH_ACTIVE(buffer[4]); //Just the ID bits
+
+  bool err = buffer[4] & AD7124_STATUS_REG_ERROR_FLAG;
+  bool por = buffer[4] & AD7124_STATUS_REG_POR_FLAG;
+
+  if(err){
+    Serial.println("Got error bit!");
+  }  
+
+  if(por){
+    Serial.println("Got POR bit!");
+  }
 
   return ret < 0 ? ret : 0;
 }
