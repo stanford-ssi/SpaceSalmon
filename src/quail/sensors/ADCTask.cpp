@@ -6,7 +6,6 @@ ADCTask::ADCTask(uint8_t priority) : Task(priority, "LED"){
     evgroup = xEventGroupCreateStatic(&evbuf);
 };
 
-
 void ADCTask::adcISR(void)
 {
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -21,13 +20,14 @@ void ADCTask::activity()
         sys.adc.begin();
         sys.adc.setAdcControl(Ad7124::ContinuousMode, Ad7124::FullPower, true, Ad7124::InternalClk, true);
         sys.adc.setMode(Ad7124::ContinuousMode);
-        Sensor::ADCbegin(); // tell sensors that they are ready for configuration
+        SensorTask::ADCbegin(); // tell sensors that they are ready for configuration
 
         // Wait for sensors to be configured!
         xEventGroupWaitBits(evgroup, SENSORS_READY, true, false, NEVER);
         sys.adc.setIRQAction(adcISR);
         uint32_t timeout_count = 0;
         uint32_t err_count = 0;
+        uint8_t data_count = 0;
         while(true)
         {
             // wait for ADC ready
@@ -40,6 +40,8 @@ void ADCTask::activity()
                 sys.tasks.txtask.writeUSB(str);
                 continue;
             }
+
+            data_count++;
             
             // turn off interrupt to read data
             sys.adc.clearIRQAction();
@@ -51,12 +53,17 @@ void ADCTask::activity()
             sys.adc.setIRQAction(adcISR);
             if( ret >= 0) {
                 // do thing with data
-                (sys.sensors[adc_data.channel])->addADCdata(adc_data.dataword);
+                sys.tasks.sensortask.addADCdata(adc_data);
             }else{
                 err_count++;
                 char str[50];
                 sprintf(str,"ADC data error %i times", err_count);
                 sys.tasks.txtask.writeUSB(str);
+            }
+
+            if(data_count >= Sensor::numSensors()){
+                data_count = 0;
+                sys.tasks.sensortask.dataReady(); // ready for some conversions!
             }
 
             if(err_count + timeout_count > 10){
