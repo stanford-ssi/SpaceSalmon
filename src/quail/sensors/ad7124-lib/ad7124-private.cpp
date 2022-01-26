@@ -184,7 +184,6 @@ Ad7124Private::readRegister (Ad7124Register* pReg) {
 
     ret = waitForSpiReady (responseTimeout);
     if (ret < 0) {
-      Serial.println("Spi not ready");
       return ret;
     }
   }
@@ -233,6 +232,8 @@ Ad7124Private::reset (void) {
   if (ret < 0) {
     return ret;
   }
+  isReady = false;
+  useCRC = AD7124_DISABLE_CRC;
   /* Wait for the reset to complete */
   return waitToPowerOn (responseTimeout);
 }

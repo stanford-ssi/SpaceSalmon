@@ -17,6 +17,8 @@ class PressureSensor: public Sensor{
         float convertToFloat(uint32_t adc_dataword);
         void configure();
 
+        static void unconfigure(){cfg = UNCONFIGURED;};
+
     private:
         const PressureRange range; //TODO - make different conversion function based on range
 

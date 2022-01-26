@@ -28,8 +28,9 @@ void ADCTask::activity()
             if(ret == 0){
                 break;
             }
-            Serial.print("got bad init:");
+            Serial.print("ADC Init Failed:");
             Serial.println(ret);
+            vTaskDelay(100);
         }
 
         sys.adc.setAdcControl(Ad7124::ContinuousMode, Ad7124::FullPower, true, Ad7124::InternalClk, true);
@@ -56,7 +57,7 @@ void ADCTask::activity()
                 timeout_count = 0;
                 err_count = 0;
                 sys.adc.reset();
-                Serial.println("Resetting!");
+                Serial.println("Reseting ADC!");
                 break;
             }
 
@@ -64,14 +65,13 @@ void ADCTask::activity()
 
             //Serial.println("main adc loop");
             // wait for ADC ready
-            EventBits_t flags = xEventGroupWaitBits(evgroup, ADC_READY, true, false, NEVER);
+            EventBits_t flags = xEventGroupWaitBits(evgroup, ADC_READY, true, false, 100);
 
             if (!(flags & ADC_READY)){ //if timed out
                 timeout_count++;
-                //char str[50];
-                //int err = sys.adc.checkForErrors();
-                //sprintf(str,"ADC Timed out %i times, Errors %i", timeout_count, err);
-                //sys.tasks.txtask.writeUSB(str);
+                char str[50];
+                sprintf(str,"ADC Timed out %i times", timeout_count);
+                sys.tasks.txtask.writeUSB(str);
                 continue;
             }
             
@@ -94,7 +94,13 @@ void ADCTask::activity()
                     i = 0;
                 }
                 i++;
-                (sys.sensors[adc_data.channel])->addADCdata(adc_data.dataword);
+                if(adc_data.channel >= 6){
+                    Serial.print("Got some OOB data on ch: ");
+                    Serial.println(adc_data.channel);
+                }else{
+                    (sys.sensors[adc_data.channel])->addADCdata(adc_data.dataword);
+                }
+                
             }else{
                 err_count++;
                 char str[50];

@@ -11,13 +11,15 @@ Mutex Sensor::config_mx;
 
 void Sensor::activity(){
     while(true){
-        xEventGroupWaitBits(evgroup, ADC_STARTED, pdFALSE, pdTRUE, NEVER); // wait for ADC to begin (don't clear bits)
+        xEventGroupWaitBits(evgroup, ADC_STARTED, pdFALSE, pdFALSE, NEVER); // wait for ADC to begin (don't clear bits)
         _configure(this); // configure this sensor
+        xEventGroupWaitBits(evgroup, ADC_STARTED_DONE, pdFALSE, pdFALSE, NEVER); // wait for all sensors to be reconfigured.
         while(true){
             uint32_t adc_data;
-            adcbuf.receive(adc_data, true); // wait for data to arrive, blocking
-            sensor_value = this->convertToFloat(adc_data); // convert data to sensor value in metric unit
-            sys.statedata.setSensorState(ch_id, sensor_value); // post new value to state
+            if(adcbuf.receiveTimeout(adc_data, 100)){ // wait for data to arrive, blocking
+                sensor_value = this->convertToFloat(adc_data); // convert data to sensor value in metric unit
+                sys.statedata.setSensorState(ch_id, sensor_value); // post new value to state
+            }
             if (xEventGroupGetBits(evgroup) & ADC_STARTED){
                 break;
             }
@@ -27,7 +29,7 @@ void Sensor::activity(){
 
 void Sensor::_configure(Sensor* sensor){
     config_mx.take(NEVER);
-    Serial.print("Cfgd:");
+    Serial.print("Configured Sensor:");
     Serial.print(num_sens_cfgd);
     Serial.print("/");
     Serial.print(num_sensors);
@@ -41,11 +43,19 @@ void Sensor::_configure(Sensor* sensor){
         num_sens_cfgd++;
         sys.tasks.adctask.sensorsConfigured(); // tell ADC task to get goin
         xEventGroupClearBits(evgroup,ADC_STARTED);
+        xEventGroupSetBits(evgroup,ADC_STARTED_DONE);
     }
 
     config_mx.give();
 }
 
 void Sensor::ADCbegin(){
+    config_mx.take(NEVER);
+    num_sens_cfgd = 0;
+    PressureSensor::unconfigure();
+    LoadSensor::unconfigure();
+    ThermalSensor::unconfigure();
+    config_mx.give();
+    xEventGroupClearBits(evgroup, ADC_STARTED_DONE);
     xEventGroupSetBits(evgroup, ADC_STARTED);
 }
