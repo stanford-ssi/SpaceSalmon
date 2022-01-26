@@ -108,8 +108,6 @@ void ADCTask::activity()
                 sys.tasks.txtask.writeUSB(str);
             }
 
-            //Serial.println("D");
-
         }    
     }
 }

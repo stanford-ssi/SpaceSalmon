@@ -52,6 +52,7 @@ void Sensor::_configure(Sensor* sensor){
 void Sensor::ADCbegin(){
     config_mx.take(NEVER);
     num_sens_cfgd = 0;
+    Sensor::num_cfgs = 0;
     PressureSensor::unconfigure();
     LoadSensor::unconfigure();
     ThermalSensor::unconfigure();
