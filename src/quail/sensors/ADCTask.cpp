@@ -65,7 +65,7 @@ void ADCTask::activity()
                 sys.tasks.txtask.writeUSB(str);
                 continue;
             }
-
+            
             // turn off interrupt to read data
             sys.adc.clearIRQAction();
             
