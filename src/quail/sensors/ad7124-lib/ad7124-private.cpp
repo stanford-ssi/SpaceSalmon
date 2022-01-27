@@ -184,6 +184,7 @@ Ad7124Private::readRegister (Ad7124Register* pReg) {
 
     ret = waitForSpiReady (responseTimeout);
     if (ret < 0) {
+
       return ret;
     }
   }

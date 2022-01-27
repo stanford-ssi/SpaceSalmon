@@ -16,8 +16,6 @@ void ADCTask::adcISR(void)
 
 void ADCTask::activity()
 {
-    vTaskDelay(4000);
-
     int i = 0;
 
     while(true){
@@ -61,9 +59,6 @@ void ADCTask::activity()
                 break;
             }
 
-            //Serial.println("A");
-
-            //Serial.println("main adc loop");
             // wait for ADC ready
             EventBits_t flags = xEventGroupWaitBits(evgroup, ADC_READY, true, false, 100);
 
@@ -74,8 +69,6 @@ void ADCTask::activity()
                 sys.tasks.txtask.writeUSB(str);
                 continue;
             }
-            
-            //Serial.println("B");    
 
             // turn off interrupt to read data
             sys.adc.clearIRQAction();
@@ -85,7 +78,6 @@ void ADCTask::activity()
             long ret = sys.adc.getData(adc_data.dataword, adc_data.channel);
             // turn interrupt back on to catch new ready indicator
             sys.adc.setIRQAction(adcISR);
-            //Serial.println("C");
 
             if( ret >= 0) {
                 // do thing with data
@@ -94,7 +86,7 @@ void ADCTask::activity()
                     i = 0;
                 }
                 i++;
-                if(adc_data.channel >= 6){
+                if(adc_data.channel >= Sensor::num_sensors){
                     Serial.print("Got some OOB data on ch: ");
                     Serial.println(adc_data.channel);
                 }else{

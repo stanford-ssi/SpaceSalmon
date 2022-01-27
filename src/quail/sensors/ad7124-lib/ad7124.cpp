@@ -61,11 +61,6 @@ Ad7124Chip::begin () {
   return setAdcControl (StandbyMode, LowPower, false);
 }
 
-long Ad7124Chip::checkForErrors() {
-  readRegister(Error);
-  return getRegister(Error);
-}
-
 // -----------------------------------------------------------------------------
 int
 Ad7124Chip::reset() {
