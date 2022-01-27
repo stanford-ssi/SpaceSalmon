@@ -19,7 +19,6 @@ void ADCTask::activity()
     int i = 0;
 
     while(true){
-
         // Set up adc overall
         while(true){
             int ret = sys.adc.begin();
@@ -33,14 +32,11 @@ void ADCTask::activity()
 
         sys.adc.setAdcControl(Ad7124::ContinuousMode, Ad7124::FullPower, true, Ad7124::InternalClk, true);
         sys.adc.setMode(Ad7124::ContinuousMode);
-
         Sensor::ADCbegin(); // tell sensors that they are ready for configuration
 
         // Wait for sensors to be configured!
         xEventGroupWaitBits(evgroup, SENSORS_READY, true, false, NEVER);
         sys.adc.setIRQAction(adcISR);
-
-
         uint32_t timeout_count = 0;
         uint32_t err_count = 0;
         while(true)
@@ -78,7 +74,6 @@ void ADCTask::activity()
             long ret = sys.adc.getData(adc_data.dataword, adc_data.channel);
             // turn interrupt back on to catch new ready indicator
             sys.adc.setIRQAction(adcISR);
-
             if( ret >= 0) {
                 // do thing with data
                 if(i > 1000){
