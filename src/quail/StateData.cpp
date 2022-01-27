@@ -4,6 +4,8 @@
 StaticJsonDocument<1024> StateData::stateJSON;
 Mutex StateData::SVmutex; // mutex for solenoid valve state
 Mutex StateData::EMmutex; // mutex for ematch state
+Mutex StateData::BatteryCurrentMutex; // mutex for power state
+Mutex StateData::BatteryVoltageMutex; // mutex for power state
 Mutex StateData::senseMutex; // mutex for sensor state
 Mutex StateData::seqMutex; // mutex for sequence state/name
 Mutex StateData::errMutex; // mutex for error
@@ -18,6 +20,8 @@ StaticJsonDocument<1024>* StateData::getState()
         stateJSON["sense"][(sys.sensors[i])->ch_name] = sys.statedata.getSensorState(i);
     stateJSON["SV"] = sys.statedata.getSolenoidState(); // most efficient way to send is just as the raw uint, can decode on groundside
     stateJSON["EM"] = sys.statedata.getEmatchState(); // most efficient way to send is just as the raw uint, can decode on groundside
+    stateJSON["I_batt"] = sys.statedata.getBatteryCurrentState();
+    stateJSON["V_batt"] = sys.statedata.getBatteryVoltageState();
     stateJSON["logging"] = sys.tasks.logger.isLoggingEnabled();
     char* seq = sys.statedata.getSequence();
     if(strlen(seq)){ // if a sequence is loaded
@@ -82,6 +86,37 @@ uint8_t StateData::getEmatchState()
     EMmutex.give();
     return temp;
 };
+
+void StateData::setBatteryCurrentState(float current)
+{
+    BatteryCurrentMutex.take(NEVER);
+    batterycurrentstate = current;
+    BatteryCurrentMutex.give();
+}
+
+void StateData::setBatteryVoltageState(float voltage)
+{
+    BatteryVoltageMutex.take(NEVER);
+    batteryvoltagestate = voltage;
+    BatteryVoltageMutex.give();
+}
+
+float StateData::getBatteryCurrentState()
+{
+    BatteryCurrentMutex.take(NEVER);
+    float temp = batterycurrentstate;
+    BatteryCurrentMutex.give();
+    return temp;
+}
+
+float StateData::getBatteryVoltageState()
+{
+    BatteryVoltageMutex.take(NEVER);
+    float temp = batteryvoltagestate;
+    BatteryVoltageMutex.give();
+    return temp;
+}
+
 
 void StateData::setSequence(const char* seq_name){
     seqMutex.take(NEVER);
