@@ -7,7 +7,6 @@ ThermalSensor::ThermalSensor(const char* ch_name, Ad7124::InputSel ainp) :
 
 void ThermalSensor::configure() {
     if(cfg == UNCONFIGURED) { // cfg is static - once one sensor of a type is set up, this loop won't run
-        cfg = add_config();
         sys.adc.setConfig(cfg, Ad7124::RefAVdd, Ad7124::Pga1, true);
         sys.adc.setConfigFilter(cfg, Ad7124::Sinc3Filter, 1);
     }
