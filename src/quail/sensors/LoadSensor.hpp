@@ -9,6 +9,8 @@ class LoadSensor: public Sensor{
         float convertToFloat(uint32_t adc_dataword);
         void configure();
 
+        static void unconfigure(){cfg = UNCONFIGURED;};
+
     private:
         // typedef enum {
         //     RANGE_1000,
