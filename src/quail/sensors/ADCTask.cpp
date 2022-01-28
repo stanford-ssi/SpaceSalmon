@@ -67,9 +67,16 @@ void ADCTask::initADC() {
     sys.adc.setAdcControl(Ad7124::ContinuousMode, Ad7124::FullPower, true, Ad7124::InternalClk, true);
     sys.adc.setMode(Ad7124::ContinuousMode);
     SensorTask::initSensors(); // tell sensors that they are ready for configuration
-    
+
     // Wait for sensors to be configured!
     xEventGroupWaitBits(evgroup, SENSORS_READY, true, false, NEVER);
+    
+    sys.adc.setRegister(Ad7124::Error_En, AD7124_ERREN_REG_SPI_CRC_ERR_EN |
+                                            AD7124_ERREN_REG_SPI_IGNORE_ERR_EN |
+                                            AD7124_ERREN_REG_ADC_SAT_ERR_EN |
+                                            AD7124_ERREN_REG_ADC_CAL_ERR_EN |
+                                            AD7124_ERREN_REG_ADC_CONV_ERR_EN);
+
     sys.adc.setIRQAction(adcISR);
 }
 
