@@ -24,6 +24,7 @@ class System;
 #endif
 #include "StateData.hpp"
 #include "SequenceTask.hpp"
+#include "PowerTask.hpp"
 
 class System
 { 
@@ -68,6 +69,7 @@ public:
         RXTask rxtask = RXTask(5, 50); //processes commands from USB or radio
         LoggerTask logger = LoggerTask(1); // logs data to SD during idle time, writes USB data as available
         SequenceTask sequencetask = SequenceTask(10); // test task for debugging
+        PowerTask powertask = PowerTask(3); // test for measuring battery voltage and current
     };
 
     Tasks tasks;
