@@ -22,6 +22,7 @@ void PowerTask::activity()
         // V_batt = (43000 + 10000) / 10000 * V_sense
         float v_batt = ((float) v_sense) / (1024 / 3.3) * 53/10;
         sys.statedata.setBatteryVoltageState(v_batt);
+        vTaskDelay(1000);
 
     }
 }
