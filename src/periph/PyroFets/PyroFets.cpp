@@ -2,7 +2,6 @@
 #include "main.hpp"
 
 PyroFets::PyroFets(uint8_t fire1, uint8_t sense1, uint8_t fire2, uint8_t sense2, ADC &adc) : adc{adc} {
-    adc = adc;
 
     fire1_pin = fire1;
     sense1_pin = sense1;

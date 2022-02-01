@@ -5,8 +5,6 @@ TODO: This library works, but can only be used once. It needs to be re-writen as
 
 #include "BMP388.hpp"
 
-#include "FreeRTOS.h"
-#include "hal_rtos.h"
 
 /***************** Internal macros ******************************/
 

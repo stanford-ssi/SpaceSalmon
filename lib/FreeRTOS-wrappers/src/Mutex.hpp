@@ -1,5 +1,6 @@
 #pragma once
-#include "hal_rtos.h"
+#include "FreeRTOS.h"
+#include "semphr.h"
 
 class Mutex{
 
@@ -18,5 +19,5 @@ public:
 
 private:
     StaticSemaphore_t buf;
-    SemaphoreHandle_t handle;
+    xSemaphoreHandle handle;
 };
