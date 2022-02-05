@@ -25,6 +25,7 @@ class System;
 #include "StateData.hpp"
 #include "SequenceTask.hpp"
 #include "PowerTask.hpp"
+#include "Slate.hpp"
 
 class System
 { 
@@ -55,7 +56,8 @@ public:
     };
 
     StateData statedata = StateData(); //holds current state of sensors/SVs/ematches systems for output + control
-    
+    Slate slate = Slate("quail");
+
     class Tasks
     {
     public:

@@ -16,13 +16,21 @@ void TXTask::activity() {
         // get state JSON
         StaticJsonDocument<1024>* stateJSON = sys.statedata.getState(); // updates and returns pointer to state JSON
         // log
-        sys.tasks.logger.log(*stateJSON);    
+
+        StaticJsonDocument<1024> slateJSON;
+
+        char string[1024];
+        JsonVariant variant = slateJSON.to<JsonVariant>();
+        sys.slate.dump(variant);
+        size_t pkt = serializeMsgPack(slateJSON, string, 1024);
+
+        sys.tasks.logger.log(slateJSON);    
 
         if(i == LOG_FACTOR){
             i = 0;
-            size_t len = measureJson(*stateJSON);
+            size_t len = measureJson(slateJSON);
             char MsgPackstr[len + 5]; //create char buffer with space
-            serializeJson(*stateJSON, MsgPackstr, sizeof(MsgPackstr));        
+            serializeJson(slateJSON, MsgPackstr, sizeof(MsgPackstr));        
             // if at tx_interval, write over selected TX
             writeUSB(MsgPackstr);
             #ifdef RADIO_TXRX

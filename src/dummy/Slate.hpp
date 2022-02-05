@@ -1,7 +1,7 @@
 #pragma once
-#include "../slate/Container.hpp"
-#include "../slate/SlateKey.hpp"
-#include "../slate/Array.hpp"
+#include "Container.hpp"
+#include "SlateKey.hpp"
+#include "Array.hpp"
 #include <functional>
 
 class Slate : public Container<3>

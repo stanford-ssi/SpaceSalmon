@@ -22,5 +22,6 @@ float PressureSensor::convertToFloat(uint32_t adc_dataword)
     voltage = voltage * 1.5;
     //TODO: make this calculation variable based on range, set by this->range
     float pressure = (voltage - 0.5) / 4.0 * (range*PSI_TO_PA);
+    channel = pressure;
     return pressure;
 };
