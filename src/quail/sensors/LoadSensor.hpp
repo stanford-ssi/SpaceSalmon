@@ -7,8 +7,8 @@ class LoadSensor: public Sensor{
         LoadSensor(char* ch_name, Ad7124::InputSel ainp);
 
         float convertToFloat(uint32_t adc_dataword);
+        
         void configure();
-
         static void unconfigure(){cfg = UNCONFIGURED;};
 
     private:

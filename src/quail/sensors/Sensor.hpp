@@ -34,4 +34,7 @@ class Sensor {
         const Ad7124::InputSel ainm; // ADC negative input    
 
         static uint8_t num_sensors; // running count of number of sensors initialized
+        static uint8_t num_cfgs; // number of sensor configurations set up on ADC
+
+        static uint8_t addConfig() { return num_cfgs++; }
 };

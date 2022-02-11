@@ -14,7 +14,7 @@ void ADCTask::adcISR(void) {
 
 void ADCTask::activity()
 {
-    // vTaskDelay(4000); // just for debugging
+    vTaskDelay(4000); // just for debugging
     while(true) {
         initADC();
         while(err_count + timeout_count < ERROR_THRESHOLD) {
@@ -29,10 +29,6 @@ void ADCTask::activity()
             long ret = getData();
             if(ret >= 0) { // process data
                 if(curr_data.channel < Sensor::numSensors()) {
-                    Serial.print("Good channel: ");
-                    Serial.print(curr_data.channel);
-                    Serial.print("  Data: ");
-                    Serial.println(curr_data.dataword);
                     sys.tasks.sensortask.addADCdata(curr_data);
                     data_count++;
                     if(data_count == Sensor::numSensors()) { // read through all sensor
@@ -59,8 +55,8 @@ void ADCTask::initADC() {
         if(ret == 0) {
             break;
         }
-        Serial.print("ADC Init Failed:");
-        Serial.println(ret);
+        sprintf(msg_buffer, "ADC Init Failed: %i", ret);
+        sys.tasks.txtask.writeUSB(msg_buffer);
         vTaskDelay(100);
     }
 
