@@ -24,7 +24,7 @@ void assert_triggered(const char *file, uint32_t line);
 // <i> Default: 5
 // <id> freertos_max_priorities
 #ifndef configMAX_PRIORITIES
-#define configMAX_PRIORITIES (5)
+#define configMAX_PRIORITIES (16)
 #endif
 
 // <o> Minimal stack size<64-1024>
