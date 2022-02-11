@@ -24,7 +24,7 @@ void TXTask::activity() {
             char MsgPackstr[len + 5]; //create char buffer with space
             serializeJson(*stateJSON, MsgPackstr, sizeof(MsgPackstr));        
             // if at tx_interval, write over selected TX
-            writeUSB(MsgPackstr);
+            // writeUSB(MsgPackstr);
             #ifdef RADIO_TXRX
             if(j == RADIO_FACTOR*LOG_FACTOR){ // if at a radio transmission interval
                 packet_t pkt; // create radio packet type

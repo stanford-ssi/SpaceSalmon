@@ -8,10 +8,10 @@ void SensorTask::activity() {
     while (true) {
         xEventGroupWaitBits(evgroup, NEED_CONFIG, pdTRUE, pdFALSE, NEVER); // wait for ADC to begin (don't clear bits)
         configureSensors();
-        while (!(xEventGroupGetBits(evgroup) & NEED_CONFIG)) { // read data until ADC restart
-            if(xEventGroupGetBits(evgroup) & DATA_READY) {
-                readData();
-            }
+        while (true) { // read data until ADC restart
+            uint32_t flags = xEventGroupWaitBits(evgroup, NEED_CONFIG | DATA_READY, false, false, NEVER);
+            if (flags & NEED_CONFIG) break;
+            readData();
         }
     }
 }
@@ -34,6 +34,7 @@ void SensorTask::initSensors() {
 bool SensorTask::readData() {
     adcdata_t adc_data;
     for (uint8_t i = 0; i < Sensor::numSensors(); i++) {
+        // Serial.println("Reading data");
         if(adcbuf.receiveTimeout(adc_data, READ_TIMEOUT)) {
             float sensor_value = sys.sensors[adc_data.channel]->convertToFloat(adc_data.dataword); // convert data to metric unit
             sys.statedata.setSensorState(adc_data.channel, sensor_value); // post new value to state
@@ -42,6 +43,7 @@ bool SensorTask::readData() {
             return false;
         }
     }
+    xEventGroupClearBits(evgroup, DATA_READY);
     return true;
 }
 

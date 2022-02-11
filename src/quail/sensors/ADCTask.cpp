@@ -29,9 +29,13 @@ void ADCTask::activity()
             long ret = getData();
             if(ret >= 0) { // process data
                 if(curr_data.channel < Sensor::numSensors()) {
+                    Serial.print("Good channel: ");
+                    Serial.print(curr_data.channel);
+                    Serial.print("  Data: ");
+                    Serial.println(curr_data.dataword);
                     sys.tasks.sensortask.addADCdata(curr_data);
                     data_count++;
-                    if(data_count == Sensor::numSensors()) { // read through all sensors
+                    if(data_count == Sensor::numSensors()) { // read through all sensor
                         data_count = 0;
                         sys.tasks.sensortask.dataReady(); 
                     }
