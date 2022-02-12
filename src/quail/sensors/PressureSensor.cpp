@@ -8,7 +8,7 @@ PressureSensor::PressureSensor(const char* ch_name, Ad7124::InputSel ainp, Press
 
 void PressureSensor::configure() {
     if(cfg == UNCONFIGURED) { // cfg is static - once one sensor of a type is set up, this loop won't run
-        cfg = addConfig();
+        cfg = add_config();
         sys.adc.setConfig(cfg, Ad7124::RefIn2, Ad7124::Pga1, false);
         sys.adc.setConfigFilter(cfg, Ad7124::Sinc3Filter, 512);
     }

@@ -8,11 +8,11 @@ class System;
 #include "sensors/ad7124-lib/ad7124.h"
 
 #define RADIO_TXRX // uncomment this to use Radio for TX/RX
+#define SENSOR_PRIORITY 3 // set sensor priority
 
 #include "sensors/PressureSensor.hpp"
 #include "sensors/ThermalSensor.hpp"
 #include "sensors/LoadSensor.hpp"
-#include "sensors/SensorTask.hpp"
 #include "sensors/ADCTask.hpp"
 #include "actuators/ValveTask.hpp"
 #include "actuators/FireTask.hpp"
@@ -65,7 +65,6 @@ public:
         #ifdef RADIO_TXRX // if using radio, create a RadioTask
             RadioTask radiotask = RadioTask(2); //collects and sends information over radio
         #endif
-        SensorTask sensortask = SensorTask(3);
         TXTask txtask = TXTask(4, 50); //regularly collects state data, logs and sends over USB or radio
         RXTask rxtask = RXTask(5, 50); //processes commands from USB or radio
         LoggerTask logger = LoggerTask(1); // logs data to SD during idle time, writes USB data as available
