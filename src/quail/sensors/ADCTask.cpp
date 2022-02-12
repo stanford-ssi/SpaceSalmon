@@ -14,33 +14,36 @@ void ADCTask::adcISR(void) {
 
 void ADCTask::activity()
 {
-    vTaskDelay(4000); // just for debugging
     while(true) {
         initADC();
         while(err_count + timeout_count < ERROR_THRESHOLD) {
             EventBits_t flags = xEventGroupWaitBits(evgroup, NEW_DATA, true, false, READ_TIMEOUT);
             if (!(flags & NEW_DATA)) { // time out, likely temperature or power problems
                 timeout_count++;
+                char msg_buffer[50];
                 sprintf(msg_buffer, "ADC Timed out %i times", timeout_count);
                 sys.tasks.txtask.writeUSB(msg_buffer);
                 continue; // skip data processing
             }
 
-            long ret = getData();
+            adcdata_t curr_data;
+            long ret = getData(curr_data);
             if(ret >= 0) { // process data
                 if(curr_data.channel < Sensor::numSensors()) {
                     sys.tasks.sensortask.addADCdata(curr_data);
                     data_count++;
-                    if(data_count == Sensor::numSensors()) { // read through all sensor
+                    if(data_count >= Sensor::numSensors()) { // read through all sensor
                         data_count = 0;
                         sys.tasks.sensortask.dataReady(); 
                     }
                 } else { // out-of-boundary data
+                    char msg_buffer[50];
                     sprintf(msg_buffer, "Got some OOB data on ch:%i", curr_data.channel);
                     sys.tasks.txtask.writeUSB(msg_buffer);
                 }
             } else { // failed ADC read, check checksum and SPI
                 err_count++;
+                char msg_buffer[50];
                 sprintf(msg_buffer, "ADC data error %i (%i time)", ret, err_count);
                 sys.tasks.txtask.writeUSB(msg_buffer);
             }
@@ -55,6 +58,7 @@ void ADCTask::initADC() {
         if(ret == 0) {
             break;
         }
+        char msg_buffer[50];
         sprintf(msg_buffer, "ADC Init Failed: %i", ret);
         sys.tasks.txtask.writeUSB(msg_buffer);
         vTaskDelay(100);
@@ -77,9 +81,9 @@ void ADCTask::resetADC() {
     sys.tasks.txtask.writeUSB("Resetting ADC!");
 }
 
-long ADCTask::getData() {
+long ADCTask::getData(adcdata_t &data) {
     sys.adc.clearIRQAction();
-    long ret = sys.adc.getData(curr_data.dataword, curr_data.channel);
+    long ret = sys.adc.getData(data.dataword, data.channel);
     sys.adc.setIRQAction(adcISR);
     return ret;
 }

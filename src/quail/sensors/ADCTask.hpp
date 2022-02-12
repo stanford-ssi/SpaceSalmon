@@ -8,7 +8,6 @@
 #include <hal_rtos.h>
 
 #include "Task.hpp"
-#include "adcdata.hpp"
 
 #define NEW_DATA 0b01
 #define SENSORS_READY 0b10
@@ -20,6 +19,10 @@ class ADCTask : public Task<2000>
 public:
     ADCTask(uint8_t priority);
 
+    struct {
+        uint32_t dataword;
+        uint8_t channel;
+    } typedef adcdata_t;
 
     /**
      * @brief Initializes the ADC, after execution ready to process data
@@ -39,7 +42,7 @@ public:
     /**
      * @brief Read data from ADC into curr_data, assumes new data is present
      */
-    long getData();
+    long getData(adcdata_t &data);
 
     void activity();
 
@@ -52,9 +55,6 @@ private:
     uint8_t err_count = 0;
     uint8_t data_count = 0;
 
-    adcdata_t curr_data;
-    char msg_buffer[50];
 };
 
-#include "main.hpp"
 #include "ArduinoJson.h"

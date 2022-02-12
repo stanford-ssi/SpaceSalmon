@@ -58,7 +58,7 @@ public:
     class Tasks
     {
     public:
-        ADCTask adctask = ADCTask(20); // passes ADC raw data to the appropriate sensor
+        ADCTask adctask = ADCTask(2); // passes ADC raw data to the appropriate sensor
         ValveTask valvetask = ValveTask(6, 22); // controls solenoids 
         FireTask firetask = FireTask(6, 20, 21); //fires squibs for ematches
         #ifdef RADIO_TXRX // if using radio, create a RadioTask

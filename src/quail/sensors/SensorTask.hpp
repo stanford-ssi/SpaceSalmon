@@ -3,7 +3,7 @@
 #include "Task.hpp"
 #include "MsgBuffer.hpp"
 #include "event_groups.h"
-#include "adcdata.hpp"
+#include "ADCTask.hpp"
 
 #define NEED_CONFIG 0b01
 #define DATA_READY  0b10
@@ -30,7 +30,7 @@ public:
     /**
      * @brief Add data to the adcbuf for conversion.
      */
-    void addADCdata(adcdata_t adc_data){ adcbuf.send(adc_data); };
+    void addADCdata(ADCTask::adcdata_t adc_data){ adcbuf.send(adc_data); };
 
     /**
      * @brief Read data from all sensors
@@ -40,7 +40,7 @@ public:
     void activity();
 
 private:
-    MsgBuffer<adcdata_t, 100> adcbuf; // buffer of raw adc data, filled via addADCdata()
+    MsgBuffer<ADCTask::adcdata_t, 100> adcbuf; // buffer of raw adc data, filled via addADCdata()
 
     static StaticEventGroup_t evbuf;
     static EventGroupHandle_t evgroup; // event group to await ADC ready and check for ADC reset
