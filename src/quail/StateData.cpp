@@ -16,7 +16,7 @@ StaticJsonDocument<1024>* StateData::getState()
     // Update time
     stateJSON["tick"] = xTaskGetTickCount();
     // Update statepacket from sensor, solenoid, and ematch statuses
-    for(uint8_t i = 0; i < Sensor::num_sensors; i++)
+    for(uint8_t i = 0; i < Sensor::numSensors(); i++)
         stateJSON["sense"][(sys.sensors[i])->ch_name] = sys.statedata.getSensorState(i);
     stateJSON["SV"] = sys.statedata.getSolenoidState(); // most efficient way to send is just as the raw uint, can decode on groundside
     stateJSON["EM"] = sys.statedata.getEmatchState(); // most efficient way to send is just as the raw uint, can decode on groundside
