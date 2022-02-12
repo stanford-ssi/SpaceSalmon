@@ -3,6 +3,14 @@
 #include "ad7124-lib/ad7124.h"
 
 #define UNCONFIGURED UINT8_MAX
+<<<<<<< HEAD
+=======
+#define ADC_STARTED 0b01
+#define ADC_STARTED_DONE 0b10
+#ifndef SENSOR_PRIORITY
+    #define SENSOR_PRIORITY 2
+#endif
+>>>>>>> master
 
 class Sensor {
     public:

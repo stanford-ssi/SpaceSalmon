@@ -13,7 +13,7 @@ This repo holds the embedded software for several of SSI's PCBs. It uses Platfor
 ### How To Setup The Build environment
 * Install VSCode
 * Add the extension Platform IO in the extension tab on the left
-* Using git, clone the repo: `git clone --recurse-submodules https://github.com/stanford-ssi/SpaceSalmon.git`
+* Using git, clone the repo: `git clone https://github.com/stanford-ssi/SpaceSalmon.git`
 * Open the repo in VSCode
 * Use the check button in the bottom bar of the VSCode window to build
 * Use the right arrow button next to the build button to upload

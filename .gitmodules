@@ -1,7 +1,0 @@
-[submodule "lib/SSISD"]
-	path = lib/SSISD
-	url = https://github.com/stanford-ssi/SSISD.git
-[submodule "lib/RadioLib"]
-	path = lib/RadioLib
-	url = https://github.com/stanford-ssi/RadioLib.git
-	branch = master

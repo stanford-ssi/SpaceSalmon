@@ -11,6 +11,8 @@ class LoadSensor: public Sensor{
         void configure();
         static void unconfigure(){cfg = UNCONFIGURED;};
 
+        static void unconfigure(){cfg = UNCONFIGURED;};
+
     private:
         // typedef enum {
         //     RANGE_1000,
