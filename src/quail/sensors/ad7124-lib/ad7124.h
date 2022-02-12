@@ -209,8 +209,6 @@ class Ad7124Chip {
      */
     int begin ();
 
-    long checkForErrors();
-
     /**
      * @brief Resets the device
      * @return Returns true for success, AD7124_TIMEOUT for timeout

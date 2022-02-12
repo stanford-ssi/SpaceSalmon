@@ -50,20 +50,7 @@ Ad7124Chip::begin () {
   if (ret < 0) {
     return ret;
   }
-
-  // Ad7124Register *r;
-  // r = &reg[Error_En];
-  // r->value |= AD7124_ERREN_REG_ADC_CONV_ERR_EN;
-  // r->value |= AD7124_ERREN_REG_ADC_SAT_ERR_EN;
-  // r->value |= AD7124_ERREN_REG_ADC_CAL_ERR_EN;
-  // writeRegister(Error_En);
-
   return setAdcControl (StandbyMode, LowPower, false);
-}
-
-long Ad7124Chip::checkForErrors() {
-  readRegister(Error);
-  return getRegister(Error);
 }
 
 // -----------------------------------------------------------------------------
