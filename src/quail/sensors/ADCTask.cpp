@@ -62,7 +62,7 @@ void ADCTask::activity()
                 }else{
                     // It was an input error:
                     char msg_buffer[50];
-                    sprintf(msg_buffer, "Conversion error on channel %i, probably railed!", curr_data.channel);
+                    sprintf(msg_buffer, "Conversion error %li on channel %i, probably railed!", error_reg, curr_data.channel);
                     sys.tasks.txtask.writeUSB(msg_buffer);
                 }
             }
