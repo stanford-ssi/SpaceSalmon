@@ -9,8 +9,6 @@
 
 #include "Task.hpp"
 
-#define NEW_DATA 0b01
-#define SENSORS_READY 0b10
 #define ERROR_THRESHOLD 10
 #define READ_TIMOUT 100
 
@@ -25,29 +23,31 @@ public:
     } typedef adcdata_t;
 
     /**
-     * @brief Initializes the ADC, after execution ready to process data
-     */ 
-    void initADC();
-
-    /**
-     * @brief set flag to indicate that all sensor channels have been configured
+     * @brief set flag to indicate that all sensor channels have been configured. This is meant to be called from another task (SensorTask).
      */
     void sensorsConfigured();
 
+private:
+
+    enum events{
+        NewData = 0b10,
+        SensorsReady = 0b01
+    };
+
+    static void adcISR();
+
+    void activity();
+    
     /**
      * @brief Restore ADC to a status where it can be initialized
      */
     void resetADC();
-
+    
     /**
-     * @brief Read data from ADC into curr_data, assumes new data is present
-     */
-    long getData(adcdata_t &data);
-
-    void activity();
-
-private:
-    static void adcISR();
+     * @brief Initializes the ADC, after execution ready to process data
+     */ 
+    void initADC();
+    
     StaticEventGroup_t evbuf;
     EventGroupHandle_t evgroup;
 

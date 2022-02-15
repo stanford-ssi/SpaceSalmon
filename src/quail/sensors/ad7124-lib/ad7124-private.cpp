@@ -427,6 +427,10 @@ Ad7124Private::readData (uint32_t& pData, uint8_t& channel) {
 
   channel = AD7124_STATUS_REG_CH_ACTIVE(buffer[4]); //Just the ID bits
 
+  if(buffer[4] & AD7124_STATUS_REG_ERROR_FLAG){
+    ret = AD7124_INVALID_VAL;
+  }
+
   return ret < 0 ? ret : 0;
 }
 
