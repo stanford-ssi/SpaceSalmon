@@ -4,7 +4,7 @@
 
 class LoadSensor: public Sensor{
     public:
-        LoadSensor(const char* ch_name, Ad7124::InputSel ainp);
+        LoadSensor(const char* ch_name, Ad7124::InputSel ainp, SlateKey<float> &slate_channel);
 
         float convertToFloat(uint32_t adc_dataword);
         

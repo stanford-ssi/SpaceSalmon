@@ -12,7 +12,7 @@ typedef enum {
 class PressureSensor: public Sensor{
     public:
 
-        PressureSensor(const char* ch_name, Ad7124::InputSel ainp, PressureRange range);
+        PressureSensor(const char* ch_name, Ad7124::InputSel ainp, PressureRange range, SlateKey<float> &slate_channel);
 
         float convertToFloat(uint32_t adc_dataword);
         void configure();

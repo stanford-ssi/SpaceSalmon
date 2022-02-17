@@ -12,14 +12,14 @@ public:
     class Sense : public Container<6> // need to increment this when changing number of sensors
     {
     public:
-        SlateKey<uint32_t> pt1 = SlateKey<uint32_t>("PT1", 0);
-        SlateKey<uint32_t> pt2 = SlateKey<uint32_t>("PT2", 0);
-        SlateKey<uint32_t> pt3 = SlateKey<uint32_t>("PT3", 0);
-        SlateKey<uint32_t> pt4 = SlateKey<uint32_t>("PT4", 0);
-        // SlateKey<uint32_t> pt5 = SlateKey<uint32_t>("PT5", 0);
-        SlateKey<uint32_t> lc1 = SlateKey<uint32_t>("LC1", 0);
-        // SlateKey<uint32_t> lc2 = SlateKey<uint32_t>("LC2", 0);
-        SlateKey<uint32_t> tc1 = SlateKey<uint32_t>("TC1", 0);
+        SlateKey<float> pt1 = SlateKey<float>("PT1", 0);
+        SlateKey<float> pt2 = SlateKey<float>("PT2", 0);
+        SlateKey<float> pt3 = SlateKey<float>("PT3", 0);
+        SlateKey<float> pt4 = SlateKey<float>("PT4", 0);
+        // SlateKey<float> pt5 = SlateKey<float>("PT5", 0);
+        SlateKey<float> lc1 = SlateKey<float>("LC1", 0);
+        // SlateKey<float> lc2 = SlateKey<float>("LC2", 0);
+        SlateKey<float> tc1 = SlateKey<float>("TC1", 0);
         Sense(const std::string id) : Container(id, {
             std::ref(pt1),
             std::ref(pt2),

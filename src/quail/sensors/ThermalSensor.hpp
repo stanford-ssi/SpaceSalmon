@@ -5,7 +5,7 @@
 class ThermalSensor: public Sensor{
     public:
 
-        ThermalSensor(const char* ch_name, Ad7124::InputSel ainp);
+        ThermalSensor(const char* ch_name, Ad7124::InputSel ainp, SlateKey<float> &slate_channel);
 
         float convertToFloat(uint32_t adc_dataword);
         void configure();

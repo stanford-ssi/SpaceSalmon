@@ -21,7 +21,7 @@ void TXTask::activity() {
 
         char string[1024];
         JsonVariant variant = slateJSON.to<JsonVariant>();
-        sys.slate.dump(variant);
+        //sys.slate.dump(variant);
         size_t pkt = serializeMsgPack(slateJSON, string, 1024);
 
         sys.tasks.logger.log(slateJSON);    
