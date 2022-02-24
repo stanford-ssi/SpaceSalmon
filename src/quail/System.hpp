@@ -22,7 +22,6 @@ class System;
 #ifdef RADIO_TXRX
     #include "rx_tx_log/RadioTask.hpp"
 #endif
-#include "StateData.hpp"
 #include "SequenceTask.hpp"
 #include "PowerTask.hpp"
 #include "Slate.hpp"
@@ -57,7 +56,6 @@ public:
         &TS1
     };
 
-    StateData statedata = StateData(); //holds current state of sensors/SVs/ematches systems for output + control
     class Tasks
     {
     public:

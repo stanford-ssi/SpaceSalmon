@@ -14,8 +14,8 @@ void TXTask::activity() {
         j++;
         vTaskDelayUntil(&lastSensorTime, tx_interval_ms);
         // get state JSON
-        StaticJsonDocument<1024>* stateJSON = sys.statedata.getState(); // updates and returns pointer to state JSON
         sys.slate.tick = xTaskGetTickCount();
+        sys.slate.logging = sys.tasks.logger.isLoggingEnabled();
         // log
 
         StaticJsonDocument<1024> slateJSON;
@@ -37,14 +37,15 @@ void TXTask::activity() {
             #ifdef RADIO_TXRX
             if(j == RADIO_FACTOR*LOG_FACTOR){ // if at a radio transmission interval
                 packet_t pkt; // create radio packet type
-                memcpy(pkt.data, &MsgPackstr, sizeof(MsgPackstr)); // copy state data into packet
+                memcpy(pkt.data, &MsgPackstr, sizeof(MsgPackstr)); // copy slate data into packet
                 pkt.len = sizeof(MsgPackstr); // set packet size
                 sys.tasks.radiotask.sendPacket(pkt); // add packet to radio transmission queue
                 j = 0;
-                sys.statedata.clearError(); // clear error after sending over radio
+                sys.slate.error = 0; // clear error after sending over radio
+                                     // TODO clean this up using the ErrorType enum
             }
             #else
-            sys.statedata.clearError(); // clear state data after sending once
+            sys.slate.error = 0;
             #endif
         }
     }

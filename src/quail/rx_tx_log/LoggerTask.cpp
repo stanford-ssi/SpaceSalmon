@@ -31,7 +31,7 @@ void LoggerTask::findFile(char* filename, size_t filesize, int* lognum) {
         snprintf(filename, filesize, "log%u.txt", *lognum);
         res = f_stat(filename, NULL);
         if (res != FR_OK) {
-            sys.statedata.setError("A log file is corrupted");
+            sys.slate.error = ErrorType::corrupt_file;
         }
     }
 }
@@ -48,7 +48,7 @@ void LoggerTask::activity()
 
     while (res != FR_OK) {
         loggingEnabled = false;
-        sys.statedata.setError("Could Not Mount Disk");
+        sys.slate.error = ErrorType::failed_to_mount_disk;
         memset(&fs, 0, sizeof(FATFS));
         res = f_mount(&fs, "", 1);
         vTaskDelay(5000);
@@ -58,7 +58,7 @@ void LoggerTask::activity()
     int file_num = 0;
     do {
         findFile(file_name, 20, &file_num);
-        sys.statedata.setError("Trying to open log file");
+        sys.slate.error = ErrorType::failed_to_open_file;
         res = f_open(&file_object, file_name, FA_CREATE_ALWAYS | FA_WRITE);
 
     } while(res != FR_OK);
