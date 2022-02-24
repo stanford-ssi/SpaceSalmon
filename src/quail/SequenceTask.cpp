@@ -11,6 +11,27 @@ SequenceTask::SequenceTask(uint8_t priority):Task(priority, "Sequence"){
     glob_ptr = this;
 }
 
+
+
+void SequenceTask::getSequenceFilename(unsigned sequence, char buf[]){
+    switch (sequence){
+        case Sequence::open_valve1:
+            strcpy(buf, "open_valve1.txt");
+            break;
+        case Sequence::open_valve2:
+            strcpy(buf, "open_valve2.txt");
+            break;
+    }
+}
+
+unsigned SequenceTask::getSequenceEnum(char buf[]){
+    if (strcmp(buf, "open_valve1.txt")){
+        return Sequence::open_valve1;
+    } else if (strcmp(buf, "open_valve2.txt")){
+        return Sequence::open_valve2;
+    }
+}
+
 void SequenceTask::activity()
 {
     while(true){
@@ -43,8 +64,11 @@ void SequenceTask::activity()
 
 void SequenceTask::start_seq(){
     started = true;
-    if(!playing) // if we were paused, restart the sequence
-        load_seq(sys.statedata.getSequence()); // this re-loads the current sequence
+    if(!playing) {// if we were paused, restart the sequence
+        char buf[100] = "";
+        getSequenceFilename(sys.slate.sequence.name, buf);
+        load_seq(buf); // this re-loads the current sequence
+    }
     xEventGroupSetBits(evGroup, SEQ_STARTED); // start the sequence
 };
 
@@ -89,7 +113,9 @@ void SequenceTask::_load_seq(){
     if( res == FR_OK){
         res = f_open(&new_file_object, seq_filename, FA_READ); // open file for reading
         if( res == FR_OK ){
-            sys.statedata.setSequence(seq_name); // set sequence name in StateData
+            sys.slate.sequence.name = getSequenceEnum(seq_name); 
+            sys.slate.sequence.start = sys.tasks.sequencetask.isSequenceStarted();
+            sys.slate.sequence.play = sys.tasks.sequencetask.isSequencePlaying();
             filebuf.send(new_file_object); // send the new file object
             xEventGroupSetBits(evGroup, SEQ_LOADED); // indicate successful sequence load
             return;

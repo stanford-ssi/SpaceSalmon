@@ -32,6 +32,11 @@ private:
     bool playing = false;
     bool started = false;
 
+    enum Sequence {
+        open_valve1 = 0,
+        open_valve2 = 1
+    };
+
     static SequenceTask* glob_ptr; // global pointer for accessing event group from callback
     static void _play_seq(TimerHandle_t xTimer);
     void _load_seq();
@@ -47,4 +52,6 @@ private:
 
     static TimerHandle_t delayTimer; // xTimer for callback commands
     static StaticTimer_t delaybuf; // xTimer static buffer for waitTimer
+    void getSequenceFilename(unsigned sequence, char buf[]);
+    unsigned getSequenceEnum(char buf[]);
 };

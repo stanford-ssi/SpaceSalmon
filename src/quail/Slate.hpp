@@ -67,7 +67,7 @@ public:
     class Sequence : public Container<3>
     {
     public:
-        SlateKey<std::string> name = SlateKey<std::string>("name", "");
+        SlateKey<unsigned> name = SlateKey<unsigned>("name", 0);
         SlateKey<bool> start = SlateKey<bool>("start", false);
         SlateKey<bool> play = SlateKey<bool>("play", false);
         Sequence(const std::string id) : Container(id, {std::ref(name),std::ref(start),std::ref(play)}){};
