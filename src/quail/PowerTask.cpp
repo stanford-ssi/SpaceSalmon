@@ -12,7 +12,6 @@ void PowerTask::activity()
         // ADC is in 10 bit mode -> divide by 1024
         float i_batt = ((float) i_sense) / (1024 / 16.5); // amps
         sys.slate.i_batt = i_batt;
-        sys.statedata.setBatteryCurrentState(i_batt);
         uint16_t v_sense = adc0.read(0x02); // ADC0/AIN[3] is PB08
         // Using a voltage divider
         // R2 = 43kΩ
@@ -20,7 +19,6 @@ void PowerTask::activity()
         // V_batt = (43000 + 10000) / 10000 * V_sense
         float v_batt = ((float) v_sense) / (1024 / 3.3) * 53/10;
         sys.slate.v_batt = v_batt;
-        sys.statedata.setBatteryVoltageState(v_batt);
         vTaskDelay(100);
     }
 }
