@@ -20,9 +20,8 @@ ValveTask::ValveTask(uint8_t priority, uint8_t valve_pin_start) : Task(priority,
 void ValveTask::activity() {
     while(true) {
         xEventGroupWaitBits(valveManager, VALVES_UPDATED, true, false, NEVER);
-        uint8_t valvestate = sys.statedata.getSolenoidState();
         for(uint8_t i = 0; i < NUM_SOLENOIDS; i++) {
-            if((valvestate>>i & 0b1) == valves[i].normal) { // if valve is in the state in which it should be powered
+            if(sys.slate.solenoid[i] == valves[i].normal) { // if valve is in the state in which it should be powered
                 if(digitalPinHasPWM(valve_pin_start + i))
                     analogWrite(valve_pin_start + i, valves[i].pwm);
                 else

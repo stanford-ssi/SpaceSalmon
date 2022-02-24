@@ -121,32 +121,42 @@ void RXTask::pulse_solenoids(JsonArrayConst sol_ch, uint16_t pulse_dur){
         xTimerStart(pulseTimers[(uint8_t)sol_ch[i]-1], NEVER); // start the timer to close this solenoid
 };
 
-void RXTask::open_solenoid(uint8_t sol_ch){
-    if(sol_ch >= 1 && sol_ch<=NUM_SOLENOIDS)
-        sys.statedata.setSolenoidState(sol_ch-1, OPEN, true);
+void RXTask::open_solenoid(uint8_t sol_ch, bool update_valves){
+    if(sol_ch >= 1 && sol_ch<=NUM_SOLENOIDS){
+        sys.slate.solenoid[sol_ch] = OPEN;
+        if (update_valves){
+            sys.tasks.valvetask.updateValves();
+        }
+    }
 };
 
 void RXTask::open_solenoids(JsonArrayConst sol_ch){
     uint8_t num_ch = sol_ch.size();
-    for(uint8_t i = 0; i < num_ch; i++)
-        if(sol_ch >= 1 && sol_ch<=NUM_SOLENOIDS && sol_ch[i].is<unsigned int>()){
+    for(uint8_t i = 0; i < num_ch; i++){
+        if(sol_ch[i].is<unsigned int>()){
             uint8_t this_ch = sol_ch[i];
-            sys.statedata.setSolenoidState(this_ch-1, OPEN, i==(num_ch-1)); // update all solenoid states before flagging ValveTask
+            open_solenoid(this_ch, i==(num_ch-1)); // update all solenoid states before flagging ValveTask
         }
+    }
 };
 
-void RXTask::close_solenoid(uint8_t sol_ch){
-    if(sol_ch >= 1 && sol_ch<=NUM_SOLENOIDS)
-        sys.statedata.setSolenoidState(sol_ch-1, CLOSED); // update all solenoid states before flagging ValveTask
+void RXTask::close_solenoid(uint8_t sol_ch, bool update_valves){
+    if(sol_ch >= 1 && sol_ch<=NUM_SOLENOIDS){
+        sys.slate.solenoid[sol_ch-1] = CLOSED;
+        if (update_valves){
+            sys.tasks.valvetask.updateValves();
+        }
+    }
 };
 
 void RXTask::close_solenoids(JsonArrayConst sol_ch){
     uint8_t num_ch = sol_ch.size();
-    for(uint8_t i = 0; i < num_ch; i++)
-        if(sol_ch[i] >= 1 && sol_ch[i]<=NUM_SOLENOIDS && sol_ch[i].is<unsigned int>()){
+    for(uint8_t i = 0; i < num_ch; i++){
+        if(sol_ch[i].is<unsigned int>()){
             uint8_t this_ch = sol_ch[i];
-            sys.statedata.setSolenoidState(this_ch-1, CLOSED, i==(num_ch-1));
+            close_solenoid(this_ch, i==(num_ch-1)); // update all solenoid states before flagging ValveTask
         }
+    }
 };
 
 void RXTask::_close_solenoid(TimerHandle_t xTimer){
