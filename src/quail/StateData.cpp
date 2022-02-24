@@ -9,7 +9,6 @@ StaticJsonDocument<1024>* StateData::getState()
 {
     stateJSON.clear(); // clear memory pool of JSON
     // Update time
-    stateJSON["EM"] = sys.statedata.getEmatchState(); // most efficient way to send is just as the raw uint, can decode on groundside
     stateJSON["logging"] = sys.tasks.logger.isLoggingEnabled();
     char* err = sys.statedata.getError();
     if(strlen(err)) {// if an error is present
@@ -18,25 +17,6 @@ StaticJsonDocument<1024>* StateData::getState()
     return &stateJSON;
 };
 
-
-void StateData::fireEmatch(uint8_t ematch_ch, bool updateEMs)
-{
-    EMmutex.take(NEVER);
-    // clear then set the bit corresponding to the desired sol_ch (zero indexed)
-    ematchstate = (ematchstate | (FIRED << ematch_ch)); // set channelto indicate fired status
-    EMmutex.give();
-    if(updateEMs)
-        sys.tasks.firetask.fireEmatch(ematch_ch); // send signal to firetask that ematch state has changed
-};
-
-
-uint8_t StateData::getEmatchState()
-{
-    EMmutex.take(NEVER);
-    uint8_t temp = ematchstate;
-    EMmutex.give();
-    return temp;
-};
 
 
 void StateData::setError(const char* error_msg){

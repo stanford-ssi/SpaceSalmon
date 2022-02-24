@@ -166,18 +166,23 @@ void RXTask::_close_solenoid(TimerHandle_t xTimer){
     close_solenoid(sol_ch[0]+1);
 };
 
-void RXTask::fire_ematch(uint8_t em_ch){
-    if(em_ch >= 1 && em_ch<=NUM_SOLENOIDS)
-        sys.statedata.fireEmatch(em_ch-1);
+void RXTask::fire_ematch(uint8_t em_ch, bool update_em){
+    if(em_ch >= 1 && em_ch<=NUM_SOLENOIDS){
+        sys.slate.squib.fire[em_ch-1] = FIRED;
+        if(update_em){
+            sys.tasks.firetask.fireEmatch(em_ch-1); // send signal to firetask that ematch state has changed
+        }
+    }
 };
 
 void RXTask::fire_ematches(JsonArrayConst em_ch){
     uint8_t num_ch = em_ch.size();
-    for(uint8_t i = 0; i < num_ch; i++)
+    for(uint8_t i = 0; i < num_ch; i++){
         if(em_ch[i].is<unsigned int>()){
             uint8_t this_ch = em_ch[i];
-            sys.statedata.fireEmatch(this_ch-1, i==(num_ch-1));
+            fire_ematch(this_ch, i==(num_ch-1));
         }
+    }
 };
 
 void RXTask::wait_then(JsonObjectConst cmd, uint16_t wait_time){
