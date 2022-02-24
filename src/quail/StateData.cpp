@@ -9,7 +9,6 @@ StaticJsonDocument<1024>* StateData::getState()
 {
     stateJSON.clear(); // clear memory pool of JSON
     // Update time
-    stateJSON["tick"] = xTaskGetTickCount();
     stateJSON["EM"] = sys.statedata.getEmatchState(); // most efficient way to send is just as the raw uint, can decode on groundside
     stateJSON["logging"] = sys.tasks.logger.isLoggingEnabled();
     char* err = sys.statedata.getError();

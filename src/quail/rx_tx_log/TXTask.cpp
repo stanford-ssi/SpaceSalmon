@@ -15,6 +15,7 @@ void TXTask::activity() {
         vTaskDelayUntil(&lastSensorTime, tx_interval_ms);
         // get state JSON
         StaticJsonDocument<1024>* stateJSON = sys.statedata.getState(); // updates and returns pointer to state JSON
+        sys.slate.tick = xTaskGetTickCount();
         // log
 
         StaticJsonDocument<1024> slateJSON;

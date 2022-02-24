@@ -5,7 +5,7 @@
 #include <functional>
 #include <string>
 
-class Slate : public Container<10>
+class Slate : public Container<9>
 {
 public:
 
@@ -34,7 +34,7 @@ public:
     public:
         SlateKey<bool> arm = SlateKey<bool>("arm", false);
         Array<SlateKey<bool>,8> fire = Array<SlateKey<bool>,8>("fire",{
-            SlateKey<bool>("tick", false),
+            SlateKey<bool>("1", false),
             SlateKey<bool>("2", false),
             SlateKey<bool>("3", false),
             SlateKey<bool>("4", false),
@@ -73,23 +73,23 @@ public:
         Sequence(const std::string id) : Container(id, {std::ref(name),std::ref(start),std::ref(play)}){};
     } sequence = Sequence("sequence");
 
-    SlateKey<float> SV = SlateKey<float>("SV", 0);
-    SlateKey<float> EM = SlateKey<float>("EM", 0);
     SlateKey<float> v_batt = SlateKey<float>("v_batt", 0.0);
     SlateKey<float> i_batt = SlateKey<float>("i_batt", 0.0);
     SlateKey<float> logging = SlateKey<float>("logging", false);
     SlateKey<float> error = SlateKey<float>("error", false);
+    SlateKey<unsigned> tick = SlateKey<unsigned>("tick", 0);
 
-    Slate(const std::string id) : Container(id, {
+    Slate(const std::string id) : Container(id, { 
+        // If you change the length of this list, you also need to change the
+        // class definition (its templated for the length)
         std::ref(squib), 
         std::ref(solenoid), 
         std::ref(adc_in), 
         std::ref(sequence),
-        std::ref(SV),
-        std::ref(EM),
         std::ref(v_batt),
         std::ref(i_batt),
         std::ref(logging),
-        std::ref(error)
+        std::ref(error),
+        std::ref(tick)
     }){};
 };
