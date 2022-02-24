@@ -16,7 +16,7 @@ class Sensor {
         /**
          * @brief over-written by inheritors, returns SI unit value of reading from ADC bin count
          */
-        virtual float convertToFloat(uint32_t adc_dataword); 
+        virtual void convertToFloat(uint32_t adc_dataword); 
 
         /**
          * @brief Configures and initializes this sensor.

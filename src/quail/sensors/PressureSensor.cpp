@@ -16,12 +16,11 @@ void PressureSensor::configure() {
     sys.adc.enableChannel(ch_id, true); 
 };
 
-float PressureSensor::convertToFloat(uint32_t adc_dataword)
+void PressureSensor::convertToFloat(uint32_t adc_dataword)
 {
     float voltage = Ad7124Chip::toVoltage(adc_dataword, 1, 2.5, false);
     voltage = voltage * 1.5;
     //TODO: make this calculation variable based on range, set by this->range
     float pressure = (voltage - 0.5) / 4.0 * (range*PSI_TO_PA);
     slate_channel = pressure;
-    return pressure;
 };

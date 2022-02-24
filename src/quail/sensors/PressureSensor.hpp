@@ -14,7 +14,7 @@ class PressureSensor: public Sensor{
 
         PressureSensor(const char* ch_name, Ad7124::InputSel ainp, PressureRange range, SlateKey<float> &slate_channel);
 
-        float convertToFloat(uint32_t adc_dataword);
+        void convertToFloat(uint32_t adc_dataword);
         void configure();
 
         static void unconfigure(){cfg = UNCONFIGURED;};

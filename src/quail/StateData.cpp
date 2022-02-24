@@ -4,7 +4,6 @@
 StaticJsonDocument<1024> StateData::stateJSON;
 Mutex StateData::SVmutex; // mutex for solenoid valve state
 Mutex StateData::EMmutex; // mutex for ematch state
-Mutex StateData::senseMutex; // mutex for sensor state
 Mutex StateData::errMutex; // mutex for error
 
 StaticJsonDocument<1024>* StateData::getState()
@@ -12,9 +11,6 @@ StaticJsonDocument<1024>* StateData::getState()
     stateJSON.clear(); // clear memory pool of JSON
     // Update time
     stateJSON["tick"] = xTaskGetTickCount();
-    // Update statepacket from sensor, solenoid, and ematch statuses
-    for(uint8_t i = 0; i < Sensor::numSensors(); i++)
-        stateJSON["sense"][(sys.sensors[i])->ch_name] = sys.statedata.getSensorState(i);
     stateJSON["SV"] = sys.statedata.getSolenoidState(); // most efficient way to send is just as the raw uint, can decode on groundside
     stateJSON["EM"] = sys.statedata.getEmatchState(); // most efficient way to send is just as the raw uint, can decode on groundside
     stateJSON["logging"] = sys.tasks.logger.isLoggingEnabled();
@@ -23,13 +19,6 @@ StaticJsonDocument<1024>* StateData::getState()
         stateJSON["error"] = err;
     }
     return &stateJSON;
-};
-
-void StateData::setSensorState(uint8_t ch_id, float ch_val)
-{
-    senseMutex.take(NEVER);
-    sensorstate[ch_id] = ch_val;
-    senseMutex.give();
 };
 
 void StateData::setSolenoidState(uint8_t sol_ch, solenoid_state_t solenoid_state,bool updateSVs)
@@ -50,14 +39,6 @@ void StateData::fireEmatch(uint8_t ematch_ch, bool updateEMs)
     EMmutex.give();
     if(updateEMs)
         sys.tasks.firetask.fireEmatch(ematch_ch); // send signal to firetask that ematch state has changed
-};
-
-float StateData::getSensorState(uint8_t ch_id)
-{
-    senseMutex.take(NEVER);
-    float temp = sensorstate[ch_id];
-    senseMutex.give();
-    return temp;
 };
 
 uint8_t StateData::getSolenoidState()
