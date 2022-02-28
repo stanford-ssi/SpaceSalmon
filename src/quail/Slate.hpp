@@ -5,7 +5,7 @@
 #include <functional>
 #include <string>
 
-class Slate : public Container<9>
+class Slate : public Container<10>
 {
 public:
 
@@ -82,6 +82,7 @@ public:
     Slate(const std::string id) : Container(id, { 
         // If you change the length of this list, you also need to change the
         // class definition (its templated for the length)
+        std::ref(sense), 
         std::ref(squib), 
         std::ref(solenoid), 
         std::ref(adc_in), 
