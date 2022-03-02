@@ -54,4 +54,9 @@ private:
     static StaticTimer_t delaybuf; // xTimer static buffer for waitTimer
     void getSequenceFilename(unsigned sequence, char buf[]);
     unsigned getSequenceEnum(char buf[]);
+
+    class Sequence : public Task<2000> {
+        Sequence(uint8_t priority, void (*func)());
+        void activity();
+    };
 };

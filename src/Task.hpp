@@ -39,4 +39,8 @@ class Task {
 
             vTaskSuspend(task->taskHandle);
         }
+
+        void stop() { vTaskDelete(taskHandle); }
+        void suspend() { vTaskSuspend(taskHandle); }
+        void resume() { vTaskResume(taskHandle); }
 };

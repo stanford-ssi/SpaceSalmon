@@ -27,7 +27,6 @@ ValveTask::ValveTask(uint8_t priority, uint8_t valve_pin_start) : Task(priority,
                                             (void *) (long)i, // timer ID, used to know which solenoid to close on callback
                                             _callback, // callback to close
                                             &(pulseBufs[i])); // static buffer
-
     }
 }
 
