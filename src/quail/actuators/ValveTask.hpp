@@ -5,8 +5,9 @@
 #include "Task.hpp"
 #include "event_groups.h"
 #include <hal_rtos.h>
+#include <timers.h>
 
-#define VALVES_UPDATED 0b01
+#define UPDATE_VALVES 0b01
 #define NUM_SOLENOIDS 8
 
 typedef enum{
@@ -40,12 +41,23 @@ class ValveTask : public Task<2000> {
         ValveTask(uint8_t priority);
 
         void activity();
-        void updateValves();
- 
+
+        bool openSolenoid(uint8_t ch, bool update = true) {return _updateSolenoid(ch, update, OPEN);};
+        bool closeSolenoid(uint8_t ch, bool update = true) {return _updateSolenoid(ch, update, CLOSED);};
+        bool pulseSolenoid(uint8_t sol_ch, uint16_t pulse_dur);
+
     private:
         uint8_t valve_pin_start;
         solenoid_t valves[NUM_SOLENOIDS];
 
         StaticEventGroup_t evBuf;
         EventGroupHandle_t valveManager;
+        
+        void _updateValves();
+        bool _updateSolenoid(uint8_t ch, bool update, solenoid_state_t state);
+
+        static TimerHandle_t pulseTimers[NUM_SOLENOIDS]; // xTimers for callback (timer IDS correspond to the array index & solenoid channel)
+        static StaticTimer_t pulseBufs[NUM_SOLENOIDS]; // xTimer static buffer for pulse timers
+
+        static void _callback(TimerHandle_t xTimer);
 };

@@ -2,7 +2,7 @@
 
 FireTask::FireTask(uint8_t priority, uint8_t Squib1_SS, uint8_t Squib2_SS) : Task(priority, "Fire"), squib1(sys.squib_spi,Squib1_SS), squib2(sys.squib_spi,Squib2_SS)
 {
-    evgroup = xEventGroupCreateStatic(&evbuf);
+    squibManager = xEventGroupCreateStatic(&evbuf);
     // TODO: make this less gross? and maybe settable at System level
     ch_map[0] = {&squib1, CMD_FIRE_1B};
     ch_map[1] = {&squib1, CMD_FIRE_2B};
@@ -20,17 +20,26 @@ void FireTask::activity()
     squib1.Init();
     squib2.Init();
     while(true) {
-        uint32_t flags = xEventGroupWaitBits(evgroup, 0xFF, true, false, NEVER); // any flag should be inspected
+        xEventGroupWaitBits(squibManager, UPDATE_SQUIBS, true, false, NEVER);
         for(uint8_t i = 0; i < NUM_EM_CHANNELS; i++) {
-            if((flags & 0b1)) { // if the lsb bit is 1
+            if (sys.slate.squib.fire[i] == FIRED) {
                 squibChannel_t firedsquib = ch_map[i];
                 (firedsquib.squib)->fire(firedsquib.firecmd);
             }
-            flags = flags >> 1; // shift right to check next lsb
         }
     }
 }
 
-void FireTask::fireEmatch(uint8_t ch){
-    xEventGroupSetBits(evgroup, 1UL<<ch); // set event group flag to be the channel to fire
+bool FireTask::fireEmatch(uint8_t ch, bool update){
+    if(ch >= 1 && ch<=NUM_EM_CHANNELS){
+        sys.slate.squib.fire[ch] = FIRED;
+        if (update) {
+            _updateSquibs();
+        }
+        return true;
+    } else { return false; }
+}
+
+void FireTask::_updateSquibs() {
+    xEventGroupSetBits(squibManager, UPDATE_SQUIBS);
 }

@@ -33,8 +33,6 @@ private:
     static StaticJsonDocument<MAX_CMD_LENGTH> wait_cmd; // array of wait commands (size sets max number of )
     static StaticJsonDocument<MAX_CMD_LENGTH*10> usercmds; // storage for usercmds, cmd strings defined by the user
 
-    static TimerHandle_t pulseTimers[8]; // xTimers for callback (timer IDS correspond to the array index & solenoid channel)
-    static StaticTimer_t pulsebufs[8]; // xTimer static buffer for pulse timers
     static TimerHandle_t waitTimer; // xTimer for waitThen commands
     static StaticTimer_t waitbuf; // xTimer static buffer for waitTimer
 
@@ -42,14 +40,9 @@ private:
     static void process_cmd_array(JsonArrayConst cmd_arr);
 
     // functions used for executing commands
-    static void open_solenoid(uint8_t sol_ch, bool update_valves = true); // sets solenoid state to open
     static void open_solenoids(JsonArrayConst sol_ch); // sets multiple solenoid state to open
-    static void close_solenoid(uint8_t sol_ch, bool update_valves = true); // sets solenoid state of given channel to closed
     static void close_solenoids(JsonArrayConst sol_ch); // sets solenoid state of multiple channels to closed
-    static void pulse_solenoid(uint8_t sol_ch, uint16_t pulse_dur_ms); // reads a time in milliseconds from serial, opens solenoid, sets a timer to close solenoid after specified duration
     static void pulse_solenoids(JsonArrayConst sol_ch, uint16_t pulse_dur_ms);
-    static void _close_solenoid(TimerHandle_t xTimer); //close the solenoid associated with the given xTimer
-    static void fire_ematch(uint8_t em_ch, bool update_em = true); //fire one ematch
     static void fire_ematches(JsonArrayConst em_ch); // fire multiple ematches
     static void wait_then(JsonObjectConst cmd, uint16_t wait_time_ms); // executes cmd after wait_time(ms)
     static void wait_callback(TimerHandle_t xTimer); // the callback function

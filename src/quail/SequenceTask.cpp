@@ -11,8 +11,6 @@ SequenceTask::SequenceTask(uint8_t priority):Task(priority, "Sequence"){
     glob_ptr = this;
 }
 
-
-
 void SequenceTask::getSequenceFilename(unsigned sequence, char buf[]){
     switch (sequence){
         case Sequence::open_valve1:
@@ -84,6 +82,7 @@ void SequenceTask::pause_seq(){
         xEventGroupClearBits(evGroup, SEQ_PLAYING);
     }
 };
+
 void SequenceTask::play_seq(){
     if(started){ // can only play a started sequence (if already playing, this does nothing)
         playing = true;

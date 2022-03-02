@@ -90,18 +90,19 @@ void ADCTask::initADC() {
     // Wait for sensors to be configured!
     xEventGroupWaitBits(evgroup, SensorsReady, true, false, NEVER);
     
-    sys.adc.setRegister(Ad7124::Error_En, AD7124_ERREN_REG_SPI_CRC_ERR_EN |
-                                            AD7124_ERREN_REG_SPI_IGNORE_ERR_EN |
-                                            AD7124_ERREN_REG_ADC_SAT_ERR_EN |
-                                            AD7124_ERREN_REG_ADC_CAL_ERR_EN |
-                                            AD7124_ERREN_REG_ADC_CONV_ERR_EN |
-                                            AD7124_ERREN_REG_REF_DET_ERR_EN |
-                                            AD7124_ERREN_REG_AINM_OV_ERR_EN |
-                                            AD7124_ERREN_REG_AINM_UV_ERR_EN |
-                                            AD7124_ERREN_REG_AINP_OV_ERR_EN |
-                                            AD7124_ERREN_REG_AINP_UV_ERR_EN |
-                                            AD7124_ERREN_REG_ALDO_PSM_ERR_EN |
-                                            AD7124_ERREN_REG_DLDO_PSM_ERR_ERR );
+    sys.adc.setRegister(Ad7124::Error_En, 
+        AD7124_ERREN_REG_SPI_CRC_ERR_EN |
+        AD7124_ERREN_REG_SPI_IGNORE_ERR_EN |
+        AD7124_ERREN_REG_ADC_SAT_ERR_EN |
+        AD7124_ERREN_REG_ADC_CAL_ERR_EN |
+        AD7124_ERREN_REG_ADC_CONV_ERR_EN |
+        AD7124_ERREN_REG_REF_DET_ERR_EN |
+        AD7124_ERREN_REG_AINM_OV_ERR_EN |
+        AD7124_ERREN_REG_AINM_UV_ERR_EN |
+        AD7124_ERREN_REG_AINP_OV_ERR_EN |
+        AD7124_ERREN_REG_AINP_UV_ERR_EN |
+        AD7124_ERREN_REG_ALDO_PSM_ERR_EN |
+        AD7124_ERREN_REG_DLDO_PSM_ERR_ERR );
 
     sys.adc.setIRQAction(adcISR);
 }
