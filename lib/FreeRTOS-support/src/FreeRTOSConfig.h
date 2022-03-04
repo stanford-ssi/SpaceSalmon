@@ -224,7 +224,7 @@ to exclude the API function. */
 // <q> Include function to delete task
 // <id> freertos_vtaskdelete
 #ifndef INCLUDE_vTaskDelete
-#define INCLUDE_vTaskDelete 0
+#define INCLUDE_vTaskDelete 1
 #endif
 
 // <q> Include function to suspend task
@@ -272,7 +272,7 @@ to exclude the API function. */
 // <q> Include the function to get task name
 // <id> freertos_pctaskgettaskname
 #ifndef INCLUDE_pcTaskGetTaskName
-#define INCLUDE_pcTaskGetTaskName 0
+#define INCLUDE_pcTaskGetTaskName 1
 #endif
 
 // <q> Include the function to get task state

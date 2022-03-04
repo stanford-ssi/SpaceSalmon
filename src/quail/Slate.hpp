@@ -64,14 +64,14 @@ public:
         SlateKey<float>("4", 0.0)
     });
 
-    class Sequence : public Container<3>
-    {
-    public:
-        SlateKey<unsigned> name = SlateKey<unsigned>("name", 0);
-        SlateKey<bool> start = SlateKey<bool>("start", false);
-        SlateKey<bool> play = SlateKey<bool>("play", false);
-        Sequence(const std::string id) : Container(id, {std::ref(name),std::ref(start),std::ref(play)}){};
-    } sequence = Sequence("sequence");
+    Array<SlateKey<bool>,6> sequence = Array<SlateKey<bool>,6>("sequence", {
+        SlateKey<bool>("REDLINE", false),
+        SlateKey<bool>("ABORT", false),
+        SlateKey<bool>("FILLOX", false),
+        SlateKey<bool>("FILLFUEL", false),
+        SlateKey<bool>("VENTOX", false),
+        SlateKey<bool>("VENTFUEL", false)
+    });
 
     SlateKey<float> v_batt = SlateKey<float>("v_batt", 0.0);
     SlateKey<float> i_batt = SlateKey<float>("i_batt", 0.0);

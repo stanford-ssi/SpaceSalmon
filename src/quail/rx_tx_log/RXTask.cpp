@@ -157,27 +157,27 @@ void RXTask::wait_callback(TimerHandle_t xTimer){
 };
 
 void RXTask::start_seq(const char* seq_name){
-    sys.tasks.sequencetask.start_seq();
+    // sys.tasks.sequencetask.start_seq();
 };
 
 void RXTask::stop_seq(const char* seq_name){
-    sys.tasks.sequencetask.stop_seq();
+    // sys.tasks.sequencetask.stop_seq();
 };
 
 void RXTask::pause_seq(const char* seq_name){
-    sys.tasks.sequencetask.pause_seq();
+    // sys.tasks.sequencetask.pause_seq();
 };
 
 void RXTask::play_seq(const char* seq_name){
-    sys.tasks.sequencetask.play_seq();
+    // sys.tasks.sequencetask.play_seq();
 };
 
 void RXTask::load_seq(const char* seq_name){
-    sys.tasks.sequencetask.load_seq(seq_name);
+    // sys.tasks.sequencetask.load_seq(seq_name);
 };
 
 void RXTask::delay_seq(uint16_t ticks_to_wait){
-    sys.tasks.sequencetask.delay_seq(ticks_to_wait);
+    // sys.tasks.sequencetask.delay_seq(ticks_to_wait);
 };
 
 

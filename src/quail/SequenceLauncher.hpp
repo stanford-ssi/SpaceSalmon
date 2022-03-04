@@ -3,17 +3,32 @@
 #include <FreeRTOS.h>
 #include <task.h>
 #include "Task.hpp"
-#include <map>
+#include <string>
+#include "event_groups.h"
 
-class SequenceLauncher {
+#define SEQ_PRIORITY 8
+#define UPDATE_SEQS 0b01
+
+class SequenceLauncher : Task<2000> {
     public:
-        SequenceLauncher();
+        SequenceLauncher(uint8_t priority);
 
-        bool startSeq(char* name);
-        bool stopSeq(char* name);
-        bool pauseSeq(char* name);
+        void activity();
+
+        bool startSeq(std::string name, bool update = true);
+        void startSeq(uint8_t i, bool update = true);
+
+        bool stopSeq(std::string name, bool update = true);
+        void stopSeq(uint8_t i, bool update = true);
+
+        bool pauseSeq(std::string name, bool update = true);
+        void pauseSeq(uint8_t i, bool update = true);
 
     private:
+        StaticEventGroup_t evBuf;
+        EventGroupHandle_t seqManager;
+        void _updateSeqs();
+
         static void redLine();
         static void abort();
         static void fillOx();
@@ -23,27 +38,29 @@ class SequenceLauncher {
 
         class Sequence : public Task<2000> {
             public:
-                Sequence(uint8_t priority, void (*action)()) : Task(priority, "Sequence"){
+                Sequence(void (*action)()) : Task(SEQ_PRIORITY, "Sequence"){
                     action = action;
                 }
-            
+                    
             private:
-                void activity() { while(true) {action();}}
+                void activity() {action();}
+                // void activity() { while(true) {action();}}
                 void (*action)();
         };
 
         struct seq_t{
-            char* name;
+            std::string name;
             Sequence* task;
             uint8_t num_deps;
-            seq_t* deps;
+            seq_t** deps;
 
             seq_t() : task({}), deps({}) {}
-            seq_t(char* name, Sequence* task, uint8_t num_deps, seq_t* deps) : name(name), task(task), num_deps(num_deps), deps(deps) {} 
+            seq_t(std::string name, Sequence* task, uint8_t num_deps, seq_t** deps) : name(name), task(task), num_deps(num_deps), deps(deps) {} 
         } typedef seq_t;
 
-        seq_t* seqs;
+        seq_t** seqs;
         uint8_t num_seqs;
 
-        bool getSequence(char* name, seq_t* seq);
+        bool getSequence(std::string name, seq_t*& seq);
+        bool getSlateKey(std::string name, uint8_t* j);
 };

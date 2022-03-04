@@ -4,6 +4,7 @@
 
 #define PSI_TO_PA 6894.7572931783
 #define MAWP 1000
+#define EWP 600
 
 typedef enum {
     RANGE_1000 = 1000,
