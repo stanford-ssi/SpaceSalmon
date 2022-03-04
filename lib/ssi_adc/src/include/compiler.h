@@ -53,9 +53,9 @@ extern "C" {
 #include <stdbool.h>
 
 #ifndef _UNIT_TEST_
-#include "include/parts.h"
+#include "parts.h"
 #endif
-#include "include/err_codes.h"
+#include "err_codes.h"
 
 #ifdef __cplusplus
 }

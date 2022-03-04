@@ -40,7 +40,7 @@ extern "C" {
 #include "rtos_port.h"
 #include "rtos_err_codes.h"
 #include "stdbool.h"
-#include "samd.h"
+#include "sam.h"
 
 #ifndef is_in_isr
 inline bool is_in_isr(void)
