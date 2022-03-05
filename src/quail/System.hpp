@@ -7,7 +7,7 @@ class System;
 #include "SPI.h"
 #include "sensors/ad7124-lib/ad7124.h"
 
-#define RADIO_TXRX // uncomment this to use Radio for TX/RX
+//#define RADIO_TXRX // uncomment this to use Radio for TX/RX
 
 #include "sensors/PressureSensor.hpp"
 #include "sensors/ThermalSensor.hpp"
@@ -34,24 +34,27 @@ public:
 
     Ad7124Chip adc = Ad7124Chip(5,8,&adc_spi);
 
-    PressureSensor PT1 = PressureSensor("PT1", Ad7124::AIN1Input, RANGE_1000);
-    PressureSensor PT2 =  PressureSensor("PT2", Ad7124::AIN2Input, RANGE_1000);
-    PressureSensor PT3 =  PressureSensor("PT3", Ad7124::AIN3Input, RANGE_1000);
-    PressureSensor PT4 =  PressureSensor("PT4", Ad7124::AIN4Input, RANGE_1000);
+    // PressureSensor PT1 = PressureSensor("PT1", Ad7124::AIN1Input, RANGE_1000);
+    // PressureSensor PT2 =  PressureSensor("PT2", Ad7124::AIN2Input, RANGE_1000);
+    // PressureSensor PT3 =  PressureSensor("PT3", Ad7124::AIN3Input, RANGE_1000);
+    // PressureSensor PT4 =  PressureSensor("PT4", Ad7124::AIN4Input, RANGE_1000);
     // PressureSensor PT5 =  PressureSensor("PT5", Ad7124::AIN4Input, RANGE_1000);
     LoadSensor LC1 = LoadSensor("LC1", Ad7124::AIN12Input);
-    // LoadSensor LC2 = LoadSensor("LC2", Ad7124::AIN7Input);
+    LoadSensor LC2 = LoadSensor("LC2", Ad7124::AIN13Input);
     ThermalSensor TS1 = ThermalSensor("TC1", Ad7124::AIN8Input); //samd51 # defines TC0-7 so don't use those
+    ThermalSensor TS2 = ThermalSensor("TC2", Ad7124::AIN9Input);    
 
-    Sensor* sensors [6] = {
-        &PT1,
-        &PT2,
-        &PT3,
-        &PT4,
+
+    Sensor* sensors [5] = {
+        // &PT1,
+        // &PT2,
+        // &PT3,
+        // &PT4,
         // &PT5,
         &LC1,
-        // &LC2,
-        &TS1
+        &LC2,
+        &TS1,
+        &TS2
     };
 
     StateData statedata = StateData(); //holds current state of sensors/SVs/ematches systems for output + control

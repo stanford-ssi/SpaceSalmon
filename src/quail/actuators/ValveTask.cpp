@@ -10,8 +10,8 @@ ValveTask::ValveTask(uint8_t priority, uint8_t valve_pin_start) : Task(priority,
     valves[3] = {"S4", MEDIUM, NORMALLY_CLOSED};
     valves[4] = {"S5", MEDIUM, NORMALLY_CLOSED};
     valves[5] = {"S6", MEDIUM, NORMALLY_CLOSED};
-    valves[6] = {"S7", ABORT, NORMALLY_CLOSED}; // Warning: These can't do PWM
-    valves[7] = {"S8", ABORT, NORMALLY_CLOSED}; // Warning: These can't do PWM
+    valves[6] = {"S7", MEDIUM, NORMALLY_CLOSED};
+    valves[7] = {"S8", MEDIUM, NORMALLY_CLOSED};
     for (uint8_t i = 0; i < NUM_SOLENOIDS; i++) {
         pinMode(valve_pin_start + i, OUTPUT);
     }
