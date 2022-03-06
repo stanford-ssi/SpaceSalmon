@@ -94,7 +94,7 @@ void ADCTask::initADC() {
                                             AD7124_ERREN_REG_SPI_IGNORE_ERR_EN |
                                             AD7124_ERREN_REG_ADC_SAT_ERR_EN |
                                             AD7124_ERREN_REG_ADC_CAL_ERR_EN |
-                                            AD7124_ERREN_REG_ADC_CONV_ERR_EN |
+                                            //AD7124_ERREN_REG_ADC_CONV_ERR_EN |
                                             AD7124_ERREN_REG_REF_DET_ERR_EN |
                                             //AD7124_ERREN_REG_AINM_OV_ERR_EN |
                                             //AD7124_ERREN_REG_AINM_UV_ERR_EN |

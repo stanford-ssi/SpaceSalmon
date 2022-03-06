@@ -34,7 +34,7 @@ public:
 
     Ad7124Chip adc = Ad7124Chip(5,8,&adc_spi);
 
-    PressureSensor PT1 = PressureSensor("PT1", Ad7124::AIN1Input, RANGE_1000);
+    PressureSensor PT1 =  PressureSensor("PT1", Ad7124::AIN1Input, RANGE_1000);
     PressureSensor PT2 =  PressureSensor("PT2", Ad7124::AIN2Input, RANGE_1000);
     PressureSensor PT3 =  PressureSensor("PT3", Ad7124::AIN3Input, RANGE_1000);
     PressureSensor PT4 =  PressureSensor("PT4", Ad7124::AIN4Input, RANGE_1000);
