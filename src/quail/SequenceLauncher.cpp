@@ -4,131 +4,73 @@
 #define INCLUDE_vTaskDelete 1
 #define INCLUDE_vTaskSuspend 1
 
-SequenceLauncher::SequenceLauncher(uint8_t priority) : Task(priority, "Sequence Launcher"){
-    seqManager = xEventGroupCreateStatic(&evBuf);
-    
+SequenceLauncher::SequenceLauncher(){
     seq_t *redSeq, *abortSeq, *fillOxSeq, *fillFuelSeq, *ventOxSeq, *ventFuelSeq;
 
-    redSeq = new seq_t("REDLINE", new Sequence(&redLine), 0, {});
-    abortSeq = new seq_t("ABORT", new Sequence(&abort), 4, new seq_t*[4]{
+    redSeq = new seq_t(new Sequence(sys.slate.sequence.redline, &redLine), 0, {});
+    abortSeq = new seq_t(new Sequence(sys.slate.sequence.abort, &abort), 4, new seq_t*[4]{
         fillOxSeq,
         fillFuelSeq,
         ventOxSeq,
         ventFuelSeq
     });
-    fillOxSeq = new seq_t("FILLOX", new Sequence(&fillOx), 1, new seq_t*[1]{
+    fillOxSeq = new seq_t(new Sequence(sys.slate.sequence.fillox, &fillOx), 1, new seq_t*[1]{
         ventOxSeq
     });
-    fillFuelSeq = new seq_t("FILLFUEL", new Sequence(&fillFuel), 1, new seq_t*[1]{
+    fillFuelSeq = new seq_t(new Sequence(sys.slate.sequence.fillfuel, &fillFuel), 1, new seq_t*[1]{
         ventFuelSeq
     });
-    ventOxSeq = new seq_t("VENTOX", new Sequence(&ventOx), 1, new seq_t*[1]{
+    ventOxSeq = new seq_t(new Sequence(sys.slate.sequence.ventox, &ventOx), 1, new seq_t*[1]{
         fillOxSeq
     });
-    ventFuelSeq = new seq_t("VENTFUEL", new Sequence(&ventFuel), 1, new seq_t*[1]{
+    ventFuelSeq = new seq_t(new Sequence(sys.slate.sequence.ventfuel, &ventFuel), 1, new seq_t*[1]{
         fillFuelSeq
     });
 
     num_seqs = 6;
     seqs = new seq_t*[num_seqs]{redSeq, abortSeq, fillOxSeq, fillFuelSeq, ventOxSeq, ventFuelSeq};
-
-    for (uint8_t i = 0; i < num_seqs; i++) {
-        seqs[i]->task->suspend();
-    }
-}
-
-void SequenceLauncher::activity() {
-    vTaskDelay(5000 / portTICK_PERIOD_MS);
-    startSeq("ABORT");
-    while(true) {
-        xEventGroupWaitBits(seqManager, UPDATE_SEQS, true, false, NEVER);
-        for (uint8_t i = 0; i < num_seqs; i++) {
-            seq_t* seq;
-            if(!getSequence(sys.slate.sequence[i].id, seq)) continue;
-            if(sys.slate.sequence[i]) {
-                for (uint8_t j = 0; j < seq->num_deps; j++) {
-                    // seq->deps[j]->task->suspend();
-                }
-                // seq->task->resume();
-            } else {
-                // seq->task->suspend();
-            }
-        }
-    }
 }
 
 bool SequenceLauncher::startSeq(std::string name, bool update) {
-    uint8_t i;
-    if (getSlateKey(name, &i)) {
-        startSeq(i, update);
-        return true;
-    } else {
-        return false;
+    seq_t* seq;
+    if (!getSequence(name, seq)) { return false; }
+    for (uint8_t i = 0; i < seq->num_deps; i++) {
+        pauseSeq(seq->task->state.id);
     }
-}
-
-void SequenceLauncher::startSeq(uint8_t i, bool update) {
-    sys.slate.sequence[i] = true;
-    if (update) {
-        _updateSeqs();
-    }
-}
-
-bool SequenceLauncher::stopSeq(std::string name, bool update) {
-    return pauseSeq(name, update);
-}
-
-void SequenceLauncher::stopSeq(uint8_t i, bool update) {
-    pauseSeq(i, update);
+    seq->task->state = RUNNING;
+    seq->task->checkWait();
+    return true;
 }
 
 bool SequenceLauncher::pauseSeq(std::string name, bool update) {
-    uint8_t i;
-    if (getSlateKey(name, &i)) {
-        stopSeq(i, update);
-        return true;
-    } else {
-        return false;
-    }
+    seq_t* seq;
+    if (!getSequence(name, seq)) { return false; }
+    seq->task->state = SUSPEND;
+    seq->task->checkWait();
+    return true;
 }
 
-void SequenceLauncher::pauseSeq(uint8_t i, bool update) {
-    sys.slate.sequence[i] = false;
-    if (update) {
-        _updateSeqs();
-    }
+bool SequenceLauncher::stopSeq(std::string name, bool update) {
+    seq_t* seq;
+    if (!getSequence(name, seq)) { return false; }
+    seq->task->state = DELETE;
+    seq->task->checkWait();
+    return true;
 }
 
 void SequenceLauncher::redLine() {
-    sys.tasks.valvetask.openSolenoid(1);
-}
-
-void SequenceLauncher::abort() {
-    sys.tasks.valvetask.openSolenoid(1);
-}
-
-void SequenceLauncher::fillOx() {
-    sys.tasks.valvetask.openSolenoid(1);
-}
-
-void SequenceLauncher::fillFuel() {
-    sys.tasks.valvetask.openSolenoid(1);
-}
-
-void SequenceLauncher::ventOx() {
-    sys.tasks.valvetask.openSolenoid(1);
-
-}
-
-void SequenceLauncher::ventFuel() {
-    sys.tasks.valvetask.openSolenoid(1);
+    bool oxOverPressure = sys.slate.sense.pt6 > 600;
+    bool fuelOverPressure = sys.slate.sense.pt5 > 600;
+    bool ccOverPressure = sys.slate.sense.pt7 > 600;
+    // presumable also some temperature stuff
+    if (oxOverPressure || fuelOverPressure || ccOverPressure) {
+        abort();
+    }
 }
 
 bool SequenceLauncher::getSequence(std::string name, SequenceLauncher::seq_t*& seq) {
     for (uint8_t i = 0; i < num_seqs; i++) {
-        Serial.println(name.c_str());
-        Serial.println(seqs[i]->name.c_str());
-        if (name == seqs[i]->name) {
+        if (name == seqs[i]->task->state.id) {
             seq = seqs[i];
             return true;
         }
@@ -136,16 +78,40 @@ bool SequenceLauncher::getSequence(std::string name, SequenceLauncher::seq_t*& s
     return false;
 }
 
-bool SequenceLauncher::getSlateKey(std::string name, uint8_t* j) {
-    for (uint8_t i = 0; i < num_seqs; i++) {
-        if (name == sys.slate.sequence[i].id) {
-            *j = i;
-            return true;
-        }
-    }
-    return false;
+// THESE ARE ALL FAKE. I DONT KNOW SHIT. PLEASE HELP
+void SequenceLauncher::abort() {
+    /**
+     * 1. Close fill valves
+     * 2. Close main valves
+     * 3. Open bleed valves
+     * 4. Open discharge valves
+     * 5. Open vent vales
+     */
+    sys.tasks.valvetask.closeSolenoid(5); // close ox fill
+    sys.tasks.valvetask.closeSolenoid(3); // close fuel fill
+    sys.tasks.valvetask.closeSolenoid(2); // close ox main
+    sys.tasks.valvetask.closeSolenoid(1); // close fuel main
+    sys.tasks.valvetask.openSolenoid(6); // open ox bleed
+    // sys.tasks.valvetask.openSolenoid(7); // open fuel bleed
+    // sys.tasks.valvetask.openSolenoid(8); // open ox vent
 }
 
-void SequenceLauncher::_updateSeqs() {
-    xEventGroupSetBits(seqManager, UPDATE_SEQS);
+void SequenceLauncher::fillOx() {
+    sys.tasks.valvetask.openSolenoid(5); // open ox fill
+    sys.tasks.valvetask.openSolenoid(4);
+    // vTaskDelay(5000 / portTICK_RATE_MS);
+    // sys.tasks.valvetask.closeSolenoid(6);
+    // sys.tasks.valvetask.pulseSolenoid(6, 1000); // pulse ox vent (pull in liquid)
+}
+
+void SequenceLauncher::fillFuel() {
+    sys.tasks.valvetask.openSolenoid(3);
+}
+
+void SequenceLauncher::ventOx() {
+    sys.tasks.valvetask.openSolenoid(6);
+}
+
+void SequenceLauncher::ventFuel() {
+    sys.tasks.valvetask.openSolenoid(7);
 }

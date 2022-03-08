@@ -5,7 +5,7 @@
 #include <functional>
 #include <string>
 
-class Slate : public Container<10>
+class Slate : public Container<9>
 {
 public:
 
@@ -16,9 +16,11 @@ public:
         SlateKey<float> pt2 = SlateKey<float>("PT2", 0);
         SlateKey<float> pt3 = SlateKey<float>("PT3", 0);
         SlateKey<float> pt4 = SlateKey<float>("PT4", 0);
-        // SlateKey<float> pt5 = SlateKey<float>("PT5", 0);
+        SlateKey<float> pt5 = SlateKey<float>("PT5", 0);
+        SlateKey<float> pt6 = SlateKey<float>("PT6", 0);
+        SlateKey<float> pt7 = SlateKey<float>("PT7", 0);
         SlateKey<float> lc1 = SlateKey<float>("LC1", 0);
-        // SlateKey<float> lc2 = SlateKey<float>("LC2", 0);
+        SlateKey<float> lc2 = SlateKey<float>("LC2", 0);
         SlateKey<float> tc1 = SlateKey<float>("TC1", 0);
         Sense(const std::string id) : Container(id, {
             std::ref(pt1),
@@ -64,17 +66,34 @@ public:
         SlateKey<float>("4", 0.0)
     });
 
-    Array<SlateKey<bool>,6> sequence = Array<SlateKey<bool>,6>("sequence", {
-        SlateKey<bool>("REDLINE", false),
-        SlateKey<bool>("ABORT", false),
-        SlateKey<bool>("FILLOX", false),
-        SlateKey<bool>("FILLFUEL", false),
-        SlateKey<bool>("VENTOX", false),
-        SlateKey<bool>("VENTFUEL", false)
-    });
+    class Sequence : public Container<6> {
+        public:
+            SlateKey<SEQUENCE_STATE> redline = SlateKey<SEQUENCE_STATE>("REDLINE", SUSPEND);
+            SlateKey<SEQUENCE_STATE> abort = SlateKey<SEQUENCE_STATE>("ABORT", RUNNING);
+            SlateKey<SEQUENCE_STATE> fillox = SlateKey<SEQUENCE_STATE>("FILLOX", SUSPEND);
+            SlateKey<SEQUENCE_STATE> fillfuel = SlateKey<SEQUENCE_STATE>("FILLFUEL", SUSPEND);
+            SlateKey<SEQUENCE_STATE> ventox = SlateKey<SEQUENCE_STATE>("VENTOX", SUSPEND);
+            SlateKey<SEQUENCE_STATE> ventfuel = SlateKey<SEQUENCE_STATE>("VENTFUEL", SUSPEND);
+            Sequence(const std::string id) : Container(id, {
+                std::ref(redline),
+                std::ref(abort),
+                std::ref(fillox),
+                std::ref(fillfuel),
+                std::ref(ventox),
+                std::ref(ventfuel)
+            }){};
+    } sequence = Sequence("sequence");
 
-    SlateKey<float> v_batt = SlateKey<float>("v_batt", 0.0);
-    SlateKey<float> i_batt = SlateKey<float>("i_batt", 0.0);
+    class Battery : public Container<2> {
+        public : 
+            SlateKey<float> v_batt = SlateKey<float>("v_batt", 0.0);
+            SlateKey<float> i_batt = SlateKey<float>("i_batt", 0.0);
+            Battery(const std::string id) : Container(id, {
+                std::ref(v_batt),
+                std::ref(i_batt)
+            }){};
+    } battery = Battery("battery");
+
     SlateKey<float> logging = SlateKey<float>("logging", false);
     SlateKey<float> error = SlateKey<float>("error", false);
     SlateKey<unsigned> tick = SlateKey<unsigned>("tick", 0);
@@ -87,8 +106,7 @@ public:
         std::ref(solenoid), 
         std::ref(adc_in), 
         std::ref(sequence),
-        std::ref(v_batt),
-        std::ref(i_batt),
+        std::ref(battery),
         std::ref(logging),
         std::ref(error),
         std::ref(tick)

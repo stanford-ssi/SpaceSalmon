@@ -5,30 +5,26 @@
 #include "Task.hpp"
 #include <string>
 #include "event_groups.h"
+#include "SlateKey.hpp"
 
 #define SEQ_PRIORITY 8
 #define UPDATE_SEQS 0b01
 
-class SequenceLauncher : Task<2000> {
-    public:
-        SequenceLauncher(uint8_t priority);
+enum SEQUENCE_STATE {
+    RUNNING = 1,
+    SUSPEND = 0,
+    DELETE = -1,
+} typedef SEQUENCE_STATE;
 
-        void activity();
+class SequenceLauncher {
+    public:
+        SequenceLauncher();
 
         bool startSeq(std::string name, bool update = true);
-        void startSeq(uint8_t i, bool update = true);
-
         bool stopSeq(std::string name, bool update = true);
-        void stopSeq(uint8_t i, bool update = true);
-
         bool pauseSeq(std::string name, bool update = true);
-        void pauseSeq(uint8_t i, bool update = true);
 
     private:
-        StaticEventGroup_t evBuf;
-        EventGroupHandle_t seqManager;
-        void _updateSeqs();
-
         static void redLine();
         static void abort();
         static void fillOx();
@@ -38,29 +34,50 @@ class SequenceLauncher : Task<2000> {
 
         class Sequence : public Task<2000> {
             public:
-                Sequence(void (*action)()) : Task(SEQ_PRIORITY, "Sequence"){
-                    action = action;
+                Sequence(SlateKey<SEQUENCE_STATE> &state, void (*action)()) : Task(SEQ_PRIORITY, state.id.c_str()), state(state), action(action) {
+                    seqManager = xEventGroupCreateStatic(&evBuf);
+                }                   
+
+                void activity() {
+                    while (true) {
+                        switch(state){
+                            case RUNNING:
+                                action();
+                                state = SUSPEND;
+                                break;
+                            case SUSPEND:
+                                xEventGroupWaitBits(seqManager, RUNNING, true, false, NEVER);
+                                break;
+                            case DELETE:
+                                goto finish; // when break just isn't enough
+                        }
+                    }
+                    finish: ;
                 }
-                    
+
             private:
-                void activity() {action();}
-                // void activity() { while(true) {action();}}
+                SlateKey<SEQUENCE_STATE>& state;
+
+                StaticEventGroup_t evBuf;
+                EventGroupHandle_t seqManager;
+
+                void checkWait() { xEventGroupSetBits(seqManager, UPDATE_SEQS); }
                 void (*action)();
+                
+                friend SequenceLauncher;
         };
 
         struct seq_t{
-            std::string name;
             Sequence* task;
             uint8_t num_deps;
             seq_t** deps;
 
             seq_t() : task({}), deps({}) {}
-            seq_t(std::string name, Sequence* task, uint8_t num_deps, seq_t** deps) : name(name), task(task), num_deps(num_deps), deps(deps) {} 
+            seq_t(Sequence* task, uint8_t num_deps, seq_t** deps) : task(task), num_deps(num_deps), deps(deps) {} 
         } typedef seq_t;
 
         seq_t** seqs;
         uint8_t num_seqs;
 
         bool getSequence(std::string name, seq_t*& seq);
-        bool getSlateKey(std::string name, uint8_t* j);
 };

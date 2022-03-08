@@ -19,7 +19,7 @@ ValveTask::ValveTask(uint8_t priority, uint8_t valve_pin_start) : Task(priority,
         pinMode(valve_pin_start + i, OUTPUT);
     }
 
-    for(uint8_t i = 0; i < 8; i++) {
+    for(uint8_t i = 0; i < NUM_SOLENOIDS; i++) {
         char svname[4] = {'S','V',(char)((uint8_t)'0'+i),'\0'};
         pulseTimers[i] = xTimerCreateStatic(svname, // timer identifier
                                             100, // default pulse time (always modified before calling)
@@ -50,15 +50,16 @@ void ValveTask::activity() {
     }
 }
 
-bool ValveTask::pulseSolenoid(uint8_t sol_ch, uint16_t pulse_dur){
-    xTimerChangePeriod(pulseTimers[sol_ch-1], pulse_dur, NEVER); // set new pulse period
-    bool ret = openSolenoid(sol_ch); // open solenoid
-    xTimerStart(pulseTimers[sol_ch], NEVER); // start the timer to close this solenoid
+bool ValveTask::pulseSolenoid(uint8_t ch, uint16_t pulse_dur){
+    if (ch < 0 || ch >= NUM_SOLENOIDS) return false;
+    xTimerChangePeriod(pulseTimers[ch-1], pulse_dur, NEVER); // set new pulse period
+    bool ret = openSolenoid(ch); // open solenoid
+    xTimerStart(pulseTimers[ch], NEVER); // start the timer to close this solenoid
     return ret;
 };
 
 bool ValveTask::_updateSolenoid(uint8_t ch, bool update_valves, solenoid_state_t state) {
-    if(ch >= 1 && ch<=NUM_SOLENOIDS){
+    if(ch >= 0 && ch < NUM_SOLENOIDS){
         sys.slate.solenoid[ch] = state;
         if (update_valves) {
             _updateValves();

@@ -40,19 +40,23 @@ public:
     PressureSensor PT2 =  PressureSensor("PT2", Ad7124::AIN2Input, RANGE_1000, slate.sense.pt2);
     PressureSensor PT3 =  PressureSensor("PT3", Ad7124::AIN3Input, RANGE_1000, slate.sense.pt3);
     PressureSensor PT4 =  PressureSensor("PT4", Ad7124::AIN4Input, RANGE_1000, slate.sense.pt4);
-    // PressureSensor PT5 =  PressureSensor("PT5", Ad7124::AIN4Input, RANGE_1000, slate.sense.pt5);
+    PressureSensor PT5 =  PressureSensor("PT5", Ad7124::AIN4Input, RANGE_1000, slate.sense.pt5);
+    PressureSensor PT6 =  PressureSensor("PT6", Ad7124::AIN4Input, RANGE_1000, slate.sense.pt6);
+    PressureSensor PT7 =  PressureSensor("PT7", Ad7124::AIN4Input, RANGE_1000, slate.sense.pt7);
     LoadSensor LC1 = LoadSensor("LC1", Ad7124::AIN12Input, slate.sense.lc1);
-    // LoadSensor LC2 = LoadSensor("LC2", Ad7124::AIN7Input, slate.sense.lc2);
+    LoadSensor LC2 = LoadSensor("LC2", Ad7124::AIN7Input, slate.sense.lc2);
     ThermalSensor TS1 = ThermalSensor("TC1", Ad7124::AIN8Input, slate.sense.tc1); //samd51 # defines TC0-7 so don't use those
 
-    Sensor* sensors [6] = {
+    Sensor* sensors [10] = {
         &PT1,
         &PT2,
         &PT3,
         &PT4,
-        // &PT5,
+        &PT5,
+        &PT6,
+        &PT7,
         &LC1,
-        // &LC2,
+        &LC2,
         &TS1
     };
 
@@ -74,7 +78,7 @@ public:
         
         PowerTask powertask = PowerTask(3); // test for measuring battery voltage and current
         
-        SequenceLauncher seqlauncher  = SequenceLauncher(5);
+        SequenceLauncher seqlauncher  = SequenceLauncher();
     };
 
     Tasks tasks;
