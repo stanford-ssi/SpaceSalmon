@@ -7,7 +7,7 @@
 #include "event_groups.h"
 #include "SlateKey.hpp"
 
-#define SEQ_PRIORITY 8
+#define SEQ_PRIORITY 0
 #define UPDATE_SEQS 0b01
 
 enum SEQUENCE_STATE {
@@ -18,13 +18,15 @@ enum SEQUENCE_STATE {
 
 class SequenceLauncher {
     public:
-        SequenceLauncher();
+        SequenceLauncher(uint8_t priority);
 
         bool startSeq(std::string name, bool update = true);
         bool stopSeq(std::string name, bool update = true);
         bool pauseSeq(std::string name, bool update = true);
 
     private:
+        static uint8_t seq_priority;
+
         static void redLine();
         static void abort();
         static void fillOx();
@@ -34,7 +36,7 @@ class SequenceLauncher {
 
         class Sequence : public Task<2000> {
             public:
-                Sequence(SlateKey<SEQUENCE_STATE> &state, void (*action)()) : Task(SEQ_PRIORITY, state.id.c_str()), state(state), action(action) {
+                Sequence(SlateKey<SEQUENCE_STATE> &state, void (*action)()) : Task(seq_priority, state.id.c_str()), state(state), action(action) {
                     seqManager = xEventGroupCreateStatic(&evBuf);
                 }                   
 
@@ -43,7 +45,6 @@ class SequenceLauncher {
                         switch(state){
                             case RUNNING:
                                 action();
-                                state = SUSPEND;
                                 break;
                             case SUSPEND:
                                 xEventGroupWaitBits(seqManager, RUNNING, true, false, NEVER);

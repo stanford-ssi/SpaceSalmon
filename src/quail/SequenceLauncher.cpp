@@ -4,7 +4,10 @@
 #define INCLUDE_vTaskDelete 1
 #define INCLUDE_vTaskSuspend 1
 
-SequenceLauncher::SequenceLauncher(){
+uint8_t SequenceLauncher::seq_priority = 0;
+
+SequenceLauncher::SequenceLauncher(uint8_t priority) {
+    seq_priority = priority;
     seq_t *redSeq, *abortSeq, *fillOxSeq, *fillFuelSeq, *ventOxSeq, *ventFuelSeq;
 
     redSeq = new seq_t(new Sequence(sys.slate.sequence.redline, &redLine), 0, {});

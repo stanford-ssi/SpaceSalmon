@@ -7,7 +7,7 @@ class System;
 #include "SPI.h"
 #include "sensors/ad7124-lib/ad7124.h"
 
-#define RADIO_TXRX // uncomment this to use Radio for TX/RX
+//#define RADIO_TXRX // uncomment this to use Radio for TX/RX
 
 #include "sensors/PressureSensor.hpp"
 #include "sensors/ThermalSensor.hpp"
@@ -46,8 +46,9 @@ public:
     LoadSensor LC1 = LoadSensor("LC1", Ad7124::AIN12Input, slate.sense.lc1);
     LoadSensor LC2 = LoadSensor("LC2", Ad7124::AIN7Input, slate.sense.lc2);
     ThermalSensor TS1 = ThermalSensor("TC1", Ad7124::AIN8Input, slate.sense.tc1); //samd51 # defines TC0-7 so don't use those
+    ThermalSensor TS2 = ThermalSensor("TC2", Ad7124::AIN8Input, slate.sense.tc2); //samd51 # defines TC0-7 so don't use those
 
-    Sensor* sensors [10] = {
+    Sensor* sensors [11] = {
         &PT1,
         &PT2,
         &PT3,
@@ -57,7 +58,8 @@ public:
         &PT7,
         &LC1,
         &LC2,
-        &TS1
+        &TS1,
+        &TS2
     };
 
     class Tasks
@@ -78,7 +80,7 @@ public:
         
         PowerTask powertask = PowerTask(3); // test for measuring battery voltage and current
         
-        SequenceLauncher seqlauncher  = SequenceLauncher();
+        SequenceLauncher seqlauncher  = SequenceLauncher(0);
     };
 
     Tasks tasks;

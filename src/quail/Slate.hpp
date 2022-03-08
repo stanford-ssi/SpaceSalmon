@@ -22,6 +22,7 @@ public:
         SlateKey<float> lc1 = SlateKey<float>("LC1", 0);
         SlateKey<float> lc2 = SlateKey<float>("LC2", 0);
         SlateKey<float> tc1 = SlateKey<float>("TC1", 0);
+        SlateKey<float> tc2 = SlateKey<float>("TC2", 0);
         Sense(const std::string id) : Container(id, {
             std::ref(pt1),
             std::ref(pt2),
@@ -68,8 +69,8 @@ public:
 
     class Sequence : public Container<6> {
         public:
-            SlateKey<SEQUENCE_STATE> redline = SlateKey<SEQUENCE_STATE>("REDLINE", SUSPEND);
-            SlateKey<SEQUENCE_STATE> abort = SlateKey<SEQUENCE_STATE>("ABORT", RUNNING);
+            SlateKey<SEQUENCE_STATE> redline = SlateKey<SEQUENCE_STATE>("REDLINE", RUNNING);
+            SlateKey<SEQUENCE_STATE> abort = SlateKey<SEQUENCE_STATE>("ABORT", SUSPEND);
             SlateKey<SEQUENCE_STATE> fillox = SlateKey<SEQUENCE_STATE>("FILLOX", SUSPEND);
             SlateKey<SEQUENCE_STATE> fillfuel = SlateKey<SEQUENCE_STATE>("FILLFUEL", SUSPEND);
             SlateKey<SEQUENCE_STATE> ventox = SlateKey<SEQUENCE_STATE>("VENTOX", SUSPEND);

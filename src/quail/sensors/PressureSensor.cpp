@@ -10,7 +10,7 @@ void PressureSensor::configure() {
     if(cfg == UNCONFIGURED) { // cfg is static - once one sensor of a type is set up, this loop won't run
         cfg = addConfig();
         sys.adc.setConfig(cfg, Ad7124::RefIn2, Ad7124::Pga1, false);
-        sys.adc.setConfigFilter(cfg, Ad7124::Sinc3Filter, 512);
+        sys.adc.setConfigFilter(cfg, Ad7124::Sinc3Filter, 10);
     }
     sys.adc.setChannel(ch_id, cfg, ainp, ainm, true);
     sys.adc.enableChannel(ch_id, true); 
