@@ -5,11 +5,11 @@
 #include <functional>
 #include <string>
 
-class Slate : public Container<9>
+class Slate : public Container<7>
 {
 public:
 
-    class Sense : public Container<6> // need to increment this when changing number of sensors
+    class Sense : public Container<11> // need to increment this when changing number of sensors
     {
     public:
         SlateKey<float> pt1 = SlateKey<float>("PT1", 0);
@@ -28,8 +28,13 @@ public:
             std::ref(pt2),
             std::ref(pt3),
             std::ref(pt4),
+            std::ref(pt5),
+            std::ref(pt6),
+            std::ref(pt7),
             std::ref(lc1),
-            std::ref(tc1)}){};
+            std::ref(lc2),
+            std::ref(tc1),
+            std::ref(tc2)}){};
     } sense = Sense("sense");
 
     class Squib : public Container<2>
@@ -95,9 +100,18 @@ public:
             }){};
     } battery = Battery("battery");
 
-    SlateKey<float> logging = SlateKey<float>("logging", false);
-    SlateKey<float> error = SlateKey<float>("error", false);
-    SlateKey<unsigned> tick = SlateKey<unsigned>("tick", 0);
+    class Board : public Container<3> {
+        public:
+            SlateKey<float> logging = SlateKey<float>("logging", false);
+            SlateKey<float> error = SlateKey<float>("error", false);
+            SlateKey<unsigned> tick = SlateKey<unsigned>("tick", 0);
+            Board(const std::string id) : Container(id, {
+                std::ref(logging),
+                std::ref(error),
+                std::ref(tick)
+            }){};
+    } board = Board("board");
+
 
     Slate(const std::string id) : Container(id, { 
         // If you change the length of this list, you also need to change the
@@ -108,8 +122,6 @@ public:
         std::ref(adc_in), 
         std::ref(sequence),
         std::ref(battery),
-        std::ref(logging),
-        std::ref(error),
-        std::ref(tick)
+        std::ref(board)
     }){};
 };

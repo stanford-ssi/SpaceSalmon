@@ -52,7 +52,7 @@ void ValveTask::activity() {
 
 bool ValveTask::pulseSolenoid(uint8_t ch, uint16_t pulse_dur){
     if (ch < 0 || ch >= NUM_SOLENOIDS) return false;
-    xTimerChangePeriod(pulseTimers[ch-1], pulse_dur, NEVER); // set new pulse period
+    xTimerChangePeriod(pulseTimers[ch], pulse_dur, NEVER); // set new pulse period
     bool ret = openSolenoid(ch); // open solenoid
     xTimerStart(pulseTimers[ch], NEVER); // start the timer to close this solenoid
     return ret;

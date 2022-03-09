@@ -14,8 +14,8 @@ void TXTask::activity() {
         j++;
         vTaskDelayUntil(&lastSensorTime, tx_interval_ms);
         // get state JSON
-        sys.slate.tick = xTaskGetTickCount();
-        sys.slate.logging = sys.tasks.logger.isLoggingEnabled();
+        sys.slate.board.tick = xTaskGetTickCount();
+        sys.slate.board.logging = sys.tasks.logger.isLoggingEnabled();
         // log
 
         StaticJsonDocument<1024> slateJSON;
@@ -45,7 +45,7 @@ void TXTask::activity() {
                                      // TODO clean this up using the ErrorType enum
             }
             #else
-            sys.slate.error = 0;
+            sys.slate.board.error = 0;
             #endif
         }
     }

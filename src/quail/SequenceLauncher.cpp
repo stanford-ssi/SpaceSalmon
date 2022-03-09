@@ -35,6 +35,7 @@ SequenceLauncher::SequenceLauncher(uint8_t priority) {
 }
 
 bool SequenceLauncher::startSeq(std::string name, bool update) {
+    sys.tasks.txtask.writeUSB("Starting...");
     seq_t* seq;
     if (!getSequence(name, seq)) { return false; }
     for (uint8_t i = 0; i < seq->num_deps; i++) {
@@ -46,6 +47,7 @@ bool SequenceLauncher::startSeq(std::string name, bool update) {
 }
 
 bool SequenceLauncher::pauseSeq(std::string name, bool update) {
+    sys.tasks.txtask.writeUSB("Suspending...");
     seq_t* seq;
     if (!getSequence(name, seq)) { return false; }
     seq->task->state = SUSPEND;
@@ -100,6 +102,7 @@ void SequenceLauncher::abort() {
 }
 
 void SequenceLauncher::fillOx() {
+    sys.tasks.txtask.writeUSB("Filling ox");
     sys.tasks.valvetask.openSolenoid(5); // open ox fill
     sys.tasks.valvetask.openSolenoid(4);
     // vTaskDelay(5000 / portTICK_RATE_MS);
@@ -108,6 +111,7 @@ void SequenceLauncher::fillOx() {
 }
 
 void SequenceLauncher::fillFuel() {
+    sys.tasks.txtask.writeUSB("Filling fuel");
     sys.tasks.valvetask.openSolenoid(3);
 }
 

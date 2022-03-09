@@ -7,7 +7,6 @@
 #include "event_groups.h"
 #include "SlateKey.hpp"
 
-#define SEQ_PRIORITY 0
 #define UPDATE_SEQS 0b01
 
 enum SEQUENCE_STATE {
@@ -43,8 +42,7 @@ class SequenceLauncher {
                 void activity() {
                     while (true) {
                         switch(state){
-                            case RUNNING:
-                                action();
+                            case RUNNING:                                action();
                                 break;
                             case SUSPEND:
                                 xEventGroupWaitBits(seqManager, RUNNING, true, false, NEVER);

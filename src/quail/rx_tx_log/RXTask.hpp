@@ -46,9 +46,9 @@ private:
     static void fire_ematches(JsonArrayConst em_ch); // fire multiple ematches
     static void wait_then(JsonObjectConst cmd, uint16_t wait_time_ms); // executes cmd after wait_time(ms)
     static void wait_callback(TimerHandle_t xTimer); // the callback function
-    static void start_seq(const char* seq_name);
-    static void stop_seq(const char* seq_name);
-    static void pause_seq(const char* seq_name);
+    static void start_seq(std::string seq_name);
+    static void stop_seq(std::string seq_name);
+    static void pause_seq(std::string seq_name);
     static void play_seq(const char* seq_name);
     static void load_seq(const char* seq_name);
     static void delay_seq(uint16_t ticks_to_wait);

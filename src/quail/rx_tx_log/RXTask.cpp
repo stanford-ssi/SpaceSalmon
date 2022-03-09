@@ -53,7 +53,7 @@ void RXTask::process_cmd_json(JsonObjectConst cmd){ // parses a data string for 
     if(cmd.containsKey("closeSV")){
         if(cmd["closeSV"].is<unsigned int>()) {
             uint8_t ch = cmd["closeSV"];
-            sys.tasks.valvetask.openSolenoid(ch - 1);
+            sys.tasks.valvetask.closeSolenoid(ch - 1);
         } else if(cmd["closeSV"].is<JsonArray>()) {
             close_solenoids(cmd["closeSV"]);
         }
@@ -78,16 +78,13 @@ void RXTask::process_cmd_json(JsonObjectConst cmd){ // parses a data string for 
         wait_then(cmd["waitThen"], cmd["waitTime"]);
     }
     if(cmd.containsKey("startSQ")){
-        start_seq(cmd["startSQ"]);
+        sys.tasks.seqlauncher.startSeq(cmd["startSQ"]);
     }
     if(cmd.containsKey("stopSQ")){
-        stop_seq(cmd["stopSQ"]);
+        sys.tasks.seqlauncher.stopSeq(cmd["stopSQ"]);
     }
     if(cmd.containsKey("pauseSQ")){
-        pause_seq(cmd["pauseSQ"]);
-    }
-    if(cmd.containsKey("playSQ")){
-        play_seq(cmd["playSQ"]);
+        sys.tasks.seqlauncher.pauseSeq(cmd["pauseSQ"]);
     }
     if(cmd.containsKey("userCmd")){
         if(cmd["userCmd"].is<const char*>()){
@@ -156,16 +153,16 @@ void RXTask::wait_callback(TimerHandle_t xTimer){
     // can't call the command directly here without creating huge timer callback stacks
 };
 
-void RXTask::start_seq(const char* seq_name){
-    // sys.tasks.sequencetask.start_seq();
+void RXTask::start_seq(std::string seq_name){
+    sys.tasks.seqlauncher.startSeq(seq_name);
 };
 
-void RXTask::stop_seq(const char* seq_name){
-    // sys.tasks.sequencetask.stop_seq();
+void RXTask::stop_seq(std::string seq_name){
+    sys.tasks.seqlauncher.stopSeq(seq_name);
 };
 
-void RXTask::pause_seq(const char* seq_name){
-    // sys.tasks.sequencetask.pause_seq();
+void RXTask::pause_seq(std::string seq_name){
+    sys.tasks.seqlauncher.pauseSeq(seq_name);
 };
 
 void RXTask::play_seq(const char* seq_name){
