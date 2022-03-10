@@ -42,7 +42,8 @@ class SequenceLauncher {
                 void activity() {
                     while (true) {
                         switch(state){
-                            case RUNNING:                                action();
+                            case RUNNING:                                
+                                action();
                                 break;
                             case SUSPEND:
                                 xEventGroupWaitBits(seqManager, RUNNING, true, false, NEVER);
