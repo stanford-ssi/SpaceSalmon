@@ -297,6 +297,7 @@ to exclude the API function. */
 
 /* Normal assert() semantics without relying on the provision of an assert.h
 header file. */
+#include <assert.h>
 #define configASSERT(x) assert(x)
 //#define configASSERT(x) assert(x) #TODO: This should go to something
 
