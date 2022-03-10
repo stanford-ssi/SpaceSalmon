@@ -37,9 +37,9 @@ public:
 
     Slate slate = Slate("quail");
 
-    PressureSensor PT1 = PressureSensor("PT1", Ad7124::AIN1Input, RANGE_1000, slate.sense.pt1);
+    PressureSensor PT1 = PressureSensor("PT1", Ad7124::AIN1Input, RANGE_2500, slate.sense.pt1);
     PressureSensor PT2 =  PressureSensor("PT2", Ad7124::AIN2Input, RANGE_1000, slate.sense.pt2);
-    PressureSensor PT3 =  PressureSensor("PT3", Ad7124::AIN3Input, RANGE_1000, slate.sense.pt3);
+    PressureSensor PT3 =  PressureSensor("PT3", Ad7124::AIN3Input, RANGE_2500, slate.sense.pt3);
     PressureSensor PT4 =  PressureSensor("PT4", Ad7124::AIN4Input, RANGE_1000, slate.sense.pt4);
     PressureSensor PT5 =  PressureSensor("PT5", Ad7124::AIN4Input, RANGE_1000, slate.sense.pt5);
     PressureSensor PT6 =  PressureSensor("PT6", Ad7124::AIN4Input, RANGE_1000, slate.sense.pt6);

@@ -6,7 +6,8 @@
 
 typedef enum {
     RANGE_1000 = 1000,
-    RANGE_2000 = 2000
+    RANGE_2000 = 2000,
+    RANGE_2500 = 2500
 } PressureRange;
 
 class PressureSensor: public Sensor{

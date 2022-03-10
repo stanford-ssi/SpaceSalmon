@@ -21,12 +21,12 @@ void TXTask::activity() {
             sys.derivedsensors[i]->update(); 
         
         // log
-        StaticJsonDocument<1024> slateJSON;
+        StaticJsonDocument<2048> slateJSON;
 
         char string[1024];
         JsonVariant variant = slateJSON.to<JsonVariant>();
         sys.slate.dump(variant);
-        size_t pkt = serializeMsgPack(slateJSON, string, 1024);
+        // size_t pkt = serializeMsgPack(slateJSON, string, 1024);
 
         sys.tasks.logger.log(slateJSON);    
 
