@@ -14,6 +14,7 @@ class System;
 #include "sensors/LoadSensor.hpp"
 #include "sensors/SensorTask.hpp"
 #include "sensors/ADCTask.hpp"
+#include "sensors/DerivedSensor.hpp"
 #include "actuators/ValveTask.hpp"
 #include "actuators/FireTask.hpp"
 #include "rx_tx_log/LoggerTask.hpp"
@@ -60,6 +61,12 @@ public:
         &LC2,
         &TS1,
         &TS2
+    };
+
+    SensorSum LC3 = SensorSum("LC3",slate.sense.lc1,slate.sense.lc2,slate.sense.lc3);
+
+    DerivedSensor* derivedsensors [1] = {
+        &LC3,
     };
 
     class Tasks

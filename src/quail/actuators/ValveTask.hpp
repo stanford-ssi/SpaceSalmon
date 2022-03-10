@@ -9,6 +9,7 @@
 
 #define UPDATE_VALVES 0b01
 #define NUM_SOLENOIDS 8
+#define MAX_NUM_VALVES_POWERED 2
 
 typedef enum{
     OPEN = 1,
@@ -48,6 +49,7 @@ class ValveTask : public Task<2000> {
 
     private:
         uint8_t valve_pin_start;
+        uint8_t num_valves_powered = 0;
         solenoid_t valves[NUM_SOLENOIDS];
 
         StaticEventGroup_t evBuf;

@@ -60,6 +60,13 @@ bool ValveTask::pulseSolenoid(uint8_t ch, uint16_t pulse_dur){
 
 bool ValveTask::_updateSolenoid(uint8_t ch, bool update_valves, solenoid_state_t state) {
     if(ch >= 0 && ch < NUM_SOLENOIDS){
+        if( state == valves[ch].normal) // if trying to power the valve
+            if( !(num_valves_powered < MAX_NUM_VALVES_POWERED) )
+                return true; // if already at max number, just return
+            else
+                num_valves_powered++; // if good to power, increase count
+        else // if trying to un-power valve
+            num_valves_powered--;
         sys.slate.solenoid[ch] = state;
         if (update_valves) {
             _updateValves();

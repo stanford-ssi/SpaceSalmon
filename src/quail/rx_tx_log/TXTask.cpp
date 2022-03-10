@@ -16,8 +16,11 @@ void TXTask::activity() {
         // get state JSON
         sys.slate.board.tick = xTaskGetTickCount();
         sys.slate.board.logging = sys.tasks.logger.isLoggingEnabled();
+        // update derived sensors
+        for( uint8_t i = 0; i < DerivedSensor::num_derived; i++)
+            sys.derivedsensors[i]->update(); 
+        
         // log
-
         StaticJsonDocument<1024> slateJSON;
 
         char string[1024];

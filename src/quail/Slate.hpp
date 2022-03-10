@@ -9,7 +9,7 @@ class Slate : public Container<7>
 {
 public:
 
-    class Sense : public Container<11> // need to increment this when changing number of sensors
+    class Sense : public Container<12> // need to increment this when changing number of sensors
     {
     public:
         SlateKey<float> pt1 = SlateKey<float>("PT1", 0);
@@ -21,6 +21,7 @@ public:
         SlateKey<float> pt7 = SlateKey<float>("PT7", 0);
         SlateKey<float> lc1 = SlateKey<float>("LC1", 0);
         SlateKey<float> lc2 = SlateKey<float>("LC2", 0);
+        SlateKey<float> lc3 = SlateKey<float>("LC3", 0);
         SlateKey<float> tc1 = SlateKey<float>("TC1", 0);
         SlateKey<float> tc2 = SlateKey<float>("TC2", 0);
         Sense(const std::string id) : Container(id, {
@@ -33,6 +34,7 @@ public:
             std::ref(pt7),
             std::ref(lc1),
             std::ref(lc2),
+            std::ref(lc3),
             std::ref(tc1),
             std::ref(tc2)}){};
     } sense = Sense("sense");
