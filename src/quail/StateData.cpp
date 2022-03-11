@@ -18,6 +18,7 @@ StaticJsonDocument<1024>* StateData::getState()
     // Update statepacket from sensor, solenoid, and ematch statuses
     for(uint8_t i = 0; i < Sensor::numSensors(); i++)
         stateJSON["sense"][(sys.sensors[i])->ch_name] = sys.statedata.getSensorState(i);
+    stateJSON["LC3"]  = stateJSON["LC1"].as<float>() + stateJSON["LC2"].as<float>();
     stateJSON["SV"] = sys.statedata.getSolenoidState(); // most efficient way to send is just as the raw uint, can decode on groundside
     stateJSON["EM"] = sys.statedata.getEmatchState(); // most efficient way to send is just as the raw uint, can decode on groundside
     stateJSON["I_batt"] = sys.statedata.getBatteryCurrentState();
