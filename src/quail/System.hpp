@@ -15,6 +15,7 @@ class System;
 #include "sensors/SensorTask.hpp"
 #include "sensors/ADCTask.hpp"
 #include "sensors/DerivedSensor.hpp"
+#include "sensors/PowerTask.hpp"
 #include "actuators/ValveTask.hpp"
 #include "actuators/FireTask.hpp"
 #include "rx_tx_log/LoggerTask.hpp"
@@ -24,7 +25,6 @@ class System;
     #include "rx_tx_log/RadioTask.hpp"
 #endif 
 #include "SequenceLauncher.hpp"
-#include "PowerTask.hpp"
 #include "Slate.hpp"
 
 class System

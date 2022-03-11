@@ -46,7 +46,7 @@ class SequenceLauncher {
                                 action();
                                 break;
                             case SUSPEND:
-                                xEventGroupWaitBits(seqManager, RUNNING, true, false, NEVER);
+                                xEventGroupWaitBits(seqManager, UPDATE_SEQS, true, false, NEVER);
                                 break;
                             case DELETE:
                                 goto finish; // when break just isn't enough
