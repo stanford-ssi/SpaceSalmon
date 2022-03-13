@@ -38,7 +38,8 @@
 #include "lwip/pbuf.h"
 #include <lwip/stats.h>
 #include <lwip/snmp.h>
-#include "netif/etharp.h"
+#include "lwip/etharp.h"
+#include "netif/ethernet.h"
 #include <string.h>
 
 struct mac_async_descriptor COMMUNICATION_IO;
@@ -76,10 +77,10 @@ err_t mac_low_level_output(struct netif *netif, struct pbuf *p)
 #endif
 
 	if (p->tot_len == p->len) {
-		mac_async_write(mac, p->payload, p->tot_len);
+		mac_async_write(mac, (uint8_t*)p->payload, p->tot_len);
 	} else {
 		tbuf = mem_malloc(LWIP_MEM_ALIGN_SIZE(p->tot_len));
-		pos  = tbuf;
+		pos  = (uint8_t*)tbuf;
 		if (tbuf == NULL) {
 			return ERR_MEM;
 		}
@@ -87,7 +88,7 @@ err_t mac_low_level_output(struct netif *netif, struct pbuf *p)
 			memcpy(pos, q->payload, q->len);
 			pos += q->len;
 		}
-		mac_async_write(mac, tbuf, p->tot_len);
+		mac_async_write(mac, (uint8_t*)tbuf, p->tot_len);
 		mem_free(tbuf);
 	}
 
@@ -133,7 +134,7 @@ static struct pbuf *low_level_input(struct netif *netif)
 #endif
 
 		/* Read the entire packet into the pbuf. */
-		mac_async_read(mac, p->payload, p->len);
+		mac_async_read(mac, (uint8_t*)p->payload, p->len);
 
 #if ETH_PAD_SIZE
 		pbuf_header(p, ETH_PAD_SIZE); /* reclaim the padding word */
@@ -165,7 +166,7 @@ void ethernetif_mac_input(struct netif *netif)
 			return;
 		}
 		/* points to packet payload, which starts with an Ethernet header */
-		ethhdr = p->payload;
+		ethhdr = (struct eth_hdr *)p->payload;
 
 		switch (htons(ethhdr->type)) {
 		/* IP or ARP packet? */

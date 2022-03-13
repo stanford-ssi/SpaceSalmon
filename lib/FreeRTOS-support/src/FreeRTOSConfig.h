@@ -51,7 +51,7 @@ void assert_triggered(const char *file, uint32_t line);
 
 //dynamic allocation is not cool!
 #ifndef configSUPPORT_DYNAMIC_ALLOCATION
-#define configSUPPORT_DYNAMIC_ALLOCATION 0
+#define configSUPPORT_DYNAMIC_ALLOCATION 1
 #endif
 
 // <q> Enable mutex
@@ -298,7 +298,8 @@ to exclude the API function. */
 /* Normal assert() semantics without relying on the provision of an assert.h
 header file. */
 #include <assert.h>
-#define configASSERT(x) assert(x)
+#define configASSERT(x) if(!(x)){__asm("BKPT #0");}
+
 //#define configASSERT(x) assert(x) #TODO: This should go to something
 
 /* Definitions that map the FreeRTOS port interrupt handlers to their CMSIS

@@ -41,7 +41,8 @@
 #include "lwip_netconn_api.h"
 #include "string.h"
 
-#include "netif/etharp.h"
+#include "lwip/etharp.h"
+#include "netif/ethernet.h"
 
 
 /* This is the data for the actual web page. */
@@ -66,8 +67,7 @@ void basic_netconn()
 	                (TASK_ETHERNETBASIC_STACK_PRIORITY - 1),
 	                &xCreatedEthernetBasicTask)
 	    != pdPASS) {
-		while (1)
-			;
+		__asm("BKPT #0");
 	}
 
 	/* Start FreeRTOS scheduler */
@@ -89,8 +89,6 @@ void netconn_basic_ethernet(void *p)
 	sys_sem_wait(&sem); /* Block until the lwIP stack is initialized. */
 	sys_sem_free(&sem); /* Free the semaphore. */
 
-	print_ipaddress();
-
 	printf("A!\n");
 
 	//gpio_set_pin_level(LED_1,false);
@@ -111,7 +109,7 @@ void netconn_basic_ethernet(void *p)
 	netbuf_alloc(buf,100);
 	char* ptr;
 	uint16_t plen;
-	netbuf_data(buf,&ptr,&plen);
+	netbuf_data(buf,(void**)&ptr,&plen);
 	strcpy(ptr,"This Is a Test!");
  
 	u16_t port = 100;
@@ -163,7 +161,7 @@ void netconn_basic_ethernet(void *p)
 			if (inbuf != NULL) {
 				/* Get the pointer to the data in the first netbuf
 				fragment which we hope contains the request. */
-				netbuf_data(inbuf, (void *)&rq, &len);
+				netbuf_data(inbuf, (void **)&rq, &len);
 				/* Check if the request was an HTTP "GET /\r\n". */
 				if ((NULL != rq) && (!strncmp(rq, "GET", 3))) {
 					/* Send the header. */

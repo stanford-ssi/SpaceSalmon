@@ -12,6 +12,6 @@
             "-Isrc/include/",
             "-Isrc/hpl/port/"
         ],
-        "libArchive": true
+        "libArchive": false
     }
 }

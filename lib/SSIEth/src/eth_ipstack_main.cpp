@@ -1,8 +1,10 @@
+#include "lwip/etharp.h"
+
 #include <eth_ipstack_main.h>
 #include <hal_mac_async.h>
 #include <lwip_macif_config.h>
 #include <ethif_mac.h>
-#include <netif/etharp.h>
+#include "netif/ethernet.h"
 #include <lwip/dhcp.h>
 #include <lwip/ip_addr.h>
 #include <string.h>

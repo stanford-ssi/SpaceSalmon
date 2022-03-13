@@ -65,6 +65,8 @@ uint32_t vGetRunTimeCounterValue(void){
 extern void xPortSysTickHandler( void );
 
 int sysTickHook(){
-  xPortSysTickHandler();
+  if ( xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED ){
+    xPortSysTickHandler();
+  }
   return 0;
 }

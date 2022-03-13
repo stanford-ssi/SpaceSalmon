@@ -35,6 +35,9 @@
 #include "webserver_tasks.h"
 #include "lwip/tcpip.h"
 #include "ethernet_phy_main.h"
+#include "hal_rtos.h"
+
+#include "Arduino.h"
 
 uint16_t led_blink_rate = BLINK_NORMAL;
 
@@ -51,8 +54,12 @@ static void led_task(void *p)
 {
 	(void)p;
 	for (;;) {
-		//gpio_toggle_pin_level(LED_0);
-		os_sleep(led_blink_rate);
+		digitalWrite(1,1);
+		digitalWrite(3,1);
+		vTaskDelay(1000);
+		digitalWrite(1,0);
+		digitalWrite(3,0);
+		vTaskDelay(1000);
 	}
 }
 
@@ -63,7 +70,9 @@ static void led_task(void *p)
 void gmac_handler_cb(void)
 {
 	portBASE_TYPE xGMACTaskWoken = pdFALSE;
-	xSemaphoreGiveFromISR(gs_gmac_dev.rx_sem, &xGMACTaskWoken);
+	if(gs_gmac_dev.rx_sem.sem){
+		xSemaphoreGiveFromISR((QueueHandle_t)gs_gmac_dev.rx_sem.sem, &xGMACTaskWoken);
+	}
 	portEND_SWITCHING_ISR(xGMACTaskWoken);
 }
 
@@ -79,7 +88,7 @@ void tcpip_init_done(void *arg)
 	hri_gmac_set_IMR_RCOMP_bit(COMMUNICATION_IO.dev.hw);
 
 	while ((ethernet_phy_get_link_status(&ETHERNET_PHY_0_desc, &link_up)) != ERR_NONE && !(link_up)) {
-		os_sleep(20);
+		vTaskDelay(20);
 	}
 
 	printf("\r\nEthernet link up\r\n\r\n");
@@ -127,11 +136,11 @@ void tcpip_init_done(void *arg)
  */
 void gmac_task(void *pvParameters)
 {
-	gmac_device *ps_gmac_dev = pvParameters;
+	gmac_device *ps_gmac_dev = (gmac_device *)pvParameters;
 
 	while (1) {
 		/* Wait for the counting RX notification semaphore. */
-		xSemaphoreTake(ps_gmac_dev->rx_sem, portMAX_DELAY);
+		xSemaphoreTake((QueueHandle_t)ps_gmac_dev->rx_sem.sem, portMAX_DELAY);
 
 		/* Process the incoming packet. */
 		ethernetif_mac_input(ps_gmac_dev->netif);
