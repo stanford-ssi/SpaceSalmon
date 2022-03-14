@@ -45,24 +45,6 @@ gmac_device          gs_gmac_dev;
 static bool          link_up   = false;
 volatile static bool recv_flag = false;
 
-static TaskHandle_t xLed_Task;
-
-/**
- * OS task that blinks LED
- */
-static void led_task(void *p)
-{
-	(void)p;
-	for (;;) {
-		digitalWrite(1,1);
-		digitalWrite(3,1);
-		vTaskDelay(1000);
-		digitalWrite(1,0);
-		digitalWrite(3,0);
-		vTaskDelay(1000);
-	}
-}
-
 /**
  * \brief Callback for GMAC interrupt.
  * Give semaphore for which gmac_task waits
@@ -70,9 +52,10 @@ static void led_task(void *p)
 void gmac_handler_cb(void)
 {
 	portBASE_TYPE xGMACTaskWoken = pdFALSE;
-	if(gs_gmac_dev.rx_sem.sem){
-		xSemaphoreGiveFromISR((QueueHandle_t)gs_gmac_dev.rx_sem.sem, &xGMACTaskWoken);
+	if(!(QueueHandle_t)gs_gmac_dev.rx_sem.sem){
+		__asm("BKPT #0");
 	}
+	xSemaphoreGiveFromISR((QueueHandle_t)gs_gmac_dev.rx_sem.sem, &xGMACTaskWoken);
 	portEND_SWITCHING_ISR(xGMACTaskWoken);
 }
 
@@ -81,6 +64,9 @@ void gmac_handler_cb(void)
  */
 void tcpip_init_done(void *arg)
 {
+	NVIC_DisableIRQ(GMAC_IRQn);
+	NVIC_ClearPendingIRQ(GMAC_IRQn);
+	
 	sys_sem_t *sem;
 	sem         = (sys_sem_t *)arg;
 	u8_t mac[6] = {0x00, 0x00, 0x00, 0x00, 0x20, 0x76};
@@ -98,7 +84,6 @@ void tcpip_init_done(void *arg)
 	/* ISRs using FreeRTOS *FromISR APIs must have priorities below or equal to */
 	/* configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY. */
 	NVIC_SetPriority(GMAC_IRQn, 4);
-	NVIC_EnableIRQ(GMAC_IRQn);
 	mac_async_enable(&COMMUNICATION_IO);
 
 	TCPIP_STACK_INTERFACE_0_init(mac);
@@ -124,10 +109,12 @@ void tcpip_init_done(void *arg)
 	}
 #else
 	netif_set_up(&TCPIP_STACK_INTERFACE_0_desc);
+	netif_set_link_up(&TCPIP_STACK_INTERFACE_0_desc);
 
 #endif
 
 	sys_sem_signal(sem); /* Signal the waiting thread that the TCP/IP init is done. */
+	NVIC_EnableIRQ(GMAC_IRQn);
 }
 
 /**
@@ -147,16 +134,3 @@ void gmac_task(void *pvParameters)
 	}
 }
 
-/**
- * \brief Create OS task for LED blinking
- */
-void task_led_create(void)
-{
-
-	/* Create task to make led blink */
-	if (xTaskCreate(led_task, "Led", TASK_LED_STACK_SIZE, NULL, TASK_LED_TASK_PRIORITY, &xLed_Task) != pdPASS) {
-		while (1) {
-			;
-		}
-	}
-}

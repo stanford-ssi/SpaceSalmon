@@ -4,8 +4,15 @@
 #include "ethernet_phy_main.h"
 #include "SSIEth.hpp"
 
+System sys;
 
 extern "C" void __libc_init_array(void);
+
+extern "C" void tim_print2(char*, int);
+
+void tim_print2(char* buf, int len){
+	Serial.write(buf,len);
+}
 
 int main(void)
 {
@@ -39,9 +46,13 @@ int main(void)
 		SSIEth::test();
 	}
 
+	printf("Starting PHY...\n");
+
 	ethernet_phys_init();
 
 	//start all RTOS tasks (this never returns)
+	printf("Starting basic_netconn...\n");
+
 	basic_netconn();
 	
 }

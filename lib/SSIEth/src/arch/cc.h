@@ -93,6 +93,7 @@ typedef uintptr_t mem_ptr_t;
 
 /* Debug facilities. LWIP_DEBUG must be defined to read output */
 #ifdef LWIP_DEBUG
+
 #define LWIP_PLATFORM_DIAG(x)                                                                                          \
 	{                                                                                                                  \
 		printf x;                                                                                                      \

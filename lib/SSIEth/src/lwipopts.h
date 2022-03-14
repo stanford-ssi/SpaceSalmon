@@ -3,6 +3,9 @@
 #define LWIPOPTS_H
 
 // <<< Use Configuration Wizard in Context Menu >>>
+#ifndef LWIP_IPV4
+#define LWIP_IPV4 1
+#endif
 
 // <h> Basic Configuration
 
@@ -468,325 +471,49 @@
 // <q> Disable LwIP Assert
 // <id> lwip_assert
 #ifndef LWIP_NOASSERT
-#define LWIP_NOASSERT 1
+#define LWIP_NOASSERT 0
 #endif
 
-// <y> Debug level
+#define LWIP_DEBUG 1
+
+#ifdef LWIP_DEBUG
+
 //    <LWIP_DBG_LEVEL_ALL"> All
 //    <LWIP_DBG_LEVEL_WARNING"> warning
 //    <LWIP_DBG_LEVEL_SERIOUS"> serious
 //    <LWIP_DBG_LEVEL_SEVERE"> severe
-// <i> Default LWIP_DBG_LEVEL_ALL
-// <id> lwip_dbg_min_level
-#ifndef LWIP_DBG_MIN_LEVEL
-#define LWIP_DBG_MIN_LEVEL LWIP_DBG_LEVEL_ALL
+
+#define LWIP_DBG_MIN_LEVEL         LWIP_DBG_LEVEL_WARNING
+#define PPP_DEBUG                  LWIP_DBG_ON
+#define MEM_DEBUG                  LWIP_DBG_ON
+#define MEMP_DEBUG                 LWIP_DBG_ON
+#define PBUF_DEBUG                 LWIP_DBG_ON
+#define API_LIB_DEBUG              LWIP_DBG_ON
+#define API_MSG_DEBUG              LWIP_DBG_ON
+#define TCPIP_DEBUG                LWIP_DBG_ON
+#define NETIF_DEBUG                LWIP_DBG_ON
+#define SOCKETS_DEBUG              LWIP_DBG_ON
+#define DNS_DEBUG                  LWIP_DBG_ON
+#define AUTOIP_DEBUG               LWIP_DBG_ON
+#define DHCP_DEBUG                 LWIP_DBG_ON
+#define IP_DEBUG                   LWIP_DBG_ON
+#define IP_REASS_DEBUG             LWIP_DBG_ON
+#define ICMP_DEBUG                 LWIP_DBG_ON
+#define IGMP_DEBUG                 LWIP_DBG_ON
+#define UDP_DEBUG                  LWIP_DBG_ON
+#define TCP_DEBUG                  LWIP_DBG_ON
+#define TCP_INPUT_DEBUG            LWIP_DBG_ON
+#define TCP_OUTPUT_DEBUG           LWIP_DBG_ON
+#define TCP_RTO_DEBUG              LWIP_DBG_ON
+#define TCP_CWND_DEBUG             LWIP_DBG_ON
+#define TCP_WND_DEBUG              LWIP_DBG_ON
+#define TCP_FR_DEBUG               LWIP_DBG_ON
+#define TCP_QLEN_DEBUG             LWIP_DBG_ON
+#define TCP_RST_DEBUG              LWIP_DBG_ON
 #endif
 
-// <y> ARP Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_etharp_debug
-#ifndef ETHARP_DEBUG
-#define ETHARP_DEBUG LWIP_DBG_OFF
-#endif
+#define LWIP_DBG_TYPES_ON         (LWIP_DBG_ON|LWIP_DBG_TRACE|LWIP_DBG_STATE|LWIP_DBG_FRESH|LWIP_DBG_HALT)
 
-// <y> Netif Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_netif_debug
-#ifndef NETIF_DEBUG
-#define NETIF_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> Pbuf Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_api_lib_debug
-#ifndef API_LIB_DEBUG
-#define API_LIB_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> Pbuf Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_pbuf_debug
-#ifndef PBUF_DEBUG
-#define PBUF_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> API message Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_api_msg_debug
-#ifndef API_MSG_DEBUG
-#define API_MSG_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> Socket Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_sockets_debug
-#ifndef SOCKETS_DEBUG
-#define SOCKETS_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> ICMP Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_icmp_debug
-#ifndef ICMP_DEBUG
-#define ICMP_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> IGMP message Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_igmp_debug
-#ifndef IGMP_DEBUG
-#define IGMP_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> INET message Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_inet_debug
-#ifndef INET_DEBUG
-#define INET_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> IP Frag message Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_ip_reass_debug
-#ifndef IP_REASS_DEBUG
-#define IP_REASS_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> IP message Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_ip_debug
-#ifndef IP_DEBUG
-#define IP_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> RAW message Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_raw_debug
-#ifndef RAW_DEBUG
-#define RAW_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> MEM message Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_mem_debug
-#ifndef MEM_DEBUG
-#define MEM_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> MEMP message Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_memp_debug
-#ifndef MEMP_DEBUG
-#define MEMP_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> System message Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_sys_debug
-#ifndef SYS_DEBUG
-#define SYS_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> Timer message Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_timers_debug
-#ifndef TIMERS_DEBUG
-#define TIMERS_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> TCP message Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_tcp_debug
-#ifndef TCP_DEBUG
-#define TCP_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> TCP input Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_tcp_input_debug
-#ifndef TCP_INPUT_DEBUG
-#define TCP_INPUT_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> TCP in for fast retransmit Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_tcp_fr_debug
-#ifndef TCP_FR_DEBUG
-#define TCP_FR_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> TCP for retransmit Debug option
-//     <LWIP_DBG_ON"> Enable debug message
-//     <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_tcp_rto_debug
-#ifndef TCP_RTO_DEBUG
-#define TCP_RTO_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> TCP congestion window Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_tcp_cwnd_debug
-#ifndef TCP_CWND_DEBUG
-#define TCP_CWND_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> TCP window updating Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_tcp_wnd_debug
-#ifndef TCP_WND_DEBUG
-#define TCP_WND_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> TCP out Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_tcp_output_debug
-#ifndef TCP_OUTPUT_DEBUG
-#define TCP_OUTPUT_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> TCP RST Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_tcp_rst_debug
-#ifndef TCP_RST_DEBUG
-#define TCP_RST_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> TCP queue lengths Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_tcp_qlen_debug
-#ifndef TCP_QLEN_DEBUG
-#define TCP_QLEN_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> UDP Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_udp_debug
-#ifndef UDP_DEBUG
-#define UDP_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> TCP/ip Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_tcpip_debug
-#ifndef TCPIP_DEBUG
-#define TCPIP_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> PPP Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_ppp_debug
-#ifndef PPP_DEBUG
-#define PPP_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> SLIP Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_slip_debug
-#ifndef SLIP_DEBUG
-#define SLIP_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> DHCP Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_dhcp_debug
-#ifndef DHCP_DEBUG
-#define DHCP_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> AUTOIP Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_autoip_debug
-#ifndef AUTOIP_DEBUG
-#define AUTOIP_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> SNMP Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_snmp_msg_debug
-#ifndef SNMP_MSG_DEBUG
-#define SNMP_MSG_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> SNMP MIBs Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_snmp_mib_debug
-#ifndef SNMP_MIB_DEBUG
-#define SNMP_MIB_DEBUG LWIP_DBG_OFF
-#endif
-
-// <y> DNS Debug option
-//    <LWIP_DBG_ON"> Enable debug message
-//    <LWIP_DBG_OFF"> Disable debug message
-// <i> Default LWIP_DBG_OFF
-// <id> lwip_dns_debug
-#ifndef DNS_DEBUG
-#define DNS_DEBUG LWIP_DBG_OFF
-#endif
 
 #define LWIP_ERRNO_STDINCLUDE
 //#define LWIP_PROVIDE_ERRNO

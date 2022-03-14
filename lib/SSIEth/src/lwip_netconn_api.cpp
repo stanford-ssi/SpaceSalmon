@@ -49,15 +49,14 @@
 const static char netconn_webpage[] = "<html> \
 <head><title>Basic webpage</title></head> \
 <body> \
-Welcome to your basic webpage hosted from Quail over Ethernet!. \
+<h1> Welcome to your basic webpage hosted from Quail over Ethernet!</h1> \
+<img src=\"https://s3-us-west-1.amazonaws.com/habmc/assets/Logo_BlackSubText.png\"  style=\"width: 542px; height: 542px;\"> \
 </body> \
 </html>";
 const static char http_html_hdr[]   = "HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\n";
 
 void basic_netconn()
 {
-	/* Create LED task */
-	task_led_create();
 
 	/* Create task for Ethernet */
 	if (xTaskCreate(netconn_basic_ethernet,
@@ -89,43 +88,6 @@ void netconn_basic_ethernet(void *p)
 	sys_sem_wait(&sem); /* Block until the lwIP stack is initialized. */
 	sys_sem_free(&sem); /* Free the semaphore. */
 
-	printf("A!\n");
-
-	//gpio_set_pin_level(LED_1,false);
-
-	//struct eth_addr eth = {{0xa0, 0xce, 0xc8, 0x0e, 0xb4, 0x83}};
-	ip_addr_t addr;
-	IP4_ADDR(&addr, 192, 168, 1, 1);     
-
-	//etharp_add_static_entry(&addr,&eth);
-
-	struct netconn *test = netconn_new_with_proto_and_callback(NETCONN_RAW,0,0);
-	printf("test = %#010x\n", (uint32_t) test);
-	netconn_connect(test,&addr,0);
-
-	printf("Connected!\n");
-
-	struct netbuf *buf = netbuf_new();
-	netbuf_alloc(buf,100);
-	char* ptr;
-	uint16_t plen;
-	netbuf_data(buf,(void**)&ptr,&plen);
-	strcpy(ptr,"This Is a Test!");
- 
-	u16_t port = 100;
-	netconn_new(NETCONN_RAW);
-
-	//gpio_set_pin_level(LED_2,false);
-
-
-
-	printf("B!\n");
-	netconn_send(test,buf);
-
-	printf("C!\n");
-	LWIP_DEBUGF(LWIP_DBG_ON, ("DebugPrint?\n"));
-	//gpio_set_pin_level(LED_3,false);
-
 	struct netconn *conn_1, *newconn_1;
 	/* create a connection structure */
 	conn_1 = netconn_new(NETCONN_TCP);
@@ -135,9 +97,6 @@ void netconn_basic_ethernet(void *p)
 		LWIP_DEBUGF(LWIP_DBG_ON, ("Bind error=%d\n", conn_check));
 		goto conn_close;
 	}
-
-
-
 
 	/* tell the connection to listen for incoming
 	connection requests */
