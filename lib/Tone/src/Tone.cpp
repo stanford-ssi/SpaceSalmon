@@ -12,7 +12,6 @@ Tone::Tone(uint32_t pin){
   GCLK->PCHCTRL[TC3_GCLK_ID].reg = GCLK_PCHCTRL_GEN_GCLK0_Val | (1 << GCLK_PCHCTRL_CHEN_Pos);
   //enable mclk mask so that we can talk to the device
   hri_mclk_set_APBBMASK_TC3_bit(MCLK);
-
   
   //disable the TC
   TC3->COUNT16.CTRLA.bit.ENABLE = false;

@@ -43,8 +43,7 @@ void SSIEth::startup_activity(void *p){
 	gpio_set_pin_function(PA17, PINMUX_PA17L_GMAC_GTXEN);
 
 	sys_sem_t sem;
-	err_t     err_sem;
-	err_sem = sys_sem_new(&sem, 0); /* Create a new semaphore. */
+	sys_sem_new(&sem, 0); /* Create a new semaphore. */
 	tcpip_init(tcpip_init_done, &sem);
 	sys_sem_wait(&sem); /* Block until the lwIP stack is initialized. */
 	sys_sem_free(&sem); /* Free the semaphore. */

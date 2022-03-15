@@ -98,7 +98,7 @@ void tcpip_init_done(void *arg)
 	gs_gmac_dev.rx_sem.sem = xSemaphoreCreateCounting(CONF_GMAC_RXDESCR_NUM, 0);
 
 	id = sys_thread_new("GMAC", gmac_task, &gs_gmac_dev, netifINTERFACE_TASK_STACK_SIZE, netifINTERFACE_TASK_PRIORITY);
-	LWIP_ASSERT("ethernetif_init: GMAC Task allocation ERROR!\n", (id != 0));
+	LWIP_ASSERT("ethernetif_init: GMAC Task allocation ERROR!\n", (id.thread_handle != NULL));
 
 	netif_set_default(&TCPIP_STACK_INTERFACE_0_desc);
 

@@ -47,7 +47,7 @@ void CommandTask::activity()
                 {
                     netbuf_data(buf, &data, &len);
                     err = netconn_write(newconn, data, len, NETCONN_COPY);
-                    printf("recieved command packet: %s", buf);
+                    printf("recieved command packet: %s \n", (char*) data);
                     if (err != ERR_OK)
                     {
                         printf("tcpecho: netconn_write: error \"%s\"\n", lwip_strerr(err));

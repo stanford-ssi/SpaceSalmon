@@ -468,13 +468,8 @@
 #define SYS_STATS 0
 #endif
 
-// <q> Disable LwIP Assert
-// <id> lwip_assert
-#ifndef LWIP_NOASSERT
-#define LWIP_NOASSERT 0
-#endif
-
 #define LWIP_DEBUG 1
+
 
 #ifdef LWIP_DEBUG
 

@@ -7,12 +7,6 @@ System sys;
 
 extern "C" void __libc_init_array(void);
 
-extern "C" void tim_print2(char*, int);
-
-void tim_print2(char* buf, int len){
-	Serial.write(buf,len);
-}
-
 int main(void)
 {
 	//Arduino initialization (clocks and such)
@@ -40,10 +34,6 @@ int main(void)
 	Serial.begin(9600);
 
 	SSIEth::init();
-
-	for(int i = 0; i<10;i++){
-		SSIEth::test();
-	}
 
 	printf("Starting PHY...\n");
 

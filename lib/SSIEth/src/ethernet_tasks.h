@@ -76,7 +76,5 @@ typedef struct tag_gmac_device {
 #endif
 } gmac_device;
 
-/* Handle to the Ethernet task */
-static TaskHandle_t xCreatedEthernetBasicTask;
 
 #endif /* WEBSERVER_TASKS_H_ */

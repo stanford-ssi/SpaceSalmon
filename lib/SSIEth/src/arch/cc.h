@@ -55,9 +55,9 @@ typedef uintptr_t mem_ptr_t;
 #define U16_F "hu"
 #define S16_F "hd"
 #define X16_F "hx"
-#define U32_F "u"
-#define S32_F "d"
-#define X32_F "x"
+#define U32_F "lu"
+#define S32_F "ld"
+#define X32_F "lx"
 
 /* Compiler hints for packing lwip's structures */
 #if defined(__CC_ARM)
@@ -101,8 +101,7 @@ typedef uintptr_t mem_ptr_t;
 #define LWIP_PLATFORM_ASSERT(x)                                                                                        \
 	{                                                                                                                  \
 		printf("Assertion \"%s\" failed at line %d in %s\n", x, __LINE__, __FILE__);                                   \
-		while (1)                                                                                                      \
-			;                                                                                                          \
+		__asm("BKPT #0");                                                                                                      \
 	}
 #else
 #define LWIP_PLATFORM_DIAG(x)                                                                                          \

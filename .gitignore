@@ -8,4 +8,4 @@ src/version.cpp
 
 *.pyc
 *.pyo
-tools/gui.log
+tools/*.log

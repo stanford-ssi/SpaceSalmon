@@ -31,7 +31,6 @@ void SensorTask::activity()
     netconn_connect(conn_1, &dst, 2001);
 
     int tick = 1;
-    int sensor = 10;
     StaticJsonDocument<500> jsonDoc;
     static int sensor_data = 837799;
     static float y1 = 0;
