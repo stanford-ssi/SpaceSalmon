@@ -1,9 +1,7 @@
 #include "Tone.h"
-#include "sam.h"
-#include "sam.h"
+#include "include/compiler.h"
 #include "Arduino.h"
 #include "wiring_private.h"
-//#include <peripheral_clk_config.h>
 
 #define WAIT_TC16_REGS_SYNC(x) while(x->COUNT16.SYNCBUSY.bit.ENABLE);
 
@@ -13,7 +11,8 @@ Tone::Tone(uint32_t pin){
   //set clock controller to send a clock signal to the TC logic
   GCLK->PCHCTRL[TC3_GCLK_ID].reg = GCLK_PCHCTRL_GEN_GCLK0_Val | (1 << GCLK_PCHCTRL_CHEN_Pos);
   //enable mclk mask so that we can talk to the device
-  //hri_mclk_set_APBBMASK_TC3_bit(MCLK);
+  hri_mclk_set_APBBMASK_TC3_bit(MCLK);
+
   
   //disable the TC
   TC3->COUNT16.CTRLA.bit.ENABLE = false;
