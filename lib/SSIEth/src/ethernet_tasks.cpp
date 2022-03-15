@@ -32,7 +32,7 @@
  */
 
 #include "eth_ipstack_main.h"
-#include "webserver_tasks.h"
+#include "ethernet_tasks.h"
 #include "lwip/tcpip.h"
 #include "ethernet_phy_main.h"
 #include "hal_rtos.h"

@@ -30,8 +30,8 @@
  * \asf_license_stop
  */
 
-#ifndef _HRI_E54_H_INCLUDED_
-#define _HRI_E54_H_INCLUDED_
+#ifndef _HRI_E54_H_INCLUDED_ADC_
+#define _HRI_E54_H_INCLUDED_ADC_
 
 #include <hri/hri_gclk_e54.h>
 #include <hri/hri_mclk_e54.h>

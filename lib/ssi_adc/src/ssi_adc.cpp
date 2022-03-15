@@ -1,4 +1,6 @@
 #include "ssi_adc.h"
+#include "include/compiler.h"
+#include "hal/include/hpl_adc_sync.h"
 
 ADC::ADC(Adc* hw_addr){
   hw = hw_addr;

@@ -41,26 +41,26 @@
 /**
  * \brief Disable interrupts, enter critical section
  */
-void atomic_enter_critical(hal_atomic_t volatile *atomic)
-{
-	*atomic = __get_PRIMASK();
-	__disable_irq();
-	__DMB();
-}
+// void atomic_enter_critical(hal_atomic_t volatile *atomic)
+// {
+// 	*atomic = __get_PRIMASK();
+// 	__disable_irq();
+// 	__DMB();
+// }
 
 /**
  * \brief Exit atomic section
  */
-void atomic_leave_critical(hal_atomic_t volatile *atomic)
-{
-	__DMB();
-	__set_PRIMASK(*atomic);
-}
+// void atomic_leave_critical(hal_atomic_t volatile *atomic)
+// {
+// 	__DMB();
+// 	__set_PRIMASK(*atomic);
+// }
 
-/**
- * \brief Retrieve the current driver version
- */
-uint32_t atomic_get_version(void)
-{
-	return DRIVER_VERSION;
-}
+// /**
+//  * \brief Retrieve the current driver version
+//  */
+// uint32_t atomic_get_version(void)
+// {
+// 	return DRIVER_VERSION;
+// }

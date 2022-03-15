@@ -145,7 +145,7 @@
 // <i> Default: 5
 // <id> lwip_memp_num_tcp_pcb
 #ifndef MEMP_NUM_TCP_PCB
-#define MEMP_NUM_TCP_PCB 5
+#define MEMP_NUM_TCP_PCB 10
 #endif
 
 // <o> the number of listening TCP connections<0-1000>
@@ -276,7 +276,7 @@
 // <i> Default: 2
 // <id> lwip_memp_num_netbuf
 #ifndef MEMP_NUM_NETBUF
-#define MEMP_NUM_NETBUF 2
+#define MEMP_NUM_NETBUF 8
 #endif
 
 // <o> the number of struct netconns<0-1000>
@@ -284,7 +284,7 @@
 // <i> Default: 4
 // <id> lwip_memp_num_netconn
 #ifndef MEMP_NUM_NETCONN
-#define MEMP_NUM_NETCONN 4
+#define MEMP_NUM_NETCONN 10
 #endif
 
 // <o> the number of buffers in the pbuf pool<0-1000>

@@ -1,6 +1,5 @@
 #include "System.hpp"
 
-#include "lwip_netconn_api.h"
 #include "ethernet_phy_main.h"
 #include "SSIEth.hpp"
 
@@ -53,8 +52,8 @@ int main(void)
 	//start all RTOS tasks (this never returns)
 	printf("Starting basic_netconn...\n");
 
-	basic_netconn();
-	
+	//basic_netconn();
+	vTaskStartScheduler();
 }
 
 

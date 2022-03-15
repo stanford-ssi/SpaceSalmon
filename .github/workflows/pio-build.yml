@@ -6,6 +6,11 @@ jobs:
       fail-fast: false
       matrix:
         target:
+              - guppy
+              - salmon
+              - quail
+              - quail-ground
+              - guppy-ground
               - dummy
     runs-on: ubuntu-latest
     steps:

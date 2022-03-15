@@ -1,8 +1,13 @@
 #include "SSIEth.hpp"
 
 #include "hal_mac_async.h"
-
 #include "hal_gpio.h"
+
+#include "lwip/sys.h"
+#include "lwip/tcpip.h"
+#include "lwip/etharp.h"
+
+#include "ethernet_tasks.h"
 
 #define PA12 GPIO(GPIO_PORTA, 12)
 #define PA13 GPIO(GPIO_PORTA, 13)
@@ -16,7 +21,11 @@
 #define PC20 GPIO(GPIO_PORTC, 20)
 
 void SSIEth::init(){
+	xTaskHandle t;
+	xTaskCreate(SSIEth::startup_activity, "ethernet_startup", 1000, NULL, 1, &t);
+}
 
+void SSIEth::startup_activity(void *p){
 	hri_mclk_set_AHBMASK_GMAC_bit(MCLK);
 	hri_mclk_set_APBCMASK_GMAC_bit(MCLK);
 
@@ -33,7 +42,14 @@ void SSIEth::init(){
 	gpio_set_pin_function(PA14, PINMUX_PA14L_GMAC_GTXCK);
 	gpio_set_pin_function(PA17, PINMUX_PA17L_GMAC_GTXEN);
 
-    }
+	sys_sem_t sem;
+	err_t     err_sem;
+	err_sem = sys_sem_new(&sem, 0); /* Create a new semaphore. */
+	tcpip_init(tcpip_init_done, &sem);
+	sys_sem_wait(&sem); /* Block until the lwIP stack is initialized. */
+	sys_sem_free(&sem); /* Free the semaphore. */
+	vTaskDelete(xTaskGetCurrentTaskHandle());
+}
 
 void SSIEth::test(){
 	mac_async_enable(&COMMUNICATION_IO);
