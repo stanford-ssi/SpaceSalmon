@@ -1,16 +1,15 @@
 #pragma once
 
 #include "lwip/api.h"
+#include "Task.hpp"
 
 extern struct mac_async_descriptor COMMUNICATION_IO;
 
-class SSIEth
+class SSIEth: public Task<4000>
 {
-private:
-    static void startup_activity(void *p);
 public:
-    static void init();
-    static void test();
+    SSIEth(uint8_t priority):Task(priority, "Ethernet"){};
+    void activity();
 };
 
 

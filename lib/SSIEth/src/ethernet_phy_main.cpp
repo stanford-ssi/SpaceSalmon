@@ -39,6 +39,5 @@ void ETHERNET_PHY_0_example(void)
 
 void ethernet_phys_init(void)
 {
-
 	ETHERNET_PHY_0_init();
 }

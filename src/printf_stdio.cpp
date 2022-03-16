@@ -1,8 +1,13 @@
 #include "Arduino.h"
+#include "printf_stdio.hpp"
 
-extern "C" void tim_print(char*, int);
+extern "C" void write_stdio(char*, int);
 
-void tim_print(char* buf, int len){
+void setup_printf_stdio(void){
+    Serial.begin(9600);
+}
+
+void write_stdio(char* buf, int len){
 	Serial.write(buf,len);
 }
 
@@ -20,7 +25,7 @@ extern "C" {
             return -1;
         }
 
-        tim_print((char *)ptr, len);
+        write_stdio((char *)ptr, len);
 
         return n;
     }

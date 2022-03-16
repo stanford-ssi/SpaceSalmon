@@ -1,7 +1,5 @@
 #include "System.hpp"
-
-#include "ethernet_phy_main.h"
-#include "SSIEth.hpp"
+#include "printf_stdio.hpp"
 
 System sys;
 
@@ -26,25 +24,8 @@ int main(void)
 	pinMode(3,OUTPUT);
 	pinMode(4,OUTPUT);
 
-	digitalWrite(1,1);
-	digitalWrite(4,1);
+	setup_printf_stdio();
 
-	delay(2000);
-
-	Serial.begin(9600);
-
-	SSIEth::init();
-
-	printf("Starting PHY...\n");
-
-	ethernet_phys_init();
-
-	//start all RTOS tasks (this never returns)
-	printf("Starting basic_netconn...\n");
-	
-	sys.tasks.sensor_demo.suspend();
-
-	//basic_netconn();
 	vTaskStartScheduler();
 }
 

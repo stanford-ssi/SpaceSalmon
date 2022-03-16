@@ -41,39 +41,18 @@
 
 extern struct mac_async_descriptor COMMUNICATION_IO;
 
-#define TASK_LED_STACK_SIZE (512 / sizeof(portSTACK_TYPE))
-#define TASK_LED_TASK_PRIORITY (tskIDLE_PRIORITY + 1)
-
-#define TASK_ETHERNETBASIC_STACK_SIZE (1024 / sizeof(portSTACK_TYPE))
-#define TASK_ETHERNETBASIC_STACK_PRIORITY (tskIDLE_PRIORITY + 2)
-
-#define netifINTERFACE_TASK_STACK_SIZE 512
-#define netifINTERFACE_TASK_PRIORITY (tskIDLE_PRIORITY + 2)
-
-/** Number of buffer for RX */
-#define GMAC_RX_BUFFERS 5
-
-/** Number of buffer for TX */
-#define GMAC_TX_BUFFERS 3
-
-#define SYS_THREAD_MAX 8
-
-#define BLINK_NORMAL 500
-
 void mac_receive_cb(struct mac_async_descriptor *desc);
 void gmac_handler_cb(void);
 void tcpip_init_done(void *arg);
 void gmac_task(void *pvParameters);
-void task_led_create();
 
 typedef struct tag_gmac_device {
 	/** Reference to lwIP netif structure. */
 	struct netif *netif;
 
-#if NO_SYS == 0
 	/** RX task notification semaphore. */
 	sys_sem_t rx_sem;
-#endif
+
 } gmac_device;
 
 

@@ -8,6 +8,7 @@
 #include "lwip/etharp.h"
 
 #include "ethernet_tasks.h"
+#include "ethernet_phy_main.h"
 
 #define PA12 GPIO(GPIO_PORTA, 12)
 #define PA13 GPIO(GPIO_PORTA, 13)
@@ -20,12 +21,12 @@
 #define PB15 GPIO(GPIO_PORTB, 15)
 #define PC20 GPIO(GPIO_PORTC, 20)
 
-void SSIEth::init(){
-	xTaskHandle t;
-	xTaskCreate(SSIEth::startup_activity, "ethernet_startup", 1000, NULL, 1, &t);
-}
 
-void SSIEth::startup_activity(void *p){
+void SSIEth::activity(){
+
+	printf("Starting PHY...\n");
+	ethernet_phys_init();
+
 	hri_mclk_set_AHBMASK_GMAC_bit(MCLK);
 	hri_mclk_set_APBCMASK_GMAC_bit(MCLK);
 
@@ -48,9 +49,4 @@ void SSIEth::startup_activity(void *p){
 	sys_sem_wait(&sem); /* Block until the lwIP stack is initialized. */
 	sys_sem_free(&sem); /* Free the semaphore. */
 	vTaskDelete(xTaskGetCurrentTaskHandle());
-}
-
-void SSIEth::test(){
-	mac_async_enable(&COMMUNICATION_IO);
-	mac_async_write(&COMMUNICATION_IO, (uint8_t *)"Hello World!", 12);
 }
