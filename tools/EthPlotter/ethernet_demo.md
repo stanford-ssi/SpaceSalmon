@@ -1,4 +1,7 @@
-# ethernet demo
+# Ethernet Demo
+
+_Tim Vrakas, Flynn Dreilinger, Siah Yong Tan_
+[GitHub Repo](https://github.com/stanford-ssi/SpaceSalmon)
 
 This project serves to implement a wrapper for the Ethernet driver on the Quail board. Features include the wrapping of provided API functions into tasks that can be assigned varying priority levels, each of which servign differing functionalities. Another objective of this project is to reduce overall clutter via streamlining includes into the dedicated SSIEth library.
 
@@ -46,18 +49,16 @@ The most tricky bug was a memory corruption issue related to the DEBUG() handler
 
 Fortunately LWIP loves us enough to leave us a documentation website for their function calls, which were used a lot in the netconn api. Additionally, the manufacturer provides sample code for different applications as well, these serve as the foundation upon which some of our tasks would be built. I would recommend using them for reference or as a starting point.
 
-## Laptop Configuration
 
--- see screenshot
+## Demo
 
-## Graph Data
+## Example Data
+Example Sensor Data UDP Stream
 
 ```python
-python client.py 192.168.1.1 1000
+python3 ./tools/EthPlotter/client.py 192.168.1.1 2001 192.168.1.100 2002
 ```
 
-## TODO
+## Website
 
-website start button
-get a poe switch and demo with a security camera and the 100ft ethernet cable
-write a couple of paragraphs - See above
+Visit http://192.168.1.100/

@@ -52,7 +52,7 @@ def data_ingestor(data_buf: mp.Queue, ip, port):
     UDP_IP = "192.168.1.1"
     UDP_PORT = 2001
     data_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, 0)
-    data_socket.bind((UDP_IP, UDP_PORT))
+    data_socket.bind((ip, port))
     counter = 0
 
     # recieve data
@@ -80,7 +80,7 @@ def command_sender(ip, port):
     counter = 0
     time.sleep(3)
     print("attempting to connect to TCP command handler")
-    command_socket.connect((TCP_IP, TCP_PORT))
+    command_socket.connect((ip, port))
     print("connected to quail!")
 
     while True:
@@ -113,11 +113,12 @@ def command_sender(ip, port):
     command_socket.close()
 
 if __name__ == '__main__':
-    if len(sys.argv) == 4:
+    if len(sys.argv) == 5:
         # Get "IP address of Server" and also the "port number" from argument 1 and argument 2
-        ip = sys.argv[1]
+        ip_udp = sys.argv[1]
         port_udp = int(sys.argv[2])
-        port_tcp = int(sys.argv[3])
+        ip_tcp = sys.argv[3]
+        port_tcp = int(sys.argv[4])
     else:
         print("Run like : python3 client.py <arg1 server ip 192.168.1.102> <arg2 server port 4444 ><server port #2>")
         exit(1)
@@ -127,8 +128,8 @@ if __name__ == '__main__':
     data_buf = mp.Queue()
 
     one = mp.Process(target=grapher, args=(data_buf, ))
-    two = mp.Process(target=data_ingestor, args=(data_buf, ip, port_udp, ))
-    three = mp.Process(target=command_sender, args=(ip, port_tcp, ))
+    two = mp.Process(target=data_ingestor, args=(data_buf, ip_udp, port_udp, ))
+    three = mp.Process(target=command_sender, args=(ip_tcp, port_tcp, ))
     one.start()
     two.start()
     three.start()
