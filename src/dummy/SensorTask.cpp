@@ -7,16 +7,11 @@
 
 void SensorTask::activity()
 {
-    vTaskDelay(2000); // wait for ip stack!
-
     struct netconn *conn_1;
     int conn_check;
 
-    printf("Starting UDP Sender!");
-
     /* create a connection structure */
     conn_1 = netconn_new(NETCONN_UDP);
-    printf("created netconn \n");
     /* bind the connection to port on any IP address */
     conn_check = netconn_bind(conn_1, IP4_ADDR_ANY, 1000);
     while (conn_check != ERR_OK)
@@ -49,14 +44,9 @@ void SensorTask::activity()
             sensor_data = sensor_data / 2;
         }
 
-        
-
         y1 += 2 * (rand() % 2) - 1;
         y2 += 2 * (rand() % 2) - 1;
         y3 += 2 * (rand() % 2) - 1;
-        
-        // printf("tick: %d\n", tick);
-        // printf("y1: %f, y2: %f, y3: %f\n", y1, y2, y3);
 
         // serialize to json
         jsonDoc["sensor"] = y1;
@@ -80,6 +70,7 @@ void SensorTask::activity()
 
         // clean up
         netbuf_delete(buf);
+        
         //vTaskDelay(1);
         ++tick;
     }

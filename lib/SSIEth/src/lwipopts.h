@@ -145,7 +145,7 @@
 // <i> Default: 5
 // <id> lwip_memp_num_tcp_pcb
 #ifndef MEMP_NUM_TCP_PCB
-#define MEMP_NUM_TCP_PCB 10
+#define MEMP_NUM_TCP_PCB 20
 #endif
 
 // <o> the number of listening TCP connections<0-1000>
@@ -478,10 +478,10 @@
 //    <LWIP_DBG_LEVEL_SERIOUS"> serious
 //    <LWIP_DBG_LEVEL_SEVERE"> severe
 
-#define LWIP_DBG_MIN_LEVEL         LWIP_DBG_LEVEL_WARNING
+#define LWIP_DBG_MIN_LEVEL         LWIP_DBG_LEVEL_SERIOUS
 #define PPP_DEBUG                  LWIP_DBG_ON
 #define MEM_DEBUG                  LWIP_DBG_ON
-#define MEMP_DEBUG                 LWIP_DBG_ON
+#define MEMP_DEBUG                 LWIP_DBG_OFF
 #define PBUF_DEBUG                 LWIP_DBG_ON
 #define API_LIB_DEBUG              LWIP_DBG_ON
 #define API_MSG_DEBUG              LWIP_DBG_ON

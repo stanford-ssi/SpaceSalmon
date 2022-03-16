@@ -41,6 +41,8 @@ int main(void)
 
 	//start all RTOS tasks (this never returns)
 	printf("Starting basic_netconn...\n");
+	
+	sys.tasks.sensor_demo.suspend();
 
 	//basic_netconn();
 	vTaskStartScheduler();
