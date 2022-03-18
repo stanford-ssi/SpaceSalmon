@@ -35,8 +35,7 @@
 #include <hal/include/hpl_adc_async.h>
 #include <hal/include/hpl_adc_dma.h>
 #include <hal/include/hpl_adc_sync.h>
-#include <samd.h>
-#include <hri/hri_d51.h>
+#include <sam.h>
 #include <hal/utils/include/utils_assert.h>
 #include <hal/utils/include/utils_repeat_macro.h>
 #include <config/hpl_adc_config.h>

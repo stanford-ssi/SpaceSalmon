@@ -1,8 +1,6 @@
 #pragma once
 #include "stdint.h"
-#include "samd.h"
-#include "hri/hri_d51.h"
-#include "hal/include/hpl_adc_sync.h"
+#include "sam.h"
 #include "Mutex.hpp"
 
 class ADC{

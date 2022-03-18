@@ -9,7 +9,7 @@
       "-DARDUINO_ARCH_SAMD",
       "-DARDUINO_FEATHER_M4",
       "-DADAFRUIT_FEATHER_M4_EXPRESS",
-      "-D__SAMD51P20A__",
+      "-D__SAME54N20A__",
       "-D__SAMD51__",
       "-D__FPU_PRESENT",
       "-DARM_MATH_CM4",
@@ -31,16 +31,16 @@
         "0x0032"
       ]
     ],
-    "mcu": "samd51p20a",
+    "mcu": "same54n20a",
     "system": "samd",
     "usb_product": "Adafruit Feather M4",
     "variant": "feather_m4"
   },
   "debug": {
-    "jlink_device": "ATSAMD51P20",
-    "openocd_chipname": "at91samd51p20",
+    "jlink_device": "ATSAME54N20",
+    "openocd_chipname": "at91same54n20",
     "openocd_target": "atsame5x",
-    "svd_path": "ATSAMD51P20.svd"
+    "svd_path": "ATSAME54N20.svd"
   },
   "frameworks": [
     "arduino"
@@ -48,8 +48,8 @@
   "name": "Quail",
   "upload": {
     "disable_flushing": true,
-    "maximum_ram_size": 196608,
-    "maximum_size": 524288,
+    "maximum_ram_size": 262144,
+    "maximum_size": 1048576,
     "native_usb": true,
     "offset_address": "0x4000",
     "protocol": "sam-ba",

@@ -1,4 +1,5 @@
 #include "System.hpp"
+#include "printf_stdio.hpp"
 
 System sys;
 
@@ -18,7 +19,13 @@ int main(void)
 	USBDevice.init();
 	USBDevice.attach();
 
-	//start all RTOS tasks (this never returns)
+	pinMode(1,OUTPUT);
+	pinMode(2,OUTPUT);
+	pinMode(3,OUTPUT);
+	pinMode(4,OUTPUT);
+
+	setup_printf_stdio();
+
 	vTaskStartScheduler();
 }
 
