@@ -72,21 +72,19 @@ public:
         SlateKey<float>("4", 0.0)
     });
 
-    class Sequence : public Container<6> {
+    class Sequence : public Container<5> {
         public:
             SlateKey<SEQUENCE_STATE> redline = SlateKey<SEQUENCE_STATE>("REDLINE", RUNNING);
             SlateKey<SEQUENCE_STATE> abort = SlateKey<SEQUENCE_STATE>("ABORT", SUSPEND);
-            SlateKey<SEQUENCE_STATE> fillox = SlateKey<SEQUENCE_STATE>("FILLOX", SUSPEND);
-            SlateKey<SEQUENCE_STATE> fillfuel = SlateKey<SEQUENCE_STATE>("FILLFUEL", SUSPEND);
-            SlateKey<SEQUENCE_STATE> ventox = SlateKey<SEQUENCE_STATE>("VENTOX", SUSPEND);
-            SlateKey<SEQUENCE_STATE> ventfuel = SlateKey<SEQUENCE_STATE>("VENTFUEL", SUSPEND);
+            SlateKey<SEQUENCE_STATE> dischargeOx = SlateKey<SEQUENCE_STATE>("DISCHARGEOX", SUSPEND);
+            SlateKey<SEQUENCE_STATE> dischargeFuel = SlateKey<SEQUENCE_STATE>("DISCHARGEFUEL", SUSPEND);
+            SlateKey<SEQUENCE_STATE> launch = SlateKey<SEQUENCE_STATE>("LAUNCH", SUSPEND);
             Sequence(const std::string id) : Container(id, {
                 std::ref(redline),
                 std::ref(abort),
-                std::ref(fillox),
-                std::ref(fillfuel),
-                std::ref(ventox),
-                std::ref(ventfuel)
+                std::ref(dischargeOx),
+                std::ref(dischargeFuel),
+                std::ref(launch)
             }){};
     } sequence = Sequence("sequence");
 

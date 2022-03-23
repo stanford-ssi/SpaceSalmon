@@ -28,10 +28,9 @@ class SequenceLauncher {
 
         static void redLine();
         static void abort();
-        static void fillOx();
-        static void fillFuel();
-        static void ventOx();
-        static void ventFuel();
+        static void dischargeOx();
+        static void dischargeFuel();
+        static void launch();
 
         class Sequence : public Task<2000> {
             public:
@@ -42,7 +41,8 @@ class SequenceLauncher {
                 void activity() {
                     while (true) {
                         switch(state){
-                            case RUNNING:                                action();
+                            case RUNNING:                                
+                                action();
                                 break;
                             case SUSPEND:
                                 xEventGroupWaitBits(seqManager, RUNNING, true, false, NEVER);
