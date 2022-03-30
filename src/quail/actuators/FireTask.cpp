@@ -1,6 +1,8 @@
 #include "FireTask.hpp"
+#include "main.hpp"
 
-FireTask::FireTask(uint8_t priority, uint8_t Squib1_SS, uint8_t Squib2_SS) : Task(priority, "Fire"), squib1(sys.squib_spi,Squib1_SS), squib2(sys.squib_spi,Squib2_SS)
+FireTask::FireTask(uint8_t priority, uint8_t Squib1_SS, uint8_t Squib2_SS) : 
+Task(priority, "Fire"), squib1(sys.squib_spi,Squib1_SS), squib2(sys.squib_spi,Squib2_SS), slate(sys.slate.squib)
 {
     squibManager = xEventGroupCreateStatic(&evbuf);
     // TODO: make this less gross? and maybe settable at System level
@@ -21,9 +23,9 @@ void FireTask::activity()
     squib2.Init();
     while(true) {
         xEventGroupWaitBits(squibManager, UPDATE_SQUIBS, true, false, NEVER);
-        for(uint8_t i = 0; i < NUM_EM_CHANNELS; i++) {
-            if (sys.slate.squib.fire[i] == FIRED) {
-                squibChannel_t firedsquib = ch_map[i];
+        for(uint8_t ch = 0; ch < NUM_EM_CHANNELS; ch++) {
+            if (slate[ch].arm() && slate[ch].state() == FIRED) {
+                squibChannel_t firedsquib = ch_map[ch];
                 (firedsquib.squib)->fire(firedsquib.firecmd);
             }
         }
@@ -31,8 +33,8 @@ void FireTask::activity()
 }
 
 bool FireTask::fireEmatch(uint8_t ch, bool update){
-    if(ch >= 1 && ch<=NUM_EM_CHANNELS){
-        sys.slate.squib.fire[ch] = FIRED;
+    if(ch >= 0 && ch < NUM_EM_CHANNELS){
+        slate[ch].state = FIRED;
         if (update) {
             _updateSquibs();
         }

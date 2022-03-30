@@ -9,6 +9,7 @@ public:
     SlateKeyGeneric(const std::string id) : id(id) {}
     const std::string id;
     virtual void dump(JsonVariant dst){};
+    void metadump(JsonVariant dst) {dump(dst);};
 };
 
 // This is by-copy, so best for small data types, (less than the size of a reference).
@@ -33,7 +34,8 @@ public:
         mutex.give();
     }
 
-    operator T() { return get(); }
+    T operator()() { return get(); }
+
     SlateKey &operator=(T const &in)
     {
         set(in);

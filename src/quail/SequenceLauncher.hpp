@@ -6,14 +6,8 @@
 #include <string>
 #include "event_groups.h"
 #include "SlateKey.hpp"
-
-#define UPDATE_SEQS 0b01
-
-enum SEQUENCE_STATE {
-    RUNNING = 1,
-    SUSPEND = 0,
-    DELETE = -1,
-} typedef SEQUENCE_STATE;
+#include "config.h"
+#include "slate/abstractions.hpp"
 
 class SequenceLauncher {
     public:
@@ -34,13 +28,13 @@ class SequenceLauncher {
 
         class Sequence : public Task<2000> {
             public:
-                Sequence(SlateKey<SEQUENCE_STATE> &state, void (*action)()) : Task(seq_priority, state.id.c_str()), state(state), action(action) {
+                Sequence(EndPoint<SEQUENCE_STATE> &state, void (*action)()) : Task(seq_priority, state.id.c_str()), state(state), action(action) {
                     seqManager = xEventGroupCreateStatic(&evBuf);
                 }                   
 
                 void activity() {
                     while (true) {
-                        switch(state){
+                        switch(state()){
                             case RUNNING:                                
                                 action();
                                 break;
@@ -55,7 +49,7 @@ class SequenceLauncher {
                 }
 
             private:
-                SlateKey<SEQUENCE_STATE>& state;
+                EndPoint<SEQUENCE_STATE>& state;
 
                 StaticEventGroup_t evBuf;
                 EventGroupHandle_t seqManager;

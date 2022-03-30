@@ -1,3 +1,5 @@
+#pragma once
+
 #include "SlateKey.hpp"
 #include "ArduinoJson.h"
 #include <functional>

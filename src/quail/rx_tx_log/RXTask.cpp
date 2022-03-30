@@ -78,13 +78,13 @@ void RXTask::process_cmd_json(JsonObjectConst cmd){ // parses a data string for 
         wait_then(cmd["waitThen"], cmd["waitTime"]);
     }
     if(cmd.containsKey("startSQ")){
-        sys.tasks.seqlauncher.startSeq(cmd["startSQ"]);
+        // sys.tasks.seqlauncher.startSeq(cmd["startSQ"]);
     }
     if(cmd.containsKey("stopSQ")){
-        sys.tasks.seqlauncher.stopSeq(cmd["stopSQ"]);
+        // sys.tasks.seqlauncher.stopSeq(cmd["stopSQ"]);
     }
     if(cmd.containsKey("pauseSQ")){
-        sys.tasks.seqlauncher.pauseSeq(cmd["pauseSQ"]);
+        // sys.tasks.seqlauncher.pauseSeq(cmd["pauseSQ"]);
     }
     if(cmd.containsKey("userCmd")){
         if(cmd["userCmd"].is<const char*>()){

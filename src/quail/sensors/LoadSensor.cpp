@@ -1,10 +1,11 @@
 #include "LoadSensor.hpp"
 #include "main.hpp"
+#include "../slate/abstractions.hpp"
 
 uint8_t LoadSensor::cfg = UNCONFIGURED; // initially unconfigured
 
-LoadSensor::LoadSensor(const char* ch_name, Ad7124::InputSel ainp, SlateKey<float> &slate_channel) : 
-    Sensor(ch_name, ainp, Ad7124::AIN0Input, slate_channel) {};
+LoadSensor::LoadSensor(Ad7124::InputSel ainp, SensorSlate &slate) : 
+Sensor(slate.id.c_str(), ainp, Ad7124::AIN0Input, slate) {};
 
 void LoadSensor::configure() {
     if(cfg == UNCONFIGURED){
@@ -22,5 +23,7 @@ void LoadSensor::convertToFloat(uint32_t adc_dataword)
     voltage = voltage / 5.0;
     //TODO: make this calculation variable based on range, set by this->range
     float load = voltage / 0.030 * 1000.0 * 4.4482216153; // return load in N
-    slate_channel = load;
+
+    slate.val = load;
+    updateSlate();
 };

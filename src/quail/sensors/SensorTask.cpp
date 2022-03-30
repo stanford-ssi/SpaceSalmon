@@ -1,8 +1,11 @@
 #include "SensorTask.hpp"
+#include "Sensor.hpp"
 #include "main.hpp"
 
 StaticEventGroup_t SensorTask::evbuf;
 EventGroupHandle_t SensorTask::evgroup = xEventGroupCreateStatic(&evbuf);
+
+SensorTask::SensorTask(uint8_t priority) : Task(priority, "SensorTask") {}
 
 void SensorTask::activity() {
     while (true) {
