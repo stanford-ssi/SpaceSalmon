@@ -15,19 +15,19 @@ RXTask::RXTask(uint8_t priority, uint16_t rx_interval):Task(priority, "RX"), rx_
 };
 
 void RXTask::activity(){
-    TickType_t lastSensorTime = xTaskGetTickCount();
-    // every rx_interval_ms, get all commands sent since last checked and process them
-    while(true){
-        readInput(); // update cmdbuf from input, either radio or serial
-        while(!cmdbuf.empty()){
-            // curr_cmd.clear(); // clear command contents
-            cmd_t buf;
-            cmdbuf.receive(buf, false);
-            curr_cmd.set(buf.doc); // copy data over
-            process_cmd_json(curr_cmd.as<JsonObject>()); // pass the object pointer
-        }
-        vTaskDelayUntil(&lastSensorTime, rx_interval_ms); // wait for a while to allow other tasks time to operate
-    }
+    // TickType_t lastSensorTime = xTaskGetTickCount();
+    // // every rx_interval_ms, get all commands sent since last checked and process them
+    // while(true){
+    //     readInput(); // update cmdbuf from input, either radio or serial
+    //     while(!cmdbuf.empty()){
+    //         // curr_cmd.clear(); // clear command contents
+    //         cmd_t buf;
+    //         cmdbuf.receive(buf, false);
+    //         curr_cmd.set(buf.doc); // copy data over
+    //         process_cmd_json(curr_cmd.as<JsonObject>()); // pass the object pointer
+    //     }
+    //     vTaskDelayUntil(&lastSensorTime, rx_interval_ms); // wait for a while to allow other tasks time to operate
+    // }
 };
 
 void RXTask::process_cmd_array(JsonArrayConst cmd_array){

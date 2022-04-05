@@ -23,23 +23,23 @@ Task(priority, "Valves"), valve_pin_start(valve_pin_start), slate(sys.slate.sole
 }
 
 void ValveTask::activity() {
-    while(true) {
-        xEventGroupWaitBits(valveManager, UPDATE_VALVES, true, false, NEVER);
-        for(uint8_t i = 0; i < NUM_SOLENOIDS; i++) {
-            if(slate[i].state() == slate[i].normal()) { // if valve is in the state in which it should be powered
-                if(digitalPinHasPWM(valve_pin_start + i))
-                    analogWrite(valve_pin_start + i, slate[i].pwm());
-                else
-                    digitalWrite(valve_pin_start + i, HIGH);
-            }
-            else{
-                if(digitalPinHasPWM(valve_pin_start + i))
-                    analogWrite(valve_pin_start + i, 0);
-                else
-                    digitalWrite(valve_pin_start + i, LOW);
-            }
-        }
-    }
+    // while(true) {
+    //     xEventGroupWaitBits(valveManager, UPDATE_VALVES, true, false, NEVER);
+    //     for(uint8_t i = 0; i < NUM_SOLENOIDS; i++) {
+    //         if(slate[i].state() == slate[i].normal()) { // if valve is in the state in which it should be powered
+    //             if(digitalPinHasPWM(valve_pin_start + i))
+    //                 analogWrite(valve_pin_start + i, slate[i].pwm());
+    //             else
+    //                 digitalWrite(valve_pin_start + i, HIGH);
+    //         }
+    //         else{
+    //             if(digitalPinHasPWM(valve_pin_start + i))
+    //                 analogWrite(valve_pin_start + i, 0);
+    //             else
+    //                 digitalWrite(valve_pin_start + i, LOW);
+    //         }
+    //     }
+    // }
 }
 
 bool ValveTask::updatePulse(uint8_t ch, uint16_t pulse_dur) {

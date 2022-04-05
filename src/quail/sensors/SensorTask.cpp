@@ -8,18 +8,18 @@ EventGroupHandle_t SensorTask::evgroup = xEventGroupCreateStatic(&evbuf);
 SensorTask::SensorTask(uint8_t priority) : Task(priority, "SensorTask") {}
 
 void SensorTask::activity() {
-    while (true) {
-        xEventGroupWaitBits(evgroup, NEED_CONFIG, pdTRUE, pdFALSE, NEVER); // wait for ADC to begin (don't clear bits)
-        configureSensors();
-        while (true) { // read data until ADC restart
-            uint32_t flags = xEventGroupWaitBits(evgroup, NEED_CONFIG | DATA_READY, false, false, NEVER);
-            if (flags & NEED_CONFIG){
-                break;
-            } else {
-                readData();
-            }
-        }
-    }
+    // while (true) {
+    //     xEventGroupWaitBits(evgroup, NEED_CONFIG, pdTRUE, pdFALSE, NEVER); // wait for ADC to begin (don't clear bits)
+    //     configureSensors();
+    //     while (true) { // read data until ADC restart
+    //         uint32_t flags = xEventGroupWaitBits(evgroup, NEED_CONFIG | DATA_READY, false, false, NEVER);
+    //         if (flags & NEED_CONFIG){
+    //             break;
+    //         } else {
+    //             readData();
+    //         }
+    //     }
+    // }
 }
 
 void SensorTask::configureSensors() {

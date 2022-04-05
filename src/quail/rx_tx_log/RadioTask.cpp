@@ -66,184 +66,184 @@ radio_settings_t RadioTask::getSettings()
 
 void RadioTask::activity()
 {
-    spi.begin();
-    vTaskDelay(5000);
-    while (true)
-    {
-        int state = lora.begin(settings.freq, settings.bw, settings.sf, settings.cr, settings.syncword, settings.power, settings.preambleLength, settings.TcxoVoltage, false);
+    // spi.begin();
+    // vTaskDelay(5000);
+    // while (true)
+    // {
+    //     int state = lora.begin(settings.freq, settings.bw, settings.sf, settings.cr, settings.syncword, settings.power, settings.preambleLength, settings.TcxoVoltage, false);
 
-        if (state != ERR_NONE)
-        {
-            StaticJsonDocument<1000> doc;
-            doc["id"] = pcTaskGetName(getTaskHandle());
-            doc["msg"] = "Init Failed";
-            doc["code"] = state;
-            doc["tick"] = xTaskGetTickCount();
-            sys.tasks.logger.log(doc);
-            vTaskDelay(1000);
-        }
-        else
-        {
-            break;
-        }
-    }
-    NVIC_SetPriority(EIC_8_IRQn, 1); //TODO: this is hardcoded
-    lora.setDio1Action(radioISR);
-    NVIC_SetPriority(EIC_8_IRQn, 1);
+    //     if (state != ERR_NONE)
+    //     {
+    //         StaticJsonDocument<1000> doc;
+    //         doc["id"] = pcTaskGetName(getTaskHandle());
+    //         doc["msg"] = "Init Failed";
+    //         doc["code"] = state;
+    //         doc["tick"] = xTaskGetTickCount();
+    //         sys.tasks.logger.log(doc);
+    //         vTaskDelay(1000);
+    //     }
+    //     else
+    //     {
+    //         break;
+    //     }
+    // }
+    // NVIC_SetPriority(EIC_8_IRQn, 1); //TODO: this is hardcoded
+    // lora.setDio1Action(radioISR);
+    // NVIC_SetPriority(EIC_8_IRQn, 1);
 
-    lora.setDioIrqParams(SX126X_IRQ_TX_DONE | SX126X_IRQ_RX_DONE | SX126X_IRQ_PREAMBLE_DETECTED | SX126X_IRQ_HEADER_VALID | SX126X_IRQ_HEADER_ERR | SX126X_IRQ_CRC_ERR | SX126X_IRQ_TIMEOUT | SX126X_IRQ_CAD_DETECTED | SX126X_IRQ_CAD_DONE,
-                         SX126X_IRQ_TX_DONE | SX126X_IRQ_RX_DONE | SX126X_IRQ_PREAMBLE_DETECTED | SX126X_IRQ_HEADER_VALID | SX126X_IRQ_HEADER_ERR | SX126X_IRQ_CRC_ERR | SX126X_IRQ_TIMEOUT | SX126X_IRQ_CAD_DETECTED | SX126X_IRQ_CAD_DONE);
+    // lora.setDioIrqParams(SX126X_IRQ_TX_DONE | SX126X_IRQ_RX_DONE | SX126X_IRQ_PREAMBLE_DETECTED | SX126X_IRQ_HEADER_VALID | SX126X_IRQ_HEADER_ERR | SX126X_IRQ_CRC_ERR | SX126X_IRQ_TIMEOUT | SX126X_IRQ_CAD_DETECTED | SX126X_IRQ_CAD_DONE,
+    //                      SX126X_IRQ_TX_DONE | SX126X_IRQ_RX_DONE | SX126X_IRQ_PREAMBLE_DETECTED | SX126X_IRQ_HEADER_VALID | SX126X_IRQ_HEADER_ERR | SX126X_IRQ_CRC_ERR | SX126X_IRQ_TIMEOUT | SX126X_IRQ_CAD_DETECTED | SX126X_IRQ_CAD_DONE);
 
-    lora.startReceive();
+    // lora.startReceive();
 
-    uint32_t time = xTaskGetTickCount();
+    // uint32_t time = xTaskGetTickCount();
 
-    while (true)
-    {
-        //if new settings are available, apply them
-        if (!settingsBuf.empty())
-        {
-            settingsMx.take(NEVER);
-            settingsBuf.receive(settings, false);
-            applySettings(settings);
-            settingsMx.give();
-        }
+    // while (true)
+    // {
+    //     //if new settings are available, apply them
+    //     if (!settingsBuf.empty())
+    //     {
+    //         settingsMx.take(NEVER);
+    //         settingsBuf.receive(settings, false);
+    //         applySettings(settings);
+    //         settingsMx.give();
+    //     }
 
-        if (xTaskGetTickCount() - time > 15000)
-        {
-            logStats();
-            time = xTaskGetTickCount();
-        }
+    //     if (xTaskGetTickCount() - time > 15000)
+    //     {
+    //         logStats();
+    //         time = xTaskGetTickCount();
+    //     }
 
-        uint32_t flags = xEventGroupWaitBits(evgroup, 0b11, true, false, NEVER);
-        uint16_t irq = lora.getIrqStatus();
-        lora.clearIrqStatus();
+    //     uint32_t flags = xEventGroupWaitBits(evgroup, 0b11, true, false, NEVER);
+    //     uint16_t irq = lora.getIrqStatus();
+    //     lora.clearIrqStatus();
 
-        //RECEIVE BLOCK
-        if (irq & SX126X_IRQ_PREAMBLE_DETECTED)
-        {
-            log(info, "Preamble");
-            uint32_t time = lora.symbolToMs(32); //time of a packet header
+    //     //RECEIVE BLOCK
+    //     if (irq & SX126X_IRQ_PREAMBLE_DETECTED)
+    //     {
+    //         log(info, "Preamble");
+    //         uint32_t time = lora.symbolToMs(32); //time of a packet header
 
-            flags = xEventGroupWaitBits(evgroup, 0b01, true, false, time); //wait for another radio interupt for 500ms
+    //         flags = xEventGroupWaitBits(evgroup, 0b01, true, false, time); //wait for another radio interupt for 500ms
 
-            if (!(flags & 0b01))
-            {
-                log(warning, "Missed Header");
-                rx_failure_counter++;
-                goto tx_block;
-                //continue; //it failed
-            }
+    //         if (!(flags & 0b01))
+    //         {
+    //             log(warning, "Missed Header");
+    //             rx_failure_counter++;
+    //             goto tx_block;
+    //             //continue; //it failed
+    //         }
 
-            irq = lora.getIrqStatus();
-            lora.clearIrqStatus();
+    //         irq = lora.getIrqStatus();
+    //         lora.clearIrqStatus();
 
-            if ((irq & SX126X_IRQ_HEADER_VALID) && !(irq & SX126X_IRQ_RX_DONE)) //header is ready, but not packet. We are confident that an RxDone will come, (sucessfully or otherwise)
-            {
-                log(info, "wait RxDone");
-                uint32_t time = lora.getTimeOnAir(255) / 1000;                 //TODO: read this out of the header to make timeout tighter
-                flags = xEventGroupWaitBits(evgroup, 0b01, true, false, time); //wait for radio interupt for 500ms
+    //         if ((irq & SX126X_IRQ_HEADER_VALID) && !(irq & SX126X_IRQ_RX_DONE)) //header is ready, but not packet. We are confident that an RxDone will come, (sucessfully or otherwise)
+    //         {
+    //             log(info, "wait RxDone");
+    //             uint32_t time = lora.getTimeOnAir(255) / 1000;                 //TODO: read this out of the header to make timeout tighter
+    //             flags = xEventGroupWaitBits(evgroup, 0b01, true, false, time); //wait for radio interupt for 500ms
 
-                if (!(flags & 0b01))
-                {
-                    log(warning, "Missed RxDone");
-                    rx_failure_counter++;
-                    goto tx_block;
-                    //continue; //it failed
-                }
+    //             if (!(flags & 0b01))
+    //             {
+    //                 log(warning, "Missed RxDone");
+    //                 rx_failure_counter++;
+    //                 goto tx_block;
+    //                 //continue; //it failed
+    //             }
 
-                irq = lora.getIrqStatus();
-                lora.clearIrqStatus();
-            }
+    //             irq = lora.getIrqStatus();
+    //             lora.clearIrqStatus();
+    //         }
 
-            if (irq & SX126X_IRQ_RX_DONE) //packet is ready, we can grab it
-            {
-                log(info, "RxDone");
+    //         if (irq & SX126X_IRQ_RX_DONE) //packet is ready, we can grab it
+    //         {
+    //             log(info, "RxDone");
 
-                if ((irq & SX126X_IRQ_CRC_ERR) || (irq & SX126X_IRQ_CRC_ERR)) {
-                    log(warning, "CRC Error");
-                }
+    //             if ((irq & SX126X_IRQ_CRC_ERR) || (irq & SX126X_IRQ_CRC_ERR)) {
+    //                 log(warning, "CRC Error");
+    //             }
 
-                packet_t packet;
-                lora.readData(packet.data, 255);
-                packet.len = lora.getPacketLength();
-                packet.rssi = lora.getRSSI();
-                packet.snr = lora.getSNR();
-                rxbuf.send(packet);
-                logPacket("RX", packet);
-                rx_success_counter++;
+    //             packet_t packet;
+    //             lora.readData(packet.data, 255);
+    //             packet.len = lora.getPacketLength();
+    //             packet.rssi = lora.getRSSI();
+    //             packet.snr = lora.getSNR();
+    //             rxbuf.send(packet);
+    //             logPacket("RX", packet);
+    //             rx_success_counter++;
                 
-            }
-            else
-            {
-                log(warning, "Missed RxDone");
-                rx_failure_counter++;
-                goto tx_block;
-            }
-        }
+    //         }
+    //         else
+    //         {
+    //             log(warning, "Missed RxDone");
+    //             rx_failure_counter++;
+    //             goto tx_block;
+    //         }
+    //     }
         
-        tx_block:
+    //     tx_block:
 
-        //TRANSMIT BLOCK
-        if (txbuf.empty())
-        {
-            log(info, "keep RXing");
-            lora.startReceive();
-            continue;
-        }
-        else
-        {
-            log(info, "Time to TX");
-            do
-            {
-                log(info, "Wait quiet");
-                lora.standby();
-                lora.setCad();
-                uint32_t time = lora.symbolToMs(12) + 50;
-                log(info, "starting waitbit");
-                xEventGroupWaitBits(evgroup, 0b01, true, false, time);
-                log(info, "got waitbit");
-                irq = lora.getIrqStatus();
-                lora.clearIrqStatus();
-            } while (!(irq & SX126X_IRQ_CAD_DONE) || irq & SX126X_IRQ_CAD_DETECTED);
+    //     //TRANSMIT BLOCK
+    //     if (txbuf.empty())
+    //     {
+    //         log(info, "keep RXing");
+    //         lora.startReceive();
+    //         continue;
+    //     }
+    //     else
+    //     {
+    //         log(info, "Time to TX");
+    //         do
+    //         {
+    //             log(info, "Wait quiet");
+    //             lora.standby();
+    //             lora.setCad();
+    //             uint32_t time = lora.symbolToMs(12) + 50;
+    //             log(info, "starting waitbit");
+    //             xEventGroupWaitBits(evgroup, 0b01, true, false, time);
+    //             log(info, "got waitbit");
+    //             irq = lora.getIrqStatus();
+    //             lora.clearIrqStatus();
+    //         } while (!(irq & SX126X_IRQ_CAD_DONE) || irq & SX126X_IRQ_CAD_DETECTED);
 
-            log(info, "Heard quiet");
+    //         log(info, "Heard quiet");
 
-            packet_t packet;
-            if (txbuf.receive(packet, false))
-            {
+    //         packet_t packet;
+    //         if (txbuf.receive(packet, false))
+    //         {
 
-                uint32_t time = lora.getTimeOnAir(packet.len) / 1000; //get TOA in ms
-                time = (time * 1.1) + 100;                            //add margin
+    //             uint32_t time = lora.getTimeOnAir(packet.len) / 1000; //get TOA in ms
+    //             time = (time * 1.1) + 100;                            //add margin
 
-                logPacket("TX", packet);
-                lora.startTransmit(packet.data, packet.len);
-                flags = xEventGroupWaitBits(evgroup, 0b01, true, false, time);
-                irq = lora.getIrqStatus();
-                lora.clearIrqStatus();
+    //             logPacket("TX", packet);
+    //             lora.startTransmit(packet.data, packet.len);
+    //             flags = xEventGroupWaitBits(evgroup, 0b01, true, false, time);
+    //             irq = lora.getIrqStatus();
+    //             lora.clearIrqStatus();
 
-                if (irq & SX126X_IRQ_TX_DONE)
-                {
-                    log(info, "TXDone");
-                    tx_success_counter++;
-                }
-                else
-                {
-                    log(warning, "Missed TXDone");
-                    tx_failure_counter++;
-                }
+    //             if (irq & SX126X_IRQ_TX_DONE)
+    //             {
+    //                 log(info, "TXDone");
+    //                 tx_success_counter++;
+    //             }
+    //             else
+    //             {
+    //                 log(warning, "Missed TXDone");
+    //                 tx_failure_counter++;
+    //             }
 
-                lora.startReceive();
-                time = lora.symbolToMs(32);                             //this can be tuned
-                xEventGroupWaitBits(evgroup, 0b01, false, false, time); //wait for other radio to get a chance to speak
-            }
-            else
-            {
-                log(warning, "TX Queue Failure");
-                tx_failure_counter++;
-            }
-        }
-    }
+    //             lora.startReceive();
+    //             time = lora.symbolToMs(32);                             //this can be tuned
+    //             xEventGroupWaitBits(evgroup, 0b01, false, false, time); //wait for other radio to get a chance to speak
+    //         }
+    //         else
+    //         {
+    //             log(warning, "TX Queue Failure");
+    //             tx_failure_counter++;
+    //         }
+    //     }
+    // }
 }
 
 void RadioTask::log(log_type t, const char *msg)

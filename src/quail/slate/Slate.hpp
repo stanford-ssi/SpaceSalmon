@@ -41,14 +41,14 @@ public:
     } sense = Sense("sensors");
 
     Array<Igniter, NUM_EM_CHANNELS> squib = Array<Igniter, NUM_EM_CHANNELS>("squib", {
-        Igniter(NO_QUAIL_ID, "E1"),
-        Igniter(NO_QUAIL_ID, "E2"),
-        Igniter(NO_QUAIL_ID, "E3"),
-        Igniter(NO_QUAIL_ID, "E4"),
-        Igniter(NO_QUAIL_ID, "E5"),
-        Igniter(NO_QUAIL_ID, "E6"),
-        Igniter(NO_QUAIL_ID, "E7"),
-        Igniter(NO_QUAIL_ID, "E8")      
+        Igniter("NO_QUAIL_ID", "E1"),
+        Igniter("NO_QUAIL_ID", "E2"),
+        Igniter("NO_QUAIL_ID", "E3"),
+        Igniter("NO_QUAIL_ID", "E4"),
+        Igniter("NO_QUAIL_ID", "E5"),
+        Igniter("NO_QUAIL_ID", "E6"),
+        Igniter("NO_QUAIL_ID", "E7"),
+        Igniter("NO_QUAIL_ID", "E8")      
     });
     
     Array<Solenoid, NUM_SOLENOIDS> solenoid = Array<Solenoid, NUM_SOLENOIDS>("solenoid",{
@@ -110,9 +110,9 @@ public:
     Slate(const std::string id) : Container(id, { 
         // If you change the length of this list, you also need to change the
         // class definition (its templated for the length)
-        std::ref(sense), 
+        std::ref(sense),
+        std::ref(solenoid),  
         std::ref(squib), 
-        std::ref(solenoid), 
         std::ref(adc_in), 
         std::ref(sequence),
         std::ref(battery),

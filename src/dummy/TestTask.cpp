@@ -13,9 +13,9 @@ void TestTask::activity()
 
         // Serial.println("Test!");
 
-        sys.slate.solenoid[1] = true;
-        float f = sys.slate.adc_in[0];
-        sys.slate.squib.arm = true;
+        sys.slate.solenoid[1] << true;
+        float f = sys.slate.adc_in[0]();
+        sys.slate.squib[0].arm << true;
 
         // Serial.println("hmm");
 
@@ -40,8 +40,14 @@ void TestTask::activity()
             char string[1000];
             JsonVariant variant = doc.to<JsonVariant>();
             sys.slate.dump(variant);
-            size_t pkt = serializeMsgPack(doc,string,1000);
-            
+            // size_t pkt = serializeMsgPack(doc,string,1000);
+            // Serial.println(string);
+
+            size_t len = measureJson(variant);
+            char MsgPackstr[len + 5]; //create char buffer with space
+            serializeJson(variant, MsgPackstr, sizeof(MsgPackstr));        
+            // if at tx_interval, write over selected TX
+            Serial.println(MsgPackstr);
         }
 
         Serial.println(xTaskGetTickCount() - time);
