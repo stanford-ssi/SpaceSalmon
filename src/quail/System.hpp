@@ -36,7 +36,21 @@ public:
 
     Ad7124Chip adc = Ad7124Chip(5,8,&adc_spi);
 
+<<<<<<< HEAD
     Slate slate = Slate("quail");
+=======
+    PressureSensor PT1 =  PressureSensor("PT1", Ad7124::AIN1Input, RANGE_2500);
+    PressureSensor PT2 =  PressureSensor("PT2", Ad7124::AIN2Input, RANGE_1000);
+    PressureSensor PT3 =  PressureSensor("PT3", Ad7124::AIN3Input, RANGE_2500);
+    PressureSensor PT4 =  PressureSensor("PT4", Ad7124::AIN4Input, RANGE_1000);
+    PressureSensor PT5 =  PressureSensor("PT5", Ad7124::AIN5Input, RANGE_1000);
+    PressureSensor PT6 =  PressureSensor("PT6", Ad7124::AIN6Input, RANGE_1000);
+    PressureSensor PT7 =  PressureSensor("PT7", Ad7124::AIN7Input, RANGE_1000);
+    LoadSensor LC1 = LoadSensor("LC1", Ad7124::AIN12Input);
+    LoadSensor LC2 = LoadSensor("LC2", Ad7124::AIN13Input);
+    ThermalSensor TS1 = ThermalSensor("TC1", Ad7124::AIN8Input); //samd51 # defines TC0-7 so don't use those
+    ThermalSensor TS2 = ThermalSensor("TC2", Ad7124::AIN9Input);    
+>>>>>>> origin/ethernet
 
     PressureSensor PT1 = PressureSensor(Ad7124::AIN1Input, RANGE_1000, slate.sense.pt1);
     PressureSensor PT2 =  PressureSensor(Ad7124::AIN2Input, RANGE_1000, slate.sense.pt2);

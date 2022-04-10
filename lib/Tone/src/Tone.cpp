@@ -1,9 +1,7 @@
 #include "Tone.h"
-#include "samd.h"
-#include "hri/hri_d51.h"
+#include "include/compiler.h"
 #include "Arduino.h"
 #include "wiring_private.h"
-//#include <peripheral_clk_config.h>
 
 #define WAIT_TC16_REGS_SYNC(x) while(x->COUNT16.SYNCBUSY.bit.ENABLE);
 

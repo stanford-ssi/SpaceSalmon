@@ -1,0 +1,1 @@
+void setup_printf_stdio(void);

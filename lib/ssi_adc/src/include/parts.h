@@ -34,8 +34,14 @@
 #ifndef ATMEL_PARTS_H
 #define ATMEL_PARTS_H
 
-#include "samd.h"
+#include "sam.h"
 
-#include "hri/hri_d51.h"
+#if SAMD51_SERIES
+#include "../hri/hri_d51.h"
+#endif
+
+#if SAME54_SERIES
+#include "../hri/hri_e54.h"
+#endif
 
 #endif /* ATMEL_PARTS_H */

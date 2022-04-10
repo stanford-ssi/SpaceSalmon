@@ -31,6 +31,18 @@ class Task {
             return taskHandle;
         }
 
+        void suspend(void){
+            vTaskSuspend(getTaskHandle());
+        }
+
+        void resume(void){
+            vTaskResume(getTaskHandle());
+        }
+
+        eTaskState get_state(void){
+            return eTaskGetState(getTaskHandle());
+        }
+
         static void TaskFunctionAdapter(void *pvParameters)
         {
             Task *task = static_cast<Task *>(pvParameters);

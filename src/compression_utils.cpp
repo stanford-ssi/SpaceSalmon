@@ -34,7 +34,7 @@ uint32_t trimBits(uint32_t value, uint8_t bits)
     //mod to the input bounds provided
     value = value % max;
     //constrain to bit range and reduce to int
-    constrain(value, 0, max);
+    value = constrain(value, 0, max);
     //mask to the bit range
     value = value & max;
     return value;
