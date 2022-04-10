@@ -7,15 +7,15 @@ void TestTask::activity()
 
     while (true)
     {
-        vTaskDelay(6000);
+        //vTaskDelay(6000);
 
         digitalWrite(LED_BUILTIN, HIGH);
 
         // Serial.println("Test!");
 
-        sys.slate.solenoid[1] << true;
-        float f = sys.slate.adc_in[0]();
-        sys.slate.squib[0].arm << true;
+        // sys.slate.solenoid[1] << true;
+        // float f = sys.slate.adc_in[0]();
+        // sys.slate.squib[0].arm << true;
 
         // Serial.println("hmm");
 
@@ -34,12 +34,13 @@ void TestTask::activity()
 
         uint32_t time = xTaskGetTickCount();
 
-        for (uint32_t i = 0; i < 1000; i++)
+        for (uint32_t i = 0; i < 10; i++)
         {
             StaticJsonDocument<1000> doc;
             char string[1000];
             JsonVariant variant = doc.to<JsonVariant>();
             sys.slate.dump(variant);
+            //sys.slate.squib[0].arm.dump(variant);
             // size_t pkt = serializeMsgPack(doc,string,1000);
             // Serial.println(string);
 

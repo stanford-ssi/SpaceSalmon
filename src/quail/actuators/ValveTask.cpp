@@ -23,28 +23,28 @@ Task(priority, "Valves"), valve_pin_start(valve_pin_start), slate(sys.slate.sole
 }
 
 void ValveTask::activity() {
-    // while(true) {
-    //     xEventGroupWaitBits(valveManager, UPDATE_VALVES, true, false, NEVER);
-    //     for(uint8_t i = 0; i < NUM_SOLENOIDS; i++) {
-    //         if(slate[i].state() == slate[i].normal()) { // if valve is in the state in which it should be powered
-    //             if(digitalPinHasPWM(valve_pin_start + i))
-    //                 analogWrite(valve_pin_start + i, slate[i].pwm());
-    //             else
-    //                 digitalWrite(valve_pin_start + i, HIGH);
-    //         }
-    //         else{
-    //             if(digitalPinHasPWM(valve_pin_start + i))
-    //                 analogWrite(valve_pin_start + i, 0);
-    //             else
-    //                 digitalWrite(valve_pin_start + i, LOW);
-    //         }
-    //     }
-    // }
+    while(true) {
+        xEventGroupWaitBits(valveManager, UPDATE_VALVES, true, false, NEVER);
+        for(uint8_t i = 0; i < NUM_SOLENOIDS; i++) {
+            if(slate[i].state() == slate[i].normal()) { // if valve is in the state in which it should be powered
+                if(digitalPinHasPWM(valve_pin_start + i))
+                    analogWrite(valve_pin_start + i, slate[i].pwm());
+                else
+                    digitalWrite(valve_pin_start + i, HIGH);
+            }
+            else{
+                if(digitalPinHasPWM(valve_pin_start + i))
+                    analogWrite(valve_pin_start + i, 0);
+                else
+                    digitalWrite(valve_pin_start + i, LOW);
+            }
+        }
+    }
 }
 
 bool ValveTask::updatePulse(uint8_t ch, uint16_t pulse_dur) {
     if (ch < 0 || ch >= NUM_SOLENOIDS) return false;
-    slate[ch].pulse = pulse_dur;
+    slate[ch].pulse << pulse_dur;
     xTimerChangePeriod(pulseTimers[ch], slate[ch].pulse(), NEVER); // set new pulse period
 }
 
@@ -60,7 +60,7 @@ bool ValveTask::pulseSolenoid(uint8_t ch, uint16_t pulse_dur) {
 
 bool ValveTask::_updateSolenoid(uint8_t ch, bool update_valves, solenoid_state_t state) {
     if(ch >= 0 && ch < NUM_SOLENOIDS){
-        slate[ch].state = state;
+        slate[ch].state << state;
         if (update_valves) {
             _updateValves();
         }
@@ -76,5 +76,5 @@ void ValveTask::_callback(TimerHandle_t xTimer){
     xTimerStop(xTimer, NEVER); // reset timer so its no longer active
     uint8_t sol_ch[4];
     sol_ch[0] = (long) pvTimerGetTimerID(xTimer);
-    sys.tasks.valvetask.closeSolenoid(sol_ch[0]); // circuitous to keep static
+    // sys.tasks.valvetask.closeSolenoid(sol_ch[0]); // circuitous to keep static
 };

@@ -11,7 +11,17 @@ class EndPoint : public SlateKey<T>{
         EndPoint(const std::string id, const std::string quailID, T init, bool editable) : 
         SlateKey<T>(id, init), quailID(quailID), editable(editable) {}
 
-        using SlateKey<T>::operator=;
+        EndPoint() : SlateKey<T>(NO_QUAIL_ID, (T) false), quailID(NO_QUAIL_ID), editable(false) {}
+
+        // SlateKeys own mutexes which cannot be copied (assignment is deleted)
+        // need to manually define assignment for all descendants
+        EndPoint<T> &operator=(EndPoint<T> src) {
+            SlateKey<T>::operator=(src);
+            this->id = src.id;
+            this->quailID = src.quailID;
+            this->editable = src.editable;
+            return *this;
+        }
 
         void metadump(JsonVariant dst) {
             JsonObject obj = dst.createNestedObject(this->id);
@@ -22,7 +32,7 @@ class EndPoint : public SlateKey<T>{
         }
 
     private:
-        const std::string quailID;
+        std::string quailID;
         bool editable;
 };
 
@@ -31,7 +41,12 @@ class EndSensor : public EndPoint<float>{
         EndSensor(const std::string id, const std::string quailID, float init) :
         EndPoint(id, quailID, init, false) {}
 
-        using EndPoint<float>::SlateKey::operator=;
+        EndSensor() : EndSensor(NO_QUAIL_ID, NO_QUAIL_ID, 0.0) {}
+
+        EndSensor &operator=(EndSensor src) {
+            EndPoint<float>::operator=(src);
+            return *this;
+        }
 };
 
 class EndDerived : public EndSensor{
@@ -39,7 +54,12 @@ class EndDerived : public EndSensor{
         EndDerived(const std::string id, float init) :
         EndSensor(id, NO_QUAIL_ID, init) {}
 
-        using EndSensor::EndPoint<float>::SlateKey::operator=;
+        EndDerived() : EndDerived(NO_QUAIL_ID, 0.0) {}
+
+        EndDerived &operator=(EndDerived src) {
+            EndSensor::operator=(src);
+            return *this;
+        }
 };
 
 template <typename T>
@@ -48,5 +68,10 @@ class EndActuator : public EndPoint<T>{
         EndActuator(const std::string id, const std::string quailID) :
         EndPoint<T>(id, quailID, (T)false, true) {}
 
-        using EndPoint<T>::SlateKey::operator=;
+        EndActuator() : EndActuator<T>(NO_QUAIL_ID, NO_QUAIL_ID) {}
+
+        EndActuator<T> &operator=(EndActuator<T> src) {
+            EndPoint<T>::operator=(src);
+            return *this;
+        }
 };

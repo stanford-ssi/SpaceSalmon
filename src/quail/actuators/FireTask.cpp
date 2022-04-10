@@ -18,23 +18,23 @@ Task(priority, "Fire"), squib1(sys.squib_spi,Squib1_SS), squib2(sys.squib_spi,Sq
 
 void FireTask::activity()
 {
-    // sys.squib_spi.begin();
-    // squib1.Init();
-    // squib2.Init();
-    // while(true) {
-    //     xEventGroupWaitBits(squibManager, UPDATE_SQUIBS, true, false, NEVER);
-    //     for(uint8_t ch = 0; ch < NUM_EM_CHANNELS; ch++) {
-    //         if (slate[ch].arm() && slate[ch].state() == FIRED) {
-    //             squibChannel_t firedsquib = ch_map[ch];
-    //             (firedsquib.squib)->fire(firedsquib.firecmd);
-    //         }
-    //     }
-    // }
+    sys.squib_spi.begin();
+    squib1.Init();
+    squib2.Init();
+    while(true) {
+        xEventGroupWaitBits(squibManager, UPDATE_SQUIBS, true, false, NEVER);
+        for(uint8_t ch = 0; ch < NUM_EM_CHANNELS; ch++) {
+            if (slate[ch].arm() && slate[ch].state() == FIRED) {
+                squibChannel_t firedsquib = ch_map[ch];
+                (firedsquib.squib)->fire(firedsquib.firecmd);
+            }
+        }
+    }
 }
 
 bool FireTask::fireEmatch(uint8_t ch, bool update){
     if(ch >= 0 && ch < NUM_EM_CHANNELS){
-        slate[ch].state = FIRED;
+        slate[ch].state << FIRED;
         if (update) {
             _updateSquibs();
         }

@@ -24,6 +24,6 @@ void LoadSensor::convertToFloat(uint32_t adc_dataword)
     //TODO: make this calculation variable based on range, set by this->range
     float load = voltage / 0.030 * 1000.0 * 4.4482216153; // return load in N
 
-    slate.val = load;
+    slate.val << load;
     updateSlate();
 };

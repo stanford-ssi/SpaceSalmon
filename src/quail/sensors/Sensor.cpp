@@ -14,9 +14,9 @@ void Sensor::updateSlate() {
 
     window += slate.val();
 
-    slate.avg = window.avg();
-    slate.dif = window.delta() / dt;
-    slate.ntg = slate.ntg() + window.peek() * dt;
+    slate.avg << window.avg();
+    slate.dif << window.delta() / dt;
+    slate.ntg << slate.ntg() + window.peek() * dt;
 
     lastTick = currTick;
 }

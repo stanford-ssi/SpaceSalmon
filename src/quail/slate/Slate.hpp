@@ -9,23 +9,23 @@
 #include <functional>
 #include <string>
 
-class Slate : public Container<7>
+class Slate : public Container<5>
 {
 public:
     class Sense : public Container<11> // need to increment this when changing number of sensors
     {
     public:
-        SensorSlate pt1 = SensorSlate(NO_QUAIL_ID, "PT1");
-        SensorSlate pt2 = SensorSlate(NO_QUAIL_ID, "PT2");
-        SensorSlate pt3 = SensorSlate(NO_QUAIL_ID, "PT3");
-        SensorSlate pt4 = SensorSlate(NO_QUAIL_ID, "PT4");
-        SensorSlate pt5 = SensorSlate(NO_QUAIL_ID, "PT5");
-        SensorSlate pt6 = SensorSlate(NO_QUAIL_ID, "PT6");
-        SensorSlate pt7 = SensorSlate(NO_QUAIL_ID, "PT7");
-        SensorSlate lc1 = SensorSlate(NO_QUAIL_ID, "LC1");
-        SensorSlate lc2 = SensorSlate(NO_QUAIL_ID, "LC2");
-        SensorSlate tc1 = SensorSlate(NO_QUAIL_ID, "TC1");
-        SensorSlate tc2 = SensorSlate(NO_QUAIL_ID, "TC2");
+        SensorSlate pt1 = SensorSlate("PT1", "PT1");
+        SensorSlate pt2 = SensorSlate("PT2", "PT2");
+        SensorSlate pt3 = SensorSlate("PT3", "PT3");
+        SensorSlate pt4 = SensorSlate("PT4", "PT4");
+        SensorSlate pt5 = SensorSlate("PT5", "PT5");
+        SensorSlate pt6 = SensorSlate("PT6", "PT6");
+        SensorSlate pt7 = SensorSlate("PT7", "PT7");
+        SensorSlate lc1 = SensorSlate("LC1", "LC1");
+        SensorSlate lc2 = SensorSlate("LC2", "LC2");
+        SensorSlate tc1 = SensorSlate("TC1", "TC1");
+        SensorSlate tc2 = SensorSlate("TC2", "TC2");
         Sense(const std::string id) : Container(id, {
             std::ref(pt1),
             std::ref(pt2),
@@ -37,18 +37,19 @@ public:
             std::ref(lc1),
             std::ref(lc2),
             std::ref(tc1),
-            std::ref(tc2)}){};
+            std::ref(tc2)
+        }){};
     } sense = Sense("sensors");
 
     Array<Igniter, NUM_EM_CHANNELS> squib = Array<Igniter, NUM_EM_CHANNELS>("squib", {
-        Igniter("NO_QUAIL_ID", "E1"),
-        Igniter("NO_QUAIL_ID", "E2"),
-        Igniter("NO_QUAIL_ID", "E3"),
-        Igniter("NO_QUAIL_ID", "E4"),
-        Igniter("NO_QUAIL_ID", "E5"),
-        Igniter("NO_QUAIL_ID", "E6"),
-        Igniter("NO_QUAIL_ID", "E7"),
-        Igniter("NO_QUAIL_ID", "E8")      
+        Igniter(NO_QUAIL_ID, "E1"),
+        Igniter(NO_QUAIL_ID, "E2"),
+        Igniter(NO_QUAIL_ID, "E3"),
+        Igniter(NO_QUAIL_ID, "E4"),
+        Igniter(NO_QUAIL_ID, "E5"),
+        Igniter(NO_QUAIL_ID, "E6"),
+        Igniter(NO_QUAIL_ID, "E7"),
+        Igniter(NO_QUAIL_ID, "E8")      
     });
     
     Array<Solenoid, NUM_SOLENOIDS> solenoid = Array<Solenoid, NUM_SOLENOIDS>("solenoid",{
@@ -111,8 +112,8 @@ public:
         // If you change the length of this list, you also need to change the
         // class definition (its templated for the length)
         std::ref(sense),
-        std::ref(solenoid),  
-        std::ref(squib), 
+        // std::ref(solenoid),  
+        // std::ref(squib), 
         std::ref(adc_in), 
         std::ref(sequence),
         std::ref(battery),

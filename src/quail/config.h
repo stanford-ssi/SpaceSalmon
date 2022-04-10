@@ -62,3 +62,15 @@ enum SEQUENCE_STATE {
 
 //slate 
 #define NO_QUAIL_ID ""
+
+// errors
+ enum ErrorType {
+   none = 0,
+   corrupt_file = 1,
+   failed_to_mount_disk = 2,
+   failed_to_open_file = 3
+ };
+
+ // TX RX
+ #define STRINGIFY(x) #x
+ #define PRINT(x) sys.tasks.txtask.writeUSB(STRINGIFY(x))

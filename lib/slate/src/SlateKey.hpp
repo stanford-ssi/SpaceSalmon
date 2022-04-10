@@ -7,10 +7,13 @@ class SlateKeyGeneric
 {
 public:
     SlateKeyGeneric(const std::string id) : id(id) {}
-    virtual void dump(JsonVariant dst){};
+    virtual void dump(JsonVariant dst){
+        Serial.print(id.c_str());
+        Serial.println("virtual");
+    };
     void metadump(JsonVariant dst) {dump(dst);};
 
-protected:
+    // TODO: make const
     std::string id;
 };
 
@@ -29,43 +32,33 @@ public:
         return temp;
     }
 
-    void set(const T to)
-    {
+    void set(const T to) {
         mutex.take(NEVER);
         value = to;
         mutex.give();
     }
 
-    T operator()() { return get(); }
-
-    SlateKey<T> &operator<<(const T &in)
-    {
-        set(in);
-        return *this;
+    void dump(JsonVariant dst) {
+        if (dst.is<JsonArray>()) {
+            dst.add(get());
+        } else {
+            dst[id] = get();
+        }
     }
+
+    T operator()() { return get(); }
 
     SlateKey<T> &operator=(SlateKey<T>& src) {
         set(src.get()); 
         return *this;
     }
 
-    void operator>>(JsonVariant dst)
-    {
-        dump(dst);
+    SlateKey<T> &operator<<(const T &in) {
+        set(in);
+        return *this;
     }
 
-    void dump(JsonVariant dst)
-    {
-
-        if (dst.is<JsonArray>())
-        {
-            dst.add(get());
-        }
-        else
-        {
-            dst[id] = get();
-        }
-    }
+    void operator>>(JsonVariant dst) { dump(dst); }
   
 private:
     T value;

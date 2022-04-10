@@ -67,20 +67,20 @@ public:
     class Tasks
     {
     public:
-        ADCTask adctask = ADCTask(2); // passes ADC raw data to the appropriate sensor
-        SensorTask sensortask = SensorTask(3);
-        PowerTask powertask = PowerTask(3); // test for measuring battery voltage and current
+        // ADCTask adctask = ADCTask(2); // passes ADC raw data to the appropriate sensor
+        // SensorTask sensortask = SensorTask(3);
+        // PowerTask powertask = PowerTask(3); // test for measuring battery voltage and current
         
-        ValveTask valvetask = ValveTask(6, 22); // controls solenoids 
-        FireTask firetask = FireTask(6, 20, 21); //fires squibs for ematches
-        SequenceLauncher seqlauncher  = SequenceLauncher(3);
+        // ValveTask valvetask = ValveTask(6, 22); // controls solenoids 
+        // FireTask firetask = FireTask(6, 20, 21); //fires squibs for ematches
+        // SequenceLauncher seqlauncher  = SequenceLauncher(3);
         
         #ifdef RADIO_TXRX // if using radio, create a RadioTask
             RadioTask radiotask = RadioTask(2); //collects and sends information over radio
         #endif
         TXTask txtask = TXTask(5, 50); //regularly collects state data, logs and sends over USB or radio
-        RXTask rxtask = RXTask(5, 50); //processes commands from USB or radio
-        LoggerTask logger = LoggerTask(1); // logs data to SD during idle time, writes USB data as available
+        // RXTask rxtask = RXTask(5, 50); //processes commands from USB or radio
+        // LoggerTask logger = LoggerTask(1); // logs data to SD during idle time, writes USB data as available
     };
 
     Tasks tasks;

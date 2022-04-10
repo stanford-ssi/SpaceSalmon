@@ -14,18 +14,18 @@ void TXTask::activity() {
         j++;
         vTaskDelayUntil(&lastSensorTime, tx_interval_ms);
         // get state JSON
-        sys.slate.board.tick = xTaskGetTickCount();
-        sys.slate.board.logging = sys.tasks.logger.isLoggingEnabled();
+        sys.slate.board.tick << xTaskGetTickCount();
+        // sys.slate.board.logging << sys.tasks.logger.isLoggingEnabled();
         // log
 
-        StaticJsonDocument<1024> slateJSON;
+        StaticJsonDocument<2048> slateJSON;
 
-        char string[1024];
+        //char string[1024];
         JsonVariant variant = slateJSON.to<JsonVariant>();
         sys.slate.dump(variant);
-        size_t pkt = serializeMsgPack(slateJSON, string, 1024);
+        //size_t pkt = serializeMsgPack(slateJSON, string, 1024);
 
-        sys.tasks.logger.log(slateJSON);    
+        // sys.tasks.logger.log(slateJSON);    
 
         if(i == LOG_FACTOR){
             i = 0;
@@ -45,7 +45,7 @@ void TXTask::activity() {
                                      // TODO clean this up using the ErrorType enum
             }
             #else
-            sys.slate.board.error = 0;
+            sys.slate.board.error << 0;
             #endif
         }
     }

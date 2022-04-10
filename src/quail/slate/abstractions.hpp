@@ -9,46 +9,59 @@
 
 class SensorSlate : public Container<4> {
     public:
-        EndSensor val = EndSensor("Raw", quailID, 0.0);
-        EndDerived avg = EndDerived("Average", 0.0);
-        EndDerived dif = EndDerived("Derivative", 0.0);
-        EndDerived ntg = EndDerived("Integral", 0.0);
+        EndSensor val;
+        EndDerived avg;
+        EndDerived dif;
+        EndDerived ntg;
         SensorSlate(const std::string id, const std::string quailID) : Container(id, {
             std::ref(val),
             std::ref(avg),
             std::ref(dif),
             std::ref(ntg)
-        }), quailID(quailID) {};
+        }), quailID(quailID) {
+            val = EndSensor("Raw", quailID, 0.0);
+            avg = EndDerived("Average", 0.0);
+            dif = EndDerived("Derivative", 0.0);
+            ntg = EndDerived("Integral", 0.0);
+        };
 
-        const std::string quailID;
+    private:
+        std::string quailID;
 };
 
-class Igniter : public Container<0> {
+class Igniter : public Container<2> {
     public:
-        //EndActuator<ematch_arm_state_t> arm = EndActuator<ematch_arm_state_t>("Armed", quailID);
-        //EndActuator<ematch_fire_state_t> state = EndActuator<ematch_fire_state_t>("Fired", quailID);
-        //SlateKey<ematch_arm_state_t> arm = SlateKey<ematch_arm_state_t>("armed", UNARMED);
+        EndActuator<ematch_arm_state_t> arm;
+        EndActuator<ematch_fire_state_t> state;
         Igniter(const std::string id, const std::string quailID) : Container(id, {
-            //std::ref(arm),
-            //std::ref(state)
-        }), quailID(quailID) {};
+            std::ref(arm),
+            std::ref(state)
+        }), quailID(quailID) {
+            arm = EndActuator<ematch_arm_state_t>("Armed", quailID);
+            state = EndActuator<ematch_fire_state_t>("Fired", quailID);
+        };
 
-        const std::string quailID;
-        ematch_arm_state_t arm;
-        ematch_fire_state_t state;
+    private:
+        std::string quailID;
 };
 
 class Solenoid : public Container<3> {
     public: 
-        EndPoint<solenoid_normal_t> normal = EndPoint<solenoid_normal_t>("Normally", quailID, NORMALLY_CLOSED, false);
-        EndPoint<solenoid_pwm_t> pwm = EndPoint<solenoid_pwm_t>("PWM", quailID, MEDIUM, false);
-        EndActuator<uint16_t> pulse = EndActuator<uint16_t>("Pulse Time", quailID);
-        EndActuator<solenoid_state_t> state = EndActuator<solenoid_state_t>("Open", quailID);
+        EndPoint<solenoid_normal_t> normal;
+        EndPoint<solenoid_pwm_t> pwm;
+        EndPoint<uint16_t> pulse;
+        EndActuator<solenoid_state_t> state;
         Solenoid(const std::string id, const std::string quailID) : Container(id, {
             std::ref(normal),
             std::ref(pwm),
             std::ref(state)
-        }), quailID(quailID) {};
+        }), quailID(quailID) {
+            normal = EndPoint<solenoid_normal_t>("Normally", quailID, NORMALLY_CLOSED, false);
+            pwm = EndPoint<solenoid_pwm_t>("PWM", quailID, MEDIUM, false);
+            pulse = EndPoint<uint16_t>("Pulse Time", quailID, 1, true); // 0 is not a valid timer period
+            state = EndActuator<solenoid_state_t>("Open", quailID);
+        };
 
-        const std::string quailID;
+    private:
+        std::string quailID;
 };
