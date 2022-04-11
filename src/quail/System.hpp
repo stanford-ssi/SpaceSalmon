@@ -36,6 +36,8 @@ public:
 
     Ad7124Chip adc = Ad7124Chip(5,8,&adc_spi);
 
+    SSIEth ethernet = SSIEth(1);
+
     Slate slate = Slate("quail");
 
     PressureSensor PT1 = PressureSensor(Ad7124::AIN1Input, RANGE_1000, slate.sense.pt1);

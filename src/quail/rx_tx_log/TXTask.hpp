@@ -20,5 +20,4 @@ public:
     static void writeUSB(const char* buf); // responsibly write to USB
 private:
     const uint16_t tx_interval_ms; // frequency, in milliseconds, of TX
-    Ethernet ethernet;
 };

@@ -6,6 +6,9 @@ TXTask::TXTask(uint8_t priority, uint16_t tx_interval_ms):
 Task(priority, "TX"), tx_interval_ms(tx_interval_ms){};
 
 void TXTask::activity() {
+    vTaskDelay(2000);
+
+    Ethernet ethernet;
     TickType_t lastSensorTime = xTaskGetTickCount();
     uint8_t i = 0;
     uint8_t j = 0;
@@ -25,10 +28,11 @@ void TXTask::activity() {
         sys.slate.dump(variant);
         //size_t pkt = serializeMsgPack(slateJSON, string, 1024);
 
-        // ethernet.send(slateJSON);
         // sys.tasks.logger.log(slateJSON);    
 
         if(i == LOG_FACTOR){
+            ethernet.send(slateJSON);
+
             i = 0;
             size_t len = measureJson(slateJSON);
             char MsgPackstr[len + 5]; //create char buffer with space
