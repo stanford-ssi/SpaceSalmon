@@ -8,6 +8,7 @@
 #include "event_groups.h"
 #include "ArduinoJson.h"
 #include "Task.hpp"
+#include "Ethernet.hpp"
 
 #define RADIO_FACTOR 1 // controls frequency of radio TX wrt USB TX - gives a radio interval of tx_interval_ms*RADIO_FACTOR
 #define LOG_FACTOR 1 // controls frequency of logging wrt USB TX - gives a log interval of tx_interval_ms/LOG_FACTOR
@@ -19,5 +20,5 @@ public:
     static void writeUSB(const char* buf); // responsibly write to USB
 private:
     const uint16_t tx_interval_ms; // frequency, in milliseconds, of TX
-    
+    Ethernet ethernet;
 };

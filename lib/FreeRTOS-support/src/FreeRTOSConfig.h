@@ -272,7 +272,7 @@ to exclude the API function. */
 // <q> Include the function to get task name
 // <id> freertos_pctaskgettaskname
 #ifndef INCLUDE_pcTaskGetTaskName
-#define INCLUDE_pcTaskGetTaskName 1
+#define INCLUDE_pcTaskGetTaskName 0
 #endif
 
 // <q> Include the function to get task state

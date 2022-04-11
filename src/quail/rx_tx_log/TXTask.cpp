@@ -25,6 +25,7 @@ void TXTask::activity() {
         sys.slate.dump(variant);
         //size_t pkt = serializeMsgPack(slateJSON, string, 1024);
 
+        // ethernet.send(slateJSON);
         // sys.tasks.logger.log(slateJSON);    
 
         if(i == LOG_FACTOR){

@@ -2,14 +2,14 @@
 
 void TestTask::activity()
 {
-    pinMode(LED_BUILTIN, OUTPUT);
+    // pinMode(LED_BUILTIN, OUTPUT);
     Serial.begin(9600);
 
     while (true)
     {
         //vTaskDelay(6000);
 
-        digitalWrite(LED_BUILTIN, HIGH);
+        // digitalWrite(LED_BUILTIN, HIGH);
 
         // Serial.println("Test!");
 

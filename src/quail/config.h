@@ -74,3 +74,8 @@ enum SEQUENCE_STATE {
  // TX RX
  #define STRINGIFY(x) #x
  #define PRINT(x) sys.tasks.txtask.writeUSB(STRINGIFY(x))
+
+ // networking
+ #define MY_PORT 1000
+ #define CLIENT_PORT 2001
+ #define DATA_PCKT_LEN 2048

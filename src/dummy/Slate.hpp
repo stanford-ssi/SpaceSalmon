@@ -116,7 +116,7 @@ public:
     // });
     
     Slate(const std::string id) : Container(id, {
-        std::ref(ig1)//, 
+        std::ref(squib)//, 
         // std::ref(solenoid), 
         // std::ref(adc_in)
     }){};
