@@ -50,16 +50,18 @@ void SensorTask::activity()
 
     rc = sys.sensors.pres1.init();
 
-    if (rc != true)
+    if (rc != BMP3_OK)
     {
-        sys.tasks.logger.log("Error Starting BMP1");
+        snprintf(str, sizeof(str), "Error Starting BMP1: %i", rc);
+        sys.tasks.logger.log(str);
     }
 
     rc = sys.sensors.pres2.init();
 
-    if (rc != true)
+    if (rc != BMP3_OK)
     {
-        sys.tasks.logger.log("Error Starting BMP2");
+        snprintf(str, sizeof(str), "Error Starting BMP2: %i", rc);
+        sys.tasks.logger.log(str);
     }
 
     digitalWrite(14, false);
