@@ -4,6 +4,7 @@
 #include "SlateKey.hpp"
 #include "Array.hpp"
 #include "endpoints.hpp"
+#include "window.hpp"
 #include "../config.h"
 #include <string>
 
@@ -25,8 +26,18 @@ class SensorSlate : public Container<4> {
             ntg = EndDerived("Integral", 0.0);
         };
 
+        SensorSlate &operator<<(const float in) {
+            window += in;
+            val << window.peek();
+            avg << window.avg();
+            dif << window.delta();
+            ntg << ntg() + avg();
+            return *this;
+        };
+
     private:
         std::string quailID;
+        Window window;
 };
 
 class Igniter : public Container<2> {

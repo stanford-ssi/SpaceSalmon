@@ -20,7 +20,5 @@ void ThermalSensor::convertToFloat(uint32_t adc_dataword)
     float voltage = Ad7124Chip::toVoltage(adc_dataword, 1, 3.6, true);
     //TODO: make this calculation variable based on range, set by this->range
     float temp = (voltage * 200.0) + 273.15; // 5mV/degK
-    slate.val << temp;
-
-    updateSlate();
+    slate << temp;
 };

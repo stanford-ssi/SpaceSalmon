@@ -4,6 +4,7 @@
 #include <typeinfo>
 #include "SlateKey.hpp"
 #include "ArduinoJson.h"
+#include "../config.h"
 
 template <typename T>
 class EndPoint : public SlateKey<T>{

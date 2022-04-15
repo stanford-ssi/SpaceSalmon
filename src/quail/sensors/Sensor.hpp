@@ -2,7 +2,6 @@
 
 #include "ad7124-lib/ad7124.h"
 #include "SlateKey.hpp"
-#include "window.hpp"
 #include "../slate/abstractions.hpp"
 
 class Sensor {
@@ -38,10 +37,6 @@ class Sensor {
         static uint8_t addConfig() { return num_cfgs++; }
 
     private:
-        SlateKey<unsigned>& tick;
-        unsigned lastTick;
-        Window window; 
-
         static uint8_t num_sensors; // running count of number of sensors initialized
         static uint8_t num_cfgs; // number of sensor configurations set up on ADC
 };

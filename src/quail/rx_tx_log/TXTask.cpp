@@ -1,3 +1,5 @@
+#pragma once
+
 #include "TXTask.hpp"
 #include "main.hpp"
 #include <rBase64.h>
@@ -8,7 +10,6 @@ Task(priority, "TX"), tx_interval_ms(tx_interval_ms){};
 void TXTask::activity() {
     vTaskDelay(2000);
 
-    Ethernet ethernet;
     TickType_t lastSensorTime = xTaskGetTickCount();
     uint8_t i = 0;
     uint8_t j = 0;
@@ -18,7 +19,7 @@ void TXTask::activity() {
         vTaskDelayUntil(&lastSensorTime, tx_interval_ms);
         // get state JSON
         sys.slate.board.tick << xTaskGetTickCount();
-        // sys.slate.board.logging << sys.tasks.logger.isLoggingEnabled();
+        sys.slate.board.logging << sys.tasks.logger.isLoggingEnabled();
         // log
 
         StaticJsonDocument<2048> slateJSON;
@@ -31,7 +32,7 @@ void TXTask::activity() {
         // sys.tasks.logger.log(slateJSON);    
 
         if(i == LOG_FACTOR){
-            ethernet.send(slateJSON);
+            sys.tasks.ethernettask.send(slateJSON);
 
             i = 0;
             size_t len = measureJson(slateJSON);
