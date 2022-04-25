@@ -19,4 +19,14 @@ public:
             test.dump(obj); //crashes here
         }
     }
+
+    Container &operator<<(const JsonVariant src) {
+        if (src.containsKey(id)) {
+            for (auto elem : list) {
+                SlateKeyGeneric &test = elem.get();
+                test << src[id];
+            }
+        }
+        return *this;
+    }
 };

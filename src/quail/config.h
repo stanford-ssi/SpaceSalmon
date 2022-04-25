@@ -74,6 +74,7 @@ enum SEQUENCE_STATE {
  // TX RX
  #define STRINGIFY(x) #x
  #define PRINT(x) sys.tasks.txtask.writeUSB(STRINGIFY(x))
+ #define ETHERNET_TXRX
 
  // networking
  #define MY_SLATE_PORT 1000

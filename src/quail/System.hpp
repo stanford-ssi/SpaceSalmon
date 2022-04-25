@@ -37,7 +37,9 @@ public:
 
     Ad7124Chip adc = Ad7124Chip(5,8,&adc_spi);
 
-    SSIEth ethernet = SSIEth(1);
+    #ifdef ETHERNET_TXRX
+        SSIEth ethernet = SSIEth(1);
+    #endif
 
     Slate slate = Slate("quail");
 
@@ -70,20 +72,22 @@ public:
     class Tasks
     {
     public:
-        // ADCTask adctask = ADCTask(2); // passes ADC raw data to the appropriate sensor
-        // SensorTask sensortask = SensorTask(3);
+        ADCTask adctask = ADCTask(2); // passes ADC raw data to the appropriate sensor
+        SensorTask sensortask = SensorTask(3);
         PowerTask powertask = PowerTask(3); // test for measuring battery voltage and current
         
-        // ValveTask valvetask = ValveTask(6, 22); // controls solenoids 
-        // FireTask firetask = FireTask(6, 20, 21); //fires squibs for ematches
+        ValveTask valvetask = ValveTask(6, 22); // controls solenoids 
+        FireTask firetask = FireTask(6, 20, 21); //fires squibs for ematches
         // SequenceLauncher seqlauncher  = SequenceLauncher(3);
         
         #ifdef RADIO_TXRX // if using radio, create a RadioTask
             RadioTask radiotask = RadioTask(4); //collects and sends information over radio
         #endif
-        EthernetTask ethernettask = EthernetTask(4);
-        TXTask txtask = TXTask(5, 50); //regularly collects state data, logs and sends over USB or radio
-        // RXTask rxtask = RXTask(5, 50); //processes commands from USB or radio
+        #ifdef ETHERNET_TXRX
+            EthernetTask ethernettask = EthernetTask(4);
+        #endif
+        TXTask txtask = TXTask(5, 50); //regularly collects state data, logs and sends over USB, radio, or ethernet
+        RXTask rxtask = RXTask(5, 50); //processes commands from USB, radio, or ethernet
         LoggerTask logger = LoggerTask(1); // logs data to SD during idle time, writes USB data as available
     };
 

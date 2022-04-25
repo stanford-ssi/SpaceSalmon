@@ -11,6 +11,8 @@ public:
         Serial.print(id.c_str());
         Serial.println("virtual");
     };
+    virtual SlateKeyGeneric &operator<<(const JsonVariant) {Serial.println("sucks");};
+
     void metadump(JsonVariant dst) {dump(dst);};
 
     // TODO: make const
@@ -24,8 +26,7 @@ class SlateKey : public SlateKeyGeneric
 public:
     SlateKey(const std::string id, T init) : SlateKeyGeneric(id), value(init){}
 
-    T get(void) 
-    {
+    T get(void) {
         mutex.take(NEVER);
         T temp = value;
         mutex.give();
@@ -55,6 +56,13 @@ public:
 
     SlateKey<T> &operator<<(const T &in) {
         set(in);
+        return *this;
+    }
+
+    SlateKey<T> &operator<<(const JsonVariant src) {
+        if(src.containsKey(id)) {
+            *this << (T)src[id];
+        }
         return *this;
     }
 

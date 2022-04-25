@@ -20,7 +20,7 @@ void FireTask::activity()
 {
     sys.squib_spi.begin();
     squib1.Init();
-    squib2.Init();
+    // squib2.Init();
     while(true) {
         xEventGroupWaitBits(squibManager, UPDATE_SQUIBS, true, false, NEVER);
         for(uint8_t ch = 0; ch < NUM_EM_CHANNELS; ch++) {

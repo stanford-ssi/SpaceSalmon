@@ -7,6 +7,16 @@
 TXTask::TXTask(uint8_t priority, uint16_t tx_interval_ms):
 Task(priority, "TX"), tx_interval_ms(tx_interval_ms){};
 
+void tickTest() {
+    char arr[] = "{cmd:{\"quail\":{\"board\":{\"tick\":10}}}}";
+    StaticJsonDocument<100> doc;
+    DeserializationError ret = deserializeJson(doc, arr);
+    if (ret == DeserializationError::Ok) {
+        JsonVariant cmd = doc["cmd"];
+        sys.slate << cmd;
+    }
+}
+
 void TXTask::activity() {
     vTaskDelay(2000);
 
@@ -32,7 +42,9 @@ void TXTask::activity() {
         // sys.tasks.logger.log(slateJSON);    
 
         if(i == LOG_FACTOR){
-            sys.tasks.ethernettask.send(slateJSON);
+            #ifdef ETHERNET_TXRX
+                sys.tasks.ethernettask.send(slateJSON);
+            #endif 
 
             i = 0;
             size_t len = measureJson(slateJSON);

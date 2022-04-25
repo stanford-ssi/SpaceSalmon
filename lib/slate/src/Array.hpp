@@ -20,12 +20,20 @@ public:
     void dump(JsonVariant dst)
     {
         JsonArray arr = dst.createNestedArray(id);
-        Serial.println("heard");
         for (T &elem : listref)
         {
             SlateKeyGeneric &key = static_cast<SlateKeyGeneric &>(elem);
-            Serial.println(key.id.c_str());
             key.dump(arr);
         }
+    }
+
+    Array &operator<<(const JsonVariant src) {
+        if (src.containsKey(id)) {
+            for (T &elem : listref) {
+
+                (SlateKeyGeneric)elem << src[id];
+            }
+        }
+        return *this;
     }
 };
