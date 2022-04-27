@@ -7,8 +7,6 @@ class System;
 #include "SPI.h"
 #include "sensors/ad7124-lib/ad7124.h"
 
-//#define RADIO_TXRX // uncomment this to use Radio for TX/RX
-
 #include "sensors/Sensor.hpp"
 #include "sensors/PressureSensor.hpp"
 #include "sensors/ThermalSensor.hpp"
@@ -20,7 +18,9 @@ class System;
 #include "rx_tx_log/LoggerTask.hpp"
 #include "rx_tx_log/TXTask.hpp"
 #include "rx_tx_log/RXTask.hpp"
-#include "rx_tx_log/EthernetTask.hpp"
+#ifdef ETHERNET_TXRX
+    #include "rx_tx_log/EthernetTask.hpp"
+#endif
 #ifdef RADIO_TXRX
     #include "rx_tx_log/RadioTask.hpp"
 #endif 
@@ -37,9 +37,9 @@ public:
 
     Ad7124Chip adc = Ad7124Chip(5,8,&adc_spi);
 
-    #ifdef ETHERNET_TXRX
+    //#ifdef ETHERNET_TXRX
         SSIEth ethernet = SSIEth(1);
-    #endif
+    //#endif
 
     Slate slate = Slate("quail");
 

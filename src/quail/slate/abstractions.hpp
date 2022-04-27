@@ -12,25 +12,25 @@ class SensorSlate : public Container<4> {
     public:
         EndSensor val;
         EndDerived avg;
-        EndDerived dif;
+        EndDerived drv;
         EndDerived ntg;
         SensorSlate(const std::string id, const std::string quailID) : Container(id, {
             std::ref(val),
             std::ref(avg),
-            std::ref(dif),
+            std::ref(drv),
             std::ref(ntg)
         }), quailID(quailID) {
-            val = EndSensor("Raw", quailID, 0.0);
-            avg = EndDerived("Average", 0.0);
-            dif = EndDerived("Derivative", 0.0);
-            ntg = EndDerived("Integral", 0.0);
+            val = EndSensor("raw", quailID, 0.0);
+            avg = EndDerived("avg", 0.0);
+            drv = EndDerived("drv", 0.0);
+            ntg = EndDerived("ntg", 0.0);
         };
 
         SensorSlate &operator<<(const float in) {
             window += in;
             val << window.peek();
             avg << window.avg();
-            dif << window.delta();
+            drv << window.delta();
             ntg << ntg() + avg();
             return *this;
         };
@@ -56,7 +56,7 @@ class Igniter : public Container<2> {
         std::string quailID;
 };
 
-class Solenoid : public Container<3> {
+class Solenoid : public Container<4> {
     public: 
         EndPoint<solenoid_normal_t> normal;
         EndPoint<solenoid_pwm_t> pwm;
@@ -65,6 +65,7 @@ class Solenoid : public Container<3> {
         Solenoid(const std::string id, const std::string quailID) : Container(id, {
             std::ref(normal),
             std::ref(pwm),
+            std::ref(pulse),
             std::ref(state)
         }), quailID(quailID) {
             normal = EndPoint<solenoid_normal_t>("Normally", quailID, NORMALLY_CLOSED, false);

@@ -7,13 +7,9 @@ class SlateKeyGeneric
 {
 public:
     SlateKeyGeneric(const std::string id) : id(id) {}
-    virtual void dump(JsonVariant dst){
-        Serial.print(id.c_str());
-        Serial.println("virtual");
-    };
-    virtual SlateKeyGeneric &operator<<(const JsonVariant) {Serial.println("sucks");};
-
-    void metadump(JsonVariant dst) {dump(dst);};
+    virtual void dump(JsonVariant dst){Serial.println("virtual");};
+    virtual SlateKeyGeneric &operator<<(const JsonVariant) {Serial.println("virtual");};
+    virtual void metadump(JsonVariant dst) {Serial.println("virtual");};
 
     // TODO: make const
     std::string id;

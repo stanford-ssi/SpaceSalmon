@@ -14,8 +14,8 @@ This repo holds the embedded software for several of SSI's PCBs. It uses Platfor
 #### TODOs
 * SHITL - It would be great if we could get Hardware-In-The-Loop testing for Quail. As is we have the Travis CL which doesn't do much. SHITL would allow us to quickly verify that new revisions work with actual hardware. We could use the existing TG SHITL as a guide.
 * Dependencies - All libraries have their own library.json. I don't think these are all currently tracked via git. This makes modularity difficult as you have to edit both the platformio.ini file and all the individual jsons. A fix for this would be useful for the whole framework.
-* Networking - We've got one UDP connection working right now. 
-* Slate - 
+* Networking - We've got one UDP connection working right now. We need to add more and verify that they communicate with the webGUI properly.
+* Slate - Taring and units. These can be added via SensorSlate.
 
 ## Running the Framework
 

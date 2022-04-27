@@ -1,5 +1,3 @@
-#pragma once
-
 #include "EthernetTask.hpp"
 #include "main.hpp"
 #include "Task.hpp"
@@ -19,38 +17,69 @@ void EthernetTask::activity() {
 
     netconn *newconn;
     err_t err;
-    // while(true) {
-    //     // accept a new TCP connection for commands
-    //     err = netconn_accept(cmdConn, &newconn);
+    while(true) {
+        // accept a new TCP connection for commands
+        err = netconn_accept(cmdConn, &newconn);
 
-    //     if (err == ERR_OK) {
-    //         netbuf *buf;
-    //         void *data;
-    //         uint16_t len;
+        if (err == ERR_OK) {
+            netbuf *buf;
+            void *data;
+            uint16_t len;
 
-    //         // while connection is not stale
-    //         while ((err = netconn_recv(newconn, &buf)) == ERR_OK) {
-    //             do {
-    //                 // get pointers
-    //                 netbuf_data(buf, &data, &len);
+            // while connection is not stale
+            while ((err = netconn_recv(newconn, &buf)) == ERR_OK) {
+                do {
+                    // get pointers
+                    netbuf_data(buf, &data, &len);
 
-    //                 // send command to RXTask for processing
-    //                 // cmdBuf.send((char *)data, DATA_PCKT_LEN);
+                    // process command and send ACK
+                    err = requestHandler(newconn, (char *)data, len);
 
-    //                 // TCP echo confirms reception
-    //                 err = netconn_write(newconn, data, len, NETCONN_COPY);
-    //                 if (err != ERR_OK) {
-    //                     PRINT("ETHERNET: cmd tcp connection failed to echo");
-    //                 }
-    //             } while(netbuf_next(buf) >= 0);
-    //             netbuf_delete(buf);
-    //         }
+                    if (err != ERR_OK) {
+                        PRINT("ETHERNET: cmd tcp connection failed to echo");
+                    }
+                } while(netbuf_next(buf) >= 0);
+                netbuf_delete(buf);
+            }
 
-    //         // clean up and wait for new connection
-    //         netconn_close(newconn);
-    //         netconn_delete(newconn);
-    //     }
-    // }
+            // clean up and wait for new connection
+            netconn_close(newconn);
+            netconn_delete(newconn);
+        }
+    }
+}
+
+err_t EthernetTask::requestHandler(netconn *&conn, char *rcv, uint16_t len) {
+    // deserialization changes string, need a copy for echo server
+    char rcvCpy[MAX_CMD_LENGTH];
+    strcpy(rcvCpy, rcv);
+    StaticJsonDocument<MAX_CMD_LENGTH> pckt;
+    DeserializationError ret = deserializeJson(pckt, rcv);
+
+    if (ret == DeserializationError::Ok) { // TCP requests must be JSONs
+        if (pckt.containsKey("cmd")) { // Command echo server
+            cmdBuf.send(rcvCpy, MAX_CMD_LENGTH);
+            Serial.println(rcvCpy);
+            return netconn_write(conn, rcvCpy, len, NETCONN_COPY);
+        }
+        if (pckt.containsKey("meta")) { // Metaslate dump requests
+            // get the data packet
+            StaticJsonDocument<DATA_PCKT_LEN> metaJSON;
+            JsonVariant metaVar = metaJSON.to<JsonVariant>();
+            sys.slate.metadump(metaVar);
+
+            // convert to string
+            char metaStr[DATA_PCKT_LEN];
+            serializeJson(metaJSON, metaStr, DATA_PCKT_LEN);
+
+            // send the metaslate request
+            Serial.println(metaStr);
+            return netconn_write(conn, metaStr, strlen(metaStr), NETCONN_COPY);
+        }
+    }
+    
+    char *send = "Misformatted TCP request";
+    return netconn_write(conn, send, sizeof(send), NETCONN_COPY);
 }
 
 void EthernetTask::createUDP(netconn *&conn, uint16_t myport, uint16_t clientport) {
@@ -75,7 +104,6 @@ void EthernetTask::createUDP(netconn *&conn, uint16_t myport, uint16_t clientpor
         vTaskDelay(NETWORKING_DELAY);
         err = netconn_connect(conn, &dst, CLIENT_SLATE_PORT);
     } while(err != ERR_OK);
-    PRINT("UDP connected");
 }
 
 void EthernetTask::createTCP(netconn *&conn, uint16_t myport) {
@@ -88,6 +116,8 @@ void EthernetTask::createTCP(netconn *&conn, uint16_t myport) {
         conn = netconn_new(NETCONN_TCP);
         err = netconn_bind(conn, IP4_ADDR_ANY, myport);
     }
+
+    netconn_listen(conn);
 }
 
 void EthernetTask::sendUDP(netconn *conn, JsonDocument& jsonDoc) {
@@ -99,7 +129,6 @@ void EthernetTask::sendUDP(netconn *conn, JsonDocument& jsonDoc) {
 
 void EthernetTask::sendUDP(netconn *conn, const char* message) {   
     if (!isSetup) return;
-    PRINT("sending");
     
     // create a packet
     netbuf *buf = netbuf_new();

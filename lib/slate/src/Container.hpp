@@ -10,8 +10,7 @@ public:
 
     const std::array<std::reference_wrapper<SlateKeyGeneric>, N> list;
 
-    void dump(JsonVariant dst)
-    {
+    void dump(JsonVariant dst) override {
         JsonObject obj = dst.createNestedObject(id);
         for (auto elem : list)
         {
@@ -20,7 +19,15 @@ public:
         }
     }
 
-    Container &operator<<(const JsonVariant src) {
+    void metadump(JsonVariant dst) override {
+        JsonObject obj = dst.createNestedObject(id);
+        for (auto elem : list) {
+            SlateKeyGeneric &test = elem.get();
+            test.metadump(obj); //crashes here
+        }
+    }
+
+    Container &operator<<(const JsonVariant src) override{
         if (src.containsKey(id)) {
             for (auto elem : list) {
                 SlateKeyGeneric &test = elem.get();

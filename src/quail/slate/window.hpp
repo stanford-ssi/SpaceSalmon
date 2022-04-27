@@ -4,6 +4,7 @@
 #include <FreeRTOS.h>
 
 class Window {
+    //TODO: make reference to ticks 
     public:
         Window(){};
 

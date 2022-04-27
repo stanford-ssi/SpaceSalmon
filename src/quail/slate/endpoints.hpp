@@ -24,10 +24,20 @@ class EndPoint : public SlateKey<T>{
             return *this;
         }
 
-        void metadump(JsonVariant dst) {
+        EndPoint<T> &operator<<(const JsonVariant src) override {
+            if (editable) SlateKey<T>::operator<<(src);
+            return *this;
+        }
+
+        EndPoint<T> &operator<<(const T &in) {
+            SlateKey<T>::operator<<(in);
+            return *this;
+        }
+
+        void metadump(JsonVariant dst) override {
             JsonObject obj = dst.createNestedObject(this->id);
             obj[this->id] = this->get();
-            // obj["Type"] = typeid(this->get()).name();
+            obj["Type"] = typeid(this->get()).name();
             obj["Quail ID"] = quailID;
             obj["Editable"] = editable;
         }

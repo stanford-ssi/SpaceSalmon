@@ -2,7 +2,6 @@
 #include "main.hpp"
 #include <rBase64.h>
 
-
 RXTask::RXTask(uint8_t priority, uint16_t rx_interval):Task(priority, "RX"), rx_interval_ms(rx_interval){};
 
 void RXTask::activity(){
@@ -66,6 +65,10 @@ void RXTask::readInput(){
         }
     }
     #ifdef ETHERNET_TXRX
-        // wait for TCP ethernet cmd packet then send it out as a command
+        while(sys.tasks.ethernettask.cmdAvailable()) {
+            char cmd[MAX_CMD_LENGTH];
+            sys.tasks.ethernettask.waitForCmd(cmd);
+            sendcmd(cmd);
+        } 
     #endif
 };

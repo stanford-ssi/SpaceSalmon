@@ -9,7 +9,7 @@
 #include <functional>
 #include <string>
 
-class Slate : public Container<5>
+class Slate : public Container<6>
 {
 public:
     class Sense : public Container<11> // need to increment this when changing number of sensors
@@ -41,15 +41,15 @@ public:
         }){};
     } sense = Sense("sensors");
 
-    Array<Igniter, NUM_EM_CHANNELS> squib = Array<Igniter, NUM_EM_CHANNELS>("squib", {
-        Igniter(NO_QUAIL_ID, "E1"),
-        Igniter(NO_QUAIL_ID, "E2"),
-        Igniter(NO_QUAIL_ID, "E3"),
-        Igniter(NO_QUAIL_ID, "E4"),
-        Igniter(NO_QUAIL_ID, "E5"),
-        Igniter(NO_QUAIL_ID, "E6"),
-        Igniter(NO_QUAIL_ID, "E7"),
-        Igniter(NO_QUAIL_ID, "E8")      
+    Array<Igniter, NUM_EM_CHANNELS> squib = Array<Igniter, NUM_EM_CHANNELS>("squib",{
+        Igniter("E1", "E1"),
+        Igniter("E2", "E2"),
+        Igniter("E3", "E3"),
+        Igniter("E4", "E4"),
+        Igniter("E5", "E5"),
+        Igniter("E6", "E6"),
+        Igniter("E7", "E7"),
+        Igniter("E8", "E8")
     });
     
     Array<Solenoid, NUM_SOLENOIDS> solenoid = Array<Solenoid, NUM_SOLENOIDS>("solenoid",{
@@ -98,8 +98,8 @@ public:
 
     class Board : public Container<3> {
         public:
-            EndPoint<float> logging = EndPoint<float>("logging", NO_QUAIL_ID, false, false);
-            EndPoint<float> error = EndPoint<float>("error", NO_QUAIL_ID, false, false);
+            EndPoint<bool> logging = EndPoint<bool>("logging", NO_QUAIL_ID, false, false);
+            EndPoint<unsigned> error = EndPoint<unsigned>("error", NO_QUAIL_ID, false, true);
             EndPoint<unsigned> tick = EndPoint<unsigned>("tick", NO_QUAIL_ID, 0, false);
             Board(const std::string id) : Container(id, {
                 std::ref(logging),

@@ -36,4 +36,6 @@ class EthernetTask : public Task<4000>{
 
         void createUDP(netconn *&conn, uint16_t myport, uint16_t client);
         void createTCP(netconn *&conn, uint16_t myport);
+
+        err_t requestHandler(netconn *&conn, char *rcv, uint16_t len);
 };

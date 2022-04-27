@@ -17,20 +17,26 @@ public:
         return listref.at(index);
     }
 
-    void dump(JsonVariant dst)
-    {
+    void dump(JsonVariant dst) override {
         JsonArray arr = dst.createNestedArray(id);
-        for (T &elem : listref)
-        {
+        for (T &elem : listref) {
             SlateKeyGeneric &key = static_cast<SlateKeyGeneric &>(elem);
             key.dump(arr);
         }
     }
 
-    Array &operator<<(const JsonVariant src) {
+    void metadump(JsonVariant dst) override {
+        JsonArray arr = dst.createNestedArray(id);
+        for (T &elem : listref)
+        {
+            SlateKeyGeneric &key = static_cast<SlateKeyGeneric &>(elem);
+            key.metadump(arr);
+        }
+    }
+
+    Array &operator<<(const JsonVariant src) override {
         if (src.containsKey(id)) {
             for (T &elem : listref) {
-
                 (SlateKeyGeneric)elem << src[id];
             }
         }
