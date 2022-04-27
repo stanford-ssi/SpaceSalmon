@@ -17,17 +17,18 @@ void TXTask::activity() {
         i++;
         j++;
         vTaskDelayUntil(&lastSensorTime, tx_interval_ms);
-        // get state JSON
+
+        // prepare slate
         sys.slate.board.tick << xTaskGetTickCount();
         sys.slate.board.logging << sys.tasks.logger.isLoggingEnabled();
-        // log
 
-        StaticJsonDocument<2048> slateJSON;
-
-        //char string[1024];
+        // convert slate to json
+        StaticJsonDocument<8192> slateJSON;
         JsonVariant variant = slateJSON.to<JsonVariant>();
         sys.slate.dump(variant);
-        //size_t pkt = serializeMsgPack(slateJSON, string, 1024);
+        if(slateJSON.overflowed()) {
+            Serial.println("BY JOVE");
+        }
 
         // sys.tasks.logger.log(slateJSON);    
 

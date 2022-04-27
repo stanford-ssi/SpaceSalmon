@@ -6,7 +6,7 @@ TimerHandle_t ValveTask::pulseTimers[NUM_SOLENOIDS];
 StaticTimer_t ValveTask::pulseBufs[NUM_SOLENOIDS];
 
 ValveTask::ValveTask(uint8_t priority, uint8_t valve_pin_start) : 
-Task(priority, "Valves"), valve_pin_start(valve_pin_start), slate(sys.slate.solenoid){
+Task(priority, "Valves"), valve_pin_start(valve_pin_start), slate(sys.slate.valves){
     valveManager = xEventGroupCreateStatic(&evBuf);
     for (uint8_t i = 0; i < NUM_SOLENOIDS; i++) {
         pinMode(valve_pin_start + i, OUTPUT);

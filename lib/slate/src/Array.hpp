@@ -1,45 +1,49 @@
 #pragma once
 
+#include "Container.hpp"
 #include "SlateKey.hpp"
 #include "ArduinoJson.h"
 #include <functional>
 
 template <class T, size_t N>
-class Array : public SlateKeyGeneric
-{
-public:
-    std::array<T, N> listref;
+class Array : public SlateKeyGeneric {
+    public:
+        Array(const std::string id, std::array<std::reference_wrapper<T>, N> keys) : 
+        SlateKeyGeneric(id), list(keys) {};
 
-    Array(const std::string id, std::array<T, N>&& list) : SlateKeyGeneric(id), listref(std::move(list)){};
-
-    T &operator[](int index)
-    {
-        return listref.at(index);
-    }
-
-    void dump(JsonVariant dst) override {
-        JsonArray arr = dst.createNestedArray(id);
-        for (T &elem : listref) {
-            SlateKeyGeneric &key = static_cast<SlateKeyGeneric &>(elem);
-            key.dump(arr);
+        T &operator[](int index) {
+            return list[index].get();
         }
-    }
 
-    void metadump(JsonVariant dst) override {
-        JsonArray arr = dst.createNestedArray(id);
-        for (T &elem : listref)
-        {
-            SlateKeyGeneric &key = static_cast<SlateKeyGeneric &>(elem);
-            key.metadump(arr);
-        }
-    }
-
-    Array &operator<<(const JsonVariant src) override {
-        if (src.containsKey(id)) {
-            for (T &elem : listref) {
-                (SlateKeyGeneric)elem << src[id];
+        void dump(JsonVariant dst) {
+            JsonArray arr = dst.createNestedArray(id);
+            for (auto elem : list) {
+                T &key = elem.get();
+                key.dump(arr);
+                // if (id == "squib") {
+                //     if (arr.isNull()) {
+                //         Serial.println("array eureka");
+                //     } else {
+                //         Serial.println("array nvm");
+                //         Serial.println(arr.memoryUsage());
+                //     }
+                //     if (dst.containsKey("squib")) {
+                //         Serial.println("tears");
+                //     } else {
+                //         Serial.println("other trears");
+                //     }
+                // }
             }
         }
-        return *this;
-    }
+
+        void metadump(JsonVariant dst) {
+            JsonArray arr = dst.createNestedArray(id);
+            for (auto elem : list) {
+                T &key = elem.get();
+                key.metadump(arr);
+            }
+        }
+
+    private:
+        const std::array<std::reference_wrapper<T>, N> list;
 };

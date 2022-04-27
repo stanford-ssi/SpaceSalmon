@@ -8,14 +8,24 @@ class Container : public SlateKeyGeneric
 public:
     Container(const std::string id, std::array<std::reference_wrapper<SlateKeyGeneric>, N> keys) : SlateKeyGeneric(id), list(keys){};
 
-    const std::array<std::reference_wrapper<SlateKeyGeneric>, N> list;
-
     void dump(JsonVariant dst) override {
         JsonObject obj = dst.createNestedObject(id);
-        for (auto elem : list)
-        {
+        for (auto elem : list) {
             SlateKeyGeneric &test = elem.get();
             test.dump(obj); //crashes here
+            // if (id == "E1") {
+            //     if (obj.isNull()){
+            //         Serial.println("eureka");
+            //         Serial.println(obj.memoryUsage());
+            //     } else {
+            //         Serial.println("false flag");
+            //     }
+            //     if (dst.containsKey("E1")) {
+            //         Serial.println("pre-dope");
+            //     } else {
+            //         Serial.println("pre-mope");
+            //     }
+            // }
         }
     }
 
@@ -36,4 +46,7 @@ public:
         }
         return *this;
     }
+
+private:
+    const std::array<std::reference_wrapper<SlateKeyGeneric>, N> list;
 };

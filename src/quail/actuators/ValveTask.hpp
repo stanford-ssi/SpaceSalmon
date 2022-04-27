@@ -25,7 +25,7 @@ class ValveTask : public Task<2000> {
 
     private:
         uint8_t valve_pin_start;
-        Array<Solenoid, NUM_SOLENOIDS>& slate;
+        Array<Solenoid, NUM_SOLENOIDS> &slate;
 
         StaticEventGroup_t evBuf;
         EventGroupHandle_t valveManager;

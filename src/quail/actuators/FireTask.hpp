@@ -9,7 +9,7 @@
 
 #include "Task.hpp"
 #include "../config.h"
-#include "../slate/abstractions.hpp"
+#include "../slate/Slate.hpp"
 #include "Array.hpp"
 
 #include "../../periph/MC33797/Squib.hpp"
@@ -30,7 +30,7 @@ private:
     Squib squib1; // squib controlling E1-E4
     Squib squib2; // squib controlling E5-E8
 
-    Array<Igniter, NUM_EM_CHANNELS>& slate;
+    Array<Igniter, NUM_EM_CHANNELS> &slate;
     squibChannel_t ch_map [NUM_EM_CHANNELS];
 
     StaticEventGroup_t evbuf;

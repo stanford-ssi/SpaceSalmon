@@ -40,6 +40,13 @@ public:
             dst.add(get());
         } else {
             dst[id] = get();
+            // if (id == "Armed") {
+            //     if (dst.containsKey(id)) {
+            //         Serial.println("Good");
+            //     } else {
+            //         Serial.println("Bad");
+            //     }
+            // }
         }
     }
 
