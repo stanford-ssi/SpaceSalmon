@@ -7,7 +7,6 @@ EthernetTask::EthernetTask(uint8_t priority) : Task(priority, "Ethernet") {}
 void EthernetTask::setup() {
     vTaskDelay(NETWORKING_DELAY);
     createUDP(slateConn, MY_SLATE_PORT, CLIENT_SLATE_PORT);
-    createTCP(metaConn, MY_META_PORT);
     createTCP(cmdConn, MY_CMD_PORT);
     isSetup = true;
 }
@@ -128,7 +127,9 @@ void EthernetTask::sendUDP(netconn *conn, JsonDocument& jsonDoc) {
 }
 
 void EthernetTask::sendUDP(netconn *conn, const char* message) {   
-    if (!isSetup) return;
+    if (!isSetup) {
+        return;
+    }
     
     // create a packet
     netbuf *buf = netbuf_new();

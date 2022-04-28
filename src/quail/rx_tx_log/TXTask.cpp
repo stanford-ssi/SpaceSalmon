@@ -23,26 +23,22 @@ void TXTask::activity() {
         sys.slate.board.logging << sys.tasks.logger.isLoggingEnabled();
 
         // convert slate to json
-        StaticJsonDocument<8192> slateJSON;
+        StaticJsonDocument<DATA_PCKT_LEN> slateJSON;
         JsonVariant variant = slateJSON.to<JsonVariant>();
         sys.slate.dump(variant);
-        if(slateJSON.overflowed()) {
-            Serial.println("BY JOVE");
-        }
 
         // sys.tasks.logger.log(slateJSON);    
 
         if(i == LOG_FACTOR){
+            i = 0;
+            size_t len = measureJson(slateJSON);
+            char msgPack[len + 5]; //create char buffer with space
+            serializeJson(slateJSON, msgPack, sizeof(msgPack));        
+            // if at tx_interval, write over selected TX
+            writeUSB(msgPack);
             #ifdef ETHERNET_TXRX
                 sys.tasks.ethernettask.send(slateJSON);
             #endif 
-
-            i = 0;
-            size_t len = measureJson(slateJSON);
-            char MsgPackstr[len + 5]; //create char buffer with space
-            serializeJson(slateJSON, MsgPackstr, sizeof(MsgPackstr));        
-            // if at tx_interval, write over selected TX
-            writeUSB(MsgPackstr);
             #ifdef RADIO_TXRX
             if(j == RADIO_FACTOR*LOG_FACTOR){ // if at a radio transmission interval
                 packet_t pkt; // create radio packet type

@@ -11,7 +11,7 @@
 
 #include "Task.hpp"
 
-class PowerTask : public Task<2000>
+class PowerTask : public Task<1500>
 {
 public:
     PowerTask(uint8_t priority)

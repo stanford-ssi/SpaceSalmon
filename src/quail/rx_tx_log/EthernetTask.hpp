@@ -5,7 +5,7 @@
 #include "StrBuffer.hpp"
 #include "../config.h"
 
-class EthernetTask : public Task<4000>{
+class EthernetTask : public Task<3000>{
     public:
         EthernetTask(uint8_t priority);
 

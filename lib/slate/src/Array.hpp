@@ -16,23 +16,10 @@ class Array : public SlateKeyGeneric {
         }
 
         void dump(JsonVariant dst) {
-            JsonArray arr = dst.createNestedArray(id);
+            JsonObject arr = dst.createNestedObject(id); // yes i know there are JsonArrays, no they dont work
             for (auto elem : list) {
-                T &key = elem.get();
+                T &key = elem.get();    
                 key.dump(arr);
-                // if (id == "squib") {
-                //     if (arr.isNull()) {
-                //         Serial.println("array eureka");
-                //     } else {
-                //         Serial.println("array nvm");
-                //         Serial.println(arr.memoryUsage());
-                //     }
-                //     if (dst.containsKey("squib")) {
-                //         Serial.println("tears");
-                //     } else {
-                //         Serial.println("other trears");
-                //     }
-                // }
             }
         }
 

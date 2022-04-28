@@ -148,7 +148,7 @@ public:
         // class definition (its templated for the length)
         std::ref(sense),
         std::ref(valves),  
-        std::ref(squib), 
+        std::ref(squib),
         std::ref(adc_in), 
         std::ref(sequence),
         std::ref(battery),

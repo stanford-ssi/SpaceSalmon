@@ -72,7 +72,7 @@ enum SEQUENCE_STATE {
  };
 
  // TX RX
- // #define ETHERNET_TXRX
+ #define ETHERNET_TXRX
  // #define RADIO_TXRX
 
  // networking

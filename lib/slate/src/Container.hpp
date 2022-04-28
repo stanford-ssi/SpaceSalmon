@@ -13,19 +13,6 @@ public:
         for (auto elem : list) {
             SlateKeyGeneric &test = elem.get();
             test.dump(obj); //crashes here
-            // if (id == "E1") {
-            //     if (obj.isNull()){
-            //         Serial.println("eureka");
-            //         Serial.println(obj.memoryUsage());
-            //     } else {
-            //         Serial.println("false flag");
-            //     }
-            //     if (dst.containsKey("E1")) {
-            //         Serial.println("pre-dope");
-            //     } else {
-            //         Serial.println("pre-mope");
-            //     }
-            // }
         }
     }
 
