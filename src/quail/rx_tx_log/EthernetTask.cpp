@@ -121,19 +121,20 @@ void EthernetTask::createTCP(netconn *&conn, uint16_t myport) {
 
 void EthernetTask::sendUDP(netconn *conn, JsonDocument& jsonDoc) {
     if (!isSetup) return;
-    char str[DATA_PCKT_LEN];
-    serializeJson(jsonDoc, str, DATA_PCKT_LEN);
-    sendUDP(conn, str);
+    uint16_t len = measureJson(jsonDoc);
+    char str[len + 5];
+    serializeJson(jsonDoc, str, sizeof(str));
+    sendUDP(conn, str, sizeof(str));
 }
 
-void EthernetTask::sendUDP(netconn *conn, const char* message) {   
+void EthernetTask::sendUDP(netconn *conn, const char* message, uint16_t len) {   
     if (!isSetup) {
         return;
     }
     
     // create a packet
     netbuf *buf = netbuf_new();
-    netbuf_alloc(buf, DATA_PCKT_LEN);
+    netbuf_alloc(buf, len);
 
     // fill the packet
     uint16_t size;

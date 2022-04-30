@@ -27,7 +27,8 @@ void TXTask::activity() {
         JsonVariant variant = slateJSON.to<JsonVariant>();
         sys.slate.dump(variant);
 
-        // sys.tasks.logger.log(slateJSON);    
+        // always 
+        sys.tasks.logger.log(slateJSON);    
 
         if(i == LOG_FACTOR){
             i = 0;
@@ -37,20 +38,20 @@ void TXTask::activity() {
             // if at tx_interval, write over selected TX
             writeUSB(msgPack);
             #ifdef ETHERNET_TXRX
-                sys.tasks.ethernettask.send(slateJSON);
+                sys.tasks.ethernettask.send(msgPack, sizeof(msgPack));
             #endif 
             #ifdef RADIO_TXRX
-            if(j == RADIO_FACTOR*LOG_FACTOR){ // if at a radio transmission interval
-                packet_t pkt; // create radio packet type
-                memcpy(pkt.data, &MsgPackstr, sizeof(MsgPackstr)); // copy slate data into packet
-                pkt.len = sizeof(MsgPackstr); // set packet size
-                sys.tasks.radiotask.sendPacket(pkt); // add packet to radio transmission queue
-                j = 0;
-                sys.slate.error = 0; // clear error after sending over radio
-                                     // TODO clean this up using the ErrorType enum
-            }
+                if(j == RADIO_FACTOR*LOG_FACTOR){ // if at a radio transmission interval
+                    packet_t pkt; // create radio packet type
+                    memcpy(pkt.data, &MsgPackstr, sizeof(MsgPackstr)); // copy slate data into packet
+                    pkt.len = sizeof(MsgPackstr); // set packet size
+                    sys.tasks.radiotask.sendPacket(pkt); // add packet to radio transmission queue
+                    j = 0;
+                    sys.slate.board.error << 0; // clear error after sending over radio
+                                        // TODO clean this up using the ErrorType enum
+                }
             #else
-            sys.slate.board.error << 0;
+                sys.slate.board.error << 0;
             #endif
         }
     }

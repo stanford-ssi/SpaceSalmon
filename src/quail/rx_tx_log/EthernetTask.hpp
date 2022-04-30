@@ -5,20 +5,17 @@
 #include "StrBuffer.hpp"
 #include "../config.h"
 
-class EthernetTask : public Task<3000>{
+class EthernetTask : public Task<4000>{
     public:
         EthernetTask(uint8_t priority);
 
         void activity();
 
-        void send(const char* message) {sendUDP(slateConn, message);}
+        void send(const char* message, uint16_t len) {sendUDP(slateConn, message, len);}
         void send(JsonDocument& jsonDoc) {sendUDP(slateConn, jsonDoc);}
 
-        void sendUDP(netconn *conn, const char* message);
+        void sendUDP(netconn *conn, const char* message, uint16_t len);
         void sendUDP(netconn *conn, JsonDocument& jsonDoc);
-
-        void sendTCP(netconn *conn, const char* message);
-        void sendTCP(netconn *conn, JsonDocument& jsonDoc);
 
         void waitForCmd(char *cmd) {cmdBuf.receive(cmd, DATA_PCKT_LEN, true);};
         bool cmdAvailable() {return !cmdBuf.empty();}
