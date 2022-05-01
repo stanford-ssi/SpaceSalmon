@@ -9,7 +9,7 @@
 #include "Task.hpp"
 #include "../config.h"
 #include "Array.hpp"
-#include "../slate/abstractions.hpp"
+#include "../slate/SlateAbstractions.hpp"
 
 class ValveTask : public Task<2000> {
     public:
@@ -25,13 +25,18 @@ class ValveTask : public Task<2000> {
 
     private:
         uint8_t valve_pin_start;
+
         Array<Solenoid, NUM_SOLENOIDS> &slate;
+        friend class Solenoid;
 
         StaticEventGroup_t evBuf;
         EventGroupHandle_t valveManager;
         
         void _updateValves();
         bool _updateSolenoid(uint8_t ch, bool update, solenoid_state_t state);
+        bool _updatePower(uint8_t ch);
+        bool _pulseSolenoid(uint8_t ch);
+        bool _pulseSolenoind(uint8_t ch, uint16_t pulse_dur);
 
         static TimerHandle_t pulseTimers[NUM_SOLENOIDS]; // xTimers for callback (timer IDS correspond to the array index & solenoid channel)
         static StaticTimer_t pulseBufs[NUM_SOLENOIDS]; // xTimer static buffer for pulse timers

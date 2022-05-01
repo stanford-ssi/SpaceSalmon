@@ -24,7 +24,7 @@ class System;
 #ifdef RADIO_TXRX
     #include "rx_tx_log/RadioTask.hpp"
 #endif 
-#include "SequenceLauncher.hpp"
+// #include "SequenceLauncher.hpp"
 #include "PowerTask.hpp"
 #include "slate/Slate.hpp"
 #include "config.h"
@@ -37,9 +37,9 @@ public:
 
     Ad7124Chip adc = Ad7124Chip(5,8,&adc_spi);
 
-    //#ifdef ETHERNET_TXRX
+    #ifdef ETHERNET_TXRX
         SSIEth ethernet = SSIEth(1);
-    //#endif
+    #endif
 
     Slate slate = Slate("quail");
 

@@ -340,7 +340,7 @@
 // <i> The stack size value itself is platform-dependent
 // <id> lwip_tcpip_thread_stacksize
 #ifndef TCPIP_THREAD_STACKSIZE
-#define TCPIP_THREAD_STACKSIZE 1048
+#define TCPIP_THREAD_STACKSIZE 2048
 #endif
 
 // <o> The priority assigned to the main tcpip thread<0-1000>

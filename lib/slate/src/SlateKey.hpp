@@ -10,6 +10,10 @@ public:
     virtual void dump(JsonVariant dst){Serial.println("virtual");};
     virtual SlateKeyGeneric &operator<<(const JsonVariant) {Serial.println("virtual");};
     virtual void metadump(JsonVariant dst) {Serial.println("virtual");};
+    SlateKeyGeneric &operator>>(const JsonVariant dst) {
+        dump(dst);
+        return *this;
+    }
 
     // TODO: make const
     std::string id;
@@ -61,8 +65,6 @@ public:
         }
         return *this;
     }
-
-    void operator>>(JsonVariant dst) { dump(dst); }
   
 private:
     T value;

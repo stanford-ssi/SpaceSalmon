@@ -25,8 +25,8 @@ void TXTask::activity() {
         // convert slate to json
         StaticJsonDocument<DATA_PCKT_LEN> slateJSON;
         JsonVariant variant = slateJSON.to<JsonVariant>();
-        sys.slate.dump(variant);
-
+        sys.slate >> variant;
+        
         // always 
         sys.tasks.logger.log(slateJSON);    
 
@@ -34,9 +34,10 @@ void TXTask::activity() {
             i = 0;
             size_t len = measureJson(slateJSON);
             char msgPack[len + 5]; //create char buffer with space
-            serializeJson(slateJSON, msgPack, sizeof(msgPack));        
-            // if at tx_interval, write over selected TX
+            serializeJson(slateJSON, msgPack, sizeof(msgPack));   
+
             writeUSB(msgPack);
+            
             #ifdef ETHERNET_TXRX
                 sys.tasks.ethernettask.send(msgPack, sizeof(msgPack));
             #endif 

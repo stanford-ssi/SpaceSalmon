@@ -2,7 +2,7 @@
 
 #include "ad7124-lib/ad7124.h"
 #include "SlateKey.hpp"
-#include "../slate/abstractions.hpp"
+#include "../slate/SlateAbstractions.hpp"
 
 class Sensor {
     public:

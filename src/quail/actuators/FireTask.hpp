@@ -9,7 +9,7 @@
 
 #include "Task.hpp"
 #include "../config.h"
-#include "../slate/Slate.hpp"
+#include "../slate/SlateAbstractions.hpp"
 #include "Array.hpp"
 
 #include "../../periph/MC33797/Squib.hpp"
@@ -29,9 +29,10 @@ public:
 private:
     Squib squib1; // squib controlling E1-E4
     Squib squib2; // squib controlling E5-E8
+    squibChannel_t ch_map [NUM_EM_CHANNELS];
 
     Array<Igniter, NUM_EM_CHANNELS> &slate;
-    squibChannel_t ch_map [NUM_EM_CHANNELS];
+    friend class Igniter; // Igniters can tell me to update
 
     StaticEventGroup_t evbuf;
     EventGroupHandle_t squibManager;

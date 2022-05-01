@@ -1,6 +1,5 @@
 #include "LoadSensor.hpp"
 #include "main.hpp"
-#include "../slate/abstractions.hpp"
 
 uint8_t LoadSensor::cfg = UNCONFIGURED; // initially unconfigured
 

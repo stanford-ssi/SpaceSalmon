@@ -127,10 +127,8 @@ void EthernetTask::sendUDP(netconn *conn, JsonDocument& jsonDoc) {
     sendUDP(conn, str, sizeof(str));
 }
 
-void EthernetTask::sendUDP(netconn *conn, const char* message, uint16_t len) {   
-    if (!isSetup) {
-        return;
-    }
+void EthernetTask::sendUDP(netconn *conn, const char* message, uint16_t len) {
+    if (!isSetup) return;
     
     // create a packet
     netbuf *buf = netbuf_new();

@@ -4,8 +4,8 @@
 #include "SlateKey.hpp"
 #include "Array.hpp"
 #include "../config.h"
-#include "endpoints.hpp"
-#include "abstractions.hpp"
+#include "SlateEndpoints.hpp"
+#include "SlateAbstractions.hpp"
 #include <functional>
 #include <string>
 
