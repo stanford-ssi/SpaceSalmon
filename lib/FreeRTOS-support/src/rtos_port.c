@@ -32,6 +32,7 @@
  */
 
 #include "hal_rtos.h"
+#include "rtos_err_codes.h"
 
 #define ASSERT(arg)
 
