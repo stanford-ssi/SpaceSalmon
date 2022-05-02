@@ -4,7 +4,6 @@
 #include <FreeRTOS.h>
 
 class Window {
-    //TODO: make reference to ticks 
     public:
         Window(){};
 
@@ -14,6 +13,9 @@ class Window {
 
             lastAvg = currAvg;
             currAvg = _avg();
+
+            lastTick = currTick;
+            currTick = xTaskGetTickCount();
         }
 
         void operator+=(float val) { push(val); }
@@ -22,7 +24,9 @@ class Window {
 
         float peek() { return arr[curr]; }
 
-        float delta() { return currAvg - lastAvg; }
+        float delta() { return (currAvg - lastAvg) / dt(); }
+
+        TickType_t dt() { return currTick - lastTick; }
 
     private:
         float arr[WINDOW_SIZE];
@@ -30,6 +34,9 @@ class Window {
 
         float lastAvg = 0;
         float currAvg = 0;
+
+        TickType_t lastTick = 0;
+        TickType_t currTick = 1;
 
         float _avg() {
             float sum = 0;

@@ -12,7 +12,7 @@ public:
         JsonObject obj = dst.createNestedObject(id);
         for (auto elem : list) {
             SlateKeyGeneric &test = elem.get();
-            test.dump(obj); //crashes here
+            test.dump(obj); 
         }
     }
 
@@ -20,7 +20,7 @@ public:
         JsonObject obj = dst.createNestedObject(id);
         for (auto elem : list) {
             SlateKeyGeneric &test = elem.get();
-            test.metadump(obj); //crashes here
+            test.metadump(obj); 
         }
     }
 

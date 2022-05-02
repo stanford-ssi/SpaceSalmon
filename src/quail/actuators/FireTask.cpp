@@ -5,7 +5,7 @@ FireTask::FireTask(uint8_t priority, uint8_t Squib1_SS, uint8_t Squib2_SS) :
 Task(priority, "Fire"), squib1(sys.squib_spi,Squib1_SS), squib2(sys.squib_spi,Squib2_SS), slate(sys.slate.squib)
 {
     squibManager = xEventGroupCreateStatic(&evbuf);
-    // TODO: make this less gross? and maybe settable at System level
+
     ch_map[0] = {&squib1, CMD_FIRE_1B};
     ch_map[1] = {&squib1, CMD_FIRE_2B};
     ch_map[2] = {&squib1, CMD_FIRE_2A};
@@ -20,7 +20,7 @@ void FireTask::activity()
 {
     sys.squib_spi.begin();
     squib1.Init();
-    // squib2.Init();
+    // squib2.Init(); don't uncomment. i dont know why but shits fucked
     while(true) {
         xEventGroupWaitBits(squibManager, UPDATE_SQUIBS, true, false, NEVER);
         for(uint8_t ch = 0; ch < NUM_EM_CHANNELS; ch++) {

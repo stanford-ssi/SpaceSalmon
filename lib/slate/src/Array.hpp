@@ -24,7 +24,7 @@ class Array : public SlateKeyGeneric {
         }
 
         void metadump(JsonVariant dst) {
-            JsonArray arr = dst.createNestedArray(id);
+            JsonObject arr = dst.createNestedObject(id); // yes i know there are JsonArrays, no they dont work
             for (auto elem : list) {
                 T &key = elem.get();
                 key.metadump(arr);

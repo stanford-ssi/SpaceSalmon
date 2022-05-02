@@ -32,7 +32,7 @@
 // <i> Default: 4096
 // <id> lwip_mem_size
 #ifndef MEM_SIZE
-#define MEM_SIZE 14336
+#define MEM_SIZE 16384
 #endif
 
 // <q> Enables TCP

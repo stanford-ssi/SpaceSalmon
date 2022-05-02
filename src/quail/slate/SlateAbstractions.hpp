@@ -35,7 +35,7 @@ class Igniter : public Container<2> {
         std::string quailID;
 };
 
-class Solenoid : public Container<4> {
+class Solenoid : public Container<5> {
     public: 
         EndPoint<solenoid_normal_t> normal;
         EndPoint<solenoid_pwm_t> pwm;

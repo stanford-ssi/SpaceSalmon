@@ -80,6 +80,7 @@ enum SEQUENCE_STATE {
  #define CLIENT_SLATE_PORT 2000
  #define MY_CMD_PORT 1002
  #define DATA_PCKT_LEN 4096
+ #define UDP_PCKT_LEN 1024
  #define NETWORKING_DELAY 2000
 
  // shortcuts

@@ -8,7 +8,7 @@ ADCTask::ADCTask(uint8_t priority) : Task(priority, "LED"){
 
 void ADCTask::adcISR(void) {
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    //xEventGroupSetBitsFromISR(sys.tasks.adctask.evgroup, NewData, &xHigherPriorityTaskWoken);
+    xEventGroupSetBitsFromISR(sys.tasks.adctask.evgroup, NewData, &xHigherPriorityTaskWoken);
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
@@ -20,8 +20,8 @@ void ADCTask::activity()
             EventBits_t flags = xEventGroupWaitBits(evgroup, NewData, true, false, READ_TIMEOUT);
             if (!(flags & NewData)) { // time out, likely temperature or power problems
                 timeout_count++;
-                char msg_buffer[50];
-                sprintf(msg_buffer, "ADC Timed out %i times", timeout_count);
+                // char msg_buffer[50];
+                // sprintf(msg_buffer, "ADC Timed out %i times", timeout_count);
                 // sys.tasks.txtask.writeUSB(msg_buffer);
                 continue; // skip data processing
             }
@@ -32,15 +32,15 @@ void ADCTask::activity()
             if(ret >= 0) { // process data
                 sys.adc.setIRQAction(adcISR);
                 if(curr_data.channel < Sensor::numSensors()) {
-                    //sys.tasks.sensortask.addADCdata(curr_data);
+                    sys.tasks.sensortask.addADCdata(curr_data);
                     data_count++;
                     if(data_count >= Sensor::numSensors()) { // read through all sensor
                         data_count = 0;
-                        //sys.tasks.sensortask.dataReady(); 
+                        sys.tasks.sensortask.dataReady(); 
                     }
                 } else { // out-of-boundary data
-                    char msg_buffer[50];
-                    sprintf(msg_buffer, "Got some OOB data on ch:%i", curr_data.channel);
+                    // char msg_buffer[50];
+                    // sprintf(msg_buffer, "Got some OOB data on ch:%i", curr_data.channel);
                     // sys.tasks.txtask.writeUSB(msg_buffer);
                 }
             } else { // failed ADC read, check checksum and SPI
@@ -56,13 +56,13 @@ void ADCTask::activity()
                 if(error_reg & ~error_mask){ // if there was any error not in the mask
                     // It was some other (more serious) error
                     err_count++;
-                    char msg_buffer[50];
-                    sprintf(msg_buffer, "ADC error: %li (%i time)", error_reg, err_count);
+                    // char msg_buffer[50];
+                    // sprintf(msg_buffer, "ADC error: %li (%i time)", error_reg, err_count);
                     // sys.tasks.txtask.writeUSB(msg_buffer);
                 }else{
                     // It was an input error:
-                    char msg_buffer[50];
-                    sprintf(msg_buffer, "Conversion error %li on channel %i, probably railed!", error_reg, curr_data.channel);
+                    // char msg_buffer[50];
+                    // sprintf(msg_buffer, "Conversion error %li on channel %i, probably railed!", error_reg, curr_data.channel);
                     // sys.tasks.txtask.writeUSB(msg_buffer);
                 }
             }

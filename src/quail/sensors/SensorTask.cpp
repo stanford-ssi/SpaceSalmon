@@ -29,7 +29,7 @@ void SensorTask::configureSensors() {
     for (uint8_t i = 0; i < Sensor::numSensors(); i++) {
         sys.sensors[i]->configure();
     }
-    //sys.tasks.adctask.sensorsConfigured(); // let ADC know sensors are configured
+    sys.tasks.adctask.sensorsConfigured(); // let ADC know sensors are configured
     xEventGroupClearBits(evgroup, NEED_CONFIG); // clear for next reset
 }
 

@@ -18,7 +18,7 @@ SensorSlate& SensorSlate::operator<<(const float in) {
     val << window.peek();
     avg << window.avg();
     drv << window.delta();
-    ntg << ntg() + avg();
+    ntg << ntg() + avg() * window.dt();
     return *this;
 };
 
@@ -39,7 +39,7 @@ Igniter& Igniter::operator<<(const JsonVariant src) {
 
 
 Solenoid::Solenoid(const std::string id, const std::string quailID) : Container(id, {
-    // std::ref(normal),
+    std::ref(normal),
     std::ref(pwm),
     std::ref(time),
     std::ref(pulse),
