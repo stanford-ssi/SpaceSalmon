@@ -44,6 +44,7 @@ while True:
             
             data, address = command_socket.recvfrom(4096)
             print("Command Echo", data)
+            print()
             # # Will not work for large data packets
             # response_packet = data_to_json(data)
             # print("Command Echo:", response_packet)
@@ -56,6 +57,7 @@ while True:
             
             data, address = command_socket.recvfrom(4096)
             print("Metadata", data)
+            print()
             # # Below will not work for large data packets
             #response_packet = data_to_json(data)
             #print("MetaDump:", response_packet)
