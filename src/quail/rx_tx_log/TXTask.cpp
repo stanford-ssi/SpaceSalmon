@@ -33,7 +33,7 @@ void TXTask::activity() {
         if(i == LOG_FACTOR){
             i = 0;
             size_t len = measureJson(slateJSON);
-            char msgPack[len + 5]; //create char buffer with space
+            char msgPack[len]; //create char buffer with space
             serializeJson(slateJSON, msgPack, sizeof(msgPack));   
 
             writeUSB(msgPack);
