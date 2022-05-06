@@ -37,6 +37,7 @@ class EndPoint : public SlateKey<T>{
         void metadump(JsonVariant dst) override {
             JsonObject obj = dst.createNestedObject(this->id);
             obj["value"] = this->get();
+            obj["desc"] = "";
             obj["Type"] = typeid(this->get()).name();
             obj["Quail ID"] = quailID;
             obj["Editable"] = editable;

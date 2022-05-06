@@ -54,6 +54,7 @@ while True:
         else:
             meta_rqst = json.dumps(meta)
             command_socket.send(str.encode(meta_rqst))
+            time.sleep(1)
             
             data, address = command_socket.recvfrom(4096)
             print("Metadata", data)
