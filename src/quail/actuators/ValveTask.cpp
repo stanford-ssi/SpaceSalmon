@@ -12,6 +12,10 @@ ValveTask::ValveTask(uint8_t priority, uint8_t valve_pin_start) : Task(priority,
     valves[5] = {"S6", MEDIUM, NORMALLY_CLOSED};
     valves[6] = {"S7", MEDIUM, NORMALLY_CLOSED};
     valves[7] = {"S8", MEDIUM, NORMALLY_CLOSED};
+    valves[8] = {"S9", MEDIUM, NORMALLY_CLOSED};
+    valves[9] = {"S10", MEDIUM, NORMALLY_CLOSED};
+    valves[10] = {"S11", MEDIUM, NORMALLY_CLOSED};
+    valves[11] = {"S12", MEDIUM, NORMALLY_CLOSED};
     for (uint8_t i = 0; i < NUM_SOLENOIDS; i++) {
         pinMode(valve_pin_start + i, OUTPUT);
     }
@@ -20,7 +24,7 @@ ValveTask::ValveTask(uint8_t priority, uint8_t valve_pin_start) : Task(priority,
 void ValveTask::activity() {
     while(true) {
         xEventGroupWaitBits(valveManager, VALVES_UPDATED, true, false, NEVER);
-        uint8_t valvestate = sys.statedata.getSolenoidState();
+        uint16_t valvestate = sys.statedata.getSolenoidState();
         for(uint8_t i = 0; i < NUM_SOLENOIDS; i++) {
             if((valvestate>>i & 0b1) == valves[i].normal) { // if valve is in the state in which it should be powered
                 if(digitalPinHasPWM(valve_pin_start + i))

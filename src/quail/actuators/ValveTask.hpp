@@ -7,7 +7,7 @@
 #include <hal_rtos.h>
 
 #define VALVES_UPDATED 0b01
-#define NUM_SOLENOIDS 8
+#define NUM_SOLENOIDS 12
 
 typedef enum{
     OPEN = 1,
