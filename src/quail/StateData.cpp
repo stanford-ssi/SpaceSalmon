@@ -72,10 +72,10 @@ float StateData::getSensorState(uint8_t ch_id)
     return temp;
 };
 
-uint8_t StateData::getSolenoidState()
+uint16_t StateData::getSolenoidState()
 {
     SVmutex.take(NEVER);
-    uint8_t temp = solenoidstate;
+    uint16_t temp = solenoidstate;
     SVmutex.give();
     return temp;
 };
