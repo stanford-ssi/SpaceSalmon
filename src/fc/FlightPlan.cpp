@@ -4,6 +4,8 @@
 FlightPlan::FlightPlan(){
     state = Waiting;
     state_timer = 0;
+    squibAFired = false;
+    squibBFired = false;
 }
 
 void FlightPlan::update(AltFilter& filter){
@@ -70,6 +72,12 @@ void FlightPlan::update(AltFilter& filter){
 
                     sys.pyro.fire(e.squib);
 
+                    if (e.squib == Pyro::SquibA) {
+                        squibAFired = true;
+                    } else if (e.squib == Pyro::SquibB) {
+                        squibBFired = true;
+                    }
+
                     StaticJsonDocument<500> event_json;
                     event_json["squib"] = (uint8_t) e.squib;
                     event_json["tick"] = xTaskGetTickCount();
@@ -87,6 +95,8 @@ void FlightPlan::update(AltFilter& filter){
 
 void FlightPlan::logState(){
     p_state.post(state);
+    pyroA_fired.post(squibAFired);
+    pyroB_fired.post(squibBFired);
     StaticJsonDocument<500> json;
     json["state"] = (uint8_t) state;
     json["pad_alt"] = pad_alts[0];

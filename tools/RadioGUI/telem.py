@@ -2,8 +2,9 @@ import base64
 import bitstruct
 import math
 
-cf = bitstruct.CompiledFormatDict(">b1 b1 u15 u18 u18 b1 u11 u15 b1 u3 u8 u18 p2 >", [
-                                  "pyroB","pyroA","gps_alt", "lon", "lat", "gps_lock", "filter_vel", "filter_alt", "armed", "state", "battery", "time"])
+
+cf = bitstruct.CompiledFormatDict(">b1 b1 b1 b1 u15 u18 u18 b1 u11 u15 b1 u3 u8 u18 >", [
+                                  "pyroB_fired", "pyroA_fired", "pyroB","pyroA","gps_alt", "lon", "lat", "gps_lock", "filter_vel", "filter_alt", "armed", "state", "battery", "time"])
 
 
 def decodeTelem(data, pos):

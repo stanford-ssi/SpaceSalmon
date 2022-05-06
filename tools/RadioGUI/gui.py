@@ -120,7 +120,7 @@ def process(line):
                 msg = telem.decodeTelem(data["data"], pos)
                 console.insert(END, msg + "\n")
                 logging.info("Decoded Telem: " + msg)
-
+                
             console.see(END)
 
 

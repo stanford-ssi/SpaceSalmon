@@ -55,6 +55,8 @@ class FlightPlan{
         void dumpConfig();
         void logState();
         Poster<FlightState> p_state;
+        Poster<bool> pyroA_fired = Poster<bool>(false);
+        Poster<bool> pyroB_fired = Poster<bool>(false);
 
     private:
         float pad_alts[2] = {0.0, 0.0}; //a buffer of past altitudes, the 0th of which will be the pad altitude
@@ -62,6 +64,8 @@ class FlightPlan{
         uint32_t print_timer = 0;
         uint32_t state_timer = 0;
         FlightState state;
+        bool squibAFired;
+        bool squibBFired;
         bool event_done[(sizeof(eventList)/sizeof(FlightEvent))] = {false,false};
         uint32_t event_timer = 0;
 
