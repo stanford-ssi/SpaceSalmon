@@ -43,17 +43,19 @@ public:
 
     Slate slate = Slate("quail");
 
+    LoadSensor LC1 = LoadSensor(Ad7124::AIN12Input, slate.sense.lc1);
+    LoadSensor LC2 = LoadSensor(Ad7124::AIN13Input, slate.sense.lc2);
     PressureSensor PT1 = PressureSensor(Ad7124::AIN1Input, RANGE_1000, slate.sense.pt1);
     PressureSensor PT2 =  PressureSensor(Ad7124::AIN2Input, RANGE_1000, slate.sense.pt2);
     PressureSensor PT3 =  PressureSensor(Ad7124::AIN3Input, RANGE_1000, slate.sense.pt3);
     PressureSensor PT4 =  PressureSensor(Ad7124::AIN4Input, RANGE_1000, slate.sense.pt4);
-    PressureSensor PT5 =  PressureSensor(Ad7124::AIN4Input, RANGE_1000, slate.sense.pt5);
-    PressureSensor PT6 =  PressureSensor(Ad7124::AIN4Input, RANGE_1000, slate.sense.pt6);
-    PressureSensor PT7 =  PressureSensor(Ad7124::AIN4Input, RANGE_1000, slate.sense.pt7);
-    LoadSensor LC1 = LoadSensor(Ad7124::AIN12Input, slate.sense.lc1);
-    LoadSensor LC2 = LoadSensor(Ad7124::AIN7Input, slate.sense.lc2);
-    ThermalSensor TS1 = ThermalSensor(Ad7124::AIN8Input, slate.sense.tc1); //samd51 # defines TC0-7 so don't use those
-    ThermalSensor TS2 = ThermalSensor(Ad7124::AIN8Input, slate.sense.tc2); //samd51 # defines TC0-7 so don't use those
+    PressureSensor PT5 =  PressureSensor(Ad7124::AIN5Input, RANGE_1000, slate.sense.pt5);
+    PressureSensor PT6 =  PressureSensor(Ad7124::AIN6Input, RANGE_1000, slate.sense.pt6);
+    PressureSensor PT7 =  PressureSensor(Ad7124::AIN7Input, RANGE_1000, slate.sense.pt7);
+    //PressureSensor PT8 =  PressureSensor(Ad7124::AIN8Input, RANGE_1000, slate.sense.pt8);
+    ThermalSensor TS1 = ThermalSensor(Ad7124::AIN9Input, slate.sense.tc1); //samd51 # defines TC0-7 so don't use those
+    ThermalSensor TS2 = ThermalSensor(Ad7124::AIN10Input, slate.sense.tc2);
+    //ThermalSensor TS3 = ThermalSensor(Ad7124::AIN11Input, slate.sense.tc3);
 
     Sensor* sensors [13] = {
         &LC1,
