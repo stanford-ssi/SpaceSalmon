@@ -12,7 +12,7 @@
 class Slate : public Container<7>
 {
 public:
-    class Sensors : public Container<11> // need to increment this when changing number of sensors
+    class Sensors : public Container<12> // need to increment this when changing number of sensors
     {
     public:
         SensorSlate pt1 = SensorSlate("PT1", "PT1");
@@ -22,6 +22,7 @@ public:
         SensorSlate pt5 = SensorSlate("PT5", "PT5");
         SensorSlate pt6 = SensorSlate("PT6", "PT6");
         SensorSlate pt7 = SensorSlate("PT7", "PT7");
+        SensorSlate pt8 = SensorSlate("PT8", "PT8");
         SensorSlate lc1 = SensorSlate("LC1", "LC1");
         SensorSlate lc2 = SensorSlate("LC2", "LC2");
         SensorSlate tc1 = SensorSlate("TC1", "TC1");
@@ -34,6 +35,7 @@ public:
             std::ref(pt5),
             std::ref(pt6),
             std::ref(pt7),
+            std::ref(pt8),
             std::ref(lc1),
             std::ref(lc2),
             std::ref(tc1),
@@ -48,10 +50,6 @@ public:
                 std::ref(ig2),
                 std::ref(ig3),
                 std::ref(ig4),
-                std::ref(ig5),
-                std::ref(ig6),
-                std::ref(ig7),
-                std::ref(ig8)
             }){};
 
         private:
@@ -59,10 +57,6 @@ public:
             Igniter ig2 = Igniter("E2", "E2");
             Igniter ig3 = Igniter("E3", "E3");
             Igniter ig4 = Igniter("E4", "E4");
-            Igniter ig5 = Igniter("E5", "E5");
-            Igniter ig6 = Igniter("E6", "E6");
-            Igniter ig7 = Igniter("E7", "E7");
-            Igniter ig8 = Igniter("E8", "E8");
     } squib = Squibs("squib");
 
     class Valves : public Array<Solenoid, NUM_SOLENOIDS> {
@@ -75,7 +69,11 @@ public:
                 std::ref(s5),
                 std::ref(s6),
                 std::ref(s7),
-                std::ref(s8)
+                std::ref(s8),
+                std::ref(s9),
+                std::ref(s10),
+                std::ref(s11),
+                std::ref(s12)
             }){};
 
         private:
@@ -87,6 +85,10 @@ public:
             Solenoid s6 = Solenoid("S6", "S6");
             Solenoid s7 = Solenoid("S7", "S7");
             Solenoid s8 = Solenoid("S8", "S8");
+            Solenoid s9 = Solenoid("S9", "S9");
+            Solenoid s10 = Solenoid("S10", "S10");
+            Solenoid s11 = Solenoid("S11", "S11");
+            Solenoid s12 = Solenoid("S12", "S12");
     } valves = Valves("valves");
 
     class ADCIn : public Array<EndSensor, 4> {

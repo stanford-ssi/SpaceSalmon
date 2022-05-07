@@ -1,7 +1,7 @@
 #pragma once
 
 // Squibs
-#define NUM_EM_CHANNELS 8
+#define NUM_EM_CHANNELS 4
 #define UPDATE_SQUIBS 0b01
 
 typedef enum{
@@ -16,7 +16,7 @@ typedef enum{
 
 // Valves
 #define UPDATE_VALVES 0b01
-#define NUM_SOLENOIDS 8
+#define NUM_SOLENOIDS 12
 
 typedef enum{
     OPEN = 1,
