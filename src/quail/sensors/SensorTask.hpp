@@ -4,14 +4,12 @@
 #include "MsgBuffer.hpp"
 #include "event_groups.h"
 #include "ADCTask.hpp"
-
-#define NEED_CONFIG 0b01
-#define DATA_READY  0b10
-#define READ_TIMEOUT 100
+#include "Sensor.hpp"
 
 class SensorTask: public Task<1000>{
 public:
-    SensorTask(uint8_t priority):Task(priority, "SensorTask"){};
+    SensorTask(uint8_t priority);   
+    
     /**
      * @brief Get sensors ready for configuration, called by ADCTask
      */

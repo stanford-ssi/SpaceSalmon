@@ -33,6 +33,7 @@ int main(void)
 	digitalWrite(9,HIGH);
 
 	digitalWrite(1, HIGH); // turn on power LED
+	// sys.tasks.seqlauncher.startSeq("ABORT");
 
 	//start all RTOS tasks (this never returns)
 	vTaskStartScheduler();

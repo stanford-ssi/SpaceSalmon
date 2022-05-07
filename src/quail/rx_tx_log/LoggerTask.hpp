@@ -42,6 +42,12 @@ private:
   void format();
   void findFile(char* filename, size_t filesize, int* lognum);
 
+  const char *ErrorNames[3] = {
+    "A log file is corrupted",
+    "Could Not Mount Disk",
+    "Trying to open log file"
+  };
+
 public:
   LoggerTask(uint8_t priority);
   void log(const char *message);

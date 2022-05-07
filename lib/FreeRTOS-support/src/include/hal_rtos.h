@@ -38,7 +38,6 @@ extern "C" {
 #endif
 
 #include "rtos_port.h"
-#include "rtos_err_codes.h"
 #include "stdbool.h"
 #include "sam.h"
 

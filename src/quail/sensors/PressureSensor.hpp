@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Sensor.hpp"
-
-#define PSI_TO_PA 6894.7572931783
+#include "../config.h"
 
 typedef enum {
     RANGE_1000 = 1000,
@@ -10,12 +9,11 @@ typedef enum {
     RANGE_2500 = 2500
 } PressureRange;
 
-class PressureSensor: public Sensor{
+class PressureSensor : public Sensor{
     public:
+        PressureSensor(Ad7124::InputSel ainp, PressureRange range, SensorSlate &slate);
 
-        PressureSensor(const char* ch_name, Ad7124::InputSel ainp, PressureRange range);
-
-        float convertToFloat(uint32_t adc_dataword);
+        void convertToFloat(uint32_t adc_dataword);
         void configure();
 
         static void unconfigure(){cfg = UNCONFIGURED;};

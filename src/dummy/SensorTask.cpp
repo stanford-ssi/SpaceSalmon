@@ -14,6 +14,7 @@ void SensorTask::activity()
     conn_1 = netconn_new(NETCONN_UDP);
     /* bind the connection to port on any IP address */
     conn_check = netconn_bind(conn_1, IP4_ADDR_ANY, 1000);
+    Serial.println("hello darkness");
     while (conn_check != ERR_OK)
     {
         LWIP_DEBUGF(LWIP_DBG_ON, ("Bind error=%d\n", conn_check));
@@ -21,6 +22,7 @@ void SensorTask::activity()
         vTaskSuspend(this->getTaskHandle());
     }
 
+    Serial.println("my old friend");
     ip4_addr_t dst;
     IP4_ADDR(&dst, 192, 168, 1, 1);
     netconn_connect(conn_1, &dst, 2001);
@@ -56,6 +58,7 @@ void SensorTask::activity()
         size_t len = measureJson(jsonDoc);
         char data_str[len + 5]; // plenty of room!
         serializeJson(jsonDoc, data_str, sizeof(data_str));
+        Serial.println("ive come to talk");
 
         // create packet
         netbuf *buf = netbuf_new();
@@ -72,6 +75,7 @@ void SensorTask::activity()
         netbuf_delete(buf);
         
         //vTaskDelay(1);
+        Serial.println("to you again");
         ++tick;
     }
 }

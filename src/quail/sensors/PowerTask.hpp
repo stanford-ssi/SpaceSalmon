@@ -7,13 +7,15 @@
 #include "event_groups.h"
 #include <hal_rtos.h>
 #include "ssi_adc.h"
+#include "SlateKey.hpp"
 
 #include "Task.hpp"
 
-class PowerTask : public Task<2000>
+class PowerTask : public Task<1500>
 {
 public:
-    PowerTask(uint8_t priority);
+    PowerTask(uint8_t priority)
+        : Task(priority, "PowerMonitor"){};
     void activity();
     ADC adc0 = ADC(ADC0);
 
