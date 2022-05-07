@@ -134,7 +134,7 @@ public:
     class Board : public Container<3> {
         public:
             EndPoint<bool> logging = EndPoint<bool>("logging", NO_QUAIL_ID, false, false);
-            EndPoint<unsigned> error = EndPoint<unsigned>("error", NO_QUAIL_ID, false, true);
+            EndPoint<unsigned> error = EndPoint<unsigned>("error", NO_QUAIL_ID, 0, true);
             EndPoint<unsigned> tick = EndPoint<unsigned>("tick", NO_QUAIL_ID, 0, false);
             Board(const std::string id) : Container(id, {
                 std::ref(logging),

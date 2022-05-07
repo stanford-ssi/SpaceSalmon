@@ -51,14 +51,14 @@ void EthernetTask::activity() {
 err_t EthernetTask::requestHandler(netconn *&conn, char *rcv, uint16_t len) {
     // deserialization changes string, need a copy for echo server
     char rcvCpy[MAX_CMD_LENGTH];
-    strcpy(rcvCpy, rcv);
+    strncpy(rcvCpy, rcv, len);
     StaticJsonDocument<MAX_CMD_LENGTH> pckt;
     DeserializationError ret = deserializeJson(pckt, rcv);
 
     if (ret == DeserializationError::Ok) { // TCP requests must be JSONs
         if (pckt.containsKey("cmd")) { // Command echo server
             cmdBuf.send(rcvCpy, MAX_CMD_LENGTH);
-            Serial.println(rcvCpy);
+            // Serial.println(rcvCpy);
             return netconn_write(conn, rcvCpy, len, NETCONN_COPY);
         }
         if (pckt.containsKey("meta")) { // Metaslate dump requests

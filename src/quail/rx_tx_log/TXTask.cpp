@@ -36,7 +36,7 @@ void TXTask::activity() {
             char msgPack[len + 5]; //create char buffer with space
             serializeJson(slateJSON, msgPack, sizeof(msgPack));   
 
-            writeUSB(msgPack);
+            // writeUSB(msgPack);
             
             #ifdef ETHERNET_TXRX
                 sys.tasks.ethernettask.send(msgPack, sizeof(msgPack));
@@ -52,7 +52,6 @@ void TXTask::activity() {
                                         // TODO clean this up using the ErrorType enum
                 }
             #else
-                sys.slate.board.error << 0;
             #endif
         }
     }

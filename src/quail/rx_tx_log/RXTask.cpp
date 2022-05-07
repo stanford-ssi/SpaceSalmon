@@ -22,10 +22,10 @@ void RXTask::activity(){
 void RXTask::sendcmd(const char* cmd){
     StaticJsonDocument<MAX_CMD_LENGTH> cmdJSON;
     DeserializationError ret = deserializeJson(cmdJSON, cmd);
+
     if(ret == DeserializationError::Ok){ // if successfully deserialized json
         sendcmdJSON(cmdJSON);
-    }
-    else{
+    } else{
         Serial.print("Bad command: ");
         Serial.println((char*)cmd);
     }
@@ -57,7 +57,7 @@ void RXTask::readInput(){
                 if(!cmd.isNull()){
                     char out[MAX_CMD_LENGTH];
                     char temp[MAX_CMD_LENGTH];
-                    strcpy(temp,cmd.as<char *>());
+                    strcpy(temp, cmd.as<char *>());
                     rbase64_decode(out, temp, strlen(temp)); // binary sent over serial has been decoded from base64
                     sendcmd(out);
                 }
@@ -66,9 +66,15 @@ void RXTask::readInput(){
     }
     #ifdef ETHERNET_TXRX
         while(sys.tasks.ethernettask.cmdAvailable()) {
-            char cmd[MAX_CMD_LENGTH];
-            sys.tasks.ethernettask.waitForCmd(cmd);
-            sendcmd(cmd);
+            char cmdStr[MAX_CMD_LENGTH];
+            sys.tasks.ethernettask.waitForCmd(cmdStr);
+
+            StaticJsonDocument<MAX_CMD_LENGTH> doc;
+            DeserializationError ret = deserializeJson(doc, cmdStr);
+            JsonVariant cmdJson = doc["cmd"];
+            char out[MAX_CMD_LENGTH];
+            serializeJson(cmdJson, out);
+            sendcmd(out);
         } 
     #endif
 };

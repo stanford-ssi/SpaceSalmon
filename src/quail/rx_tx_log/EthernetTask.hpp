@@ -24,7 +24,6 @@ class EthernetTask : public Task<4000>{
         bool isSetup = false;
 
         netconn *slateConn;
-        netconn *metaConn;
         netconn *cmdConn;
 
         StrBuffer<10*DATA_PCKT_LEN> cmdBuf;
