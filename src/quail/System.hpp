@@ -55,7 +55,9 @@ public:
     ThermalSensor TS1 = ThermalSensor(Ad7124::AIN8Input, slate.sense.tc1); //samd51 # defines TC0-7 so don't use those
     ThermalSensor TS2 = ThermalSensor(Ad7124::AIN8Input, slate.sense.tc2); //samd51 # defines TC0-7 so don't use those
 
-    Sensor* sensors [11] = {
+    Sensor* sensors [13] = {
+        &LC1,
+        &LC2,
         &PT1,
         &PT2,
         &PT3,
@@ -63,10 +65,10 @@ public:
         &PT5,
         &PT6,
         &PT7,
-        &LC1,
-        &LC2,
+        //&PT8,
         &TS1,
-        &TS2
+        &TS2,
+        //&TS3,
     };
 
     class Tasks

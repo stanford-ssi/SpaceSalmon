@@ -52,7 +52,12 @@ int BMP388::init()
 		else
 		{
 			rslt = BMP3_E_DEV_NOT_FOUND;
+			return rslt;
 		}
+	}
+	else
+	{
+		return rslt;
 	}
 
 	setTemperatureOversampling(BMP3_NO_OVERSAMPLING);
@@ -62,7 +67,7 @@ int BMP388::init()
 	// don't do anything till we request a reading
 	settings.op_mode = BMP3_FORCED_MODE;
 
-	return true;
+	return rslt;
 }
 
 /**************************************************************************/
