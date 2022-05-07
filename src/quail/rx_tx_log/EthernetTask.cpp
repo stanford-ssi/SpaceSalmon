@@ -67,6 +67,10 @@ err_t EthernetTask::requestHandler(netconn *&conn, char *rcv, uint16_t len) {
             JsonVariant metaVar = metaJSON.to<JsonVariant>();
             sys.slate.metadump(metaVar);
 
+            Serial.print(metaJSON.memoryUsage());
+            Serial.print(" / ");
+            Serial.println(metaJSON.capacity());
+
             // convert to string
             char metaStr[DATA_PCKT_LEN];
             serializeJson(metaJSON, metaStr, DATA_PCKT_LEN);

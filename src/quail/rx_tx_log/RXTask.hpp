@@ -9,8 +9,8 @@
 #include "event_groups.h"
 #include "ArduinoJson.h"
 #include "Task.hpp"
+#include "../config.h"
 
-#define MAX_CMD_LENGTH 255 // maximum length of a command, in bytes (based on radio command max size)
 #define CMD_ENDLINE 0x0A // endline indicator for a command - null char
 
 typedef struct{

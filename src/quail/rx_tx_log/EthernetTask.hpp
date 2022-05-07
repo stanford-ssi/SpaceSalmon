@@ -5,7 +5,7 @@
 #include "StrBuffer.hpp"
 #include "../config.h"
 
-class EthernetTask : public Task<4000>{
+class EthernetTask : public Task<5000>{
     public:
         EthernetTask(uint8_t priority);
 
@@ -26,7 +26,7 @@ class EthernetTask : public Task<4000>{
         netconn *slateConn;
         netconn *cmdConn;
 
-        StrBuffer<10*DATA_PCKT_LEN> cmdBuf;
+        StrBuffer<10*MAX_CMD_LENGTH> cmdBuf;
 
         void setup();
 

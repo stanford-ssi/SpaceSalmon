@@ -27,8 +27,8 @@ Igniter::Igniter(const std::string id, const std::string quailID) : Container(id
     std::ref(arm),
     std::ref(state)
 }), quailID(quailID) {
-    arm = EndActuator<ematch_arm_state_t>("Armed", quailID);
-    state = EndActuator<ematch_fire_state_t>("Fired", quailID);
+    arm = EndActuator<ematch_arm_state_t>("arm", quailID);
+    state = EndActuator<ematch_fire_state_t>("fir", quailID);
 };
 
 Igniter& Igniter::operator<<(const JsonVariant src) {
@@ -45,11 +45,11 @@ Solenoid::Solenoid(const std::string id, const std::string quailID) : Container(
     std::ref(pulse),
     std::ref(state)
 }), quailID(quailID) {
-    normal = EndPoint<solenoid_normal_t>("Normally", quailID, NORMALLY_CLOSED, false);
-    pwm = EndPoint<solenoid_pwm_t>("PWM", quailID, MEDIUM, false);
-    time = EndPoint<uint16_t>("Pulse Time", quailID, 1, true); // 0 is not a valid timer period
-    pulse = EndActuator<bool>("Pulsing", quailID);
-    state = EndActuator<solenoid_state_t>("Open", quailID);
+    normal = EndPoint<solenoid_normal_t>("nor", quailID, NORMALLY_CLOSED, false);
+    pwm = EndPoint<solenoid_pwm_t>("pwm", quailID, MEDIUM, false);
+    time = EndPoint<uint16_t>("ptm", quailID, 1, true); // 0 is not a valid timer period
+    pulse = EndActuator<bool>("pls", quailID);
+    state = EndActuator<solenoid_state_t>("stt", quailID);
 };
 
 Solenoid& Solenoid::operator<<(const JsonVariant src) {
