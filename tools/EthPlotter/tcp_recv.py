@@ -19,8 +19,36 @@ command = {
     "cmd":{
         "quail":{
             "valves":{
-                "S10":{
+                "S12":{
                     "ptm":1000,
+                    "pls":1
+                },
+                "S11":{
+                    "ptm":900,
+                    "pls":1
+                },
+                "S10":{
+                    "ptm":800,
+                    "pls":1
+                },
+                "S9":{
+                    "ptm":700,
+                    "pls":1
+                },
+                "S8":{
+                    "ptm":600,
+                    "pls":1
+                },
+                "S7":{
+                    "ptm":500,
+                    "pls":1
+                },
+                "S6":{
+                    "ptm":400,
+                    "pls":1
+                },
+                "S5":{
+                    "ptm":300,
                     "pls":1
                 }
             }
@@ -41,7 +69,7 @@ print("connected to quail!")
 
 while True:
     try:
-        if counter == 0:
+        if counter % 2 == 0:
             command_packet = json.dumps(command)
             command_socket.send(str.encode(command_packet))
             
@@ -53,7 +81,7 @@ while True:
             # print("Command Echo:", response_packet)
             # assert commands have been recieved
             # assert(response_packet == command)
-            time.sleep(1)
+            time.sleep(2)
         else:
             meta_rqst = json.dumps(meta)
             command_socket.send(str.encode(meta_rqst))

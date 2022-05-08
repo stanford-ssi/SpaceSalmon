@@ -104,6 +104,8 @@ void ADCTask::initADC() {
                                             AD7124_ERREN_REG_DLDO_PSM_ERR_ERR );
 
     sys.adc.setIRQAction(adcISR);
+
+    digitalWrite(3, 1);
 }
 
 void ADCTask::resetADC() {
@@ -112,6 +114,7 @@ void ADCTask::resetADC() {
     data_count = 0;
     sys.adc.reset();
     sys.tasks.txtask.writeUSB("Resetting ADC!");
+    digitalWrite(3, 0);
 }
 
 void ADCTask::sensorsConfigured(){

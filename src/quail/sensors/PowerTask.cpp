@@ -19,6 +19,11 @@ void PowerTask::activity()
         // V_batt = (43000 + 10000) / 10000 * V_sense
         float v_batt = ((float) v_sense) / (1024 / 3.3) * 53/10;
         sys.slate.battery.v_batt << v_batt;
+        if(sys.slate.battery.v_batt() > 11) {
+            digitalWrite(2, 1);
+        } else {
+            digitalWrite(2, 0);
+        }
         vTaskDelay(100);
     }
 }

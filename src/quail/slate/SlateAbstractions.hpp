@@ -17,6 +17,7 @@ class SensorSlate : public Container<4> {
 
         SensorSlate(const std::string, const std::string quailID);
         SensorSlate &operator<<(const float in);
+        float operator()();
 
     private:
         std::string quailID;

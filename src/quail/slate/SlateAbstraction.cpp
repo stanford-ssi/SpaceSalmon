@@ -22,6 +22,8 @@ SensorSlate& SensorSlate::operator<<(const float in) {
     return *this;
 };
 
+float SensorSlate::operator()() { return avg(); }
+
 
 Igniter::Igniter(const std::string id, const std::string quailID) : Container(id, {
     std::ref(arm),

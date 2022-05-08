@@ -83,7 +83,7 @@ enum SEQUENCE_STATE {
  #define DATA_PCKT_LEN 8192
  #define UDP_PCKT_LEN 1024
  #define NETWORKING_DELAY 2000
- #define MAX_CMD_LENGTH 255 // maximum length of a command, in bytes (based on radio command max size)
+ #define MAX_CMD_LENGTH 512 // maximum length of a command, in bytes (based on radio command max size)
 
  // shortcuts
  #define STRINGIFY(x) #x
