@@ -18,8 +18,10 @@ command_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 command = {
     "cmd":{
         "quail":{
-            "board":{
-                "error":1
+            "valves":{
+                "S1":{
+                    "stt":0
+                }
             }
         }
     }

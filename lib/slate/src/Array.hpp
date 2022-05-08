@@ -31,6 +31,16 @@ class Array : public SlateKeyGeneric {
             }
         }
 
+        Array &operator<<(const JsonVariant src) override{
+            if (src.containsKey(id)) {
+                for (auto elem : list) {
+                    SlateKeyGeneric &test = elem.get();
+                    test << src[id];
+                }
+            }
+            return *this;
+        }
+
     private:
         const std::array<std::reference_wrapper<T>, N> list;
 };
