@@ -63,7 +63,7 @@ void LoggerTask::activity()
         res = f_open(&file_object, file_name, FA_CREATE_ALWAYS | FA_WRITE);
 
     } while(res != FR_OK);
-    digitalWrite(DISK_LED, true); // led comes on when we're sure we can write to files
+    digitalWrite(LOG_LED, true); // led comes on when we're sure we can write to files
 
     // Writing to SD is time consuming so we're going to keep everyting in a buffer and
     // increment the values until we really need to dump it (either 10000 characters)
@@ -110,7 +110,7 @@ void LoggerTask::readSHITL() {
 }
 
 void LoggerTask::writeSD(char *buf) {
-    digitalWrite(DISK_LED, true);
+    digitalWrite(LOG_LED, true);
 
     FRESULT res;
     UINT writen;
@@ -118,14 +118,14 @@ void LoggerTask::writeSD(char *buf) {
 
     if (res != FR_OK) {
         loggingEnabled = false;
-        digitalWrite(DISK_LED, false);
+        digitalWrite(LOG_LED, false);
         this->log("SD Write Error");
     }
 
     res = f_sync(&file_object); //update file structure
     if (res != FR_OK) {
         loggingEnabled = false;
-        digitalWrite(DISK_LED, false);
+        digitalWrite(LOG_LED, false);
         this->log("SD Flush Error");
     }
 }

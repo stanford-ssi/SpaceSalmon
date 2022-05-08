@@ -11,8 +11,6 @@
 #include "StrBuffer.hpp"
 #include "Task.hpp"
 
-#define DISK_LED 4
-
 typedef enum
 {
   fatal = 1,

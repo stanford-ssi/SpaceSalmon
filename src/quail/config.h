@@ -1,5 +1,12 @@
 #pragma once
 
+// LEDS
+#define ACT_LED 1
+#define ADC_LED 2
+#define PWR_LED 3
+#define LOG_LED 4
+
+
 // Squibs
 #define NUM_EM_CHANNELS 4
 #define UPDATE_SQUIBS 0b01

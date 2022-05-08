@@ -105,7 +105,7 @@ void ADCTask::initADC() {
 
     sys.adc.setIRQAction(adcISR);
 
-    digitalWrite(3, 1);
+    digitalWrite(ADC_LED, 1);
 }
 
 void ADCTask::resetADC() {
@@ -114,7 +114,7 @@ void ADCTask::resetADC() {
     data_count = 0;
     sys.adc.reset();
     sys.tasks.txtask.writeUSB("Resetting ADC!");
-    digitalWrite(3, 0);
+    digitalWrite(ADC_LED, 0);
 }
 
 void ADCTask::sensorsConfigured(){
