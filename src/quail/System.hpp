@@ -52,12 +52,12 @@ public:
     PressureSensor PT5 =  PressureSensor(Ad7124::AIN5Input, RANGE_1000, slate.sense.pt5);
     PressureSensor PT6 =  PressureSensor(Ad7124::AIN6Input, RANGE_1000, slate.sense.pt6);
     PressureSensor PT7 =  PressureSensor(Ad7124::AIN7Input, RANGE_1000, slate.sense.pt7);
-    //PressureSensor PT8 =  PressureSensor(Ad7124::AIN8Input, RANGE_1000, slate.sense.pt8);
+    PressureSensor PT8 =  PressureSensor(Ad7124::AIN8Input, RANGE_1000, slate.sense.pt8);
     ThermalSensor TS1 = ThermalSensor(Ad7124::AIN9Input, slate.sense.tc1); //samd51 # defines TC0-7 so don't use those
     ThermalSensor TS2 = ThermalSensor(Ad7124::AIN10Input, slate.sense.tc2);
     //ThermalSensor TS3 = ThermalSensor(Ad7124::AIN11Input, slate.sense.tc3);
 
-    Sensor* sensors [13] = {
+    Sensor* sensors [12] = {
         &LC1,
         &LC2,
         &PT1,
@@ -67,7 +67,7 @@ public:
         &PT5,
         &PT6,
         &PT7,
-        //&PT8,
+        &PT8,
         &TS1,
         &TS2,
         //&TS3,
