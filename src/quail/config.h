@@ -77,7 +77,7 @@ enum SEQUENCE_STATE {
 
  // networking
  #define MY_SLATE_PORT 1000
- #define CLIENT_SLATE_PORT 2000
+ #define CLIENT_SLATE_PORT 8000
  #define MY_CMD_PORT 1002
  #define META_PCKT_LEN 16384
  #define DATA_PCKT_LEN 2048
