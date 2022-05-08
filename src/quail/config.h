@@ -81,7 +81,6 @@ enum SEQUENCE_STATE {
  #define MY_CMD_PORT 1002
  #define META_PCKT_LEN 16384
  #define DATA_PCKT_LEN 8192
- #define UDP_PCKT_LEN 1024
  #define NETWORKING_DELAY 2000
  #define MAX_CMD_LENGTH 512 // maximum length of a command, in bytes (based on radio command max size)
 

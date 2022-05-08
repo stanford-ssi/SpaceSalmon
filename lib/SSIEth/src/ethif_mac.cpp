@@ -42,6 +42,8 @@
 #include "netif/ethernet.h"
 #include <string.h>
 
+#include "hal_rtos.h"
+
 struct mac_async_descriptor COMMUNICATION_IO;
 
 /**
@@ -97,6 +99,8 @@ err_t mac_low_level_output(struct netif *netif, struct pbuf *p)
 #endif
 
 	LINK_STATS_INC(link.xmit);
+
+	vTaskDelay(2);
 
 	return ERR_OK;
 }
