@@ -36,7 +36,4 @@ class EthernetTask : public Task<2000>{
         void createTCP(netconn *&conn, uint16_t myport);
 
         err_t requestHandler(netconn *&conn, char *rcv, uint16_t len);
-
-        char endPcket[2] = "\n";
-        void _endPacket(netconn *conn);
 };

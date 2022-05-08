@@ -133,39 +133,29 @@ void EthernetTask::sendUDP(netconn *conn, JsonDocument& jsonDoc) {
 void EthernetTask::sendUDP(netconn *conn, const char* message, uint16_t fullLen) {
     if (!isSetup) return;
     
-    // fragment data packet depending on size
-    for (uint8_t i = 0; i <= fullLen / UDP_PCKT_LEN; i++) {
-        // get size of fragment
-        uint16_t currLen = min(UDP_PCKT_LEN, fullLen - i * UDP_PCKT_LEN);
-
-        // create a packet
-        netbuf *buf = netbuf_new();
-        netbuf_alloc(buf, currLen);
-
-        // fill the packet
-        uint16_t size;
-        void *data_ptr;
-        netbuf_data(buf, &data_ptr, &size);
-        memcpy(data_ptr, message + i * UDP_PCKT_LEN, size);
-
-        //send packet
-        netconn_send(conn, buf);
-
-        //clean up
-        netbuf_delete(buf);
-
-        vTaskDelay(5);
-    }
-
-    _endPacket(conn);
-}
-
-void EthernetTask::_endPacket(netconn *conn) {
-    if (!isSetup) return;
-
+    // create a packet
     netbuf *buf = netbuf_new();
-    netbuf_alloc(buf, 2);
-    memcpy((void *)(buf->ptr->payload), endPcket, 2);
+    netbuf_alloc(buf, fullLen);
+
+    // fill the packet
+    // printf("fullLen: %lu \n",fullLen);
+
+    // printf("*******\n\n");
+    // printf("%s\n\n",message);
+    // printf("*******");
+
+    uint16_t size;
+    void *data_ptr;
+    netbuf_data(buf, &data_ptr, &size);
+    memcpy(data_ptr, message, size);
+
+    // printf("size: %lu \n",size);
+
+    //send packet
     netconn_send(conn, buf);
+
+    //clean up
     netbuf_delete(buf);
+
+    vTaskDelay(5); //?
 }
