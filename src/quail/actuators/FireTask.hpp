@@ -22,13 +22,12 @@ typedef struct {
 class FireTask : public Task<2000>
 {
 public:
-    FireTask(uint8_t priority, uint8_t Squib1_SS, uint8_t Squib2_SS);
+    FireTask(uint8_t priority, uint8_t Squib_SS);
     bool fireEmatch(uint8_t ch, bool update = true); // fire the ematch at zero-indexed ch
     void activity();
 
 private:
-    Squib squib1; // squib controlling E1-E4
-    Squib squib2; // squib controlling E5-E8, currently disabled
+    Squib squib; // squib controlling E1-E4
     squibChannel_t ch_map [NUM_EM_CHANNELS];
 
     Array<Igniter, NUM_EM_CHANNELS> &slate;

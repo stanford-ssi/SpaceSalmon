@@ -32,7 +32,7 @@ class Sensor {
         const Ad7124::InputSel ainp; // ADC positive input
         const Ad7124::InputSel ainm; // ADC negative input  
 
-        SensorSlate slate; // slate channel
+        SensorSlate& slate; // slate channel
 
         static uint8_t addConfig() { return num_cfgs++; }
 

@@ -81,7 +81,7 @@ public:
         PowerTask powertask = PowerTask(3); // test for measuring battery voltage and current
         
         ValveTask valvetask = ValveTask(6, 22); // controls solenoids 
-        FireTask firetask = FireTask(6, 20, 21); //fires squibs for ematches
+        FireTask firetask = FireTask(6, 20); //fires squibs for ematches
         // SequenceLauncher seqlauncher  = SequenceLauncher(3);
         
         #ifdef RADIO_TXRX // if using radio, create a RadioTask
