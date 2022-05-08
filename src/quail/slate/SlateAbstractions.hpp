@@ -35,17 +35,30 @@ class Igniter : public Container<2> {
         std::string quailID;
 };
 
-class Solenoid : public Container<5> {
+class PulseEndpoint : public EndPoint<uint16_t> {
+    public:
+        PulseEndpoint(const std::string quailID, uint8_t index);
+        PulseEndpoint();
+
+        PulseEndpoint& operator<<(const JsonVariant src) override;
+
+        PulseEndpoint& operator<<(uint16_t in);
+
+    private:
+        uint8_t index;
+};
+
+class Solenoid : public Container<4> {
     public: 
         EndPoint<solenoid_normal_t> normal;
         EndPoint<solenoid_pwm_t> pwm;
-        EndPoint<uint16_t> time;
-        EndActuator<bool> pulse;
+        PulseEndpoint time;
         EndActuator<solenoid_state_t> state;
 
-        Solenoid(const std::string id, const std::string quailID);
+        Solenoid(const std::string id, const std::string quailID, uint8_t index);
         Solenoid& operator<<(const JsonVariant src) override;
 
     private:
         std::string quailID;
+        uint8_t index;
 };

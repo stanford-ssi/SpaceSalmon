@@ -38,22 +38,36 @@ Igniter& Igniter::operator<<(const JsonVariant src) {
 }
 
 
-Solenoid::Solenoid(const std::string id, const std::string quailID) : Container(id, {
+PulseEndpoint::PulseEndpoint(const std::string quailID, uint8_t index) : index(index), EndPoint("ptm", quailID, 1, true) {};
+
+PulseEndpoint::PulseEndpoint() : PulseEndpoint(NO_QUAIL_ID, 0) {};
+
+PulseEndpoint& PulseEndpoint::operator<<(const JsonVariant src) {
+    EndPoint::operator<<(src);
+    if (src.containsKey(this->id)) { sys.tasks.valvetask._updatePulse(index); }
+    return *this;
+};
+
+PulseEndpoint& PulseEndpoint::operator<<(const uint16_t in) {
+    this->operator<<(in);
+    return *this;
+};
+
+
+Solenoid::Solenoid(const std::string id, const std::string quailID, uint8_t index) : Container(id, {
     std::ref(normal),
     std::ref(pwm),
     std::ref(time),
-    std::ref(pulse),
     std::ref(state)
-}), quailID(quailID) {
+}), quailID(quailID), index(index) {
     normal = EndPoint<solenoid_normal_t>("nor", quailID, NORMALLY_CLOSED, false);
     pwm = EndPoint<solenoid_pwm_t>("pwm", quailID, MEDIUM, false);
-    time = EndPoint<uint16_t>("ptm", quailID, 1, true); // 0 is not a valid timer period
-    pulse = EndActuator<bool>("pls", quailID);
+    time = PulseEndpoint(quailID, index);
     state = EndActuator<solenoid_state_t>("stt", quailID);
 };
 
 Solenoid& Solenoid::operator<<(const JsonVariant src) {
     Container::operator<<(src);
-    sys.tasks.valvetask._updateValves();
+    if (src.containsKey(this->id)) { sys.tasks.valvetask._updateValves(index); }
     return *this;
 }

@@ -77,18 +77,18 @@ public:
             }){};
 
         private:
-            Solenoid s1 = Solenoid("S1", "S1");            
-            Solenoid s2 = Solenoid("S2", "S2");
-            Solenoid s3 = Solenoid("S3", "S3");
-            Solenoid s4 = Solenoid("S4", "S4");
-            Solenoid s5 = Solenoid("S5", "S5");
-            Solenoid s6 = Solenoid("S6", "S6");
-            Solenoid s7 = Solenoid("S7", "S7");
-            Solenoid s8 = Solenoid("S8", "S8");
-            Solenoid s9 = Solenoid("S9", "S9");
-            Solenoid s10 = Solenoid("S10", "S10");
-            Solenoid s11 = Solenoid("S11", "S11");
-            Solenoid s12 = Solenoid("S12", "S12");
+            Solenoid s1 = Solenoid("S1", "S1", 0);            
+            Solenoid s2 = Solenoid("S2", "S2", 1);
+            Solenoid s3 = Solenoid("S3", "S3", 2);
+            Solenoid s4 = Solenoid("S4", "S4", 3);
+            Solenoid s5 = Solenoid("S5", "S5", 4);
+            Solenoid s6 = Solenoid("S6", "S6", 5);
+            Solenoid s7 = Solenoid("S7", "S7", 6);
+            Solenoid s8 = Solenoid("S8", "S8", 7);
+            Solenoid s9 = Solenoid("S9", "S9", 8);
+            Solenoid s10 = Solenoid("S10", "S10", 9);
+            Solenoid s11 = Solenoid("S11", "S11", 10);
+            Solenoid s12 = Solenoid("S12", "S12", 11);
     } valves = Valves("valves");
 
     class ADCIn : public Array<EndSensor, 4> {

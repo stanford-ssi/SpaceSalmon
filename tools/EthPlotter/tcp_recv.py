@@ -19,8 +19,9 @@ command = {
     "cmd":{
         "quail":{
             "valves":{
-                "S1":{
-                    "stt":0
+                "S10":{
+                    "ptm":1000,
+                    "pls":1
                 }
             }
         }
@@ -40,7 +41,7 @@ print("connected to quail!")
 
 while True:
     try:
-        if counter % 2 == 0:
+        if counter == 0:
             command_packet = json.dumps(command)
             command_socket.send(str.encode(command_packet))
             
