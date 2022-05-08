@@ -36,9 +36,9 @@ class EndPoint : public SlateKey<T>{
 
         void metadump(JsonVariant dst) override {
             JsonObject obj = dst.createNestedObject(this->id);
-            // obj["valu"] = this->get();
+            obj["valu"] = this->get();
             obj["desc"] = this->id;
-            // obj["unit"] = typeid(this->get()).name();
+            obj["unit"] = typeid(this->get()).name();
             obj["qpin"] = quailID;
             obj["edit"] = editable;
         }
@@ -71,10 +71,6 @@ class EndDerived : public EndSensor{
         EndDerived &operator=(EndDerived src) {
             EndSensor::operator=(src);
             return *this;
-        }
-
-        void metadump(JsonVariant dst) override {
-            dst["derived"] = id;
         }
 };
 

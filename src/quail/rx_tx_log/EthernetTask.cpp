@@ -63,7 +63,7 @@ err_t EthernetTask::requestHandler(netconn *&conn, char *rcv, uint16_t len) {
         }
         if (pckt.containsKey("meta")) { // Metaslate dump requests
             // get the data packet
-            StaticJsonDocument<DATA_PCKT_LEN> metaJSON;
+            
             JsonVariant metaVar = metaJSON.to<JsonVariant>();
             sys.slate.metadump(metaVar);
 
@@ -72,11 +72,10 @@ err_t EthernetTask::requestHandler(netconn *&conn, char *rcv, uint16_t len) {
             // Serial.println(metaJSON.capacity());
 
             // convert to string
-            char metaStr[DATA_PCKT_LEN];
-            serializeJson(metaJSON, metaStr, DATA_PCKT_LEN);
+            serializeJson(metaJSON, metaStr, META_PCKT_LEN);
 
             // send the metaslate request
-            Serial.println(metaStr);
+            PRINT(metaStr);
             return netconn_write(conn, metaStr, strlen(metaStr), NETCONN_COPY);
         }
     }
