@@ -24,7 +24,16 @@ int main(void)
 	pinMode(3, OUTPUT);
 	pinMode(4, OUTPUT);
 
+	//PWR_FLT pull-up
+	pinMode(34,INPUT_PULLUP);
+	digitalWrite(34,HIGH);
+
+	//ADC SYNC line (the source of my misery)
+	pinMode(9, OUTPUT);
+	digitalWrite(9,HIGH);
+
 	digitalWrite(1, HIGH); // turn on power LED
+	// sys.tasks.seqlauncher.startSeq("ABORT");
 
 	//start all RTOS tasks (this never returns)
 	vTaskStartScheduler();

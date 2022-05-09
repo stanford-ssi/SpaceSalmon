@@ -53,7 +53,7 @@
 // <i> maximum transfer unit (in bytes)
 // <id> macif_mtu
 #ifndef CONF_TCPIP_STACK_INTERFACE_0_MTU
-#define CONF_TCPIP_STACK_INTERFACE_0_MTU 1536
+#define CONF_TCPIP_STACK_INTERFACE_0_MTU 1500
 #endif
 
 // <s> Host Name

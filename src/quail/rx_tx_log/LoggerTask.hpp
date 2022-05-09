@@ -11,8 +11,6 @@
 #include "StrBuffer.hpp"
 #include "Task.hpp"
 
-#define DISK_LED 4
-
 typedef enum
 {
   fatal = 1,
@@ -41,6 +39,12 @@ private:
   void writeSD(char *buf);
   void format();
   void findFile(char* filename, size_t filesize, int* lognum);
+
+  const char *ErrorNames[3] = {
+    "A log file is corrupted",
+    "Could Not Mount Disk",
+    "Trying to open log file"
+  };
 
 public:
   LoggerTask(uint8_t priority);

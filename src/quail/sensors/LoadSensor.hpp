@@ -1,12 +1,13 @@
 #pragma once
 
 #include "Sensor.hpp"
+#include "../config.h"
 
-class LoadSensor: public Sensor{
+class LoadSensor : public Sensor{
     public:
-        LoadSensor(const char* ch_name, Ad7124::InputSel ainp);
+        LoadSensor(Ad7124::InputSel ainp, SensorSlate &slate);
 
-        float convertToFloat(uint32_t adc_dataword);
+        void convertToFloat(uint32_t adc_dataword);
         
         void configure();
         static void unconfigure(){cfg = UNCONFIGURED;};

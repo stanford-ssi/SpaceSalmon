@@ -3,7 +3,7 @@
     "build":{
         "flags":
         [
-            "-Isrc"
+            "-Isrc/include"
         ],
         "libArchive": false
     }

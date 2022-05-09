@@ -8,9 +8,8 @@
 #include <hal_rtos.h>
 
 #include "Task.hpp"
+#include "../config.h"
 
-#define ERROR_THRESHOLD 10
-#define READ_TIMOUT 100
 
 class ADCTask : public Task<2000>
 {
@@ -28,7 +27,6 @@ public:
     void sensorsConfigured();
 
 private:
-
     enum events{
         NewData = 0b10,
         SensorsReady = 0b01

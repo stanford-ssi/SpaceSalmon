@@ -1,8 +1,11 @@
 #include "SensorTask.hpp"
+#include "Sensor.hpp"
 #include "main.hpp"
 
 StaticEventGroup_t SensorTask::evbuf;
 EventGroupHandle_t SensorTask::evgroup = xEventGroupCreateStatic(&evbuf);
+
+SensorTask::SensorTask(uint8_t priority) : Task(priority, "SensorTask") {}
 
 void SensorTask::activity() {
     while (true) {
@@ -37,8 +40,7 @@ void SensorTask::initSensors() {
 bool SensorTask::readData() {
     ADCTask::adcdata_t adc_data;
     while(adcbuf.receiveTimeout(adc_data, READ_TIMEOUT)) {
-        float sensor_value = sys.sensors[adc_data.channel]->convertToFloat(adc_data.dataword); // convert data to metric unit
-        sys.statedata.setSensorState(adc_data.channel, sensor_value); // post new value to state
+        sys.sensors[adc_data.channel]->convertToFloat(adc_data.dataword); // convert data to metric unit
     }
     xEventGroupClearBits(evgroup, DATA_READY);
     return true;

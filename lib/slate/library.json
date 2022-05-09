@@ -1,0 +1,6 @@
+{
+    "name": "slate",
+    "build":{
+        "libArchive": false
+    }
+}
