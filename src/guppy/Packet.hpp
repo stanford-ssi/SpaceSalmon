@@ -2,7 +2,7 @@
 
 typedef struct __attribute__((__packed__)) rf_down_t
 {
-    unsigned pad : 2;
+    // unsigned pad : 8;
 
     unsigned time : 18;
     unsigned battery : 8;
@@ -21,6 +21,8 @@ typedef struct __attribute__((__packed__)) rf_down_t
     unsigned pyroA : 1;
     unsigned pyroB : 1;
 
+    unsigned pyroA_fired: 1;
+    unsigned pyroB_fired: 1;
 } rf_down_t;
 
 typedef struct __attribute__((__packed__)) rf_up_t

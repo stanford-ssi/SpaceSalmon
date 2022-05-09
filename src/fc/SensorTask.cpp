@@ -81,7 +81,7 @@ void SensorTask::activity()
     vTaskDelay(1);
     digitalWrite(18, true);
     vTaskDelay(1);
-
+    
     rc = sys.sensors.imu2.accel->begin();
 
     if (rc != 1)

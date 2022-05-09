@@ -51,6 +51,9 @@ void TelemetryTask::activity()
             down_packet.pyroA = sys.pyro.getStatus(Pyro::SquibA);
             down_packet.pyroB = sys.pyro.getStatus(Pyro::SquibB);
 
+            down_packet.pyroA_fired = sys.tasks.filter.plan.pyroA_fired;
+            down_packet.pyroB_fired = sys.tasks.filter.plan.pyroB_fired;
+            
             packet_t pkt;
             memcpy(pkt.data, &down_packet, sizeof(down_packet));
             pkt.len = sizeof(down_packet);
