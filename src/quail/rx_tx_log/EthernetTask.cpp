@@ -56,6 +56,10 @@ err_t EthernetTask::requestHandler(netconn *&conn, char *rcv, uint16_t len) {
     DeserializationError ret = deserializeJson(pckt, rcv);
 
     if (ret == DeserializationError::Ok) { // TCP requests must be JSONs
+        if (pckt.containsKey("reboot")) { // Command echo server
+            Serial.println("rebooting");
+            NVIC_SystemReset();
+        }
         if (pckt.containsKey("cmd")) { // Command echo server
             cmdBuf.send(rcvCpy, MAX_CMD_LENGTH);
             // Serial.println(rcvCpy);
@@ -80,7 +84,7 @@ err_t EthernetTask::requestHandler(netconn *&conn, char *rcv, uint16_t len) {
         }
     }
     
-    char *send = "Misformatted TCP request";
+    char send[] = "Misformatted TCP request";
     return netconn_write(conn, send, sizeof(send), NETCONN_COPY);
 }
 
