@@ -20,7 +20,7 @@ public:
   void logState();
   Poster<float> p_alt;
   Poster<float> p_vel;
-
+  
 private:
 
   uint32_t print_timer;

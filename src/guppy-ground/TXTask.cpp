@@ -55,6 +55,33 @@ void TXTask::activity()
                         packet.len = rbase64_decode((char *)packet.data, temp, strlen(temp));
                         sys.tasks.radio.sendPacket(packet);
                     }
+                } else if (strcmp(id, "freq_upd") == 0) {
+                    // update the frequency of the radio
+                    JsonVariant data = doc["data"];
+                    if (!data.isNull())
+                    {
+                        // char newFreq[255];
+                        // char temp[255];
+                        // strcpy(temp,data.as<char *>());
+                        // int byteLen = rbase64_decode(newFreq, temp, strlen(temp));
+                        // // radio_settings_t newsettings;
+                        // log(stats, newFreq);
+                        packet_t packet;
+                        char temp[255];
+                        strcpy(temp,data.as<char *>());
+                        packet.len = rbase64_decode((char *)packet.data, temp, strlen(temp));
+                        sys.tasks.radio.sendPacket(packet);
+
+                        char* freqMsg = (char*) packet.data;
+                        char* endptr;
+                        float newDoubleFreq = strtof(freqMsg, &endptr);
+                        if ((*endptr)==false) {
+                            radio_settings_t newSettings;
+                            newSettings.freq = newDoubleFreq;
+                            sys.tasks.radio.setSettings(newSettings);
+                            log(stats, "this is a test");
+                        }
+                    }  
                 }
             }
         }
@@ -66,7 +93,7 @@ void TXTask::log(log_type t, const char *msg)
     if (t & log_mask)
     {
         StaticJsonDocument<1000> doc;
-        doc["id"] = pcTaskGetName(taskHandle);
+        doc["id"] = "Radio"; //pcTaskGetName(taskHandle);
         doc["msg"] = msg;
         doc["level"] = (uint8_t)t;
         doc["tick"] = xTaskGetTickCount();

@@ -38,13 +38,20 @@ log.grid(pady=5, row=2, column=1, sticky=N+S+W+E)
 frame = Frame(root, borderwidth=1)
 frame.grid(row=3, column=1)
 
-e = Entry(frame, width=50)
+e = Entry(frame, width=30)
 e.pack(side=RIGHT)
 
 Label(frame, text=": ").pack(side=RIGHT)
 
 prefix = Entry(frame, width=10)
 prefix.pack(side=RIGHT)
+
+Label(frame, text="Cmd: ").pack(side=RIGHT)
+
+radioInpFreq = Entry(frame, width=20)
+radioInpFreq.pack(side=RIGHT)
+
+Label(frame, text="Freq: ").pack(side=RIGHT)
 
 dataFrame = Frame(root, borderwidth=5)
 dataFrame.grid(column=2, row=1, rowspan=2)
@@ -64,10 +71,15 @@ data_row = 1
 for entry in vars:
     data_feilds[entry[0]] = (StringVar(), entry[2])
     data_feilds[entry[0]][0].set("???"+entry[2])
+
     Label(dataFrame, text=entry[1]).grid(column=0, row=data_row)
-    Label(dataFrame, textvariable=data_feilds[entry[0]][0]).grid(
-        column=1, row=data_row)
+    Label(dataFrame, textvariable=data_feilds[entry[0]][0]).grid(column=1, row=data_row)
     data_row += 1
+
+    # if entry[0] == 'freq':
+    #     Label(dataFrame, text=entry[1]).grid(column=0, row=data_row)
+    #     radioInpFreq = Entry(dataFrame).grid(column=1, row=data_row)
+    #     data_row += 1
 
 # radiobuttons
 msgtype = IntVar()
@@ -157,11 +169,17 @@ def readSerial():
 
 def callback(event):
     msg = e.get()
-    if(len(prefix.get()) > 0):
+    inp_id = "invalid"
+    if len(prefix.get()) > 0:
         msg = prefix.get() + ": " + msg
-    
+        inp_id = "tx"
+    elif len(radioInpFreq.get()) > 0:
+        msg = radioInpFreq.get()
+        inp_id = "freq_upd"
+
+    print(msg)
     data = base64.b64encode(msg.encode("utf-8")).decode("utf-8")
-    data = json.dumps({"id": "tx", "data": data}, separators=(',', ':'))
+    data = json.dumps({"id": inp_id, "data": data}, separators=(',', ':'))
     logging.info("Sent Msg: " + data)
     data += '\n'
     ser.write(data.encode('utf-8'))

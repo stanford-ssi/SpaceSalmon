@@ -84,9 +84,12 @@ void AltFilter::prefilter(SensorData& data){
   }
 
   Z(0) = p2alt(pres);  //LOL gotta convert to meters oops
-  Z(1) = (data.adxl1_data.y) - 9.807; //Antenna connector facing up, ematch connector down
-  // Z(1) = (data.adxl1_data.y * -1.0) - 9.807; //Antenna connector facing down, ematch connector up
-    
+  
+  if (sys.tasks.filter.negate_accel == false) {
+    Z(1) = (data.adxl1_data.y) - 9.807; //Antenna connector facing up, ematch connector down
+  } else {
+    Z(1) = (data.adxl1_data.y * -1.0) - 9.807; //Antenna connector facing down, ematch connector up
+  }
   //NEGATIVE! If the accelerometers read -9.8 (raw from the sensor) when the rocket is vertical,
   //then you should have a -1.0 term here, so that at rest the filter sees normal force acceleration upwards (positive).
 }
@@ -97,7 +100,12 @@ float AltFilter::p2alt(float p){
 
 void AltFilter::logState(){
   StaticJsonDocument<500> json;
-  json["tick"] = data_time; 
+  json["tick"] = data_time;
+
+  bool neg_accel;
+  sys.tasks.filter.negate_accel.get(neg_accel);
+  json["negate_accel"] = neg_accel;
+
   JsonArray x_json = json.createNestedArray("x");
   x_json.add(X(0));
   x_json.add(X(1));
