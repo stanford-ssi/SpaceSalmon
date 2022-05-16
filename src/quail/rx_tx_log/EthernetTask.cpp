@@ -63,7 +63,8 @@ err_t EthernetTask::requestHandler(netconn *&conn, char *rcv, uint16_t len) {
         if (pckt.containsKey("cmd")) { // Command echo server
             cmdBuf.send(rcvCpy, MAX_CMD_LENGTH);
             // Serial.println(rcvCpy);
-            return netconn_write(conn, rcvCpy, len, NETCONN_COPY);
+            netconn_write(conn, rcvCpy, len, NETCONN_COPY);
+            return netconn_write(conn, "\n", 1, NETCONN_COPY);
         }
         if (pckt.containsKey("meta")) { // Metaslate dump requests
             // get the data packet
@@ -80,11 +81,13 @@ err_t EthernetTask::requestHandler(netconn *&conn, char *rcv, uint16_t len) {
 
             // send the metaslate request
             PRINT(metaStr);
-            return netconn_write(conn, metaStr, strlen(metaStr), NETCONN_COPY);
+            netconn_write(conn, metaStr, strlen(metaStr), NETCONN_COPY);
+            return netconn_write(conn, "\n", 1, NETCONN_COPY);
         }
     }
     
-    char send[] = "Misformatted TCP request";
+    // quotes ensure its a valid json string
+    char send[] = "\"Misformatted TCP request\"\n";
     return netconn_write(conn, send, sizeof(send), NETCONN_COPY);
 }
 
