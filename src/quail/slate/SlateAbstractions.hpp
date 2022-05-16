@@ -15,7 +15,7 @@ class SensorSlate : public Container<4> {
         EndDerived drv;
         EndDerived ntg;
 
-        SensorSlate(const std::string, const std::string quailID);
+        SensorSlate(const std::string, const std::string quailID, const std::string desc);
         SensorSlate &operator<<(const float in);
         float operator()();
 

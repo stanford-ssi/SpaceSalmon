@@ -1,13 +1,13 @@
 #include "main.hpp"
 #include "SlateAbstractions.hpp"
 
-SensorSlate::SensorSlate(const std::string id, const std::string quailID) : Container(id, {
+SensorSlate::SensorSlate(const std::string id, const std::string quailID, const std::string desc) : Container(id, {
     std::ref(val),
     std::ref(avg),
     std::ref(drv),
     std::ref(ntg)
 }), quailID(quailID) {
-    val = EndSensor("raw", quailID, 0.0);
+    val = EndSensor("raw", quailID, 0.0, desc);
     avg = EndDerived("avg", 0.0);
     drv = EndDerived("drv", 0.0);
     ntg = EndDerived("ntg", 0.0);

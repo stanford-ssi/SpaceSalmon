@@ -9,8 +9,8 @@
 template <typename T>
 class EndPoint : public SlateKey<T>{
     public:
-        EndPoint(const std::string id, const std::string quailID, T init, bool editable) : 
-        SlateKey<T>(id, init), quailID(quailID), editable(editable) {}
+        EndPoint(const std::string id, const std::string quailID, T init, bool editable, const std::string desc = "none") : 
+        SlateKey<T>(id, init), quailID(quailID), editable(editable), desc(desc) {}
 
         EndPoint() : SlateKey<T>(NO_QUAIL_ID, (T) false), quailID(NO_QUAIL_ID), editable(false) {}
 
@@ -21,6 +21,7 @@ class EndPoint : public SlateKey<T>{
             this->id = src.id;
             this->quailID = src.quailID;
             this->editable = src.editable;
+            this->desc = src.desc;
             return *this;
         }
 
@@ -37,7 +38,7 @@ class EndPoint : public SlateKey<T>{
         void metadump(JsonVariant dst) override {
             JsonObject obj = dst.createNestedObject(this->id);
             obj["valu"] = this->get();
-            obj["desc"] = this->id;
+            obj["desc"] = desc;
             obj["unit"] = typeid(this->get()).name();
             obj["qpin"] = quailID;
             obj["edit"] = editable;
@@ -45,15 +46,16 @@ class EndPoint : public SlateKey<T>{
 
     private:
         std::string quailID;
+        std::string desc;
         bool editable;
 };
 
 class EndSensor : public EndPoint<float>{
     public:
-        EndSensor(const std::string id, const std::string quailID, float init) :
-        EndPoint(id, quailID, init, false) {}
+        EndSensor(const std::string id, const std::string quailID, float init, const std::string desc) :
+        EndPoint(id, quailID, init, false, desc) {}
 
-        EndSensor() : EndSensor(NO_QUAIL_ID, NO_QUAIL_ID, 0.0) {}
+        EndSensor() : EndSensor(NO_QUAIL_ID, NO_QUAIL_ID, 0.0, "unknown") {}
 
         EndSensor &operator=(EndSensor src) {
             EndPoint<float>::operator=(src);
@@ -64,7 +66,7 @@ class EndSensor : public EndPoint<float>{
 class EndDerived : public EndSensor{
     public:
         EndDerived(const std::string id, float init) :
-        EndSensor(id, NO_QUAIL_ID, init) {}
+        EndSensor(id, NO_QUAIL_ID, init, "derived") {}
 
         EndDerived() : EndDerived(NO_QUAIL_ID, 0.0) {}
 

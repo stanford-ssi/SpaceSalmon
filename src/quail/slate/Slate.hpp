@@ -15,18 +15,18 @@ public:
     class Sensors : public Container<12> // need to increment this when changing number of sensors
     {
     public:
-        SensorSlate pt1 = SensorSlate("PT1", "PT1");
-        SensorSlate pt2 = SensorSlate("PT2", "PT2");
-        SensorSlate pt3 = SensorSlate("PT3", "PT3");
-        SensorSlate pt4 = SensorSlate("PT4", "PT4");
-        SensorSlate pt5 = SensorSlate("PT5", "PT5");
-        SensorSlate pt6 = SensorSlate("PT6", "PT6");
-        SensorSlate pt7 = SensorSlate("PT7", "PT7");
-        SensorSlate pt8 = SensorSlate("PT8", "PT8");
-        SensorSlate lc1 = SensorSlate("LC1", "LC1");
-        SensorSlate lc2 = SensorSlate("LC2", "LC2");
-        SensorSlate tc1 = SensorSlate("TC1", "TC1");
-        SensorSlate tc2 = SensorSlate("TC2", "TC2");
+        SensorSlate pt1 = SensorSlate("PT1", "PT1", "first PT");
+        SensorSlate pt2 = SensorSlate("PT2", "PT2", "second PT");
+        SensorSlate pt3 = SensorSlate("PT3", "PT3", "my PT");
+        SensorSlate pt4 = SensorSlate("PT4", "PT4", "my PT");
+        SensorSlate pt5 = SensorSlate("PT5", "PT5", "my PT");
+        SensorSlate pt6 = SensorSlate("PT6", "PT6", "my PT");
+        SensorSlate pt7 = SensorSlate("PT7", "PT7", "my PT");
+        SensorSlate pt8 = SensorSlate("PT8", "PT8", "my PT");
+        SensorSlate lc1 = SensorSlate("LC1", "LC1", "left LC");
+        SensorSlate lc2 = SensorSlate("LC2", "LC2", "right LC");
+        SensorSlate tc1 = SensorSlate("TC1", "TC1", "my TC");
+        SensorSlate tc2 = SensorSlate("TC2", "TC2", "my TC");
         Sensors(const std::string id) : Container(id, {
             std::ref(pt1),
             std::ref(pt2),
@@ -101,10 +101,10 @@ public:
             }){};
 
         private:
-            EndSensor es1 = EndSensor("ADC1", "ADC1", 0.0);
-            EndSensor es2 = EndSensor("ADC2", "ADC2", 0.0);
-            EndSensor es3 = EndSensor("ADC3", "ADC3", 0.0);
-            EndSensor es4 = EndSensor("ADC4", "ADC4", 0.0);
+            EndSensor es1 = EndSensor("ADC1", "ADC1", 0.0, "ADC one");
+            EndSensor es2 = EndSensor("ADC2", "ADC2", 0.0, "ADC two");
+            EndSensor es3 = EndSensor("ADC3", "ADC3", 0.0, "ADC #3");
+            EndSensor es4 = EndSensor("ADC4", "ADC4", 0.0, "ADC 4?");
     } adc_in = ADCIn("adc_in");
 
     class Sequence : public Container<5> {
@@ -125,8 +125,8 @@ public:
 
     class Battery : public Container<2> {
         public : 
-            SensorSlate v_batt = SensorSlate("Voltage", "PB09");
-            SensorSlate i_batt = SensorSlate("Current", "PB09");
+            SensorSlate v_batt = SensorSlate("Voltage", "PB09", "Main Bus Voltage");
+            SensorSlate i_batt = SensorSlate("Current", "PB09", "Total Current");
             Battery(const std::string id) : Container(id, {
                 std::ref(v_batt),
                 std::ref(i_batt)
