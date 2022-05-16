@@ -4,6 +4,7 @@ class System;
 
 #include <Arduino.h>
 
+#include <Adafruit_SleepyDog.h>
 #include "SPI.h"
 #include "sensors/ad7124-lib/ad7124.h"
 

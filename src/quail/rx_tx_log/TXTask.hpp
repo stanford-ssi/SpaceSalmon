@@ -5,6 +5,7 @@
 #include <message_buffer.h>
 #include <semphr.h>
 #include <hal_rtos.h>
+#include <Adafruit_SleepyDog.h>
 #include "event_groups.h"
 #include "ArduinoJson.h"
 #include "Task.hpp"
