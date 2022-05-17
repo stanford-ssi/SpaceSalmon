@@ -4,21 +4,33 @@
 SensorSlate::SensorSlate(const std::string id, const std::string quailID, const std::string desc) : Container(id, {
     std::ref(val),
     std::ref(avg),
-    std::ref(drv),
-    std::ref(ntg)
+    // std::ref(drv),
+    // std::ref(ntg)
+    std::ref(cal),
+    std::ref(ofs)
 }), quailID(quailID) {
     val = EndSensor("raw", quailID, 0.0, desc);
     avg = EndDerived("avg", 0.0);
-    drv = EndDerived("drv", 0.0);
-    ntg = EndDerived("ntg", 0.0);
+    // drv = EndDerived("drv", 0.0);
+    // ntg = EndDerived("ntg", 0.0);
+
+    // cal = EndDerived("cal", 0.0);
+    // ofs = EndDerived("ofs", 0.0);
+
+    cal = EndPoint<float>("cal", quailID, 0.0, true, desc + " Calibrated");
+    ofs = EndPoint<float>("ofs", NO_QUAIL_ID, 0.0, true, "ofset");
 };
 
 SensorSlate& SensorSlate::operator<<(const float in) {
     window += in;
     val << window.peek();
     avg << window.avg();
-    drv << window.delta();
-    ntg << ntg() + avg() * window.dt();
+    // drv << window.delta();
+    // ntg << ntg() + avg() * window.dt();
+
+    cal << val.get() + ofs.get();
+
+    Serial.printf("here %s, %f\n", val.unit, cal.get());
     return *this;
 };
 

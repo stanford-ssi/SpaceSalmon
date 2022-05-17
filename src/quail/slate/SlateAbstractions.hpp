@@ -12,8 +12,11 @@ class SensorSlate : public Container<4> {
     public:
         EndSensor val;
         EndDerived avg;
-        EndDerived drv;
-        EndDerived ntg;
+        // EndDerived drv;
+        // EndDerived ntg;
+
+        EndPoint<float> cal;
+        EndPoint<float> ofs;
 
         SensorSlate(const std::string, const std::string quailID, const std::string desc);
         SensorSlate &operator<<(const float in);
