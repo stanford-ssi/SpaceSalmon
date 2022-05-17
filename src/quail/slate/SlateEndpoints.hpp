@@ -80,8 +80,8 @@ class EndDerived : public EndSensor{
 template <typename T>
 class EndActuator : public EndPoint<T>{
     public:
-        EndActuator(const std::string id, const std::string quailID) :
-        EndPoint<T>(id, quailID, (T)false, true) {}
+        EndActuator(const std::string id, const std::string quailID, const std::string desc = "none") :
+        EndPoint<T>(id, quailID, (T)false, true, desc) {}
 
         EndActuator() : EndActuator<T>(NO_QUAIL_ID, NO_QUAIL_ID) {}
 

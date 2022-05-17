@@ -29,7 +29,7 @@ class Igniter : public Container<2> {
         EndActuator<ematch_arm_state_t> arm;
         EndActuator<ematch_fire_state_t> state;
 
-        Igniter(const std::string id, const std::string quailID);
+        Igniter(const std::string id, const std::string quailID, const std::string desc = "none");
         Igniter &operator<<(const JsonVariant src) override;
 
     private:
@@ -38,7 +38,7 @@ class Igniter : public Container<2> {
 
 class PulseEndpoint : public EndPoint<uint16_t> {
     public:
-        PulseEndpoint(const std::string quailID, uint8_t index);
+        PulseEndpoint(const std::string quailID, uint8_t index, const std::string desc);
         PulseEndpoint();
 
         PulseEndpoint& operator<<(const JsonVariant src) override;
@@ -56,7 +56,7 @@ class Solenoid : public Container<4> {
         PulseEndpoint time;
         EndActuator<solenoid_state_t> state;
 
-        Solenoid(const std::string id, const std::string quailID, uint8_t index);
+        Solenoid(const std::string id, const std::string quailID, uint8_t index, const std::string desc = "none");
         Solenoid& operator<<(const JsonVariant src) override;
 
     private:

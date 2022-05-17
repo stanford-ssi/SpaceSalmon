@@ -25,12 +25,12 @@ SensorSlate& SensorSlate::operator<<(const float in) {
 float SensorSlate::operator()() { return avg(); }
 
 
-Igniter::Igniter(const std::string id, const std::string quailID) : Container(id, {
+Igniter::Igniter(const std::string id, const std::string quailID, const std::string desc) : Container(id, {
     std::ref(arm),
     std::ref(state)
 }), quailID(quailID) {
     arm = EndActuator<ematch_arm_state_t>("arm", quailID);
-    state = EndActuator<ematch_fire_state_t>("fir", quailID);
+    state = EndActuator<ematch_fire_state_t>("fir", quailID, desc);
 };
 
 Igniter& Igniter::operator<<(const JsonVariant src) {
@@ -40,9 +40,9 @@ Igniter& Igniter::operator<<(const JsonVariant src) {
 }
 
 
-PulseEndpoint::PulseEndpoint(const std::string quailID, uint8_t index) : index(index), EndPoint("ptm", quailID, 1, true) {};
+PulseEndpoint::PulseEndpoint(const std::string quailID, uint8_t index, const std::string desc) : index(index), EndPoint("ptm", quailID, 1, true, desc) { this->unit = "ms"; };
 
-PulseEndpoint::PulseEndpoint() : PulseEndpoint(NO_QUAIL_ID, 0) {};
+PulseEndpoint::PulseEndpoint() : PulseEndpoint(NO_QUAIL_ID, 0, "none") { this->unit = "ms"; };
 
 PulseEndpoint& PulseEndpoint::operator<<(const JsonVariant src) {
     EndPoint::operator<<(src);
@@ -56,7 +56,7 @@ PulseEndpoint& PulseEndpoint::operator<<(const uint16_t in) {
 };
 
 
-Solenoid::Solenoid(const std::string id, const std::string quailID, uint8_t index) : Container(id, {
+Solenoid::Solenoid(const std::string id, const std::string quailID, uint8_t index, const std::string desc) : Container(id, {
     std::ref(normal),
     std::ref(pwm),
     std::ref(time),
@@ -64,8 +64,8 @@ Solenoid::Solenoid(const std::string id, const std::string quailID, uint8_t inde
 }), quailID(quailID), index(index) {
     normal = EndPoint<solenoid_normal_t>("nor", quailID, NORMALLY_CLOSED, false);
     pwm = EndPoint<solenoid_pwm_t>("pwm", quailID, MEDIUM, false);
-    time = PulseEndpoint(quailID, index);
-    state = EndActuator<solenoid_state_t>("stt", quailID);
+    time = PulseEndpoint(quailID, index, desc);
+    state = EndActuator<solenoid_state_t>("stt", quailID, desc);
 };
 
 Solenoid& Solenoid::operator<<(const JsonVariant src) {

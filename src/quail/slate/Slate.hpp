@@ -53,8 +53,8 @@ public:
             }){};
 
         private:
-            Igniter ig1 = Igniter("E1", "E1");
-            Igniter ig2 = Igniter("E2", "E2");
+            Igniter ig1 = Igniter("E1", "E1", "The one the goes boom");
+            Igniter ig2 = Igniter("E2", "E2", "The other one");
             Igniter ig3 = Igniter("E3", "E3");
             Igniter ig4 = Igniter("E4", "E4");
     } squib = Squibs("squib");
@@ -77,13 +77,13 @@ public:
             }){};
 
         private:
-            Solenoid s1 = Solenoid("S1", "S1", 0);            
-            Solenoid s2 = Solenoid("S2", "S2", 1);
-            Solenoid s3 = Solenoid("S3", "S3", 2);
-            Solenoid s4 = Solenoid("S4", "S4", 3);
-            Solenoid s5 = Solenoid("S5", "S5", 4);
-            Solenoid s6 = Solenoid("S6", "S6", 5);
-            Solenoid s7 = Solenoid("S7", "S7", 6);
+            Solenoid s1 = Solenoid("S1", "S1", 0, "My Solenoid");            
+            Solenoid s2 = Solenoid("S2", "S2", 1, "My Solenoid");
+            Solenoid s3 = Solenoid("S3", "S3", 2, "My Solenoid");
+            Solenoid s4 = Solenoid("S4", "S4", 3, "My Solenoid");
+            Solenoid s5 = Solenoid("S5", "S5", 4, "My Solenoid");
+            Solenoid s6 = Solenoid("S6", "S6", 5, "My Solenoid");
+            Solenoid s7 = Solenoid("S7", "S7", 6, "My Solenoid");
             Solenoid s8 = Solenoid("S8", "S8", 7);
             Solenoid s9 = Solenoid("S9", "S9", 8);
             Solenoid s10 = Solenoid("S10", "S10", 9);
