@@ -3,7 +3,9 @@
 uint8_t ThermalSensor::cfg = UNCONFIGURED; // this sensor type is initially unconfigured
 
 ThermalSensor::ThermalSensor(Ad7124::InputSel ainp, SensorSlate &slate) : 
-    Sensor(slate.id.c_str(), ainp, Ad7124::AIN0Input, slate){};
+Sensor(slate.id.c_str(), ainp, Ad7124::AIN0Input, slate){
+    this->slate.val.unit = "C";
+};
 
 void ThermalSensor::configure() {
     if(cfg == UNCONFIGURED) { // cfg is static - once one sensor of a type is set up, this loop won't run

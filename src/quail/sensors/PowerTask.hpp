@@ -14,8 +14,11 @@
 class PowerTask : public Task<1500>
 {
 public:
-    PowerTask(uint8_t priority)
-        : Task(priority, "PowerMonitor"){};
+    PowerTask(uint8_t priority);
+        // : Task(priority, "PowerMonitor"){
+        //     sys.slate.battery.i_batt.val.unit = "A";
+        //     sys.slate.battery.v_batt.val.unit = "V";
+        // };
     void activity();
     ADC adc0 = ADC(ADC0);
 

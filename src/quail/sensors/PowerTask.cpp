@@ -1,9 +1,15 @@
 #include "PowerTask.hpp"
 #include "main.hpp"
 
+PowerTask::PowerTask(uint8_t priority)
+    : Task(priority, "PowerMonitor"){
+        sys.slate.battery.i_batt.val.unit = "A";
+        sys.slate.battery.v_batt.val.unit = "V";
+};
 
 void PowerTask::activity()
 {
+
     uint8_t i = 0;
     while(true){
         uint16_t i_sense = adc0.read(0x03); // ADC0/AIN[2] is PB09

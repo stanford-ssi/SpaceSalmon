@@ -10,9 +10,9 @@ template <typename T>
 class EndPoint : public SlateKey<T>{
     public:
         EndPoint(const std::string id, const std::string quailID, T init, bool editable, const std::string desc = "none") : 
-        SlateKey<T>(id, init), quailID(quailID), editable(editable), desc(desc) {}
+        SlateKey<T>(id, init), quailID(quailID), editable(editable), desc(desc) { unit = typeid(this->get()).name(); }
 
-        EndPoint() : SlateKey<T>(NO_QUAIL_ID, (T) false), quailID(NO_QUAIL_ID), editable(false) {}
+        EndPoint() : SlateKey<T>(NO_QUAIL_ID, (T) false), quailID(NO_QUAIL_ID), editable(false) { unit = typeid(this->get()).name(); }
 
         // SlateKeys own mutexes which cannot be copied (assignment is deleted)
         // need to manually define assignment for all descendants
@@ -39,11 +39,12 @@ class EndPoint : public SlateKey<T>{
             JsonObject obj = dst.createNestedObject(this->id);
             obj["valu"] = this->get();
             obj["desc"] = desc;
-            obj["unit"] = typeid(this->get()).name();
+            obj["unit"] = unit;
             obj["qpin"] = quailID;
             obj["edit"] = editable;
         }
 
+        std::string unit;
     private:
         std::string quailID;
         std::string desc;
