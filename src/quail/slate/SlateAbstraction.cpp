@@ -32,6 +32,9 @@ SensorSlate& SensorSlate::operator<<(const float in) {
     // ntg << ntg() + avg() * window.dt();
     cal << val.get() + ofs.get();
 
+    // this shouldn't be happening every looop but corners need to be cut
+    cal.unit = val.unit;
+
     return *this;
 };
 
