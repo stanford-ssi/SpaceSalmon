@@ -17,7 +17,10 @@ SensorSlate::SensorSlate(const std::string id, const std::string quailID, const 
     // cal = EndDerived("cal", 0.0);
     // ofs = EndDerived("ofs", 0.0);
 
-    cal = EndPoint<float>("cal", quailID, 0.0, true, desc + " Calibrated");
+    // Ideally both would be editable
+    // you could write zero to the calibrated one to calibrate it to that value
+    // or write to the offset one to set a given offset
+    cal = EndPoint<float>("cal", quailID, 0.0, false, desc + " Calibrated");
     ofs = EndPoint<float>("ofs", NO_QUAIL_ID, 0.0, true, "ofset");
 };
 
@@ -27,10 +30,8 @@ SensorSlate& SensorSlate::operator<<(const float in) {
     avg << window.avg();
     // drv << window.delta();
     // ntg << ntg() + avg() * window.dt();
-
     cal << val.get() + ofs.get();
 
-    Serial.printf("here %s, %f\n", val.unit, cal.get());
     return *this;
 };
 
