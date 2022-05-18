@@ -41,7 +41,7 @@ typedef enum {
     SMALL = 130,
     MEDIUM = 220, // Edelbrook
     LARGE = 180, // Pro BigShot
-    ABORT = 255 // don't pwm, just digital write
+    ABORT_VALVE = 255 // don't pwm, just digital write
 } solenoid_pwm_t; // making solenoid pwm values more readable, values taken from old quail
 
 // sensing
@@ -60,12 +60,27 @@ typedef enum {
 
 // sequence
 #define UPDATE_SEQS 0b01
+#define MAWP 700
+#define FSM_PTM 100
+#define FSM_FREQ 10
 
-enum SEQUENCE_STATE {
-    RUNNING = 1,
-    SUSPEND = 0,
-    DELETE = -1,
-} typedef SEQUENCE_STATE;
+typedef enum {
+    ENGINE_IDLE,
+    ENGINE_FILL,
+    ENGINE_FULL,
+    LAUNCH,
+    ABORT
+} EngineState;
+
+typedef enum {
+    TANK_EMPTY,
+    TANK_DRAIN,
+    TANK_FILL,
+    TANK_FULL,
+    TANK_BLEED,
+    TANK_READY
+} TankState;
+
 
 //slate 
 #define NO_QUAIL_ID ""

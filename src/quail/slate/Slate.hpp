@@ -9,24 +9,25 @@
 #include <functional>
 #include <string>
 
-class Slate : public Container<7>
+class Slate : public Container<6>
 {
 public:
-    class Sensors : public Container<12> // need to increment this when changing number of sensors
+    class Sensors : public Container<13> // need to increment this when changing number of sensors
     {
     public:
-        SensorSlate pt1 = SensorSlate("PT1", "PT1", "first PT");
-        SensorSlate pt2 = SensorSlate("PT2", "PT2", "second PT");
-        SensorSlate pt3 = SensorSlate("PT3", "PT3", "my PT");
-        SensorSlate pt4 = SensorSlate("PT4", "PT4", "my PT");
-        SensorSlate pt5 = SensorSlate("PT5", "PT5", "my PT");
-        SensorSlate pt6 = SensorSlate("PT6", "PT6", "my PT");
-        SensorSlate pt7 = SensorSlate("PT7", "PT7", "my PT");
-        SensorSlate pt8 = SensorSlate("PT8", "PT8", "my PT");
+        SensorSlate pt1 = SensorSlate("PT1", "PT1", "GN2 Source");
+        SensorSlate pt2 = SensorSlate("PT2", "PT2", "GN2 Postfill");
+        SensorSlate pt3 = SensorSlate("PT3", "PT3", "Ox Source");
+        SensorSlate pt4 = SensorSlate("PT4", "PT4", "Ox Postfill");
+        SensorSlate pt5 = SensorSlate("PT5", "PT5", NO_QUAIL_ID);
+        SensorSlate pt6 = SensorSlate("PT6", "PT6", NO_QUAIL_ID);
+        SensorSlate pt7 = SensorSlate("PT7", "PT7", NO_QUAIL_ID);
+        SensorSlate pt8 = SensorSlate("PT8", "PT8", NO_QUAIL_ID);
         SensorSlate lc1 = SensorSlate("LC1", "LC1", "left LC");
         SensorSlate lc2 = SensorSlate("LC2", "LC2", "right LC");
-        SensorSlate tc1 = SensorSlate("TC1", "TC1", "my TC");
-        SensorSlate tc2 = SensorSlate("TC2", "TC2", "my TC");
+        SensorSlate lcs = SensorSlate("LCSum", NO_QUAIL_ID, "Thrust+Weight");
+        SensorSlate tc1 = SensorSlate("TC1", "TC1", "Ox Bottle");
+        SensorSlate tc2 = SensorSlate("TC2", "TC2", "Ox Tank");
         Sensors(const std::string id) : Container(id, {
             std::ref(pt1),
             std::ref(pt2),
@@ -38,9 +39,17 @@ public:
             std::ref(pt8),
             std::ref(lc1),
             std::ref(lc2),
+            std::ref(lcs),
             std::ref(tc1),
             std::ref(tc2)
-        }){};
+        }){ 
+            lcs.updateUnits("N");
+        };
+
+        void dump(const JsonVariant dst) override{
+            lcs << lc1() + lc2();
+            Container::dump(dst);
+        }
     } sense = Sensors("sensors");
 
     class Squibs : public Array<Igniter, NUM_EM_CHANNELS> {
@@ -77,49 +86,29 @@ public:
             }){};
 
         private:
-            Solenoid s1 = Solenoid("S1", "S1", 0, "My Solenoid");            
-            Solenoid s2 = Solenoid("S2", "S2", 1, "My Solenoid");
-            Solenoid s3 = Solenoid("S3", "S3", 2, "My Solenoid");
-            Solenoid s4 = Solenoid("S4", "S4", 3, "My Solenoid");
-            Solenoid s5 = Solenoid("S5", "S5", 4, "My Solenoid");
-            Solenoid s6 = Solenoid("S6", "S6", 5, "My Solenoid");
-            Solenoid s7 = Solenoid("S7", "S7", 6, "My Solenoid");
-            Solenoid s8 = Solenoid("S8", "S8", 7);
+            Solenoid s1 = Solenoid("S1", "S1", 0, "Fuel Main");            
+            Solenoid s2 = Solenoid("S2", "S2", 1, "Ox Main");
+            Solenoid s3 = Solenoid("S3", "S3", 2, "Fuel Fill");
+            Solenoid s4 = Solenoid("S4", "S4", 3, "Fuel Bleed");
+            Solenoid s5 = Solenoid("S5", "S5", 4, "Ox Fill");
+            Solenoid s6 = Solenoid("S6", "S6", 5, "Ox Bleed");
+            Solenoid s7 = Solenoid("S7", "S7", 6);
+            Solenoid s8 = Solenoid("S8", "S8", 7, "OX Vent");
             Solenoid s9 = Solenoid("S9", "S9", 8);
             Solenoid s10 = Solenoid("S10", "S10", 9);
             Solenoid s11 = Solenoid("S11", "S11", 10);
             Solenoid s12 = Solenoid("S12", "S12", 11);
     } valves = Valves("valves");
 
-    class ADCIn : public Array<EndSensor, 4> {
+    class Sequence : public Container<3> {
         public:
-            ADCIn(const std::string id) : Array(id, {
-                std::ref(es1),
-                std::ref(es2),
-                std::ref(es3),
-                std::ref(es4)
-            }){};
-
-        private:
-            EndSensor es1 = EndSensor("ADC1", "ADC1", 0.0, "ADC one");
-            EndSensor es2 = EndSensor("ADC2", "ADC2", 0.0, "ADC two");
-            EndSensor es3 = EndSensor("ADC3", "ADC3", 0.0, "ADC #3");
-            EndSensor es4 = EndSensor("ADC4", "ADC4", 0.0, "ADC 4?");
-    } adc_in = ADCIn("adc_in");
-
-    class Sequence : public Container<5> {
-        public:
-            EndPoint<SEQUENCE_STATE> redline = EndPoint<SEQUENCE_STATE>("REDLINE", NO_QUAIL_ID, RUNNING, true);
-            EndPoint<SEQUENCE_STATE> abort = EndPoint<SEQUENCE_STATE>("ABORT", NO_QUAIL_ID, SUSPEND, false);
-            EndPoint<SEQUENCE_STATE> dischargeOx = EndPoint<SEQUENCE_STATE>("DISCHARGEOX", NO_QUAIL_ID, SUSPEND, false);
-            EndPoint<SEQUENCE_STATE> dischargeFuel = EndPoint<SEQUENCE_STATE>("DISCHARGEFUEL", NO_QUAIL_ID, SUSPEND, false);
-            EndPoint<SEQUENCE_STATE> launch = EndPoint<SEQUENCE_STATE>("LAUNCH", NO_QUAIL_ID, SUSPEND, false);
+            EndPoint<EngineState> engineState = EndPoint<EngineState>("Engine State", NO_QUAIL_ID, ENGINE_IDLE, true);
+            EndPoint<TankState> oxState = EndPoint<TankState>("Ox Tank State", NO_QUAIL_ID, TANK_EMPTY, true);
+            EndPoint<float> oxOpPressure = EndPoint<float>("Ox Operating Pressure", NO_QUAIL_ID, MAWP / 2, true);
             Sequence(const std::string id) : Container(id, {
-                std::ref(redline),
-                std::ref(abort),
-                std::ref(dischargeOx),
-                std::ref(dischargeFuel),
-                std::ref(launch)
+                std::ref(engineState),
+                std::ref(oxState),
+                std::ref(oxOpPressure)
             }){};
     } sequence = Sequence("sequence");
 
@@ -151,7 +140,6 @@ public:
         std::ref(sense),
         std::ref(valves),  
         std::ref(squib),
-        std::ref(adc_in), 
         std::ref(sequence),
         std::ref(battery),
         std::ref(board)

@@ -5,7 +5,7 @@ uint8_t PressureSensor::cfg = UNCONFIGURED; // this sensor type is initially unc
 
 PressureSensor::PressureSensor(Ad7124::InputSel ainp, PressureRange range, SensorSlate &slate) : 
     Sensor(slate.id.c_str(), ainp, Ad7124::AVSSInput, slate), range(range) {
-        this->slate.val.unit = "Pa";
+        slate.updateUnits("Pa");
 };
 
 void PressureSensor::configure() {

@@ -20,6 +20,7 @@ class SensorSlate : public Container<4> {
 
         SensorSlate(const std::string, const std::string quailID, const std::string desc);
         SensorSlate &operator<<(const float in);
+        void updateUnits(const std::string unit);
         float operator()();
 
     private:

@@ -20,13 +20,14 @@ class System;
 #include "rx_tx_log/LoggerTask.hpp"
 #include "rx_tx_log/TXTask.hpp"
 #include "rx_tx_log/RXTask.hpp"
+#include "fsms/EngineFSM.hpp"
+#include "fsms/OxFSM.hpp"
 #ifdef ETHERNET_TXRX
     #include "rx_tx_log/EthernetTask.hpp"
 #endif
 #ifdef RADIO_TXRX
     #include "rx_tx_log/RadioTask.hpp"
 #endif 
-// #include "SequenceLauncher.hpp"
 #include "slate/Slate.hpp"
 #include "config.h"
 
@@ -46,9 +47,9 @@ public:
 
     LoadSensor LC1 = LoadSensor(Ad7124::AIN12Input, slate.sense.lc1);
     LoadSensor LC2 = LoadSensor(Ad7124::AIN13Input, slate.sense.lc2);
-    PressureSensor PT1 = PressureSensor(Ad7124::AIN1Input, RANGE_1000, slate.sense.pt1);
+    PressureSensor PT1 = PressureSensor(Ad7124::AIN1Input, RANGE_2500, slate.sense.pt1);
     PressureSensor PT2 =  PressureSensor(Ad7124::AIN2Input, RANGE_1000, slate.sense.pt2);
-    PressureSensor PT3 =  PressureSensor(Ad7124::AIN3Input, RANGE_1000, slate.sense.pt3);
+    PressureSensor PT3 =  PressureSensor(Ad7124::AIN3Input, RANGE_2500, slate.sense.pt3);
     PressureSensor PT4 =  PressureSensor(Ad7124::AIN4Input, RANGE_1000, slate.sense.pt4);
     PressureSensor PT5 =  PressureSensor(Ad7124::AIN5Input, RANGE_1000, slate.sense.pt5);
     PressureSensor PT6 =  PressureSensor(Ad7124::AIN6Input, RANGE_1000, slate.sense.pt6);
@@ -83,7 +84,6 @@ public:
         
         ValveTask valvetask = ValveTask(6, 22); // controls solenoids 
         FireTask firetask = FireTask(6, 20); //fires squibs for ematches
-        // SequenceLauncher seqlauncher  = SequenceLauncher(3);
         
         #ifdef RADIO_TXRX // if using radio, create a RadioTask
             RadioTask radiotask = RadioTask(4); //collects and sends information over radio
@@ -94,6 +94,9 @@ public:
         TXTask txtask = TXTask(5, 50); //regularly collects state data, logs and sends over USB, radio, or ethernet
         RXTask rxtask = RXTask(5, 50); //processes commands from USB, radio, or ethernet
         LoggerTask logger = LoggerTask(1); // logs data to SD during idle time, writes USB data as available
+    
+        // EngineFSM engine = EngineFSM(5);
+        // OxFSM oxtank = OxFSM(2);
     };
 
     Tasks tasks;

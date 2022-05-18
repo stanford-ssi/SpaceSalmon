@@ -4,7 +4,7 @@ uint8_t ThermalSensor::cfg = UNCONFIGURED; // this sensor type is initially unco
 
 ThermalSensor::ThermalSensor(Ad7124::InputSel ainp, SensorSlate &slate) : 
     Sensor(slate.id.c_str(), ainp, Ad7124::AIN0Input, slate){
-        this->slate.val.unit = "C";
+        slate.updateUnits("C");
 };
 
 void ThermalSensor::configure() {
@@ -21,6 +21,6 @@ void ThermalSensor::convertToFloat(uint32_t adc_dataword)
 {
     float voltage = Ad7124Chip::toVoltage(adc_dataword, 1, 3.6, true);
     //TODO: make this calculation variable based on range, set by this->range
-    float temp = (voltage * 200.0) + 273.15; // 5mV/degK
+    float temp = (voltage * 200.0); // 5mV/degK
     slate << temp;
 };

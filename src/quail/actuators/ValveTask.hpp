@@ -29,6 +29,8 @@ class ValveTask : public Task<2000> {
         Array<Solenoid, NUM_SOLENOIDS> &slate;
         friend class PulseEndpoint;
         friend class Solenoid;
+        friend class EngineFSM;
+        friend class OxFSM;
 
         StaticEventGroup_t evBuf;
         EventGroupHandle_t valveManager;
@@ -36,6 +38,10 @@ class ValveTask : public Task<2000> {
         bool updateSolenoid(uint8_t ch, bool update, solenoid_state_t state);
 
         void _updateValves(uint8_t index);
+        void _updateValves() {
+            for (uint8_t valve = 0; valve < NUM_SOLENOIDS; valve++)
+                _updateValves(valve);
+        }
         bool _updatePulse(uint8_t ch);
         bool _updatePower(uint8_t ch);
         bool _pulseSolenoid(uint8_t ch);

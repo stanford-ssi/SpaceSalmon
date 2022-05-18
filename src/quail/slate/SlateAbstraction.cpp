@@ -30,7 +30,7 @@ SensorSlate& SensorSlate::operator<<(const float in) {
     avg << window.avg();
     // drv << window.delta();
     // ntg << ntg() + avg() * window.dt();
-    cal << val.get() + ofs.get();
+    cal << avg.get() + ofs.get();
 
     // this shouldn't be happening every looop but corners need to be cut
     cal.unit = val.unit;
@@ -38,7 +38,16 @@ SensorSlate& SensorSlate::operator<<(const float in) {
     return *this;
 };
 
-float SensorSlate::operator()() { return avg(); }
+void SensorSlate::updateUnits(const std::string unit) {
+    val.unit = unit;
+    avg.unit = unit;
+    cal.unit = unit;
+    ofs.unit = unit;
+    // drv.unit = unit + "/s";
+    // ntg.unit = unit + "s";
+}
+
+float SensorSlate::operator()() { return cal(); }
 
 
 Igniter::Igniter(const std::string id, const std::string quailID, const std::string desc) : Container(id, {
