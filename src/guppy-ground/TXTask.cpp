@@ -60,17 +60,10 @@ void TXTask::activity()
                     JsonVariant data = doc["data"];
                     if (!data.isNull())
                     {
-                        // char newFreq[255];
-                        // char temp[255];
-                        // strcpy(temp,data.as<char *>());
-                        // int byteLen = rbase64_decode(newFreq, temp, strlen(temp));
-                        // // radio_settings_t newsettings;
-                        // log(stats, newFreq);
                         packet_t packet;
                         char temp[255];
                         strcpy(temp,data.as<char *>());
                         packet.len = rbase64_decode((char *)packet.data, temp, strlen(temp));
-                        sys.tasks.radio.sendPacket(packet);
 
                         char* freqMsg = (char*) packet.data;
                         char* endptr;
@@ -79,7 +72,11 @@ void TXTask::activity()
                             radio_settings_t newSettings;
                             newSettings.freq = newDoubleFreq;
                             sys.tasks.radio.setSettings(newSettings);
-                            log(stats, "this is a test");
+
+                            // send packets cause for some reason that works
+                            sys.tasks.radio.sendPacket(packet);
+                            vTaskDelay(400);
+                            sys.tasks.radio.sendPacket(packet);
                         }
                     }  
                 }

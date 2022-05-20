@@ -173,6 +173,7 @@ def callback(event):
     if len(prefix.get()) > 0:
         msg = prefix.get() + ": " + msg
         inp_id = "tx"
+    # if theres text in both boxes send only the command
     elif len(radioInpFreq.get()) > 0:
         msg = radioInpFreq.get()
         inp_id = "freq_upd"

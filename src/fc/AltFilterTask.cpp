@@ -26,6 +26,7 @@ void AltFilterTask::activity()
     dataBuffer.receive(data, true);
     filter.init(data);
 
+    bool config_locked = true;
     while (true)
     { //Flight Control Loop: runs every sensor data cycle
         dataBuffer.receive(data, true);
@@ -36,12 +37,15 @@ void AltFilterTask::activity()
         
         // whats the right way to access 'armed'? sys.armed.get(.)? or just use (bool)sys.armed?
         // also whats the best condition. Armed? Waiting state? Armed and Waiting state?
-        if ((bool)sys.armed == false) {
+        if (config_locked == true && (bool)sys.armed == false) {
+            config_locked = false;
+        } else if (config_locked == false && (bool)sys.armed == true) {
             if (ema_accel > 0) {
                 negate_accel.post(false);
             } else {
                 negate_accel.post(true);
             }
+            config_locked = true;
         }
 
         filter.update(data);
