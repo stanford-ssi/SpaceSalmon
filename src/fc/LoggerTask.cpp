@@ -224,8 +224,14 @@ void LoggerTask::readSHITL()
                     {
                         data.tick = tick;
                         data.adxl1_data.y = adxl_a_2;
-                        data.bmp1_data.pressure = bmp_p;
-                        data.bmp2_data.pressure = bmp_p;
+
+                        #ifdef MS5611
+                            data.ms1_data.pressure = bmp_p;
+                            data.ms2_data.pressure = bmp_p;
+                        #else
+                            data.bmp1_data.pressure = bmp_p;
+                            data.bmp2_data.pressure = bmp_p;
+                        #endif
                         sys.tasks.filter.queueSensorData(data);
                     }
                 }

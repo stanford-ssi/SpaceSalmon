@@ -1,5 +1,6 @@
-#include "AltFilter.hpp"
 #include "main.hpp"
+#include "AltFilter.hpp"
+
 
 AltFilter::AltFilter(){
 
@@ -77,8 +78,12 @@ void AltFilter::kalmanUpdate(){
 void AltFilter::prefilter(SensorData& data){
   data_time = data.tick;
   //double pres = (data.bmp1_data.pressure + data.bmp2_data.pressure)/2;
-  double pres = data.bmp2_data.pressure;
-  
+  #ifdef MS5611
+    double pres = data.ms2_data.pressure;
+  #else
+    double pres = data.bmp2_data.pressure;
+  #endif
+
   if(signbit(pres)){
     pres = 0.0;
   }
