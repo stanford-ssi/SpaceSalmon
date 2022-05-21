@@ -11,8 +11,17 @@ class EngineFSM : public Task<500> {
 
     private:
         EndPoint<EngineState>& state;
+        Igniter& igniter;
+        EndPoint<bool>& comms;
+        Solenoid& safe;
+
         EndPoint<TankState>& oxState;
         Solenoid& oxMain;
 
+        EndPoint<TankState>& fuelState;
+        Solenoid& fuelMain;
+
         TickType_t lastTick = 0;
+
+        void prepTank(EndPoint<TankState>& tankState);
 };

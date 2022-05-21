@@ -11,7 +11,7 @@
 #include "Array.hpp"
 #include "../slate/SlateAbstractions.hpp"
 
-class ValveTask : public Task<2000> {
+class ValveTask : public Task<1000> {
     public:
         ValveTask(uint8_t priority, uint8_t valve_pin_start);
 
@@ -30,7 +30,7 @@ class ValveTask : public Task<2000> {
         friend class PulseEndpoint;
         friend class Solenoid;
         friend class EngineFSM;
-        friend class OxFSM;
+        friend class TankFSM;
 
         StaticEventGroup_t evBuf;
         EventGroupHandle_t valveManager;

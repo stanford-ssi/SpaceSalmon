@@ -42,7 +42,7 @@ public:
             std::ref(lcs),
             std::ref(tc1),
             std::ref(tc2)
-        }){ 
+        }){
             lcs.updateUnits("N");
         };
 
@@ -94,21 +94,28 @@ public:
             Solenoid s6 = Solenoid("S6", "S6", 5, "Ox Bleed");
             Solenoid s7 = Solenoid("S7", "S7", 6);
             Solenoid s8 = Solenoid("S8", "S8", 7, "OX Vent");
-            Solenoid s9 = Solenoid("S9", "S9", 8);
+            Solenoid s9 = Solenoid("S9", "S9", 8, "Safe To Approach");
             Solenoid s10 = Solenoid("S10", "S10", 9);
             Solenoid s11 = Solenoid("S11", "S11", 10);
             Solenoid s12 = Solenoid("S12", "S12", 11);
     } valves = Valves("valves");
 
-    class Sequence : public Container<3> {
+    class Sequence : public Container<5> {
         public:
             EndPoint<EngineState> engineState = EndPoint<EngineState>("Engine State", NO_QUAIL_ID, ENGINE_IDLE, true);
-            EndPoint<TankState> oxState = EndPoint<TankState>("Ox Tank State", NO_QUAIL_ID, TANK_EMPTY, true);
-            EndPoint<float> oxOpPressure = EndPoint<float>("Ox Operating Pressure", NO_QUAIL_ID, MAWP / 2, true);
+            
+            EndPoint<TankState> oxState = EndPoint<TankState>("Ox Tank State", NO_QUAIL_ID, TANK_IDLE, false);
+            EndPoint<float> oxOpPressure = EndPoint<float>("Ox Operating Pressure", NO_QUAIL_ID, 0.9 * MAWP, true);
+            
+            EndPoint<TankState> fuelState = EndPoint<TankState>("Fuel Tank State", NO_QUAIL_ID, TANK_IDLE, false);
+            EndPoint<float> fuelOpPressure = EndPoint<float>("Fuel Operating Pressure", NO_QUAIL_ID, 0.9 * MAWP, true);
+            
             Sequence(const std::string id) : Container(id, {
                 std::ref(engineState),
                 std::ref(oxState),
-                std::ref(oxOpPressure)
+                std::ref(oxOpPressure),
+                std::ref(fuelState),
+                std::ref(fuelOpPressure)
             }){};
     } sequence = Sequence("sequence");
 
@@ -122,15 +129,17 @@ public:
             }){};
     } battery = Battery("battery");
 
-    class Board : public Container<3> {
+    class Board : public Container<4> {
         public:
             EndPoint<bool> logging = EndPoint<bool>("logging", NO_QUAIL_ID, false, false);
-            EndPoint<unsigned> error = EndPoint<unsigned>("error", NO_QUAIL_ID, 0, true);
+            EndPoint<unsigned> error = EndPoint<unsigned>("error", NO_QUAIL_ID, 0, false);
             EndPoint<unsigned> tick = EndPoint<unsigned>("tick", NO_QUAIL_ID, 0, false);
+            EndPoint<bool> comms = EndPoint<bool>("comms", NO_QUAIL_ID, true, true);
             Board(const std::string id) : Container(id, {
                 std::ref(logging),
                 std::ref(error),
-                std::ref(tick)
+                std::ref(tick),
+                std::ref(comms)
             }){};
     } board = Board("board");
 

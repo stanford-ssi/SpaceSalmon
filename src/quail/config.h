@@ -63,16 +63,19 @@ typedef enum {
 #define MAWP 700
 #define FSM_PTM 100
 #define FSM_FREQ 10
+#define FIRE_DELAY 1500
 
 typedef enum {
     ENGINE_IDLE,
     ENGINE_FILL,
     ENGINE_FULL,
     LAUNCH,
+    MAIN_ACTUATION,
     ABORT
 } EngineState;
 
 typedef enum {
+    TANK_IDLE,
     TANK_EMPTY,
     TANK_DRAIN,
     TANK_FILL,
@@ -96,6 +99,7 @@ typedef enum {
  // TX RX
  #define ETHERNET_TXRX
  // #define RADIO_TXRX
+ #define COMM_RESET 18000
 
  // networking
  #define MY_SLATE_PORT 1000

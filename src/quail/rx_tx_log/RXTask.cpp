@@ -1,8 +1,19 @@
 #include "RXTask.hpp"
 #include "main.hpp"
 #include <rBase64.h>
+#include <timers.h>
 
-RXTask::RXTask(uint8_t priority, uint16_t rx_interval):Task(priority, "RX"), rx_interval_ms(rx_interval){};
+RXTask::RXTask(uint8_t priority, uint16_t rx_interval):Task(priority, "RX"), rx_interval_ms(rx_interval){
+    commTimer = xTimerCreateStatic(
+        "Communication Timeout Reset TImer",
+        COMM_RESET, // default time is 5 mins
+        false, // timer reaching zero triggers reset, no need for reload
+        0, // timer id, only one timer for callback so unimportant
+        [](TimerHandle_t xTimer){sys.slate.board.comms << false;}, // callback as lambda for succinctness
+        &(commTimerBuf)
+    );
+    xTimerStart(commTimer, NEVER);
+};
 
 void RXTask::activity(){
     TickType_t lastSensorTime = xTaskGetTickCount();
@@ -41,12 +52,14 @@ void RXTask::readInput(){
     // Should always receive the format {id:<some string>, data: <base64-encoded-string parsable as JSON>}
     #ifdef RADIO_TXRX
         while(sys.tasks.radiotask.packetAvailable()){
+            xTimerReset(commTimer, NEVER);
             packet_t packet_in;
             sys.tasks.radiotask.waitForPacket(packet_in); 
             sendcmd((char*)packet_in.data);
         }
     #endif
     while(Serial.available()){
+        xTimerReset(commTimer, NEVER);
         char packet_in[MAX_CMD_LENGTH];
         size_t chars_read = Serial.readBytesUntil('\n',packet_in, MAX_CMD_LENGTH); // endline indicates end of a json cmd
         if(chars_read > 0 && chars_read < MAX_CMD_LENGTH){
@@ -66,6 +79,8 @@ void RXTask::readInput(){
     }
     #ifdef ETHERNET_TXRX
         while(sys.tasks.ethernettask.cmdAvailable()) {
+            xTimerReset(commTimer, NEVER);
+
             char cmdStr[MAX_CMD_LENGTH];
             sys.tasks.ethernettask.waitForCmd(cmdStr);
 

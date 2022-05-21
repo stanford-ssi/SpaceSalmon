@@ -32,9 +32,6 @@ SensorSlate& SensorSlate::operator<<(const float in) {
     // ntg << ntg() + avg() * window.dt();
     cal << avg.get() + ofs.get();
 
-    // this shouldn't be happening every looop but corners need to be cut
-    cal.unit = val.unit;
-
     return *this;
 };
 
@@ -77,6 +74,7 @@ PulseEndpoint& PulseEndpoint::operator<<(const JsonVariant src) {
 
 PulseEndpoint& PulseEndpoint::operator<<(const uint16_t in) {
     this->operator<<(in);
+    sys.tasks.valvetask._updatePulse(index);
     return *this;
 };
 
