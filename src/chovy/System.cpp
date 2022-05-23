@@ -31,10 +31,10 @@ int main(void)
 	pinMode(4, OUTPUT);
 
 	// COTS arming
-	// pinMode(49, OUTPUT);
-	// pinMode(50, OUTPUT);
-	// digitalWrite(49, HIGH);
-	// digitalWrite(50, HIGH);
+	digitalWrite(35, LOW);
+	digitalWrite(36, LOW);
+	pinMode(35, OUTPUT);
+	pinMode(36, OUTPUT);
 
 	//start all RTOS tasks (this never returns)
 	vTaskStartScheduler();

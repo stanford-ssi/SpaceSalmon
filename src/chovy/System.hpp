@@ -23,7 +23,7 @@ class System;
 //#include "GPSTask.hpp"
 #include "TelemetryTask.hpp"
 #include "RadioTask.hpp"
-//#include "ArmingTask.hpp"
+#include "ArmingTask.hpp"
 
 #include "ssi_adc.h"
 
@@ -71,7 +71,7 @@ public:
         //GPSTask gps = GPSTask(3);
         TelemetryTask telem = TelemetryTask(3);
         RadioTask radio = RadioTask(3);
-        //ArmingTask arm = ArmingTask(3);
+        ArmingTask arm = ArmingTask(3);
     };
 
     Sensors sensors;

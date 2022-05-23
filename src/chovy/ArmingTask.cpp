@@ -9,13 +9,17 @@ void ArmingTask::activity(){
         
         if(rx_pkt.data[0] == 'A'){
             // arm COTS (persistently)
-	        digitalWrite(35, HIGH);
+	        digitalWrite(36, HIGH);
+            vTaskDelay(100);
+            digitalWrite(36, LOW);
             // 
             sys.armed.post(true);
 
         }else if (rx_pkt.data[0] == 'D'){
             // disarm COTS
-            digitalWrite(36, HIGH);
+            digitalWrite(35, HIGH);
+            vTaskDelay(100);
+            digitalWrite(35, LOW);
             // disarm squib driver
             sys.armed.post(false);
         }
