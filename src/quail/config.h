@@ -64,6 +64,8 @@ typedef enum {
 #define FSM_PTM 100
 #define FSM_FREQ 10
 #define FIRE_DELAY 4000
+#define LOAD_EQUILIBRIUM_DELAY 1000
+#define OX_FILL_DELAY 10000
 
 typedef enum {
     ENGINE_ABORT,

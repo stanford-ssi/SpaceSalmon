@@ -31,6 +31,7 @@ class ValveTask : public Task<1000> {
         friend class Solenoid;
         friend class EngineFSM;
         friend class TankFSM;
+        friend class VaPakFSM;
 
         StaticEventGroup_t evBuf;
         EventGroupHandle_t valveManager;

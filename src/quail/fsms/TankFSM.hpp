@@ -3,11 +3,11 @@
 #include "Task.hpp"
 #include "../slate/SlateEndpoints.hpp"
 #include "../slate/SlateAbstractions.hpp"
+#include "TankGeneric.hpp"
 
 
-class TankFSM : public Task<500> {
+class TankFSM : public TankGeneric {
     public:
-        TankFSM(uint8_t priority);
         TankFSM(uint8_t priority,
             EndPoint<TankState>& state, 
             EndPoint<float>& opPress,
@@ -15,15 +15,9 @@ class TankFSM : public Task<500> {
             Solenoid& fillSol,
             Solenoid& ventSol,
             Solenoid& bleedSol);
-        void activity();
+        void activity() override;
 
     private:
-        EndPoint<TankState>& state;
-        EndPoint<float>& opPress;
-        SensorSlate& press;
-        Solenoid& fillSol;
-        Solenoid& ventSol;
-        Solenoid& bleedSol;
-
-        TickType_t lastTick = 0;
+        bool inBounds() override;
+        SensorSlate weight = SensorSlate(NO_QUAIL_ID, NO_QUAIL_ID, NO_QUAIL_ID);
 };

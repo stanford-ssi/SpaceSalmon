@@ -1,26 +1,22 @@
-#include "TankFSM.hpp"
+#include "VaPakFSM.hpp"
 #include "main.hpp"
 
-// different tanks are parametrized by different Endpoints
-TankFSM::TankFSM(uint8_t priority,
-    EndPoint<TankState>& state, 
-    EndPoint<float>& opPress,
-    SensorSlate& press,
-    Solenoid& fillSol,
-    Solenoid& ventSol,
-    Solenoid& bleedSol) : 
-    TankGeneric(priority, state, opPress, press, weight, fillSol, ventSol, bleedSol)
-    {
-        weight << 0;
-    }
+// default constructor is for ox tank in launch config
+// TankFSM::TankFSM(uint8_t priority) : TankGeneric(priority, 
+//     sys.slate.sequence.oxState, 
+//     sys.slate.sequence.oxOpPressure,
+//     sys.slate.sense.pt4,
+//     sys.slate.valves[4],
+//     sys.slate.valves[7],
+//     sys.slate.valves[5]) {};
 
-
-void TankFSM::activity() {
+void VaPakFSM::activity() {
     lastTick = xTaskGetTickCount();
+    ZERO_PRESS = 0.1 * MAWP;
 
     while (true) {
         if (press() > MAWP) state << TANK_DRAIN;
-        ZERO_PRESS = 0.1 * op();
+        ZERO_WEIGHT = 0.1 * op();
 
         switch(state()) {
             case TANK_IDLE_EMPTY:  // only way to get out of idle is through user or tank command
@@ -33,6 +29,8 @@ void TankFSM::activity() {
             case TANK_EMPTY:
                 if(press() > ZERO_PRESS) {
                     state << TANK_DRAIN;
+                } else {
+                    weight.ofs << -weight.val();
                 }
                 break;
             case TANK_DRAIN:
@@ -44,20 +42,20 @@ void TankFSM::activity() {
                 }
                 break;
             case TANK_FILL:
-                bleedSol.state << CLOSED;
-                if (!inBounds()) {
+                vTaskDelayUntil(&lastBoundsCheck, OX_FILL_DELAY);
+                if (!inBounds()) { // all solenoids closed after bounds check
                     if (press() > op()) {
                         ventSol.time << FSM_PTM;
                     } else {
-                        fillSol.time << FSM_PTM;
+                        fillSol.state << OPEN;
+                        ventSol.state << OPEN;
                     }
                 } else {
-                    fillSol.state << CLOSED;
-                    ventSol.state << CLOSED;
                     state << TANK_FULL;
                 }
                 break;
             case TANK_FULL:
+                vTaskDelayUntil(&lastBoundsCheck, OX_FILL_DELAY);
                 if (!inBounds()) {
                     state << TANK_FILL;
                 } 
@@ -79,6 +77,12 @@ void TankFSM::activity() {
     }
 }
 
-bool TankFSM::inBounds() {
-    return abs(press() - press()) <= ZERO_PRESS;
+bool VaPakFSM::inBounds() {
+    fillSol.state << CLOSED;
+    ventSol.state << CLOSED;
+    bleedSol.state << CLOSED;
+    sys.tasks.valvetask._updateValves();
+    vTaskDelay(LOAD_EQUILIBRIUM_DELAY);
+    lastBoundsCheck = xTaskGetTickCount();
+    return abs(weight() - op()) < ZERO_WEIGHT;
 }
