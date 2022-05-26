@@ -35,7 +35,12 @@ void TankFSM::activity() {
         const float ZERO = 0.1 * opPress();
 
         switch(state()) {
-            case TANK_IDLE:  // only way to get out of idle is through user or tank command
+            case TANK_IDLE_EMPTY:  // only way to get out of idle is through user or tank command
+                if(press() > MAWP / 2) {
+                    state << TANK_IDLE_PRESS;
+                }
+                break;
+            case TANK_IDLE_PRESS: // if at any point idle tank is pressurized assume pressurized till reset
                 break;
             case TANK_EMPTY:
                 if(press() > ZERO) {

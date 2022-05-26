@@ -16,55 +16,67 @@ void EngineFSM::activity() {
     lastTick = xTaskGetTickCount();
 
     while (true) {
-        if(!comms()) state << ABORT;
+        if(!comms()) state << ENGINE_ABORT;
 
         switch(state()) {
-            case ENGINE_IDLE: // only way to get out of idle is through user command
-                safe.state << CLOSED;
-                break;
-            case ENGINE_FILL: // if tanks are not full, fill them
+            case ENGINE_ABORT: // drain tanks and reset quail
                 safe.state << OPEN;
-                if (oxState() != TANK_FULL &&
-                    oxState() != TANK_BLEED &&
-                    oxState() != TANK_READY) {
-                    oxState << TANK_FILL;
-                } else if(fuelState() != TANK_FULL &&
-                    fuelState() != TANK_BLEED &&
-                    fuelState() != TANK_READY) {
-                    fuelState << TANK_FILL;
-                } else {
-                    state << ENGINE_FULL;
-                } 
-                break;
-            case ENGINE_FULL: // only way out of full is user cmd
-                safe.state << OPEN;
-                break;
-            case ENGINE_FIRE: // arm igniter, prep tanks, fire
-                safe.state << OPEN;
-                igniter.arm << ARMED;
-                prepTank(oxState);
-                prepTank(fuelState);
-                if (oxState() == TANK_READY && fuelState() == TANK_READY) {
-                    igniter.state << FIRED;
-                    state << MAIN_ACTUATION;
-                }
-                break;
-            case MAIN_ACTUATION: // empty tanks
-                safe.state << OPEN;
-                vTaskDelay(FIRE_DELAY);
-                oxMain.state << OPEN;
-                fuelMain.state << OPEN;
-                break;
-            case ABORT: // drain tanks and reset quail
-                safe.state << OPEN;
-                if(oxState() != TANK_EMPTY) {
+                if(possiblyFull(oxState)) {
                     oxState << TANK_DRAIN;
-                } else  if (fuelState() != TANK_EMPTY) {
+                } else  if (possiblyFull(fuelState)) {
                     fuelState << TANK_DRAIN;
                 } else {
                     safe.state << CLOSED;
                     NVIC_SystemReset();
                 }
+                lastState = ENGINE_ABORT;
+                break;
+            case ENGINE_IDLE: // only way to get out of idle is through user command
+                if(safeToApproach(oxState) && safeToApproach(fuelState)){
+                    safe.state << CLOSED;
+                } else {
+                    safe.state << OPEN;
+                }
+                lastState = ENGINE_IDLE;
+                break;
+            case ENGINE_FILL: // if ox tank is not full, fill
+                safe.state << OPEN;
+                if (!certainlyFull(oxState)) {
+                    oxState << TANK_FILL;
+                } else {
+                    state << ENGINE_FULL;
+                } 
+                lastState = ENGINE_FILL;
+                break;
+            case ENGINE_FULL: // only way out of full is user cmd
+                safe.state << OPEN;
+                if(!certainlyFull(oxState)) state << lastState;
+                lastState = ENGINE_FULL;
+                break;
+            case ENGINE_FIRE: // arm igniter, prep tanks, fire
+                safe.state << OPEN;
+                if(lastState != ENGINE_FULL) state << lastState;
+
+                if(!certainlyFull(fuelState)) fuelState << TANK_FILL;
+    
+                igniter.arm << ARMED;
+                if (prepTank(oxState) && prepTank(fuelState)) {
+                    igniter.state << FIRED;
+                    ignitionTime = xTaskGetTickCount();
+                    state << MAIN_ACTUATION;
+                }
+
+                lastState = ENGINE_FIRE;
+                break;
+            case MAIN_ACTUATION: // empty tanks
+                safe.state << OPEN;
+                if(lastState != ENGINE_FIRE) state << lastState;
+
+                vTaskDelayUntil(&ignitionTime, FIRE_DELAY);
+                oxMain.state << OPEN;
+                fuelMain.state << OPEN;
+
+                lastState = MAIN_ACTUATION;
                 break;
         }
 
@@ -74,13 +86,20 @@ void EngineFSM::activity() {
     }
 }
 
-void EngineFSM::prepTank(EndPoint<TankState>& tankState) {
-    switch(tankState()) {
-        case TANK_EMPTY:
-            tankState << TANK_FILL;
-            break;
-        case TANK_FULL:
-            tankState << TANK_BLEED;
-            break;
-    }
+bool EngineFSM::prepTank(EndPoint<TankState>& tankState) {
+    if(tankState() == TANK_READY) return true;
+    if(tankState() == TANK_FULL) tankState << TANK_BLEED;
+    return false;
+}
+
+bool EngineFSM::possiblyFull(EndPoint<TankState>& tankState) {
+    return tankState() >= TANK_DRAIN;
+}
+
+bool EngineFSM::certainlyFull(EndPoint<TankState>& tankState) {
+    return tankState() >= TANK_FULL;
+}
+
+bool EngineFSM::safeToApproach(EndPoint<TankState>& tankState) {
+    return tankState() > TANK_IDLE_EMPTY;
 }

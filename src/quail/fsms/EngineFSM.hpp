@@ -10,6 +10,8 @@ class EngineFSM : public Task<500> {
         void activity();
 
     private:
+        EngineState lastState = ENGINE_ABORT;
+
         EndPoint<EngineState>& state;
         Igniter& igniter;
         EndPoint<bool>& comms;
@@ -22,6 +24,10 @@ class EngineFSM : public Task<500> {
         Solenoid& fuelMain;
 
         TickType_t lastTick = 0;
+        TickType_t ignitionTime = 0;
 
-        void prepTank(EndPoint<TankState>& tankState);
+        bool prepTank(EndPoint<TankState>& tankState);
+        bool possiblyFull(EndPoint<TankState>& tankState);
+        bool certainlyFull(EndPoint<TankState>& tankState);
+        bool safeToApproach(EndPoint<TankState>& tankState);
 };

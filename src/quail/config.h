@@ -63,19 +63,20 @@ typedef enum {
 #define MAWP 700 * PSI_TO_PA
 #define FSM_PTM 100
 #define FSM_FREQ 10
-#define FIRE_DELAY 1500
+#define FIRE_DELAY 4000
 
 typedef enum {
+    ENGINE_ABORT,
     ENGINE_IDLE,
     ENGINE_FILL,
     ENGINE_FULL,
     ENGINE_FIRE,
-    MAIN_ACTUATION,
-    ABORT
+    MAIN_ACTUATION
 } EngineState;
 
 typedef enum {
-    TANK_IDLE,
+    TANK_IDLE_EMPTY,
+    TANK_IDLE_PRESS,
     TANK_EMPTY,
     TANK_DRAIN,
     TANK_FILL,
