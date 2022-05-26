@@ -60,7 +60,7 @@ typedef enum {
 
 // sequence
 #define UPDATE_SEQS 0b01
-#define MAWP 700
+#define MAWP 700 * PSI_TO_PA
 #define FSM_PTM 100
 #define FSM_FREQ 10
 #define FIRE_DELAY 1500
@@ -69,7 +69,7 @@ typedef enum {
     ENGINE_IDLE,
     ENGINE_FILL,
     ENGINE_FULL,
-    LAUNCH,
+    ENGINE_FIRE,
     MAIN_ACTUATION,
     ABORT
 } EngineState;
@@ -99,7 +99,7 @@ typedef enum {
  // TX RX
  #define ETHERNET_TXRX
  // #define RADIO_TXRX
- #define COMM_RESET 18000
+ #define COMM_RESET 1800000
 
  // networking
  #define MY_SLATE_PORT 1000

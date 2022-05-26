@@ -39,7 +39,7 @@ void EngineFSM::activity() {
             case ENGINE_FULL: // only way out of full is user cmd
                 safe.state << OPEN;
                 break;
-            case LAUNCH: // arm igniter, prep tanks, fire
+            case ENGINE_FIRE: // arm igniter, prep tanks, fire
                 safe.state << OPEN;
                 igniter.arm << ARMED;
                 prepTank(oxState);

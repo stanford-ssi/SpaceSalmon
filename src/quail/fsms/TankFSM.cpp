@@ -32,17 +32,18 @@ void TankFSM::activity() {
 
     while (true) {
         if (press() > MAWP) state << TANK_DRAIN;
+        const float ZERO = 0.1 * opPress();
 
         switch(state()) {
             case TANK_IDLE:  // only way to get out of idle is through user or tank command
                 break;
             case TANK_EMPTY:
-                if(press() > 10) {
+                if(press() > ZERO) {
                     state << TANK_DRAIN;
                 }
                 break;
             case TANK_DRAIN:
-                if (press() > 10) {
+                if (press() > ZERO) {
                     ventSol.state << OPEN;
                 } else {
                     ventSol.state << CLOSED;
@@ -51,7 +52,7 @@ void TankFSM::activity() {
                 break;
             case TANK_FILL:
                 bleedSol.state << CLOSED;
-                if (abs(press() - opPress()) > 10) {
+                if (abs(press() - opPress()) > ZERO) {
                     if (press() > opPress()) {
                         ventSol.time << FSM_PTM;
                     } else {
@@ -64,12 +65,12 @@ void TankFSM::activity() {
                 }
                 break;
             case TANK_FULL:
-                if (abs(press() - opPress()) > 10) {
+                if (abs(press() - opPress()) > ZERO) {
                     state << TANK_FILL;
                 } 
                 break;
             case TANK_BLEED:
-                if (press() > 10) {
+                if (press() > ZERO) {
                     bleedSol.state << OPEN;
                 } else {
                     bleedSol.state << CLOSED;
