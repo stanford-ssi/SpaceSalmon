@@ -4,12 +4,6 @@ System sys;
 
 extern "C" void __libc_init_array(void);
 
-#include "SPI.h"
-#include "periph/ADXL375/ADXL375.hpp"
-#include "periph/BMP388/BMP388.hpp"
-#include "periph/BMI088/BMI088.hpp"
-#include "periph/MC33797/Squib.hpp"
-
 int main(void)
 {
 	//Arduino initialization (clocks and such)
@@ -31,10 +25,10 @@ int main(void)
 	pinMode(4, OUTPUT);
 
 	// COTS arming
-	digitalWrite(35, LOW);
-	digitalWrite(36, LOW);
-	pinMode(35, OUTPUT);
-	pinMode(36, OUTPUT);
+	digitalWrite(32, LOW);
+	digitalWrite(33, LOW);
+	pinMode(32, OUTPUT);
+	pinMode(33, OUTPUT);
 
 	//start all RTOS tasks (this never returns)
 	vTaskStartScheduler();

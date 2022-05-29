@@ -13,14 +13,14 @@ class System;
 #include "SPI.h"
 #include "Tone.h"
 
-#include "../periph/PyroFets/PyroFets.h"
+#include "../periph/MC33797/PyroSquib.h"
 
 #include "fc/SensorTask.hpp"
 #include "fc/LoggerTask.hpp"
 #include "fc/AltimeterTask.hpp"
 #include "fc/AltFilterTask.h"
 #include "fc/BuzzerTask.hpp"
-//#include "GPSTask.hpp"
+#include "GPSTask.hpp"
 #include "TelemetryTask.hpp"
 #include "RadioTask.hpp"
 #include "ArmingTask.hpp"
@@ -32,7 +32,7 @@ class System
 { 
 public:
 
-    PyroFets pyrofets = PyroFets(31,33,32,34,adc0);
+    PyroSquib pyrofets = PyroSquib();
     Pyro &pyro = pyrofets;
 
     ADC adc0 = ADC(ADC0);
@@ -41,7 +41,7 @@ public:
 
     const bool shitl = false;
 
-    const bool silent = false;
+    const bool silent = true;
 
     Poster<bool> armed = Poster<bool>(false);
 
@@ -63,12 +63,12 @@ public:
     class Tasks
     {
     public:
-        SensorTask sensor = SensorTask(5); //reads data from sensors
+        //SensorTask sensor = SensorTask(5); //reads data from sensors
         LoggerTask logger = LoggerTask(1); //logs to USB/SD
         AltimeterTask alt = AltimeterTask(4); //monitors system health
         AltFilterTask filter = AltFilterTask(6); //KF for altitude estimations
         BuzzerTask buzz = BuzzerTask(2); //buzzes!
-        //GPSTask gps = GPSTask(3);
+        GPSTask gps = GPSTask(3);
         TelemetryTask telem = TelemetryTask(3);
         RadioTask radio = RadioTask(3);
         ArmingTask arm = ArmingTask(3);

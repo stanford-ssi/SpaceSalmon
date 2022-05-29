@@ -29,7 +29,7 @@ void TelemetryTask::activity()
 
         if (sys.tasks.radio.isIdle())
         {
-            //gps_data_t data = sys.tasks.gps.locationData;
+            gps_data_t data = sys.tasks.gps.locationData;
             OneBattery::cell_voltage_t batt = sys.tasks.alt.battData;
 
             rf_down_t down_packet;
@@ -40,11 +40,11 @@ void TelemetryTask::activity()
             down_packet.filter_vel = compressFloat(sys.tasks.filter.filter.p_vel, -1000.0, 1000.0, 11);
 
             down_packet.battery = compressFloat(batt.cellMain, 1.0, 6.0, 8);
-            down_packet.lat = 5; // compressFloat(data.lat, 0.0, 10.0, 18);
-            down_packet.lon = 5; // compressFloat(data.lon, 0.0, 10.0, 18);
-            down_packet.gps_alt = 5; // compressFloat(data.alt, -2000.0, 40000.0, 15);
+            down_packet.lat = compressFloat(data.lat, 0.0, 10.0, 18);
+            down_packet.lon = compressFloat(data.lon, 0.0, 10.0, 18);
+            down_packet.gps_alt = compressFloat(data.alt, -2000.0, 40000.0, 15);
 
-            down_packet.gps_lock = 0; // data.valid;
+            down_packet.gps_lock = data.valid;
             down_packet.armed = sys.armed;
             down_packet.state = sys.tasks.filter.plan.p_state;
 
