@@ -8,6 +8,9 @@ PyroFets::PyroFets(uint8_t fire1, uint8_t sense1, uint8_t fire2, uint8_t sense2,
     fire2_pin = fire2;
     sense2_pin = sense2;
 
+}
+
+void PyroFets::init(){
     digitalWrite(fire1_pin, false);
     pinMode(fire1_pin, INPUT);
 
@@ -19,7 +22,6 @@ PyroFets::PyroFets(uint8_t fire1, uint8_t sense1, uint8_t fire2, uint8_t sense2,
 
     digitalWrite(sense2_pin, false);
     pinMode(sense2_pin,INPUT);
-
 }
 
 void PyroFets::arm(){

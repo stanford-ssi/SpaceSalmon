@@ -2,11 +2,13 @@
 #include "../Pyro.h"
 #include "stdint.h"
 #include "ssi_adc.h"
+#include "Squib.hpp"
 
 class PyroSquib : public Pyro {
 
     public:
-        PyroSquib();
+        PyroSquib(SPIClass &spi, int8_t cspin);
+        void init();
         void arm();
         void disarm();
         bool fire(PyroChannel channel);
@@ -14,6 +16,7 @@ class PyroSquib : public Pyro {
         bool getStatus(PyroChannel channel);
 
     private:
+        Squib squib;
         //armed
         bool armed;
 };

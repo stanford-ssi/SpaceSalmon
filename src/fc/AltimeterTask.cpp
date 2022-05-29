@@ -59,6 +59,13 @@ void AltimeterTask::activity()
         pyro_json.add(pyroA);
         pyro_json.add(pyroB);
 
+        #ifdef CHOVY
+            bool pyroC = sys.pyro.getStatus(Pyro::SquibC);
+            bool pyroD = sys.pyro.getStatus(Pyro::SquibD);
+            pyro_json.add(pyroC);
+            pyro_json.add(pyroD);
+        #endif
+
         sys.tasks.logger.logJSON(status_json, "status");
 
         digitalWrite(ALT_LED, false);

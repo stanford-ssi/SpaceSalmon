@@ -32,8 +32,9 @@ class System
 { 
 public:
 
-    PyroSquib pyrofets = PyroSquib();
-    Pyro &pyro = pyrofets;
+    SPIClass squib_spi = SPIClass(&sercom4, 37, 36, 35, SPI_PAD_0_SCK_1, SERCOM_RX_PAD_2);
+    PyroSquib pyrosquib = PyroSquib(squib_spi,38);
+    Pyro &pyro = pyrosquib;
 
     ADC adc0 = ADC(ADC0);
 
@@ -41,7 +42,7 @@ public:
 
     const bool shitl = false;
 
-    const bool silent = true;
+    const bool silent = false;
 
     Poster<bool> armed = Poster<bool>(false);
 
@@ -70,7 +71,7 @@ public:
         BuzzerTask buzz = BuzzerTask(2); //buzzes!
         GPSTask gps = GPSTask(3);
         TelemetryTask telem = TelemetryTask(3);
-        RadioTask radio = RadioTask(3);
+        //RadioTask radio = RadioTask(3);
         ArmingTask arm = ArmingTask(3);
     };
 

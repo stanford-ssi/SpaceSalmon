@@ -7,6 +7,8 @@ class PyroFets : public Pyro {
 
     public:
         PyroFets(uint8_t fire1, uint8_t sense1, uint8_t fire2, uint8_t sense2, ADC &adc);
+        
+        void init();
         void arm();
         void disarm();
         bool fire(PyroChannel channel);
