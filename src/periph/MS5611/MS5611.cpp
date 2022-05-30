@@ -92,8 +92,6 @@ bool MS5611_SPI::begin()
   pinMode(_select, OUTPUT);
   digitalWrite(_select, HIGH);
 
-  setSPIspeed(_SPIspeed);
-
   if(_hwSPI)
   {
     #if defined(ESP32)
@@ -241,13 +239,6 @@ float MS5611_SPI::getPressure() const
 {
   if (_pressureOffset == 0) return _pressure * 0.01;
   return _pressure * 0.01 + _pressureOffset;
-};
-
-
-void MS5611_SPI::setSPIspeed(uint32_t speed)
-{
-  _SPIspeed = speed;
-  _spi_settings = SPISettings(_SPIspeed, MSBFIRST, SPI_MODE0);
 };
 
 

@@ -30,8 +30,11 @@ void SensorTask::activity()
     digitalWrite(17, HIGH);
     digitalWrite(18, HIGH);
 
+    SPISettings spi_settings = SPISettings(500000, MSBFIRST, SPI_MODE3);
+
     sys.sensors.spi.begin();
-    sys.sensors.spi.beginTransaction(SPISettings(500000, MSBFIRST, SPI_MODE3));
+    sys.sensors.spi.beginTransaction(spi_settings);
+    sys.sensors.spi.endTransaction();
 
     int rc;
     char str[100];
@@ -48,6 +51,7 @@ void SensorTask::activity()
 
     vTaskDelay(2); // but why...
 
+    sys.sensors.pres1.setSPISettings(spi_settings);
     rc = sys.sensors.pres1.init();
 
     if (rc != BMP3_OK)
@@ -56,6 +60,7 @@ void SensorTask::activity()
         sys.tasks.logger.log(str);
     }
 
+    sys.sensors.pres2.setSPISettings(spi_settings);
     rc = sys.sensors.pres2.init();
 
     if (rc != BMP3_OK)

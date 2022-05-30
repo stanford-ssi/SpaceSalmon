@@ -119,9 +119,7 @@ public:
   */
 
 
-  //       speed in Hz
-  void     setSPIspeed(uint32_t speed);
-  uint32_t getSPIspeed() { return _SPIspeed; };
+  void     setSPISettings(SPISettings s){_spi_settings = s;};
 
   // debugging
   bool     usesHWSPI() { return _hwSPI; };
@@ -163,7 +161,6 @@ private:
   uint8_t  _dataOut;
   uint8_t  _clock;
   bool     _hwSPI;
-  uint32_t _SPIspeed = 1000000;
   uint8_t   swSPI_transfer(uint8_t value);
   SPIClass    * mySPI;
   SPISettings _spi_settings;
