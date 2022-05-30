@@ -51,7 +51,9 @@ void SensorTask::activity()
 
     vTaskDelay(2); // but why...
 
+#ifdef MS5611
     sys.sensors.pres1.setSPISettings(spi_settings);
+#endif
     rc = sys.sensors.pres1.init();
 
     if (rc != BMP3_OK)
@@ -60,7 +62,9 @@ void SensorTask::activity()
         sys.tasks.logger.log(str);
     }
 
+#ifdef MS5611
     sys.sensors.pres2.setSPISettings(spi_settings);
+#endif
     rc = sys.sensors.pres2.init();
 
     if (rc != BMP3_OK)

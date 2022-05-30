@@ -61,17 +61,17 @@ public:
         Sensor *list[6] = {&imu1, &imu2, &adxl1, &adxl2, &pres1, &pres2};
     };
 
-    class Tasks
+    class Tasks // Low priority numbers denote low priority tasks.
     {
     public:
-        SensorTask sensor = SensorTask(5); //reads data from sensors
+        //SensorTask sensor = SensorTask(5); //reads data from sensors
         LoggerTask logger = LoggerTask(1); //logs to USB/SD
         AltimeterTask alt = AltimeterTask(4); //monitors system health
         AltFilterTask filter = AltFilterTask(6); //KF for altitude estimations
         BuzzerTask buzz = BuzzerTask(2); //buzzes!
         GPSTask gps = GPSTask(3);
         TelemetryTask telem = TelemetryTask(3);
-        //RadioTask radio = RadioTask(3);
+        RadioTask radio = RadioTask(3);
         ArmingTask arm = ArmingTask(3);
     };
 
