@@ -27,8 +27,7 @@ void TelemetryTask::activity()
     {
         vTaskDelay(1000);
 
-        // if (sys.tasks.radio.isIdle())
-        if(false)
+        if (sys.tasks.radio.isIdle())
         {
             gps_data_t data = sys.tasks.gps.locationData;
             OneBattery::cell_voltage_t batt = sys.tasks.alt.battData;
@@ -59,7 +58,7 @@ void TelemetryTask::activity()
             memcpy(pkt.data, &down_packet, sizeof(down_packet));
             pkt.len = sizeof(down_packet);
 
-            //sys.tasks.radio.sendPacket(pkt);
+            sys.tasks.radio.sendPacket(pkt);
         }
     }
 }

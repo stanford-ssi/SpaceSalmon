@@ -34,6 +34,7 @@ int main(void)
 	pinMode(26,OUTPUT);
 	pinMode(27,INPUT);
 	pinMode(28,OUTPUT);
+	pinMode(29,INPUT);
 	
 
 	//start all RTOS tasks (this never returns)
