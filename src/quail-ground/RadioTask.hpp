@@ -51,8 +51,8 @@ private:
   StaticEventGroup_t evbuf;
   EventGroupHandle_t evgroup;
 
-  SPIClass spi = SPIClass(&sercom5, 5, 7, 8, SPI_PAD_0_SCK_1, SERCOM_RX_PAD_2);
-  Module mod = Module(6, 9, 11, 10, spi, SPISettings());
+  SPIClass spi = SPIClass(&sercom5, 10, 12, 13, SPI_PAD_0_SCK_1, SERCOM_RX_PAD_2);// TODO: set these hard-coded vals in constructor
+  Module mod = Module(11, 14, 16, 15, spi, SPISettings());// TODO: set these hard-coded vals in constructor
   SX1262S lora = SX1262S(&mod);
 
   MsgBuffer<radio_settings_t, 1000> settingsBuf;
