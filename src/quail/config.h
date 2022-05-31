@@ -62,7 +62,7 @@ typedef enum {
 #define UPDATE_SEQS 0b01
 #define MAWP 700 * PSI_TO_PA
 #define FSM_PTM 100
-#define FSM_FREQ 10
+#define FSM_FREQ 50
 #define FIRE_DELAY 4000
 #define LOAD_EQUILIBRIUM_DELAY 1000
 #define OX_FILL_DELAY 10000

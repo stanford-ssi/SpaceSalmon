@@ -104,10 +104,10 @@ public:
         public:
             EndPoint<EngineState> engineState = EndPoint<EngineState>("Engine State", NO_QUAIL_ID, ENGINE_IDLE, true);
             
-            EndPoint<TankState> oxState = EndPoint<TankState>("Ox Tank State", NO_QUAIL_ID, TANK_IDLE_EMPTY, false);
+            EndPoint<TankState> oxState = EndPoint<TankState>("Ox Tank State", NO_QUAIL_ID, TANK_IDLE_EMPTY, true);
             EndPoint<float> oxOpWeight = EndPoint<float>("Ox Operating Weight", NO_QUAIL_ID, 10, true);
             
-            EndPoint<TankState> fuelState = EndPoint<TankState>("Fuel Tank State", NO_QUAIL_ID, TANK_IDLE_EMPTY, false);
+            EndPoint<TankState> fuelState = EndPoint<TankState>("Fuel Tank State", NO_QUAIL_ID, TANK_IDLE_EMPTY, true);
             EndPoint<float> fuelOpPressure = EndPoint<float>("Fuel Operating Pressure", NO_QUAIL_ID, 0.9 * MAWP, true);
             
             Sequence(const std::string id) : Container(id, {

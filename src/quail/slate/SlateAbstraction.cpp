@@ -73,7 +73,9 @@ PulseEndpoint& PulseEndpoint::operator<<(const JsonVariant src) {
 };
 
 PulseEndpoint& PulseEndpoint::operator<<(const uint16_t in) {
-    this->operator<<(in);
+    Serial.println("real early");
+    EndPoint::operator<<(in);
+    Serial.println("updating pulse");
     sys.tasks.valvetask._updatePulse(index);
     return *this;
 };

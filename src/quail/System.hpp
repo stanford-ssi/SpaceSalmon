@@ -98,11 +98,12 @@ public:
         LoggerTask logger = LoggerTask(1); // logs data to SD during idle time, writes USB data as available
     
         EngineFSM engine = EngineFSM(2);
-        VaPakFSM oxTank = VaPakFSM(2,
+        // VaPakFSM oxTank = VaPakFSM(2,
+        TankFSM oxTank = TankFSM(2,
             sys.slate.sequence.oxState,
             sys.slate.sequence.oxOpWeight,
             sys.slate.sense.pt4,
-            sys.slate.sense.lcs,
+            // sys.slate.sense.lcs,
             sys.slate.valves[4],
             sys.slate.valves[7],
             sys.slate.valves[5]

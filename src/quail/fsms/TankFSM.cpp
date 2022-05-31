@@ -80,5 +80,5 @@ void TankFSM::activity() {
 }
 
 bool TankFSM::inBounds() {
-    return abs(press() - press()) <= ZERO_PRESS;
+    return abs(press() - op()) <= ZERO_PRESS;
 }

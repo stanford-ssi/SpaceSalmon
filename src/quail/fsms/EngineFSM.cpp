@@ -101,5 +101,5 @@ bool EngineFSM::certainlyFull(EndPoint<TankState>& tankState) {
 }
 
 bool EngineFSM::safeToApproach(EndPoint<TankState>& tankState) {
-    return tankState() > TANK_IDLE_EMPTY;
+    return tankState() == TANK_IDLE_EMPTY || tankState() == TANK_EMPTY;
 }
