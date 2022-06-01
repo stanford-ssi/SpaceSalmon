@@ -40,9 +40,12 @@ typedef struct {
     TickType_t time; //minimum time to fire for
 } FlightEvent;
 
-static const FlightEvent eventList[] = {{Falling,   VelLess,    0.0,      AltNone,    0.0,      BlowSquib,  Pyro::PyroChannel::SquibB,  2000        },  //Apogee Event, at velocity 0-crossing
-                                        {Falling,   VelLess,  -55.0,      AltLess,    1000.0,   BlowSquib,  Pyro::PyroChannel::SquibA,  2000    },  //If drouge does not deploy and we fall too fast, prevent lawn dart at all costs
-                                        {Falling,   VelNone,    0.0,      AltLess,    457.0,    BlowSquib,  Pyro::PyroChannel::SquibA,  2000    }}; //Norminal Main deploy at 300m
+static const FlightEvent eventList[] = {{Falling,   VelLess,    0.0,      AltNone,    0.0,      BlowSquib,  Pyro::PyroChannel::SquibA,  2000    },  //Apogee Event, at velocity 0-crossing
+                                        {Falling,   VelLess,    0.0,      AltNone,    0.0,      BlowSquib,  Pyro::PyroChannel::SquibB,  2000    },  //Apogee Event, at velocity 0-crossing
+                                        {Falling,   VelLess,  -55.0,      AltLess,    1000.0,   BlowSquib,  Pyro::PyroChannel::SquibC,  2000    },  //If drouge does not deploy and we fall too fast, prevent lawn dart at all costs
+                                        {Falling,   VelNone,    0.0,      AltLess,    304.0,    BlowSquib,  Pyro::PyroChannel::SquibC,  2000    },  //Norminal Main deploy at 1000ft
+                                        {Falling,   VelLess,  -55.0,      AltLess,    1000.0,   BlowSquib,  Pyro::PyroChannel::SquibD,  2000    },  //If drouge does not deploy and we fall too fast, prevent lawn dart at all costs
+                                        {Falling,   VelNone,    0.0,      AltLess,    304.0,    BlowSquib,  Pyro::PyroChannel::SquibD,  2000    }}; //Norminal Main deploy at 1000ft
 
 #include "AltFilter.hpp"
 #include "stdint.h"
@@ -66,7 +69,7 @@ class FlightPlan{
         FlightState state;
         bool squibAFired;
         bool squibBFired;
-        bool event_done[(sizeof(eventList)/sizeof(FlightEvent))] = {false,false};
+        bool event_done[(sizeof(eventList)/sizeof(FlightEvent))] = {false,false,false,false,false,false};
         uint32_t event_timer = 0;
 
 };
