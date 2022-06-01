@@ -14,9 +14,11 @@ class PyroSquib : public Pyro {
         bool fire(PyroChannel channel);
         
         bool getStatus(PyroChannel channel);
+        void getResistance();
 
     private:
         Squib squib;
+        Mutex squib_mx;
         //armed
         bool armed;
 };

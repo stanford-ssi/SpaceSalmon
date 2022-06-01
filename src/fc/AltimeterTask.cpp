@@ -60,11 +60,15 @@ void AltimeterTask::activity()
         pyro_json.add(pyroB);
 
         #ifdef CHOVY
+            //sys.pyrosquib.getResistance();
+
             bool pyroC = sys.pyro.getStatus(Pyro::SquibC);
             bool pyroD = sys.pyro.getStatus(Pyro::SquibD);
             pyro_json.add(pyroC);
             pyro_json.add(pyroD);
         #endif
+
+        
 
         sys.tasks.logger.logJSON(status_json, "status");
 
