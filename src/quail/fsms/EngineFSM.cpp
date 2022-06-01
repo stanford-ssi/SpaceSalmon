@@ -4,7 +4,8 @@
 
 EngineFSM::EngineFSM(uint8_t priority) : Task(priority, "Engine"), 
     state(sys.slate.sequence.engineState),
-    igniter(sys.slate.squib[0]),
+    // igniter(sys.slate.squib[0]),
+    igniter(sys.slate.valves[11]),
     comms(sys.slate.board.comms),
     safe(sys.slate.valves[8]),
     oxState(sys.slate.sequence.oxState),
@@ -39,37 +40,50 @@ void EngineFSM::activity() {
                 }
                 lastState = ENGINE_IDLE;
                 break;
-            case ENGINE_FILL: // if ox tank is not full, fill
+            case ENGINE_PREPOX: // if ox tank is not full, fill
                 safe.state << OPEN;
                 if (!certainlyFull(oxState)) {
                     oxState << TANK_FILL;
-                } else {
-                    state << ENGINE_FULL;
+                } else if(prepTank(oxState)){
+                    state << ENGINE_OXPREPPED;
                 } 
-                lastState = ENGINE_FILL;
+                lastState = ENGINE_PREPOX;
                 break;
-            case ENGINE_FULL: // only way out of full is user cmd
-                safe.state << OPEN;
-                if(!certainlyFull(oxState)) state << lastState;
-                lastState = ENGINE_FULL;
+            case ENGINE_OXPREPPED:
+                if(lastState << ENGINE_PREPOX) state << lastState;
+                if(!certainlyFull(oxState)) state << ENGINE_PREPOX;
+                lastState = ENGINE_OXPREPPED;
                 break;
-            case ENGINE_FIRE: // arm igniter, prep tanks, fire
-                safe.state << OPEN;
-                if(lastState != ENGINE_FULL) state << lastState;
-
-                if(!certainlyFull(fuelState)) fuelState << TANK_FILL;
-    
-                igniter.arm << ARMED;
-                if (prepTank(oxState) && prepTank(fuelState)) {
-                    igniter.state << FIRED;
-                    ignitionTime = xTaskGetTickCount();
-                    state << MAIN_ACTUATION;
+            case ENGINE_PREPFUEL:
+                if(lastState < ENGINE_OXPREPPED) state << lastState;
+                if(!certainlyFull(fuelState)) {
+                    fuelState << TANK_FILL;
+                } else if (prepTank(fuelState)) {
+                    state << ENGINE_PREPPED;
                 }
+                lastState = ENGINE_PREPFUEL;
+                break;
+            case ENGINE_PREPPED: // only way out of full is user cmd
+                // if(!certainlyFull(oxState)) state << ENGINE_PREPOX;
+                // igniter.arm << ARMED;
+                if(lastState < ENGINE_PREPFUEL) state << lastState;
+                if(!certainlyFull(fuelState)) {
+                    // igniter.arm << UNARMED;
+                    state << ENGINE_PREPFUEL;
+                }
+                lastState = ENGINE_PREPPED;
+                break;
+            case ENGINE_FIRE: // arm igniter
+                if(lastState != ENGINE_PREPPED) state << lastState;
+                
+                // igniter.state << FIRED;
+                igniter.state << OPEN; // until squibs are unfucked
+                ignitionTime = xTaskGetTickCount();
+                state << MAIN_ACTUATION;
 
                 lastState = ENGINE_FIRE;
                 break;
             case MAIN_ACTUATION: // empty tanks
-                safe.state << OPEN;
                 if(lastState != ENGINE_FIRE) state << lastState;
 
                 vTaskDelayUntil(&ignitionTime, FIRE_DELAY);
@@ -78,10 +92,13 @@ void EngineFSM::activity() {
 
                 lastState = MAIN_ACTUATION;
                 break;
+            default:
+                state << lastState;
+                break;
         }
 
         sys.tasks.valvetask._updateValves();
-        sys.tasks.firetask._updateSquibs();
+        // sys.tasks.firetask._updateSquibs();
         vTaskDelayUntil(&lastTick, FSM_FREQ);
     }
 }
@@ -93,7 +110,7 @@ bool EngineFSM::prepTank(EndPoint<TankState>& tankState) {
 }
 
 bool EngineFSM::possiblyFull(EndPoint<TankState>& tankState) {
-    return tankState() >= TANK_DRAIN;
+    return tankState() >= TANK_DRAIN || tankState() == TANK_IDLE_PRESS;
 }
 
 bool EngineFSM::certainlyFull(EndPoint<TankState>& tankState) {

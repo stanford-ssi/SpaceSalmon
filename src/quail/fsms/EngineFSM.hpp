@@ -13,7 +13,8 @@ class EngineFSM : public Task<500> {
         EngineState lastState = ENGINE_ABORT;
 
         EndPoint<EngineState>& state;
-        Igniter& igniter;
+        // Igniter& igniter;
+        Solenoid& igniter;
         EndPoint<bool>& comms;
         Solenoid& safe;
 

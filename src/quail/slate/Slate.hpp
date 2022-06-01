@@ -97,7 +97,7 @@ public:
             Solenoid s9 = Solenoid("S9", "S9", 8, "Safe To Approach");
             Solenoid s10 = Solenoid("S10", "S10", 9);
             Solenoid s11 = Solenoid("S11", "S11", 10);
-            Solenoid s12 = Solenoid("S12", "S12", 11);
+            Solenoid s12 = Solenoid("S12", "S12", 11, "Igniter");
     } valves = Valves("valves");
 
     class Sequence : public Container<5> {

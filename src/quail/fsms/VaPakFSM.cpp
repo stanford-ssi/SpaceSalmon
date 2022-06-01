@@ -44,12 +44,13 @@ void VaPakFSM::activity() {
             case TANK_FILL:
                 vTaskDelayUntil(&lastBoundsCheck, OX_FILL_DELAY);
                 if (!inBounds()) { // all solenoids closed after bounds check
-                    if (press() > op()) {
-                        ventSol.time << FSM_PTM;
-                    } else {
-                        fillSol.state << OPEN;
-                        ventSol.state << OPEN;
-                    }
+                    // do nothing until we verify filling procedure
+                    // if (press() > op()) {
+                    //     ventSol.time << FSM_PTM;
+                    // } else {
+                    //     fillSol.state << OPEN;
+                    //     ventSol.state << OPEN;
+                    // }
                 } else {
                     state << TANK_FULL;
                 }

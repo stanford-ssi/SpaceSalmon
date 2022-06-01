@@ -72,6 +72,7 @@ typedef enum {
     ENGINE_IDLE,
     ENGINE_FILL,
     ENGINE_FULL,
+    ENGINE_PREPPED,
     ENGINE_FIRE,
     MAIN_ACTUATION
 } EngineState;

@@ -56,8 +56,9 @@ Igniter::Igniter(const std::string id, const std::string quailID, const std::str
 };
 
 Igniter& Igniter::operator<<(const JsonVariant src) {
+    Serial.println("Command recieved");
     Container::operator<<(src);
-    sys.tasks.firetask._updateSquibs();
+    if (src.containsKey(this->id)) { sys.tasks.firetask._updateSquibs(); }
     return *this;
 }
 
@@ -73,9 +74,7 @@ PulseEndpoint& PulseEndpoint::operator<<(const JsonVariant src) {
 };
 
 PulseEndpoint& PulseEndpoint::operator<<(const uint16_t in) {
-    Serial.println("real early");
     EndPoint::operator<<(in);
-    Serial.println("updating pulse");
     sys.tasks.valvetask._updatePulse(index);
     return *this;
 };
