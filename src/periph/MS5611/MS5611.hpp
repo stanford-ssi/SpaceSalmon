@@ -91,12 +91,10 @@ public:
   // temperature is in ²C
   float    getTemperature() const;
 
-  // pressure is in mBar
-  float    getPressure() const;
+  // pressure is in Pa
+  float    getPressure(){ return _pressure; };
 
   //  OFFSET - 0.3.6
-  void     setPressureOffset(float offset = 0)    { _pressureOffset = offset; };
-  float    getPressureOffset()    { return _pressureOffset; };
   void     setTemperatureOffset(float offset = 0) { _temperatureOffset = offset; };
   float    getTemperatureOffset() { return _temperatureOffset; };
 
@@ -147,7 +145,7 @@ private:
   uint8_t  _address;
   uint8_t  _samplingRate;
   int32_t  _temperature;
-  int32_t  _pressure;
+  int32_t  _pressure; // Pascals
   float    _pressureOffset;
   float    _temperatureOffset;
   int      _result;

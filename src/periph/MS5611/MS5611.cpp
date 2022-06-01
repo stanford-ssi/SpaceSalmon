@@ -37,7 +37,6 @@ MS5611_SPI::MS5611_SPI(uint8_t select, uint8_t dataOut, uint8_t dataIn, uint8_t 
   _result            = MS5611_NOT_READ;
   _lastRead          = 0;
   _deviceID          = 0;
-  _pressureOffset    = 0;
   _temperatureOffset = 0;
   _compensation      = true;
 
@@ -58,7 +57,6 @@ MS5611_SPI::MS5611_SPI(SPIClass *spi, int8_t cspin, const char* id) : Sensor(id)
   _result            = MS5611_NOT_READ;
   _lastRead          = 0;
   _deviceID          = 0;
-  _pressureOffset    = 0;
   _temperatureOffset = 0;
   _compensation      = true;
 
@@ -232,13 +230,6 @@ float MS5611_SPI::getTemperature() const
 {
   if (_temperatureOffset == 0) return _temperature * 0.01;
   return _temperature * 0.01 + _temperatureOffset;
-};
-
-
-float MS5611_SPI::getPressure() const
-{
-  if (_pressureOffset == 0) return _pressure * 0.01;
-  return _pressure * 0.01 + _pressureOffset;
 };
 
 

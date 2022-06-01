@@ -64,7 +64,7 @@ public:
     class Tasks // Low priority numbers denote low priority tasks.
     {
     public:
-        //SensorTask sensor = SensorTask(5); //reads data from sensors
+        SensorTask sensor = SensorTask(5); //reads data from sensors
         LoggerTask logger = LoggerTask(1); //logs to USB/SD
         AltimeterTask alt = AltimeterTask(4); //monitors system health
         AltFilterTask filter = AltFilterTask(6); //KF for altitude estimations
