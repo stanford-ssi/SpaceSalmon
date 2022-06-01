@@ -48,11 +48,15 @@ void TelemetryTask::activity()
             down_packet.armed = sys.armed;
             down_packet.state = sys.tasks.filter.plan.p_state;
 
-            down_packet.pyroA = sys.pyro.getStatus(Pyro::SquibA);
-            down_packet.pyroB = sys.pyro.getStatus(Pyro::SquibB);
+            down_packet.pyroA_continuity = sys.pyro.getStatus(Pyro::SquibA);
+            down_packet.pyroB_continuity = sys.pyro.getStatus(Pyro::SquibB);
+            down_packet.pyroC_continuity = sys.pyro.getStatus(Pyro::SquibC);
+            down_packet.pyroD_continuity = sys.pyro.getStatus(Pyro::SquibD);
 
             down_packet.pyroA_fired = sys.tasks.filter.plan.pyroA_fired;
             down_packet.pyroB_fired = sys.tasks.filter.plan.pyroB_fired;
+            down_packet.pyroC_fired = sys.tasks.filter.plan.pyroC_fired;
+            down_packet.pyroD_fired = sys.tasks.filter.plan.pyroD_fired;
             
             packet_t pkt;
             memcpy(pkt.data, &down_packet, sizeof(down_packet));

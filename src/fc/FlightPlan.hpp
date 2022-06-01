@@ -40,12 +40,12 @@ typedef struct {
     TickType_t time; //minimum time to fire for
 } FlightEvent;
 
-static const FlightEvent eventList[] = {{Falling,   VelLess,    0.0,      AltNone,    0.0,      BlowSquib,  Pyro::PyroChannel::SquibA,  2000    },  //Apogee Event, at velocity 0-crossing
-                                        {Falling,   VelLess,    0.0,      AltNone,    0.0,      BlowSquib,  Pyro::PyroChannel::SquibB,  2000    },  //Apogee Event, at velocity 0-crossing
-                                        {Falling,   VelLess,  -55.0,      AltLess,    1000.0,   BlowSquib,  Pyro::PyroChannel::SquibC,  2000    },  //If drouge does not deploy and we fall too fast, prevent lawn dart at all costs
-                                        {Falling,   VelNone,    0.0,      AltLess,    304.0,    BlowSquib,  Pyro::PyroChannel::SquibC,  2000    },  //Norminal Main deploy at 1000ft
-                                        {Falling,   VelLess,  -55.0,      AltLess,    1000.0,   BlowSquib,  Pyro::PyroChannel::SquibD,  2000    },  //If drouge does not deploy and we fall too fast, prevent lawn dart at all costs
-                                        {Falling,   VelNone,    0.0,      AltLess,    304.0,    BlowSquib,  Pyro::PyroChannel::SquibD,  2000    }}; //Norminal Main deploy at 1000ft
+static const FlightEvent eventList[] = {{Falling,   VelLess,    0.0,      AltNone,    0.0,      BlowSquib,  Pyro::PyroChannel::SquibA,  500    },  //Apogee Event, at velocity 0-crossing
+                                        {Falling,   VelLess,    0.0,      AltNone,    0.0,      BlowSquib,  Pyro::PyroChannel::SquibB,  500    },  //Apogee Event, at velocity 0-crossing
+                                        {Falling,   VelLess,  -55.0,      AltLess,    1000.0,   BlowSquib,  Pyro::PyroChannel::SquibC,  500    },  //If drouge does not deploy and we fall too fast, prevent lawn dart at all costs
+                                        {Falling,   VelNone,    0.0,      AltLess,    304.0,    BlowSquib,  Pyro::PyroChannel::SquibC,  500    },  //Norminal Main deploy at 1000ft
+                                        {Falling,   VelLess,  -55.0,      AltLess,    1000.0,   BlowSquib,  Pyro::PyroChannel::SquibD,  500    },  //If drouge does not deploy and we fall too fast, prevent lawn dart at all costs
+                                        {Falling,   VelNone,    0.0,      AltLess,    304.0,    BlowSquib,  Pyro::PyroChannel::SquibD,  500    }}; //Norminal Main deploy at 1000ft
 
 #include "AltFilter.hpp"
 #include "stdint.h"
@@ -60,6 +60,8 @@ class FlightPlan{
         Poster<FlightState> p_state;
         Poster<bool> pyroA_fired = Poster<bool>(false);
         Poster<bool> pyroB_fired = Poster<bool>(false);
+        Poster<bool> pyroC_fired = Poster<bool>(false);
+        Poster<bool> pyroD_fired = Poster<bool>(false);
 
     private:
         float pad_alts[2] = {0.0, 0.0}; //a buffer of past altitudes, the 0th of which will be the pad altitude
@@ -69,6 +71,8 @@ class FlightPlan{
         FlightState state;
         bool squibAFired;
         bool squibBFired;
+        bool squibCFired;
+        bool squibDFired;
         bool event_done[(sizeof(eventList)/sizeof(FlightEvent))] = {false,false,false,false,false,false};
         uint32_t event_timer = 0;
 
