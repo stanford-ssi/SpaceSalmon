@@ -17,13 +17,15 @@ class System;
 
 #include "fc/SensorTask.hpp"
 #include "fc/LoggerTask.hpp"
-#include "fc/AltimeterTask.hpp"
+#include "AltimeterTask.hpp"
 #include "fc/AltFilterTask.h"
 #include "fc/BuzzerTask.hpp"
 #include "GPSTask.hpp"
 #include "TelemetryTask.hpp"
 #include "RadioTask.hpp"
 #include "ArmingTask.hpp"
+#include "../periph/TwoBattery/TwoBattery.hpp"
+#include "../periph/HackBattery/HackBattery.hpp"
 
 #include "ssi_adc.h"
 
@@ -37,6 +39,8 @@ public:
     Pyro &pyro = pyrosquib;
 
     ADC adc0 = ADC(ADC0);
+    TwoBattery srad_batt = TwoBattery(adc0,13,14);
+    HackBattery cots_batt = HackBattery(adc0,15);
 
     Tone buzzer = Tone(5);
 

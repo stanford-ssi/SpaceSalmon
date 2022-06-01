@@ -2,8 +2,8 @@ import base64
 import bitstruct
 import math
 
-cf = bitstruct.CompiledFormatDict(">b1 b1 b1 b1 b1 b1 b1 b1 u15 u18 u18 b1 u11 u15 b1 u3 u8 u18 p4 >", [
-                                  "pyroD_fired", "pyroC_fired","pyroB_fired", "pyroA_fired","pyroD","pyroC","pyroB","pyroA","gps_alt", "lon", "lat", "gps_lock", "filter_vel", "filter_alt", "armed", "state", "battery", "time"])
+cf = bitstruct.CompiledFormatDict(">b1 b1 b1 b1 b1 b1 b1 b1 u15 u18 u18 b1 u11 u15 b1 u3 u8 u8 u8 u18 p4 >", [
+                                  "pyroD_fired", "pyroC_fired","pyroB_fired", "pyroA_fired","pyroD","pyroC","pyroB","pyroA","gps_alt", "lon", "lat", "gps_lock", "filter_vel", "filter_alt", "armed", "state", "batt_cots", "batt_srad_B", "batt_srad_A", "time"])
 
 
 def decodeTelem(data, pos):
@@ -14,7 +14,9 @@ def decodeTelem(data, pos):
     except bitstruct.Error as e:
         return "err"
 
-    data["battery"] = expand_float(data["battery"], 1.0, 6.0, 8)
+    data["batt_cots"] = expand_float(data["batt_cots"], 1.0, 6.0, 8)
+    data["batt_srad_B"] = expand_float(data["batt_srad_B"], 1.0, 6.0, 8)
+    data["batt_srad_A"] = expand_float(data["batt_srad_A"], 1.0, 6.0, 8)
     data["lat"] = expand_float(
         data["lat"], 0.0, 10.0, 18, math.floor(pos[0].get()/10)*10)
     data["lon"] = expand_float(
