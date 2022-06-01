@@ -102,13 +102,13 @@ public:
 
     class Sequence : public Container<5> {
         public:
-            EndPoint<EngineState> engineState = EndPoint<EngineState>("Engine State", NO_QUAIL_ID, ENGINE_IDLE, true);
+            EndPoint<EngineState> engineState = EndPoint<EngineState>("engine_state", NO_QUAIL_ID, ENGINE_IDLE, true, "Engine State");
             
-            EndPoint<TankState> oxState = EndPoint<TankState>("Ox Tank State", NO_QUAIL_ID, TANK_IDLE_EMPTY, true);
-            EndPoint<float> oxOpWeight = EndPoint<float>("Ox Operating Weight", NO_QUAIL_ID, 10, true);
+            EndPoint<TankState> oxState = EndPoint<TankState>("ox_tank_state", NO_QUAIL_ID, TANK_IDLE_EMPTY, true, "Ox Tank State");
+            EndPoint<float> oxOpWeight = EndPoint<float>("ox_op_mass", NO_QUAIL_ID, 10, true, "Ox Operating Weight");
             
-            EndPoint<TankState> fuelState = EndPoint<TankState>("Fuel Tank State", NO_QUAIL_ID, TANK_IDLE_EMPTY, true);
-            EndPoint<float> fuelOpPressure = EndPoint<float>("Fuel Operating Pressure", NO_QUAIL_ID, 0.9 * MAWP, true);
+            EndPoint<TankState> fuelState = EndPoint<TankState>("fuel_tank_state", NO_QUAIL_ID, TANK_IDLE_EMPTY, true, "Fuel Tank State");
+            EndPoint<float> fuelOpPressure = EndPoint<float>("fuel_op_press", NO_QUAIL_ID, 0.9 * MAWP, true, "Fuel Operating Pressure");
             
             Sequence(const std::string id) : Container(id, {
                 std::ref(engineState),
