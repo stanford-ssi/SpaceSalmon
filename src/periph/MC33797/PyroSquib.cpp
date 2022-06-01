@@ -62,13 +62,13 @@ void PyroSquib::getResistance(){
     squib_mx.take(portMAX_DELAY);
     squib.getStatus();
 
-    StaticJsonDocument<1000> res_json;
+    // StaticJsonDocument<1000> res_json;
 
-    res_json.add(squib.status.Squib_Stat1AResistance);
-    res_json.add(squib.status.Squib_Stat1BResistance);
-    res_json.add(squib.status.Squib_Stat2AResistance);
-    res_json.add(squib.status.Squib_Stat2BResistance);
-    sys.tasks.logger.logJSON(res_json,"res");
+    // res_json.add(squib.status.Squib_Stat1AResistance);
+    // res_json.add(squib.status.Squib_Stat1BResistance);
+    // res_json.add(squib.status.Squib_Stat2AResistance);
+    // res_json.add(squib.status.Squib_Stat2BResistance);
+    // sys.tasks.logger.logJSON(res_json,"res");
 
     squib_mx.give();
 }
