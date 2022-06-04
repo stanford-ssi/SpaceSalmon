@@ -107,7 +107,7 @@ void EthernetTask::createUDP(netconn *&conn, uint16_t myport, uint16_t clientpor
 
     // connect to user
     ip4_addr_t dst;
-    IP4_ADDR(&dst, 192, 168, 1, 1);
+    IP4_ADDR(&dst, 192, 168, 1, 3);
 
     do {
         vTaskDelay(NETWORKING_DELAY);
