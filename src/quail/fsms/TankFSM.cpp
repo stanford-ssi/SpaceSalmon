@@ -46,14 +46,9 @@ void TankFSM::activity() {
             case TANK_FILL:
                 bleedSol.state << CLOSED;
                 if (!inBounds()) {
-                    if (press() > op()) {
-                        ventSol.time << FSM_PTM;
-                    } else {
-                        fillSol.time << FSM_PTM;
-                    }
+                    fillSol.time << FSM_PTM;
                 } else {
                     fillSol.state << CLOSED;
-                    ventSol.state << CLOSED;
                     state << TANK_FULL;
                 }
                 break;
@@ -80,5 +75,5 @@ void TankFSM::activity() {
 }
 
 bool TankFSM::inBounds() {
-    return abs(press() - op()) <= ZERO_PRESS;
+    return op() - press() <= ZERO_PRESS;
 }

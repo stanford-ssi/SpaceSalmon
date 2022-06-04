@@ -56,7 +56,6 @@ Igniter::Igniter(const std::string id, const std::string quailID, const std::str
 };
 
 Igniter& Igniter::operator<<(const JsonVariant src) {
-    Serial.println("Command recieved");
     Container::operator<<(src);
     if (src.containsKey(this->id)) { sys.tasks.firetask._updateSquibs(); }
     return *this;

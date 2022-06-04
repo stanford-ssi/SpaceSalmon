@@ -6,12 +6,28 @@
 #include "TankGeneric.hpp"
 
 
+// class VaPakFSM : public TankGeneric {
+//     public:
+//         using TankGeneric::TankGeneric;
+//         void activity() override;
+
+//     private:
+//         TickType_t lastBoundsCheck = 0;
+//         bool inBounds() override;
+// };
+
 class VaPakFSM : public TankGeneric {
     public:
-        using TankGeneric::TankGeneric;
+        VaPakFSM(uint8_t priority,
+            EndPoint<TankState>& state, 
+            EndPoint<float>& opPress,
+            SensorSlate& press,
+            Solenoid& fillSol,
+            Solenoid& ventSol,
+            Solenoid& bleedSol);
         void activity() override;
 
     private:
-        TickType_t lastBoundsCheck = 0;
         bool inBounds() override;
+        SensorSlate weight = SensorSlate(NO_QUAIL_ID, NO_QUAIL_ID, NO_QUAIL_ID);
 };

@@ -44,14 +44,16 @@ void EngineFSM::activity() {
                 safe.state << OPEN;
                 if (!certainlyFull(oxState)) {
                     oxState << TANK_FILL;
-                } else if(prepTank(oxState)){
-                    state << ENGINE_OXPREPPED;
                 } 
+                // else if(prepTank(oxState)){
+                //     state << ENGINE_OXPREPPED;
+                // } 
                 lastState = ENGINE_PREPOX;
                 break;
             case ENGINE_OXPREPPED:
-                if(lastState << ENGINE_PREPOX) state << lastState;
+                if(lastState < ENGINE_PREPOX) state << lastState;
                 if(!certainlyFull(oxState)) state << ENGINE_PREPOX;
+                else prepTank(oxState);
                 lastState = ENGINE_OXPREPPED;
                 break;
             case ENGINE_PREPFUEL:
@@ -77,7 +79,7 @@ void EngineFSM::activity() {
                 if(lastState != ENGINE_PREPPED) state << lastState;
                 
                 // igniter.state << FIRED;
-                igniter.state << OPEN; // until squibs are unfucked
+                igniter.time << FSM_PTM; // until squibs are unfucked
                 ignitionTime = xTaskGetTickCount();
                 state << MAIN_ACTUATION;
 
@@ -87,8 +89,8 @@ void EngineFSM::activity() {
                 if(lastState != ENGINE_FIRE) state << lastState;
 
                 vTaskDelayUntil(&ignitionTime, FIRE_DELAY);
-                oxMain.state << OPEN;
-                fuelMain.state << OPEN;
+                oxMain.time << FSM_PTM;
+                fuelMain.time << FSM_PTM;
 
                 lastState = MAIN_ACTUATION;
                 break;
@@ -114,6 +116,7 @@ bool EngineFSM::possiblyFull(EndPoint<TankState>& tankState) {
 }
 
 bool EngineFSM::certainlyFull(EndPoint<TankState>& tankState) {
+    vTaskDelay(CERTAINLY_FULL_DELAY);
     return tankState() >= TANK_FULL;
 }
 

@@ -99,7 +99,7 @@ public:
     
         EngineFSM engine = EngineFSM(2);
         // VaPakFSM oxTank = VaPakFSM(2,
-        TankFSM oxTank = TankFSM(2,
+        VaPakFSM oxTank = VaPakFSM(2,
             sys.slate.sequence.oxState,
             sys.slate.sequence.oxOpWeight,
             sys.slate.sense.pt4,
