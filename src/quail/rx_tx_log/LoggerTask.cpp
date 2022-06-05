@@ -71,14 +71,14 @@ void LoggerTask::activity()
     char* p = lineBuffer; // start at beginning of buffer
     TickType_t timeout = xTaskGetTickCount();
     while (loggingEnabled) {
-        if (strBuffer.receive(p, 1000, !shitlEnabled) > 0) { // adds data onto buffer, blocking
+        if (strBuffer.receive(p, (lineBuffer + sizeof(lineBuffer) - p), !shitlEnabled) > 0) { // adds data onto buffer, blocking. Available size is calculate based on size of.
             // denote end of one message with new line
             p = lineBuffer + strlen(lineBuffer);
             p[0] = '\n';
             p++;
             p[0] = '\0';
 
-            // is the buffer full? have we waited too long? then we need tow rite
+            // is the buffer full? have we waited too long? then we need to write
             if (p - lineBuffer > 8999 || xTaskGetTickCount() > timeout) { 
                 writeSD(lineBuffer);
 
@@ -86,25 +86,6 @@ void LoggerTask::activity()
                 p = lineBuffer;
                 timeout = xTaskGetTickCount() + 1000; //if there are no logs for a bit, we should still flush every once and a while
             }
-        }
-        else { //if timeout is NEVER, we don't ever reach this (no SHITL)
-            readSHITL();
-        }
-    }
-}
-
-void LoggerTask::readSHITL() {
-    // digitalWrite(SENSOR_LED, true);
-    if (!f_eof(&shitl_file_object))
-    {
-        f_gets(inputLineBuffer, sizeof(inputLineBuffer), &shitl_file_object);
-        StaticJsonDocument<1024> sensor_json;
-
-        if (deserializeJson(sensor_json, inputLineBuffer) == DeserializationError::Ok) {
-            // there used to be guppy stuff here
-        }
-        else {
-            printf("Parsing Error!\n");
         }
     }
 }
