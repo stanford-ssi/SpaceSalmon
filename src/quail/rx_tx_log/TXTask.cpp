@@ -36,14 +36,14 @@ void TXTask::activity() {
             i = 0;
             size_t len = measureJson(slateJSON);
 
-            serializeJson(slateJSON, json_buffer, sizeof(json_buffer));   
+            size_t ser_len = serializeJson(slateJSON, json_buffer, sizeof(json_buffer));   
 
             sys.tasks.logger.log(json_buffer);
 
-            // writeUSB(msgPack);
+            //writeUSB(json_buffer);
             
             #ifdef ETHERNET_TXRX
-                sys.tasks.ethernettask.send(json_buffer, sizeof(json_buffer));
+                sys.tasks.ethernettask.send(json_buffer, ser_len);
             #endif 
             #ifdef RADIO_TXRX
                 if(j == RADIO_FACTOR*LOG_FACTOR){ // if at a radio transmission interval
