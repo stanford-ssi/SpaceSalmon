@@ -97,25 +97,25 @@ public:
         RXTask rxtask = RXTask(5, 50); //processes commands from USB, radio, or ethernet
         LoggerTask logger = LoggerTask(1); // logs data to SD during idle time, writes USB data as available
     
-        EngineFSM engine = EngineFSM(2);
+        // EngineFSM engine = EngineFSM(2);
+        // // VaPakFSM oxTank = VaPakFSM(2,
         // VaPakFSM oxTank = VaPakFSM(2,
-        VaPakFSM oxTank = VaPakFSM(2,
-            sys.slate.sequence.oxState,
-            sys.slate.sequence.oxOpWeight,
-            sys.slate.sense.pt4,
-            // sys.slate.sense.lcs,
-            sys.slate.valves[4],
-            sys.slate.valves[7],
-            sys.slate.valves[5]
-        );
-        TankFSM fuelTank = TankFSM(2,
-            sys.slate.sequence.fuelState,
-            sys.slate.sequence.fuelOpPressure,
-            sys.slate.sense.pt2,
-            sys.slate.valves[2], // fill
-            sys.slate.valves[0], // use main as vent
-            sys.slate.valves[3] // bleed
-        );
+        //     sys.slate.sequence.oxState,
+        //     sys.slate.sequence.oxOpWeight,
+        //     sys.slate.sense.pt4,
+        //     // sys.slate.sense.lcs,
+        //     sys.slate.valves[4],
+        //     sys.slate.valves[7],
+        //     sys.slate.valves[5]
+        // );
+        // TankFSM fuelTank = TankFSM(2,
+        //     sys.slate.sequence.fuelState,
+        //     sys.slate.sequence.fuelOpPressure,
+        //     sys.slate.sense.pt2,
+        //     sys.slate.valves[2], // fill
+        //     sys.slate.valves[0], // use main as vent
+        //     sys.slate.valves[3] // bleed
+        // );
     } tasks = Tasks(*this);
 };
 
