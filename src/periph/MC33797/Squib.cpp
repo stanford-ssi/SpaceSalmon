@@ -154,6 +154,7 @@ Squib_ReturnType Squib::Init()
 
   SquibSPI.begin();
   pinMode(SquibCS,OUTPUT);
+  digitalWrite(SquibCS,HIGH);
 
   ret_val = SQB_OK;
   //printf_("ret_val: %d",ret_val);

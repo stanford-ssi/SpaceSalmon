@@ -12,13 +12,14 @@ void FlightPlan::update(AltFilter& filter){
 
     float velocity = filter.getVelocity();
     float altitude = filter.getAltitude() - pad_alts[0]; //convert ASL to AGL!
+    uint32_t filter_time = filter.getTime();
 
     state_timer++;
 
     switch (state)
     {
     case Waiting:
-        if(state_timer > 200 && velocity > 100.0 && (bool) sys.armed){ //launch!
+        if(state_timer > 2000 && velocity > 100.0 && (bool) sys.armed){ //launch!
             state = Flight;
             state_timer = 0;
             sys.pyro.arm();
@@ -34,7 +35,7 @@ void FlightPlan::update(AltFilter& filter){
         }
         break;
     case Flight:
-        if(state_timer > 20 && velocity < 0.0){ //apogee!
+        if(state_timer > 500 && velocity < 0.0){ //apogee!
             state = Falling;
             state_timer = 0;
             logState();
@@ -42,7 +43,7 @@ void FlightPlan::update(AltFilter& filter){
         }
         break;
     case Falling:
-        if(state_timer > 200 && velocity > -5.0){ //stopped falling
+        if((state_timer > 30000 && velocity > -10.0 && altitude < 100) || state_timer > 300000){ //stopped falling
             state = Landed;
             state_timer = 0;
             sys.pyro.disarm();
@@ -66,8 +67,8 @@ void FlightPlan::update(AltFilter& filter){
                ((e.velCond == VelNone) || (e.velCond == VelLess && velocity < e.velocity) || (e.velCond == VelMore && velocity > e.velocity)) && //check velocity threshold
                ((e.altCond == AltNone) || (e.altCond == AltLess && altitude < e.altitude) || (e.altCond == AltMore && altitude > e.altitude)))   //check altitude threshold
             {
-                if(xTaskGetTickCount() > event_timer){
-                    event_timer = xTaskGetTickCount() + e.time;
+                if(filter_time > event_timer){
+                    event_timer = filter_time + e.time;
                     event_done[i] = true;
 
                     sys.pyro.fire(e.squib);
@@ -76,11 +77,15 @@ void FlightPlan::update(AltFilter& filter){
                         squibAFired = true;
                     } else if (e.squib == Pyro::SquibB) {
                         squibBFired = true;
+                    }else if (e.squib == Pyro::SquibC) {
+                        squibCFired = true;
+                    }else if (e.squib == Pyro::SquibD) {
+                        squibDFired = true;
                     }
 
                     StaticJsonDocument<500> event_json;
                     event_json["squib"] = (uint8_t) e.squib;
-                    event_json["tick"] = xTaskGetTickCount();
+                    event_json["tick"] = filter_time;
                     sys.tasks.logger.logJSON(event_json, "event");
                 }
             }   
@@ -97,6 +102,9 @@ void FlightPlan::logState(){
     p_state.post(state);
     pyroA_fired.post(squibAFired);
     pyroB_fired.post(squibBFired);
+    pyroC_fired.post(squibCFired);
+    pyroD_fired.post(squibDFired);
+
     StaticJsonDocument<500> json;
     json["state"] = (uint8_t) state;
     json["pad_alt"] = pad_alts[0];

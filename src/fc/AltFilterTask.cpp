@@ -16,6 +16,7 @@ void AltFilterTask::queueSensorData(SensorData &data)
 
 void AltFilterTask::activity()
 {
+    sys.pyro.init();
     plan.dumpConfig();
 
     for (int i = 0; i < 10; i++)

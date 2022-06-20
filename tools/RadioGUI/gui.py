@@ -3,7 +3,6 @@ from serial import *
 from tkinter import *
 import json
 import base64
-import telem
 
 import tkinter as tk
 
@@ -70,13 +69,22 @@ for entry in vars:
     data_row += 1
 
 # radiobuttons
-msgtype = IntVar()
+msgtype = StringVar()
+msgtype.set("base64")
 Radiobutton(dataFrame, text="Base64", variable=msgtype,
-            value=0).grid(column=0, row=data_row)
+            value="base64").grid(column=0, row=data_row)
 data_row += 1
-Radiobutton(dataFrame, text="ThunderGuppy Telem",
-            variable=msgtype, value=1).grid(column=0, row=data_row)
-data_row += 1
+
+telem_count = 1
+telem_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),"telem")
+
+for filename in os.listdir(telem_dir):
+    f = os.path.join(telem_dir,filename)
+    # checking if it is a file
+    if os.path.isfile(f) and filename.endswith(".py"):
+        Radiobutton(dataFrame, text="Decoder: "+filename,
+                variable=msgtype, value=filename).grid(column=0, row=data_row)
+        data_row += 1
 
 # latitude and longitude correction feilds
 pos = (IntVar(None,35), IntVar(None,-117))
@@ -106,7 +114,7 @@ def process(line):
                 data_feilds[key][0].set(str(data[key]) + data_feilds[key][1])
 
         if (data["msg"] == "RX" or data["msg"] == "TX"):
-            if msgtype.get() == 0:
+            if msgtype.get() == "base64":
                 try:
                     msg = base64.b64decode(data["data"]).decode("utf-8")
                 except UnicodeDecodeError as e:
@@ -116,7 +124,16 @@ def process(line):
                 msg = data["msg"] + ">> " + msg + "\n"
                 console.insert(END, msg)
 
-            elif msgtype.get() == 1:
+            else:
+                telem_py_path = os.path.join(telem_dir,msgtype.get())
+                
+                # dynamically import telemetry parser
+                spec = importlib.util.spec_from_file_location("module.name", telem_py_path)
+                telem = importlib.util.module_from_spec(spec)
+                sys.modules["module.name"] = telem
+                spec.loader.exec_module(telem)
+
+                # parse telemetry packet
                 msg = telem.decodeTelem(data["data"], pos)
                 console.insert(END, msg + "\n")
                 logging.info("Decoded Telem: " + msg)
