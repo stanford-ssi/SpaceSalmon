@@ -29,3 +29,8 @@ jobs:
       - name: Build examples
         run: |
           platformio run -e ${{ matrix.target }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.target }}.bin
+          path: .pio/build/${{ matrix.target }}/firmware.bin
