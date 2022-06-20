@@ -15,6 +15,7 @@ public:
   AltFilter();
   void update(SensorData& data);
   void init(SensorData& data);
+  uint32_t getTime() { return data_time; };
   float getAltitude();
   float getVelocity();
   void logState();

@@ -2,16 +2,18 @@
 
 class System;
 
+#define MS5611
+
 #include <Arduino.h>
 
 #include "../periph/ADXL375/ADXL375.hpp"
 #include "../periph/BMI088/BMI088.hpp"
-#include "../periph/BMP388/BMP388.hpp"
+#include "../periph/MS5611/MS5611.hpp"
 
 #include "SPI.h"
 #include "Tone.h"
 
-#include "../periph/PyroFets/PyroFets.h"
+#include "../periph/MC33797/PyroSquib.h"
 
 #include "fc/SensorTask.hpp"
 #include "fc/LoggerTask.hpp"
@@ -22,17 +24,23 @@ class System;
 #include "TelemetryTask.hpp"
 #include "RadioTask.hpp"
 #include "ArmingTask.hpp"
+#include "../periph/TwoBattery/TwoBattery.hpp"
+#include "../periph/HackBattery/HackBattery.hpp"
 
 #include "ssi_adc.h"
+
 
 class System
 { 
 public:
 
-    PyroFets pyrofets = PyroFets(31,33,32,34,adc0);
-    Pyro &pyro = pyrofets;
+    SPIClass squib_spi = SPIClass(&sercom4, 37, 36, 35, SPI_PAD_0_SCK_1, SERCOM_RX_PAD_2);
+    PyroSquib pyrosquib = PyroSquib(squib_spi,38);
+    Pyro &pyro = pyrosquib;
 
     ADC adc0 = ADC(ADC0);
+    TwoBattery srad_batt = TwoBattery(adc0,13,14);
+    HackBattery cots_batt = HackBattery(adc0,15);
 
     Tone buzzer = Tone(5);
 
@@ -51,13 +59,13 @@ public:
         ADXL375 adxl2 = ADXL375(&spi, 15, "adxl2");
         BMI088 imu1 = BMI088(&spi, 14, 13, "imu1");
         BMI088 imu2 = BMI088(&spi, 18, 17, "imu2");
-        BMP388 pres1 = BMP388(&spi, 12, "pres1");
-        BMP388 pres2 = BMP388(&spi, 16, "pres2");
+        MS5611_SPI pres1 = MS5611_SPI(&spi, 12, "pres1");
+        MS5611_SPI pres2 = MS5611_SPI(&spi, 16, "pres2");
 
         Sensor *list[6] = {&imu1, &imu2, &adxl1, &adxl2, &pres1, &pres2};
     };
 
-    class Tasks
+    class Tasks // Low priority numbers denote low priority tasks.
     {
     public:
         SensorTask sensor = SensorTask(5); //reads data from sensors

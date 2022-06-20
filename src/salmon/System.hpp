@@ -15,7 +15,7 @@ class System;
 
 #include "fc/SensorTask.hpp"
 #include "fc/LoggerTask.hpp"
-#include "fc/AltimeterTask.hpp"
+#include "AltimeterTask.hpp"
 #include "fc/AltFilterTask.h"
 
 #include "ssi_adc.h"

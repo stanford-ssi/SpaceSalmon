@@ -30,8 +30,10 @@ void SensorTask::activity()
     digitalWrite(17, HIGH);
     digitalWrite(18, HIGH);
 
+    SPISettings spi_settings = SPISettings(500000, MSBFIRST, SPI_MODE3);
     sys.sensors.spi.begin();
-    sys.sensors.spi.beginTransaction(SPISettings(500000, MSBFIRST, SPI_MODE3));
+    sys.sensors.spi.beginTransaction(spi_settings);
+    sys.sensors.spi.endTransaction();
 
     int rc;
     char str[100];
@@ -125,7 +127,7 @@ void SensorTask::activity()
         data.tick = xTaskGetTickCount();
 
         data.adxl1_data = sys.sensors.adxl1.readSensor();
-        data.bmp1_data = sys.sensors.pres1.readSensor();
+        data.pres1_data = sys.sensors.pres1.readSensor();
         //vTaskDelay(2); //but why...
         data.bmiaccel1_data = sys.sensors.imu1.accel->readSensor();
         //vTaskDelay(2); //but why...
@@ -134,7 +136,7 @@ void SensorTask::activity()
         //vTaskDelay(4); //but why...
 
         data.adxl2_data = sys.sensors.adxl2.readSensor();
-        data.bmp2_data = sys.sensors.pres2.readSensor();
+        data.pres2_data = sys.sensors.pres2.readSensor();
         //vTaskDelay(2); //but why...
         data.bmiaccel2_data = sys.sensors.imu2.accel->readSensor();
         //vTaskDelay(2); //but why...
@@ -144,12 +146,12 @@ void SensorTask::activity()
 
         sensor_json["tick"] = data.tick;
 
-        JsonObject bmp1_json = sensor_json.createNestedObject("bmp1");
         JsonObject bmi1_json = sensor_json.createNestedObject("bmi1");
         JsonObject adxl1_json = sensor_json.createNestedObject("adxl1");
 
-        bmp1_json["p"] = data.bmp1_data.pressure;
-        bmp1_json["t"] = data.bmp1_data.temperature;
+        JsonObject bmp1_json = sensor_json.createNestedObject("pres1");
+        bmp1_json["p"] = data.pres1_data.pressure;
+        bmp1_json["t"] = data.pres1_data.temperature;
 
         JsonArray bmi1_accel_json = bmi1_json.createNestedArray("a");
         bmi1_accel_json.add(data.bmiaccel1_data.x);
@@ -168,12 +170,12 @@ void SensorTask::activity()
 
         //second set!
 
-        JsonObject bmp2_json = sensor_json.createNestedObject("bmp2");
+        JsonObject bmp2_json = sensor_json.createNestedObject("pres2");
         JsonObject bmi2_json = sensor_json.createNestedObject("bmi2");
         JsonObject adxl2_json = sensor_json.createNestedObject("adxl2");
 
-        bmp2_json["p"] = data.bmp2_data.pressure;
-        bmp2_json["t"] = data.bmp2_data.temperature;
+        bmp2_json["p"] = data.pres2_data.pressure;
+        bmp2_json["t"] = data.pres2_data.temperature;
 
         JsonArray bmi2_accel_json = bmi2_json.createNestedArray("a");
         bmi2_accel_json.add(data.bmiaccel2_data.x);

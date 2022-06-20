@@ -7,9 +7,11 @@ class Pyro
         SquibNone,
         SquibA,
         SquibB,
-        SquibC
+        SquibC,
+        SquibD
     } PyroChannel;
 
+    virtual void init();
     virtual void arm();
     virtual void disarm();
 

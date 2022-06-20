@@ -77,7 +77,7 @@ void AltFilter::kalmanUpdate(){
 void AltFilter::prefilter(SensorData& data){
   data_time = data.tick;
   //double pres = (data.bmp1_data.pressure + data.bmp2_data.pressure)/2;
-  double pres = data.bmp2_data.pressure;
+  double pres = data.pres2_data.pressure;
   
   if(signbit(pres)){
     pres = 0.0;

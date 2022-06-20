@@ -5,7 +5,7 @@
 #include "ArduinoJson.h"
 #include "MsgBuffer.hpp"
 #include "event_groups.h"
-#include "LoggerTask.hpp"
+#include "fc/LoggerTask.hpp"
 #include "Mutex.hpp"
 #include "Task.hpp"
 
@@ -51,8 +51,8 @@ private:
   StaticEventGroup_t evbuf;
   EventGroupHandle_t evgroup;
 
-  SPIClass spi = SPIClass(&sercom5, 10, 12, 13, SPI_PAD_0_SCK_1, SERCOM_RX_PAD_2);// TODO: set these hard-coded vals in constructor
-  Module mod = Module(11, 14, 16, 15, spi, SPISettings());// TODO: set these hard-coded vals in constructor
+  SPIClass spi = SPIClass(&sercom1, 27, 25, 26, SPI_PAD_0_SCK_1, SERCOM_RX_PAD_2);
+  Module mod = Module(28, 29, 31, 30, spi, SPISettings());
   SX1262S lora = SX1262S(&mod);
 
   MsgBuffer<radio_settings_t, 1000> settingsBuf;

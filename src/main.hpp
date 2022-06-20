@@ -12,6 +12,10 @@
     #include "quail/System.hpp"
 #endif
 
+#ifdef CHOVY
+    #include "chovy/System.hpp"
+#endif
+
 #ifdef GUPPY_GROUND
     #include "guppy-ground/System.hpp"
 #endif
