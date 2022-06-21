@@ -6,7 +6,7 @@ GIT_REPO_PATH="~/SpaceSalmon"
 
 scp "$1" "$PI_HOSTNAME":~/quail_firmware.bin
 
-ssh "$PI_HOSTNAME" "bash $GIT_REPO_PATH/pi_upload/quail_mount.sh"
+ssh "$PI_HOSTNAME" "sudo bash $GIT_REPO_PATH/pi_upload/quail_mount.sh"
 
 sleep 2
 
