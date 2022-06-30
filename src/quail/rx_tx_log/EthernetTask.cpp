@@ -83,10 +83,10 @@ err_t EthernetTask::requestHandler(netconn *&conn, char *rcv, uint16_t len) {
             PRINT(metaStr);
 
             //get the address from which the request came, send the UDP there
-            // ip4_addr_t target_ip;
-            // u16_t port;
-            // netconn_getaddr(conn, &target_ip, &port, 0);
-            // createUDP(slateConn, MY_SLATE_PORT, CLIENT_SLATE_PORT, &target_ip);
+            ip4_addr_t target_ip;
+            u16_t port;
+            netconn_getaddr(conn, &target_ip, &port, 0);
+            createUDP(slateConn, MY_SLATE_PORT, CLIENT_SLATE_PORT, &target_ip);
 
             netconn_write(conn, metaStr, strlen(metaStr), NETCONN_COPY);
             return netconn_write(conn, "\n", 1, NETCONN_COPY);
