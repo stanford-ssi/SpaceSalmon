@@ -81,6 +81,13 @@ err_t EthernetTask::requestHandler(netconn *&conn, char *rcv, uint16_t len) {
 
             // send the metaslate request
             PRINT(metaStr);
+
+            //get the address from which the request came, send the UDP there
+            ip4_addr_t target_ip;
+            u16_t port;
+            netconn_getaddr(conn, &target_ip, &port, 0);
+            createUDP(slateConn, MY_SLATE_PORT, CLIENT_SLATE_PORT, &target_ip);
+
             netconn_write(conn, metaStr, strlen(metaStr), NETCONN_COPY);
             return netconn_write(conn, "\n", 1, NETCONN_COPY);
         }
@@ -91,8 +98,12 @@ err_t EthernetTask::requestHandler(netconn *&conn, char *rcv, uint16_t len) {
     return netconn_write(conn, send, sizeof(send), NETCONN_COPY);
 }
 
-void EthernetTask::createUDP(netconn *&conn, uint16_t myport, uint16_t clientport) {
+void EthernetTask::createUDP(netconn *&conn, uint16_t myport, uint16_t clientport, ip4_addr_t *target ) {
     err_t err;
+
+    if (conn != NULL) {
+        netconn_delete(conn);
+    }
 
     // bind to a host UDP Connection
     conn = netconn_new(NETCONN_UDP);
@@ -105,13 +116,16 @@ void EthernetTask::createUDP(netconn *&conn, uint16_t myport, uint16_t clientpor
         err = netconn_bind(conn, IP4_ADDR_ANY, myport);
     }
 
-    // connect to user
-    ip4_addr_t dst;
-    IP4_ADDR(&dst, 192, 168, 1, 3);
+    // if no target specified default to this
+    if (target == NULL){
+        ip4_addr_t dst;
+        IP4_ADDR(&dst, 192, 168, 1, 3);
+        target = &dst;
+    }
 
     do {
         vTaskDelay(NETWORKING_DELAY);
-        err = netconn_connect(conn, &dst, CLIENT_SLATE_PORT);
+        err = netconn_connect(conn, target, CLIENT_SLATE_PORT);
     } while(err != ERR_OK);
 }
 
