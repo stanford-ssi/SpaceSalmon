@@ -21,7 +21,8 @@ class System;
 #include "rx_tx_log/TXTask.hpp"
 #include "rx_tx_log/RXTask.hpp"
 #include "fsms/EngineFSM.hpp"
-#include "fsms/OxFSM.hpp"
+#include "fsms/TankFSM.hpp"
+#include "fsms/VaPakFSM.hpp"
 #ifdef ETHERNET_TXRX
     #include "rx_tx_log/EthernetTask.hpp"
 #endif
@@ -75,9 +76,10 @@ public:
         //&TS3,
     };
 
-    class Tasks
-    {
-    public:
+    struct Tasks{
+        Tasks(System& sys) : sys(sys) {};
+        System& sys;
+
         ADCTask adctask = ADCTask(2); // passes ADC raw data to the appropriate sensor
         SensorTask sensortask = SensorTask(3);
         PowerTask powertask = PowerTask(3); // test for measuring battery voltage and current
@@ -95,11 +97,26 @@ public:
         RXTask rxtask = RXTask(5, 50); //processes commands from USB, radio, or ethernet
         LoggerTask logger = LoggerTask(1); // logs data to SD during idle time, writes USB data as available
     
-        // EngineFSM engine = EngineFSM(5);
-        // OxFSM oxtank = OxFSM(2);
-    };
-
-    Tasks tasks;
+        // EngineFSM engine = EngineFSM(2);
+        // // VaPakFSM oxTank = VaPakFSM(2,
+        // VaPakFSM oxTank = VaPakFSM(2,
+        //     sys.slate.sequence.oxState,
+        //     sys.slate.sequence.oxOpWeight,
+        //     sys.slate.sense.pt4,
+        //     // sys.slate.sense.lcs,
+        //     sys.slate.valves[4],
+        //     sys.slate.valves[7],
+        //     sys.slate.valves[5]
+        // );
+        // TankFSM fuelTank = TankFSM(2,
+        //     sys.slate.sequence.fuelState,
+        //     sys.slate.sequence.fuelOpPressure,
+        //     sys.slate.sense.pt2,
+        //     sys.slate.valves[2], // fill
+        //     sys.slate.valves[0], // use main as vent
+        //     sys.slate.valves[3] // bleed
+        // );
+    } tasks = Tasks(*this);
 };
 
 #include "main.hpp"

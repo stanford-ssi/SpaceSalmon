@@ -32,9 +32,6 @@ SensorSlate& SensorSlate::operator<<(const float in) {
     // ntg << ntg() + avg() * window.dt();
     cal << avg.get() + ofs.get();
 
-    // this shouldn't be happening every looop but corners need to be cut
-    cal.unit = val.unit;
-
     return *this;
 };
 
@@ -60,7 +57,7 @@ Igniter::Igniter(const std::string id, const std::string quailID, const std::str
 
 Igniter& Igniter::operator<<(const JsonVariant src) {
     Container::operator<<(src);
-    sys.tasks.firetask._updateSquibs();
+    if (src.containsKey(this->id)) { sys.tasks.firetask._updateSquibs(); }
     return *this;
 }
 
@@ -76,7 +73,8 @@ PulseEndpoint& PulseEndpoint::operator<<(const JsonVariant src) {
 };
 
 PulseEndpoint& PulseEndpoint::operator<<(const uint16_t in) {
-    this->operator<<(in);
+    EndPoint::operator<<(in);
+    sys.tasks.valvetask._updatePulse(index);
     return *this;
 };
 

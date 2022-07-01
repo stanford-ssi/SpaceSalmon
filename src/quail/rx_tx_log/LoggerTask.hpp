@@ -26,15 +26,12 @@ class LoggerTask : public Task<1000>
 private:
   StrBuffer<10000> strBuffer;
   char lineBuffer[10000];
-  char inputLineBuffer[1000];
   FATFS fs;
   FIL file_object;
-  FIL shitl_file_object;
   bool loggingEnabled = true;
   bool shitlEnabled = false;
 
   void activity();
-  void readSHITL();
   void writeUSB(char *buf);
   void writeSD(char *buf);
   void format();

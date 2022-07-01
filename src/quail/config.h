@@ -60,19 +60,28 @@ typedef enum {
 
 // sequence
 #define UPDATE_SEQS 0b01
-#define MAWP 700
+#define MAWP 700 * PSI_TO_PA
 #define FSM_PTM 100
-#define FSM_FREQ 10
+#define FSM_FREQ 50
+#define FIRE_DELAY 4000
+#define LOAD_EQUILIBRIUM_DELAY 1000
+#define OX_FILL_DELAY 10000
+#define CERTAINLY_FULL_DELAY 1500
 
 typedef enum {
+    ENGINE_ABORT,
     ENGINE_IDLE,
-    ENGINE_FILL,
-    ENGINE_FULL,
-    LAUNCH,
-    ABORT
+    ENGINE_PREPOX,
+    ENGINE_OXPREPPED,
+    ENGINE_PREPFUEL,
+    ENGINE_PREPPED,
+    ENGINE_FIRE,
+    MAIN_ACTUATION
 } EngineState;
 
 typedef enum {
+    TANK_IDLE_EMPTY,
+    TANK_IDLE_PRESS,
     TANK_EMPTY,
     TANK_DRAIN,
     TANK_FILL,
@@ -96,6 +105,8 @@ typedef enum {
  // TX RX
  #define ETHERNET_TXRX
  // #define RADIO_TXRX
+//  #define COMM_RESET 1800000 //30 min
+ #define COMM_RESET 18000000 // 300min
 
  // networking
  #define MY_SLATE_PORT 1000

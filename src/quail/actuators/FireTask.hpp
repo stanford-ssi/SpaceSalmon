@@ -19,7 +19,7 @@ typedef struct {
     Squib_FireType firecmd;
 } squibChannel_t;
 
-class FireTask : public Task<2000>
+class FireTask : public Task<1000>
 {
 public:
     FireTask(uint8_t priority, uint8_t Squib_SS);
@@ -32,6 +32,7 @@ private:
 
     Array<Igniter, NUM_EM_CHANNELS> &slate;
     friend class Igniter; // Igniters can tell me to update
+    friend class EngineFSM;
 
     StaticEventGroup_t evbuf;
     EventGroupHandle_t squibManager;
