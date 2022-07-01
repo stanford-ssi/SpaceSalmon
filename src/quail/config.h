@@ -105,8 +105,7 @@ typedef enum {
  // TX RX
  #define ETHERNET_TXRX
  // #define RADIO_TXRX
- #define COMM_RESET 180000 //3 min
-//  #define COMM_RESET 1800000 //30 min
+ #define COMM_RESET 1800000 //30 min
 
  // networking
  #define MY_SLATE_PORT 1000
