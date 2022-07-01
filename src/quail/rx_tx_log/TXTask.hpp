@@ -21,4 +21,5 @@ public:
     static void writeUSB(const char* buf); // responsibly write to USB
 private:
     const uint16_t tx_interval_ms; // frequency, in milliseconds, of TX
+    char json_buffer[DATA_PCKT_LEN]; //create char buffer with space
 };

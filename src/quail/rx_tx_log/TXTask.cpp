@@ -31,18 +31,19 @@ void TXTask::activity() {
         sys.slate >> variant;
         
         // always 
-        sys.tasks.logger.log(slateJSON);    
 
         if(i == LOG_FACTOR){
             i = 0;
             size_t len = measureJson(slateJSON);
-            char msgPack[len]; //create char buffer with space
-            serializeJson(slateJSON, msgPack, sizeof(msgPack));   
 
-            // writeUSB(msgPack);
+            size_t ser_len = serializeJson(slateJSON, json_buffer, sizeof(json_buffer));   
+
+            sys.tasks.logger.log(json_buffer);
+
+            //writeUSB(json_buffer);
             
             #ifdef ETHERNET_TXRX
-                sys.tasks.ethernettask.send(msgPack, sizeof(msgPack));
+                sys.tasks.ethernettask.send(json_buffer, ser_len);
             #endif 
             #ifdef RADIO_TXRX
                 if(j == RADIO_FACTOR*LOG_FACTOR){ // if at a radio transmission interval

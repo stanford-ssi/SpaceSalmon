@@ -30,6 +30,8 @@ private:
     void readInput(); // check if input is available, returns true if successful read
     MsgBuffer<cmd_t, sizeof(cmd_t)*10> cmdbuf; // buffer for input - can hold 10 commands before getting full
 
+    TimerHandle_t commTimer;
+    StaticTimer_t commTimerBuf;
     // TODO: implement the following
     // void config_radio(); // reads radio settings from serial and sends to radio settings msgbuffer
 };
