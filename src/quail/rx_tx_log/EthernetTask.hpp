@@ -22,6 +22,7 @@ class EthernetTask : public Task<2000>{
 
     private:
         bool isSetup = false;
+        bool udpSetup = false;
 
         netconn *slateConn = NULL; //NULL is important to ensure it doesn't get fake deleted the first time
         netconn *cmdConn;

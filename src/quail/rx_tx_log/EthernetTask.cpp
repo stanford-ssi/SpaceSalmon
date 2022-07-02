@@ -101,6 +101,8 @@ err_t EthernetTask::requestHandler(netconn *&conn, char *rcv, uint16_t len) {
 void EthernetTask::createUDP(netconn *&conn, uint16_t myport, uint16_t clientport, ip4_addr_t *target ) {
     err_t err;
 
+    udpSetup = false;
+
     if (conn != NULL) {
         netconn_delete(conn);
     }
@@ -127,6 +129,8 @@ void EthernetTask::createUDP(netconn *&conn, uint16_t myport, uint16_t clientpor
         vTaskDelay(NETWORKING_DELAY);
         err = netconn_connect(conn, target, CLIENT_SLATE_PORT);
     } while(err != ERR_OK);
+
+    udpSetup = true;
 }
 
 void EthernetTask::createTCP(netconn *&conn, uint16_t myport) {
@@ -145,6 +149,8 @@ void EthernetTask::createTCP(netconn *&conn, uint16_t myport) {
 
 void EthernetTask::sendUDP(netconn *conn, JsonDocument& jsonDoc) {
     if (!isSetup) return;
+    if (!udpSetup) return;
+
     uint16_t len = measureJson(jsonDoc);
     char str[len];
     serializeJson(jsonDoc, str, sizeof(str));
@@ -153,6 +159,7 @@ void EthernetTask::sendUDP(netconn *conn, JsonDocument& jsonDoc) {
 
 void EthernetTask::sendUDP(netconn *conn, const char* message, uint16_t fullLen) {
     if (!isSetup) return;
+    if (!udpSetup) return;
     
     // create a packet
     netbuf *buf = netbuf_new();
