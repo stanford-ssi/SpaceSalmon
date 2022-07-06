@@ -47,8 +47,8 @@ class EndPoint : public SlateKey<T>{
         std::string unit;
     private:
         std::string quailID;
-        std::string desc;
         bool editable;
+        std::string desc;
 };
 
 class EndSensor : public EndPoint<float>{

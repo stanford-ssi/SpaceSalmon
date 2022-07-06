@@ -22,8 +22,9 @@ class EthernetTask : public Task<2000>{
 
     private:
         bool isSetup = false;
+        bool udpSetup = false;
 
-        netconn *slateConn;
+        netconn *slateConn = NULL; //NULL is important to ensure it doesn't get fake deleted the first time
         netconn *cmdConn;
 
         StrBuffer<10*MAX_CMD_LENGTH> cmdBuf;
@@ -32,7 +33,7 @@ class EthernetTask : public Task<2000>{
 
         void setup();
 
-        void createUDP(netconn *&conn, uint16_t myport, uint16_t client);
+        void createUDP(netconn *&conn, uint16_t myport, uint16_t client, ip4_addr_t *target = NULL);
         void createTCP(netconn *&conn, uint16_t myport);
 
         err_t requestHandler(netconn *&conn, char *rcv, uint16_t len);
