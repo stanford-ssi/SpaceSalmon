@@ -12,6 +12,7 @@ jobs:
               - quail-ground
               - guppy-ground
               - dummy
+              - chovy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
