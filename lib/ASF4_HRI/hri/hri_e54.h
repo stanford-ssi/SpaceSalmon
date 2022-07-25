@@ -1,9 +1,9 @@
 /**
  * \file
  *
- * \brief Atmel part identification macros
+ * \brief SAM E54 HRI top-level header file
  *
- * Copyright (c) 2015-2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2016-2019 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -28,20 +28,16 @@
  * THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
  *
  * \asf_license_stop
- *
  */
 
-#ifndef ATMEL_PARTS_H
-#define ATMEL_PARTS_H
+#ifndef _HRI_E54_H_INCLUDED_
+#define _HRI_E54_H_INCLUDED_
 
-#include "sam.h"
+#include <hri_gclk_e54.h>
+#include <hri_mclk_e54.h>
+#include <hri_port_e54.h>
+#include <hri_sdhc_e54.h>
+#include <hri_adc_e54.h>
+#include <hri_gmac_e54.h>
 
-#if SAMD51_SERIES
-#include "../hri/hri_d51.h"
-#endif
-
-#if SAME54_SERIES
-#include "../hri/hri_e54.h"
-#endif
-
-#endif /* ATMEL_PARTS_H */
+#endif /* _HRI_E54_H_INCLUDED_ */

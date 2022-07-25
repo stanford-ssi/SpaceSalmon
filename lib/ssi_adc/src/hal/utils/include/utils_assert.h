@@ -38,7 +38,7 @@
 extern "C" {
 #endif
 
-#include <include/compiler.h>
+#include <compiler.h>
 
 #ifndef USE_SIMPLE_ASSERT
 //# define USE_SIMPLE_ASSERT

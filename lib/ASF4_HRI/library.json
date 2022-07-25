@@ -1,0 +1,11 @@
+{
+    "name": "ASF4_HRI",
+    "build":{
+        "libArchive": false,
+        "flags":
+        [
+            "-Ihri",
+            "-Iinclude"
+        ]
+    }
+}

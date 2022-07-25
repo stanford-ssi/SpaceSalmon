@@ -43,8 +43,10 @@
 #ifndef _HRI_D51_H_INCLUDED_
 #define _HRI_D51_H_INCLUDED_
 
-#include <hri/hri_gclk_d51.h>
-#include <hri/hri_mclk_d51.h>
-#include <hri/hri_adc_d51.h>
+#include <hri_gclk_d51.h>
+#include <hri_mclk_d51.h>
+#include <hri_port_d51.h>
+#include <hri_sdhc_d51.h>
+#include <hri_adc_d51.h>
 
 #endif /* _HRI_D51_H_INCLUDED_ */

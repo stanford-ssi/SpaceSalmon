@@ -1,9 +1,9 @@
 /**
  * \file
  *
- * \brief Atmel part identification macros
+ * \brief Critical sections related functionality implementation.
  *
- * Copyright (c) 2015-2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2014-2018 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -31,17 +31,36 @@
  *
  */
 
-#ifndef ATMEL_PARTS_H2
-#define ATMEL_PARTS_H2
+#include "hal_atomic.h"
 
-#include "sam.h"
+/**
+ * \brief Driver version
+ */
+#define DRIVER_VERSION 0x00000001u
 
-#if SAMD51_SERIES
-#include "../hri/hri_d51.h"
-#endif
+/**
+ * \brief Disable interrupts, enter critical section
+ */
+void atomic_enter_critical(hal_atomic_t volatile *atomic)
+{
+	*atomic = __get_PRIMASK();
+	__disable_irq();
+	__DMB();
+}
 
-#if SAME54_SERIES
-#include "../hri/hri_e54.h"
-#endif
+/**
+ * \brief Exit atomic section
+ */
+void atomic_leave_critical(hal_atomic_t volatile *atomic)
+{
+	__DMB();
+	__set_PRIMASK(*atomic);
+}
 
-#endif /* ATMEL_PARTS_H */
+/**
+ * \brief Retrieve the current driver version
+ */
+uint32_t atomic_get_version(void)
+{
+	return DRIVER_VERSION;
+}

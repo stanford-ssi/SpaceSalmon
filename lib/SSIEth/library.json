@@ -8,8 +8,6 @@
             "-Isrc/hal/utils/include/",
             "-Isrc/config/",
             "-Isrc/ethernet_phy/",
-            "-Isrc/hri/",
-            "-Isrc/include/",
             "-Isrc/hpl/port/"
         ],
         "libArchive": false

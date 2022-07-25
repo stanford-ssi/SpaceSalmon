@@ -49,7 +49,7 @@ extern "C" {
 #endif
 
 #include <stdbool.h>
-//#include <hal_atomic.h>
+#include <hal_atomic.h>
 
 #if defined(ENABLE_GCLK_CRITICAL_SECTIONS)
 #define GCLK_CRITICAL_SECTION_ENTER() CRITICAL_SECTION_ENTER()

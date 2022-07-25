@@ -40,7 +40,7 @@ extern "C" {
 #endif
 
 #include <stdbool.h>
-//#include <hal_atomic.h>
+#include <hal_atomic.h>
 
 #if defined(ENABLE_ADC_CRITICAL_SECTIONS)
 #define ADC_CRITICAL_SECTION_ENTER() CRITICAL_SECTION_ENTER()
