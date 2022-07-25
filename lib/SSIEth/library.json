@@ -11,5 +11,8 @@
             "-Isrc/hpl/port/"
         ],
         "libArchive": false
+    },
+    "dependencies":{
+        "lwip":"https://github.com/stanford-ssi/lwip.git#ssi"
     }
 }
