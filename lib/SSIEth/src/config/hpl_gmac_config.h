@@ -421,7 +421,7 @@
 // <i> Byte size of buffer for each transmit buffer descriptor.
 // <id> gmac_arch_txbuf_size
 #ifndef CONF_GMAC_TXBUF_SIZE
-#define CONF_GMAC_TXBUF_SIZE 1500
+#define CONF_GMAC_TXBUF_SIZE 1520
 #endif
 
 #ifndef CONF_GMAC_RXBUF_SIZE

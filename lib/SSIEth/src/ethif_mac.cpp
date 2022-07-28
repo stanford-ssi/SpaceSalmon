@@ -100,8 +100,6 @@ err_t mac_low_level_output(struct netif *netif, struct pbuf *p)
 
 	LINK_STATS_INC(link.xmit);
 
-	vTaskDelay(2);
-
 	return ERR_OK;
 }
 
