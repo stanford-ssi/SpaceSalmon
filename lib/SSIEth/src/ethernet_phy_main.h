@@ -8,12 +8,19 @@
 #ifndef ETHERNET_PHY_MAIN_H
 #define ETHERNET_PHY_MAIN_H
 
+#pragma once
+
+#include "ieee8023_mii_standard_config.h"
+#include <ethernet_phy.h>
+
+extern struct mac_async_descriptor COMMUNICATION_IO;
+
+extern PHY phy;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include <ethernet_phy.h>
 
-extern struct ethernet_phy_descriptor ETHERNET_PHY_0_desc;
 
 void ethernet_phys_init(void);
 void ETHERNET_PHY_0_example(void);

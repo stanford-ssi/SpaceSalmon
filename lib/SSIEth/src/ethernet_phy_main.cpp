@@ -11,12 +11,11 @@
 
 extern struct mac_async_descriptor COMMUNICATION_IO;
 
-struct ethernet_phy_descriptor ETHERNET_PHY_0_desc;
+PHY phy(&COMMUNICATION_IO,CONF_ETHERNET_PHY_0_IEEE8023_MII_PHY_ADDRESS);
 
 void ETHERNET_PHY_0_init(void)
 {
 	mac_async_enable(&COMMUNICATION_IO);
-	ethernet_phy_init(&ETHERNET_PHY_0_desc, &COMMUNICATION_IO, CONF_ETHERNET_PHY_0_IEEE8023_MII_PHY_ADDRESS);
 #if CONF_ETHERNET_PHY_0_IEEE8023_MII_CONTROL_REG0_SETTING == 1
 	ethernet_phy_write_reg(&ETHERNET_PHY_0_desc, MDIO_REG0_BMCR, CONF_ETHERNET_PHY_0_IEEE8023_MII_CONTROL_REG0);
 #endif /* CONF_ETHERNET_PHY_0_IEEE8023_MII_CONTROL_REG0_SETTING */
@@ -27,13 +26,14 @@ void ETHERNET_PHY_0_example(void)
 	bool    link_state;
 	int32_t rst;
 	/* Restart an auto-negotiation */
-	rst = ethernet_phy_restart_autoneg(&ETHERNET_PHY_0_desc);
+	rst = phy.restart_autoneg();
+	
 	while (rst != ERR_NONE) {
 	}
 
 	/* Wait for PHY link up */
 	do {
-		rst = ethernet_phy_get_link_status(&ETHERNET_PHY_0_desc, &link_state);
+		rst = phy.get_link_status(link_state);
 	} while (rst == ERR_NONE && link_state == true);
 }
 

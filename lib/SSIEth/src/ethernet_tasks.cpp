@@ -68,7 +68,7 @@ void tcpip_init_done(void *arg)
 	mac_async_register_callback(&COMMUNICATION_IO, MAC_ASYNC_RECEIVE_CB, gmac_handler_cb);
 	hri_gmac_set_IMR_RCOMP_bit(COMMUNICATION_IO.dev.hw);
 
-	while ((ethernet_phy_get_link_status(&ETHERNET_PHY_0_desc, &link_up)) != ERR_NONE && !(link_up)) {
+	while ((phy.get_link_status(link_up)) != ERR_NONE && !(link_up)) {
 		vTaskDelay(20);
 	}
 
