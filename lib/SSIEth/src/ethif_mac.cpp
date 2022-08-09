@@ -44,42 +44,25 @@
 
 #include "hal_rtos.h"
 
-struct mac_async_descriptor COMMUNICATION_IO;
-
-/**
- * \brief Initialize the MAC hardware
- */
-void mac_low_level_init(struct netif *netif)
-{
-	struct mac_async_descriptor *mac;
-	struct mac_async_filter      filter;
-
-	mac = (struct mac_async_descriptor *)(netif->state);
-
-	/* set MAC hardware address */
-	memcpy(filter.mac, netif->hwaddr, NETIF_MAX_HWADDR_LEN);
-	filter.tid_enable = false;
-	mac_async_set_filter(mac, 0, &filter);
-}
+#include "EthMAC.h"
 
 /**
  * \berif Transmission packet though the MAC hardware.
  */
 err_t mac_low_level_output(struct netif *netif, struct pbuf *p)
 {
-	struct mac_async_descriptor *mac;
 	struct pbuf *                q;
 	void *                       tbuf;
 	uint8_t *                    pos;
 
-	mac = (struct mac_async_descriptor *)(netif->state);
+	EthMAC* mac = (EthMAC*)(netif->state);
 
 #if ETH_PAD_SIZE
 	pbuf_header(p, -ETH_PAD_SIZE); /* drop the padding word */
 #endif
 
 	if (p->tot_len == p->len) {
-		mac_async_write(mac, (uint8_t*)p->payload, p->tot_len);
+		mac->write((uint8_t*)p->payload, p->tot_len);
 	} else {
 		tbuf = mem_malloc(LWIP_MEM_ALIGN_SIZE(p->tot_len));
 		pos  = (uint8_t*)tbuf;
@@ -90,7 +73,7 @@ err_t mac_low_level_output(struct netif *netif, struct pbuf *p)
 			memcpy(pos, q->payload, q->len);
 			pos += q->len;
 		}
-		mac_async_write(mac, (uint8_t*)tbuf, p->tot_len);
+		mac->write((uint8_t*)tbuf, p->tot_len);
 		mem_free(tbuf);
 	}
 
@@ -113,12 +96,11 @@ err_t mac_low_level_output(struct netif *netif, struct pbuf *p)
  */
 static struct pbuf *low_level_input(struct netif *netif)
 {
-	struct mac_async_descriptor *mac;
 	struct pbuf *                p;
-	u16_t                        len;
+	uint32_t                        len;
 
-	mac = (struct mac_async_descriptor *)(netif->state);
-	len = mac_async_read_len(mac); /* Obtain the size of the packet */
+	EthMAC* mac = (EthMAC*)(netif->state);
+	mac->read_len(len); /* Obtain the size of the packet */
 	if (len == 0) {
 		return NULL;
 	}
@@ -128,7 +110,7 @@ static struct pbuf *low_level_input(struct netif *netif)
 #endif
 
 	/* Allocate a pbuf as one large chunk, This include protocol header */
-	p = pbuf_alloc(PBUF_RAW, len, PBUF_RAM);
+	p = pbuf_alloc(PBUF_RAW, (uint16_t)len, PBUF_RAM);
 
 	if (p != NULL) {
 #if ETH_PAD_SIZE
@@ -136,7 +118,8 @@ static struct pbuf *low_level_input(struct netif *netif)
 #endif
 
 		/* Read the entire packet into the pbuf. */
-		mac_async_read(mac, (uint8_t*)p->payload, p->len);
+		uint32_t rx_len;
+		mac->read((uint8_t*)p->payload, p->len, rx_len);
 
 #if ETH_PAD_SIZE
 		pbuf_header(p, ETH_PAD_SIZE); /* reclaim the padding word */
@@ -144,7 +127,8 @@ static struct pbuf *low_level_input(struct netif *netif)
 
 		LINK_STATS_INC(link.recv);
 	} else {
-		mac_async_read(mac, NULL, 0);
+		uint32_t rx_len;
+		mac->read(NULL,0,rx_len);
 		LINK_STATS_INC(link.memerr);
 		LINK_STATS_INC(link.drop);
 	}

@@ -39,7 +39,7 @@ public:
     class Tasks
     {
     public:
-        SSIEth ethernet = SSIEth(1);
+        SSIEth ethernet = SSIEth(1,MacAddr({0x00, 0x00, 0x00, 0x00, 0x20, 0x76}));
         SensorTask sensor_demo = SensorTask(1);
         CommandTask command_demo = CommandTask(2);
         WebsiteTask website_demo = WebsiteTask(2);

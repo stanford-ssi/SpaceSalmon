@@ -2,10 +2,6 @@
 #ifndef HPL_GMAC_CONFIG_H
 #define HPL_GMAC_CONFIG_H
 
-// <<< Use Configuration Wizard in Context Menu >>>
-
-#include <peripheral_clk_config.h>
-
 // <h> Network Control configuration
 
 // <q> Enable LoopBack Local

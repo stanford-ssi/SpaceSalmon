@@ -4,11 +4,8 @@
         "flags":
         [
             "-Isrc/",
-            "-Isrc/hal/include/",
-            "-Isrc/hal/utils/include/",
-            "-Isrc/config/",
-            "-Isrc/ethernet_phy/",
-            "-Isrc/hpl/port/"
+            "-Isrc/asf_hal",
+            "-Isrc/config/"
         ],
         "libArchive": false
     },

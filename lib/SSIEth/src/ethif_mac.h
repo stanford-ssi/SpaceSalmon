@@ -38,7 +38,6 @@
 extern "C" {
 #endif
 
-#include <hal_mac_async.h>
 /* Workaround for redefined macro */
 #undef ERR_TIMEOUT
 #include <lwip/netif.h>
@@ -75,12 +74,6 @@ void ethernetif_mac_input(struct netif *netif);
  */
 err_t mac_low_level_output(struct netif *netif, struct pbuf *p);
 
-/**
- * \brief Initialize the MAC hardware
- *
- * @param netif The already initialized lwip network interface structure.
- */
-void mac_low_level_init(struct netif *netif);
 #ifdef __cplusplus
 }
 #endif

@@ -1,5 +1,6 @@
-#include <ethernet_phy.h>
+#include "PHY.h"
 #include <utils_assert.h>
+#include "ieee8023_mii_standard_register.h"
 
 /**
  * @brief Construct a new PHY object
@@ -7,7 +8,7 @@
  * @param mac
  * @param addr the PHY address, unsigned int 0-31
  */
-PHY::PHY(struct mac_async_descriptor *mac, uint16_t addr) : mac(mac), addr(addr)
+PHY::PHY(EthMAC &mac, uint16_t addr) : mac(mac), addr(addr)
 {
 	ASSERT(addr <= 0x1F);
 }
@@ -21,9 +22,9 @@ PHY::PHY(struct mac_async_descriptor *mac, uint16_t addr) : mac(mac), addr(addr)
  * \param[out] val   Register value
  * \return Operation result.
  */
-return_t PHY::read_reg(uint16_t reg, uint16_t &val)
+result_t PHY::read_reg(uint16_t reg, uint16_t &val)
 {
-	return mac_async_read_phy_reg(mac, addr, reg, &val);
+	return mac.read_phy_reg(addr,reg, &val);
 }
 
 /**
@@ -36,9 +37,9 @@ return_t PHY::read_reg(uint16_t reg, uint16_t &val)
  *
  * \return Operation result.
  */
-return_t PHY::write_reg(uint16_t reg, uint16_t val)
+result_t PHY::write_reg(uint16_t reg, uint16_t val)
 {
-	return mac_async_write_phy_reg(mac, addr, reg, val);
+	return mac.write_phy_reg(addr,reg,val);
 }
 
 /**
@@ -47,18 +48,18 @@ return_t PHY::write_reg(uint16_t reg, uint16_t val)
  * \param[in] ofst  Register bit mask.
  * \return Operation result.
  */
-return_t PHY::set_reg_bit(uint16_t reg, uint16_t ofst)
+result_t PHY::set_reg_bit(uint16_t reg, uint16_t ofst)
 {
-	return_t rst;
+	result_t rst;
 	uint16_t val;
 
 	ASSERT(reg <= 0x1F);
 
-	rst = mac_async_read_phy_reg(mac, addr, reg, &val);
+	rst = mac.read_phy_reg(addr, reg, &val);
 	if (rst == RET::OK)
 	{
 		val |= ofst;
-		rst = mac_async_write_phy_reg(mac, addr, reg, val);
+		rst = mac.write_phy_reg(addr,reg,val);
 	}
 	return rst;
 }
@@ -69,18 +70,18 @@ return_t PHY::set_reg_bit(uint16_t reg, uint16_t ofst)
  * \param[in] ofst  Register bit mask.
  * \return Operation result.
  */
-return_t PHY::clear_reg_bit(uint16_t reg, uint16_t ofst)
+result_t PHY::clear_reg_bit(uint16_t reg, uint16_t ofst)
 {
-	return_t rst;
+	result_t rst;
 	uint16_t val;
 
 	ASSERT(reg <= 0x1F);
 
-	rst = mac_async_read_phy_reg(mac, addr, reg, &val);
+	rst = mac.read_phy_reg(addr, reg, &val);
 	if (rst == RET::OK)
 	{
 		val &= ~ofst;
-		rst = mac_async_write_phy_reg(mac, addr, reg, val);
+		rst = mac.write_phy_reg( addr, reg, val);
 	}
 	return rst;
 }
@@ -95,7 +96,7 @@ return_t PHY::clear_reg_bit(uint16_t reg, uint16_t ofst)
  * \param[in] state The state of the power-down mode.
  * \return Operation result.
  */
-return_t PHY::set_powerdown(bool state)
+result_t PHY::set_powerdown(bool state)
 {
 	if (state)
 		return set_reg_bit(MDIO_REG0_BMCR, MDIO_REG0_BIT_POWER_DOWN);
@@ -110,7 +111,7 @@ return_t PHY::set_powerdown(bool state)
  * \param[in] state The state of the isolate mode.
  * \return Operation result.
  */
-return_t PHY::set_isolate(bool state)
+result_t PHY::set_isolate(bool state)
 {
 	if (state)
 		return set_reg_bit(MDIO_REG0_BMCR, MDIO_REG0_BIT_ISOLATE);
@@ -121,9 +122,9 @@ return_t PHY::set_isolate(bool state)
 /**
  * @brief Restart an auto negotiation of the PHY.
  *
- * @return return_t
+ * @return result_t
  */
-return_t PHY::restart_autoneg()
+result_t PHY::restart_autoneg()
 {
 	return set_reg_bit(MDIO_REG0_BMCR, MDIO_REG0_BIT_RESTART_AUTONEG);
 }
@@ -133,9 +134,9 @@ return_t PHY::restart_autoneg()
  * When in loopback mode, the PHY shall accept data from the MII/RMII transmit
  * data path and return it to the MII/RMII receive data path.
  * \param[in] state State of the loopback mode.
- * @return return_t
+ * @return result_t
  */
-return_t PHY::set_loopback(bool state)
+result_t PHY::set_loopback(bool state)
 {
 	if (state)
 		return set_reg_bit(MDIO_REG0_BMCR, MDIO_REG0_BIT_LOOPBACK);
@@ -147,11 +148,11 @@ return_t PHY::set_loopback(bool state)
  * @brief Get PHY link status
  *
  * @param status
- * @return return_t
+ * @return result_t
  */
-return_t PHY::get_link_status(bool &status)
+result_t PHY::get_link_status(bool &status)
 {
-	return_t rst;
+	result_t rst;
 	uint16_t val;
 
 	rst = read_reg(MDIO_REG1_BMSR, val);
@@ -166,9 +167,9 @@ return_t PHY::get_link_status(bool &status)
  * default states. As a consequence this action may change the internal state
  * of the PHY and the state of the physical link associated with the PHY. The
  * reset process shall be completed within 0.5 second.
- * @return return_t
+ * @return result_t
  */
-return_t PHY::reset()
+result_t PHY::reset()
 {
 	return set_reg_bit(MDIO_REG0_BMCR, MDIO_REG0_BIT_RESET);
 }
