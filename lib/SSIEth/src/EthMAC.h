@@ -2,7 +2,6 @@
 
 #include <compiler.h>
 #include <utils.h>
-#include <hpl_irq.h>
 #include "return.h"
 
 struct mac_async_filter {
@@ -25,7 +24,6 @@ private:
 	
 	FUNC_PTR transmited; /*!< Frame received */
 	FUNC_PTR received;   /*!< Frame transmited */
-	struct _irq_descriptor      irq; /*!< IRQ handler */
 	result_t _init_bufdescr();
 	static void disable_irq();
 	static void enable_irq();

@@ -4,7 +4,7 @@
         "flags":
         [
             "-Isrc/",
-            "-Isrc/asf_hal",
+            "-Isrc/utils/",
             "-Isrc/config/"
         ],
         "libArchive": false

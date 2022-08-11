@@ -1,18 +1,22 @@
 #include "SSIEth.hpp"
 
-#include "hal_gpio.h"
-#include "lwip/sys.h"
-#include "lwip/tcpip.h"
-#include "lwip/etharp.h"
 #include "rtos_port.h"
 #include "config/hpl_gmac_config.h"
 #include "ethif_mac.h"
-#include "lwip_macif_config.h"
+
 #include <string.h>
-#include <ethif_mac.h>
-#include "netif/ethernet.h"
+
+#include "lwip/sys.h"
+
+#include "lwip/tcpip.h"
+#include "lwip/etharp.h"
 #include <lwip/dhcp.h>
 #include <lwip/ip_addr.h>
+#include "lwip_macif_config.h"
+
+#include "netif/ethernet.h"
+
+#include "gpio.h"
 
 SSIEth *SSIEth::global_eth = nullptr;
 
@@ -102,7 +106,7 @@ void SSIEth::lwip_init_done()
 			  netif_init,
 			  ethernet_input);
 
-	lwip_netif.input = tcpip_input;
+	lwip_netif.input = tcpip_input; //what?
 
 	sys_thread_t id;
 
@@ -179,13 +183,10 @@ err_t SSIEth::netif_init(struct netif *netif)
 #endif
 	memcpy(netif->name, CONF_TCPIP_STACK_INTERFACE_0_HOSTNAME_ABBR, 2);
 
-	/* initialize the mac hardware */
+	//Set MAC address filter
 	struct mac_async_filter filter;
-
-	/* set MAC hardware address */
 	memcpy(filter.mac, netif->hwaddr, NETIF_MAX_HWADDR_LEN);
 	filter.tid_enable = false;
-	// mac_async_set_filter(mac, 0, &filter);
 	global_eth->ethMAC.set_filter(0, &filter);
 
 	return ERR_OK;

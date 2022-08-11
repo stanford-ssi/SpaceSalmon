@@ -1,5 +1,5 @@
 #include <string.h>
-#include <utils_assert.h>
+#include "utils/utils_assert.h"
 #include "EthMAC.h"
 #include <hpl_gmac_config.h>
 
