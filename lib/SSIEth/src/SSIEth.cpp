@@ -33,6 +33,7 @@ SSIEth *SSIEth::global_eth = nullptr;
 
 void SSIEth::activity()
 {
+	//vTaskDelay(3000);
 
 	hri_mclk_set_AHBMASK_GMAC_bit(MCLK);
 	hri_mclk_set_APBCMASK_GMAC_bit(MCLK);
@@ -76,7 +77,7 @@ void SSIEth::lwip_init_done()
 		vTaskDelay(20);
 	}
 
-	printf("\r\nEthernet link up\r\n\r\n");
+	printf("Ethernet link up\n");
 
 	/* Enable NVIC GMAC interrupt. */
 	/* Interrupt priorities. (lowest value = highest priority) */
@@ -102,7 +103,7 @@ void SSIEth::lwip_init_done()
 			  &ip,
 			  &nm,
 			  &gw,
-			  this,
+			  &ethMAC,
 			  netif_init,
 			  ethernet_input);
 

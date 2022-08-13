@@ -505,6 +505,7 @@
 #define TCP_FR_DEBUG               LWIP_DBG_ON
 #define TCP_QLEN_DEBUG             LWIP_DBG_ON
 #define TCP_RST_DEBUG              LWIP_DBG_ON
+#define ETHARP_DEBUG               LWIP_DBG_ON
 #endif
 
 #define LWIP_DBG_TYPES_ON         (LWIP_DBG_ON|LWIP_DBG_TRACE|LWIP_DBG_STATE|LWIP_DBG_FRESH|LWIP_DBG_HALT)
