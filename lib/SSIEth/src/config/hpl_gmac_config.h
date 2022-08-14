@@ -403,7 +403,7 @@
 // <i> Number of Transmit Buffer Descriptor
 // <id> gmac_arch_txdescr_num
 #ifndef CONF_GMAC_TXDESCR_NUM
-#define CONF_GMAC_TXDESCR_NUM 2
+#define CONF_GMAC_TXDESCR_NUM 8
 #endif
 
 // <o> Number of Receive Buffer Descriptor <1-255>
@@ -417,7 +417,7 @@
 // <i> Byte size of buffer for each transmit buffer descriptor.
 // <id> gmac_arch_txbuf_size
 #ifndef CONF_GMAC_TXBUF_SIZE
-#define CONF_GMAC_TXBUF_SIZE 1520
+#define CONF_GMAC_TXBUF_SIZE 1518
 #endif
 
 #ifndef CONF_GMAC_RXBUF_SIZE

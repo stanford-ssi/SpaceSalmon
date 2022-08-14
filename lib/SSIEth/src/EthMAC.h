@@ -1,8 +1,9 @@
 #pragma once
-
 #include <compiler.h>
 #include <utils.h>
 #include "return.h"
+#undef ERR_TIMEOUT //I hate this language
+#include "lwip/pbuf.h"
 
 struct mac_async_filter {
 	uint8_t mac[6];     /*!< Destination address */
@@ -39,7 +40,7 @@ public:
 	result_t deinit();
 	result_t enable();
 	result_t disable();
-	result_t write(uint8_t *buf, uint32_t len);
+	result_t write(struct pbuf* p);
 	result_t read(uint8_t *buf, uint32_t len, uint32_t &rx_len);
 	result_t read_len(uint32_t &len);
 	result_t register_callback(const enum mac_async_cb_type type, const FUNC_PTR_OBJ func, void* obj);
@@ -55,7 +56,7 @@ public:
  * @brief Transmit buffer descriptor
  **/
 struct _mac_txbuf_descriptor {
-	uint32_t address;
+	uint8_t *address;
 	union gmac_tx_status {
 		uint32_t val;
 		struct _gmac_tx_status_bm {

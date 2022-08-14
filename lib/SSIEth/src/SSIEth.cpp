@@ -13,6 +13,9 @@
 
 void SSIEth::activity()
 {
+
+	vTaskDelay(3000);
+
 	hri_mclk_set_AHBMASK_GMAC_bit(MCLK);
 	hri_mclk_set_APBCMASK_GMAC_bit(MCLK);
 
@@ -96,12 +99,12 @@ err_t SSIEth::netif_init(struct netif *netif)
 	filter.tid_enable = false;
 	Eth->ethMAC.set_filter(0, &filter);
 
+	Eth->ethMAC.enable();
+
 	netif_set_default(netif);
 	netif_set_up(netif);
 	netif_set_link_up(netif);
-
-	Eth->ethMAC.enable();
-
+	
 	return ERR_OK;
 }
 
@@ -124,33 +127,17 @@ void SSIEth::rx_frame_cb(void* arg)
  */
 err_t SSIEth::mac_low_level_output(struct netif *netif, struct pbuf *p)
 {
-	struct pbuf *q;
-	void *tbuf;
-	uint8_t *pos;
-
 	EthMAC *mac = &((SSIEth *)netif->state)->ethMAC;
 
 	pbuf_header(p, -ETH_PAD_SIZE); /* drop the padding word */
 
 	if (p->tot_len == p->len)
 	{
-		mac->write((uint8_t *)p->payload, p->tot_len);
+		mac->write(p);
 	}
 	else
 	{
-		tbuf = mem_malloc(LWIP_MEM_ALIGN_SIZE(p->tot_len));
-		pos = (uint8_t *)tbuf;
-		if (tbuf == NULL)
-		{
-			return ERR_MEM;
-		}
-		for (q = p; q != NULL; q = q->next)
-		{
-			memcpy(pos, q->payload, q->len);
-			pos += q->len;
-		}
-		mac->write((uint8_t *)tbuf, p->tot_len);
-		mem_free(tbuf);
+		printf("ERROR NOT YET IMPLEMENTED!\n");
 	}
 
 	pbuf_header(p, ETH_PAD_SIZE); /* reclaim the padding word */
