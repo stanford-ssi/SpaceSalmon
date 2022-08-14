@@ -84,14 +84,14 @@ void EthMAC::handler(){
 	if (tsr & GMAC_TSR_TXCOMP) {
 		hri_gmac_write_TSR_reg(hw, tsr);
 		if ((_txbuf_descrs[_txbuf_index].status.bm.used) && (transmited != NULL)) {
-			transmited();
+			transmited(tx_cb_obj);
 		}
 	}
 
 	/* Frame received */
 	if (rsr & GMAC_RSR_REC) {
 		if (received != NULL) {
-			received();
+			received(rx_cb_obj);
 		}
 	}
 	hri_gmac_write_RSR_reg(hw, rsr);
@@ -131,7 +131,6 @@ result_t EthMAC::init()
 	_gmac_dev = this;
 	NVIC_DisableIRQ(GMAC_IRQn);
 	NVIC_ClearPendingIRQ(GMAC_IRQn);
-	NVIC_EnableIRQ(GMAC_IRQn);
 
 	return RET::OK;
 }
@@ -151,13 +150,19 @@ result_t EthMAC::deinit()
 
 result_t EthMAC::enable()
 {
+	NVIC_DisableIRQ(GMAC_IRQn);
+	NVIC_ClearPendingIRQ(GMAC_IRQn);
 	hri_gmac_set_NCR_reg(hw, GMAC_NCR_RXEN | GMAC_NCR_TXEN);
+	NVIC_SetPriority(GMAC_IRQn, 4);
+	NVIC_EnableIRQ(GMAC_IRQn);
 	return RET::OK;
 }
 
 result_t EthMAC::disable()
 {
 	hri_gmac_clear_NCR_reg(hw, GMAC_NCR_RXEN | GMAC_NCR_TXEN);
+	NVIC_DisableIRQ(GMAC_IRQn);
+	NVIC_ClearPendingIRQ(GMAC_IRQn);
 	return RET::OK;
 }
 
@@ -340,22 +345,13 @@ result_t EthMAC::read_len(uint32_t &len)
 	return RET::OK;
 }
 
-void EthMAC::enable_irq()
-{
-	NVIC_EnableIRQ(GMAC_IRQn);
-}
-
-void EthMAC::disable_irq()
-{
-	NVIC_DisableIRQ(GMAC_IRQn);
-}
-
 result_t EthMAC::register_callback(const enum mac_async_cb_type type,
-                                     const FUNC_PTR func)
+                                     const FUNC_PTR_OBJ func, void* obj)
 {
 	switch (type) {
 	case MAC_ASYNC_TRANSMIT_CB:
 		transmited = func;
+		tx_cb_obj = obj;
 		if (func) {
 			hri_gmac_set_IMR_TCOMP_bit(hw);
 		} else {
@@ -364,6 +360,7 @@ result_t EthMAC::register_callback(const enum mac_async_cb_type type,
 		break;
 	case MAC_ASYNC_RECEIVE_CB:
 		received = func;
+		rx_cb_obj = obj;
 		if (func) {
 			hri_gmac_set_IMR_RCOMP_bit(hw);
 		} else {

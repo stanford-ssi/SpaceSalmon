@@ -18,15 +18,19 @@ enum mac_async_cb_type {
 	MAC_ASYNC_TRANSMIT_CB /*!< One or more frame been transmited */
 };
 
+typedef void (*FUNC_PTR_OBJ)(void*);
+
 class EthMAC
 {
 private:
 	
-	FUNC_PTR transmited; /*!< Frame received */
-	FUNC_PTR received;   /*!< Frame transmited */
+	FUNC_PTR_OBJ transmited; /*!< Frame received */
+	void* tx_cb_obj = nullptr;
+
+	FUNC_PTR_OBJ received;   /*!< Frame transmited */
+	void* rx_cb_obj = nullptr;
+
 	result_t _init_bufdescr();
-	static void disable_irq();
-	static void enable_irq();
 	
 public:
 	const Gmac* hw;  /*!< Hardware module instance handler */
@@ -38,7 +42,7 @@ public:
 	result_t write(uint8_t *buf, uint32_t len);
 	result_t read(uint8_t *buf, uint32_t len, uint32_t &rx_len);
 	result_t read_len(uint32_t &len);
-	result_t register_callback(const enum mac_async_cb_type type, const FUNC_PTR func);
+	result_t register_callback(const enum mac_async_cb_type type, const FUNC_PTR_OBJ func, void* obj);
 	result_t set_filter(uint8_t index, struct mac_async_filter *filter);
 	result_t set_filter_ex(uint8_t mac[6]);
 	result_t write_phy_reg(uint16_t addr, uint16_t reg, uint16_t data);

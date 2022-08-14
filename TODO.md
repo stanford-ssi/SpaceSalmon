@@ -1,3 +1,9 @@
+## 2022 platform TODOs:
+ - implement some kind of C++ function closures
+ - get testing working
+ - get PIO uploading working
+ - get asserts to be reasonable
+
 ## Quail 2021 Bringup TODOs:
  - Get SAME54N20A chip support set up (currently using similar chip number)
  - Write IO abstractions for Quail 3.0 Hardware

@@ -23,7 +23,7 @@ void EthTestTask::activity()
     netconn *conn = netconn_new(NETCONN_UDP);
     netconn_bind(conn, IP4_ADDR_ANY, 1345);
     ip4_addr_t dst;
-    IP4_ADDR(&dst, 192, 168, 1, 1);
+    IP4_ADDR(&dst, 192, 168, 2, 1);
     netconn_connect(conn, &dst, 2483);
 
     while (true)
