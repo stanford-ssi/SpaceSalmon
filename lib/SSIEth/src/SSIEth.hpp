@@ -15,7 +15,7 @@ public:
 
 class SSIEth : public Task<500>
 {
-private:
+
 public:
     SSIEth(uint8_t priority, MacAddr macAddr) : Task(priority, "Ethernet"), macAddr(macAddr){};
 
