@@ -5,6 +5,7 @@
 #include "Task.hpp"
 #include "MAC.h"
 #include "PHY.h"
+#include "CountingSemaphore.hpp"
 
 class MacAddr
 {
@@ -31,7 +32,7 @@ private:
 
     MacAddr macAddr;
 
-    sys_sem_t rx_sem;
+    CountingSemaphore rx_sem = CountingSemaphore(CONF_GMAC_RXDESCR_NUM, 0);    
 
     struct netif lwip_netif;
 

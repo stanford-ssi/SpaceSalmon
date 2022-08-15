@@ -32,15 +32,12 @@ void SSIEth::activity()
 
 	mac.init();
 
-	/* Incoming packet notification semaphore. */
-	rx_sem.sem = xSemaphoreCreateCounting(CONF_GMAC_RXDESCR_NUM, 0);
-
 	tcpip_init(lwip_setup, this);
 
 	while (true)
 	{
 		/* Wait for the counting RX notification semaphore. */
-		xSemaphoreTake((QueueHandle_t)rx_sem.sem, portMAX_DELAY);
+		rx_sem.take(portMAX_DELAY);
 
 		/* Process the incoming packet. */
 		ethernetif_mac_input(&lwip_netif);
@@ -116,8 +113,8 @@ void SSIEth::rx_frame_cb(void *arg)
 	if (arg != nullptr)
 	{
 		SSIEth *ethObj = (SSIEth *)arg;
-		portBASE_TYPE xGMACTaskWoken = pdFALSE;
-		xSemaphoreGiveFromISR((QueueHandle_t)ethObj->rx_sem.sem, &xGMACTaskWoken);
+		int32_t xGMACTaskWoken = false;
+		ethObj->rx_sem.giveFromISR(xGMACTaskWoken);
 		portEND_SWITCHING_ISR(xGMACTaskWoken);
 	}
 }
