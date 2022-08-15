@@ -378,7 +378,7 @@
 // <i> corresponds to 128 bytes etc.
 // <id> gmac_arch_dcfgr_drbs
 #ifndef CONF_GMAC_DCFGR_DRBS
-#define CONF_GMAC_DCFGR_DRBS 8
+#define CONF_GMAC_DCFGR_DRBS 2
 #endif
 
 // <q> DMA Discard Received Packets

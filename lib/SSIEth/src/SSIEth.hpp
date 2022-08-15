@@ -3,7 +3,7 @@
 #include "lwip/api.h"
 #include "lwip/netif.h"
 #include "Task.hpp"
-#include "EthMAC.h"
+#include "MAC.h"
 #include "PHY.h"
 
 class MacAddr
@@ -26,8 +26,8 @@ private:
 
     static err_t netif_init(struct netif *netif);
 
-    EthMAC ethMAC = EthMAC(GMAC);
-    PHY phy = PHY(ethMAC, 0);
+    MAC mac = MAC(GMAC);
+    PHY phy = PHY(mac, 0);
 
     MacAddr macAddr;
 

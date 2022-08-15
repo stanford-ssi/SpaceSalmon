@@ -3,12 +3,12 @@
 
 #include "return.h"
 #include "compiler.h"
-#include "EthMAC.h"
+#include "MAC.h"
 
 class PHY
 {
 public:
-	PHY(EthMAC &mac, uint16_t addr);
+	PHY(MAC &mac, uint16_t addr);
 	result_t read_reg(uint16_t reg, uint16_t &val);
 	result_t write_reg(uint16_t reg, uint16_t val);
 	result_t set_reg_bit(uint16_t reg, uint16_t ofst);
@@ -21,6 +21,6 @@ public:
 	result_t reset();
 
 private:
-	EthMAC &mac;
+	MAC &mac;
 	uint16_t addr; /* PHY address, defined by IEEE802.3 section 22.2.4.5.5 */
 };

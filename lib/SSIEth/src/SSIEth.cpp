@@ -30,7 +30,7 @@ void SSIEth::activity()
 	gpio_set_pin_function(GPIO(GPIO_PORTA, 14), PINMUX_PA14L_GMAC_GTXCK);
 	gpio_set_pin_function(GPIO(GPIO_PORTA, 17), PINMUX_PA17L_GMAC_GTXEN);
 
-	ethMAC.init();
+	mac.init();
 
 	/* Incoming packet notification semaphore. */
 	rx_sem.sem = xSemaphoreCreateCounting(CONF_GMAC_RXDESCR_NUM, 0);
@@ -73,7 +73,7 @@ err_t SSIEth::netif_init(struct netif *netif)
 
 	SSIEth *Eth = (SSIEth *)netif->state;
 
-	Eth->ethMAC.register_callback(MAC_ASYNC_RECEIVE_CB, rx_frame_cb, Eth);
+	Eth->mac.register_callback(MAC_ASYNC_RECEIVE_CB, rx_frame_cb, Eth);
 
 	bool link_up = false;
 	while ((Eth->phy.get_link_status(link_up)) != ERR_NONE && !(link_up))
@@ -97,9 +97,9 @@ err_t SSIEth::netif_init(struct netif *netif)
 	struct mac_async_filter filter;
 	memcpy(filter.mac, netif->hwaddr, NETIF_MAX_HWADDR_LEN);
 	filter.tid_enable = false;
-	Eth->ethMAC.set_filter(0, &filter);
+	Eth->mac.set_filter(0, &filter);
 
-	Eth->ethMAC.enable();
+	Eth->mac.enable();
 
 	netif_set_default(netif);
 	netif_set_up(netif);
@@ -127,7 +127,7 @@ void SSIEth::rx_frame_cb(void *arg)
  */
 err_t SSIEth::mac_low_level_output(struct netif *netif, struct pbuf *p)
 {
-	EthMAC *mac = &((SSIEth *)netif->state)->ethMAC;
+	MAC *mac = &((SSIEth *)netif->state)->mac;
 
 	pbuf_header(p, -ETH_PAD_SIZE); /* drop the padding word */
 
@@ -160,7 +160,7 @@ struct pbuf *SSIEth::low_level_input(struct netif *netif)
 	struct pbuf *p;
 	uint32_t len;
 
-	EthMAC *mac = &((SSIEth *)netif->state)->ethMAC;
+	MAC *mac = &((SSIEth *)netif->state)->mac;
 	mac->read_len(len); /* Obtain the size of the packet */
 	if (len == 0)
 	{

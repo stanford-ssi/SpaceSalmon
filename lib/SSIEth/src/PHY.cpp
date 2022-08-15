@@ -8,7 +8,7 @@
  * @param mac
  * @param addr the PHY address, unsigned int 0-31
  */
-PHY::PHY(EthMAC &mac, uint16_t addr) : mac(mac), addr(addr)
+PHY::PHY(MAC &mac, uint16_t addr) : mac(mac), addr(addr)
 {
 	ASSERT(addr <= 0x1F);
 }

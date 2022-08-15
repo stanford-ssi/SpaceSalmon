@@ -1,4 +1,4 @@
-#include "EthMAC.h"
+#include "MAC.h"
 
 #include <string.h>
 #include "utils/utils_assert.h"
@@ -7,37 +7,15 @@
 #include "lwip/debug.h"
 #include "lwip/pbuf.h"
 
-#define min(x, y) ((x) > (y) ? (y) : (x))
-#define max(x, y) ((x) > (y) ? (x) : (y))
-
-/* Transmit and Receive buffer descriptor array */
-COMPILER_ALIGNED(8)
-static struct _mac_txbuf_descriptor _txbuf_descrs[CONF_GMAC_TXDESCR_NUM];
-COMPILER_ALIGNED(8)
-static struct _mac_rxbuf_descriptor _rxbuf_descrs[CONF_GMAC_RXDESCR_NUM];
-
-COMPILER_ALIGNED(32)
-static uint8_t _rxbuf[CONF_GMAC_RXDESCR_NUM][CONF_GMAC_RXBUF_SIZE];
-
-COMPILER_ALIGNED(8)
-static struct pbuf *tx_pbuf[CONF_GMAC_TXDESCR_NUM];
-
-COMPILER_PACK_RESET()
-
-/*!< Pointer to hpl device */
-static EthMAC *_gmac_dev = nullptr;
-
-/* Transmit and receive Buffer index */
-static volatile uint32_t _txbuf_index;
-static volatile uint32_t _last_txbuf_index;
-static volatile uint32_t _rxbuf_index;
+/*!< Pointer to global device for callbacks*/
+MAC* MAC::global = nullptr;
 
 /**
  * \internal Initialize the Transmit and receive buffer descriptor array
  *
  * \param[in] dev Pointer to the HPL MAC descriptor
  */
-result_t EthMAC::_init_bufdescr()
+result_t MAC::_init_bufdescr()
 {
 	uint32_t i;
 
@@ -75,13 +53,13 @@ result_t EthMAC::_init_bufdescr()
  */
 void GMAC_Handler(void)
 {
-	if (_gmac_dev != nullptr)
+	if (MAC::global != nullptr)
 	{
-		_gmac_dev->handler();
+		MAC::global->handler();
 	}
 }
 
-void EthMAC::handler()
+void MAC::handler()
 {
 	volatile uint32_t tsr;
 	volatile uint32_t rsr;
@@ -112,7 +90,7 @@ void EthMAC::handler()
 	hri_gmac_write_RSR_reg(hw, rsr);
 }
 
-result_t EthMAC::init()
+result_t MAC::init()
 {
 	hri_gmac_write_NCR_reg(hw,
 						   (CONF_GMAC_NCR_LBL ? GMAC_NCR_LBL : 0) | (CONF_GMAC_NCR_MPE ? GMAC_NCR_MPE : 0) | (CONF_GMAC_NCR_WESTAT ? GMAC_NCR_WESTAT : 0) | (CONF_GMAC_NCR_BP ? GMAC_NCR_BP : 0) | (CONF_GMAC_NCR_ENPBPR ? GMAC_NCR_ENPBPR : 0) | (CONF_GMAC_NCR_TXPBPF ? GMAC_NCR_TXPBPF : 0));
@@ -130,14 +108,14 @@ result_t EthMAC::init()
 	hri_gmac_set_IMR_RCOMP_bit(hw);
 	hri_gmac_set_IMR_TCOMP_bit(hw);
 
-	_gmac_dev = this;
+	global = this;
 	NVIC_DisableIRQ(GMAC_IRQn);
 	NVIC_ClearPendingIRQ(GMAC_IRQn);
 
 	return RET::OK;
 }
 
-result_t EthMAC::deinit()
+result_t MAC::deinit()
 {
 	/* Disable all GMAC Interrupt */
 	hri_gmac_clear_IMR_reg(hw, 0xFFFFFFFF);
@@ -150,7 +128,7 @@ result_t EthMAC::deinit()
 	return RET::OK;
 }
 
-result_t EthMAC::enable()
+result_t MAC::enable()
 {
 	NVIC_DisableIRQ(GMAC_IRQn);
 	NVIC_ClearPendingIRQ(GMAC_IRQn);
@@ -160,7 +138,7 @@ result_t EthMAC::enable()
 	return RET::OK;
 }
 
-result_t EthMAC::disable()
+result_t MAC::disable()
 {
 	hri_gmac_clear_NCR_reg(hw, GMAC_NCR_RXEN | GMAC_NCR_TXEN);
 	NVIC_DisableIRQ(GMAC_IRQn);
@@ -168,7 +146,7 @@ result_t EthMAC::disable()
 	return RET::OK;
 }
 
-result_t EthMAC::write(struct pbuf *p)
+result_t MAC::write(struct pbuf *p)
 {
 	if (p->tot_len != p->len)
 	{
@@ -231,7 +209,7 @@ result_t EthMAC::write(struct pbuf *p)
 	return RET::OK;
 }
 
-result_t EthMAC::read(uint8_t *buf, uint32_t buf_len, uint32_t &rx_len)
+result_t MAC::read(uint8_t *buf, uint32_t buf_len, uint32_t &rx_len)
 {
 	uint32_t i;
 	uint32_t j;
@@ -310,7 +288,7 @@ result_t EthMAC::read(uint8_t *buf, uint32_t buf_len, uint32_t &rx_len)
 	return RET::OK;
 }
 
-result_t EthMAC::read_len(uint32_t &len)
+result_t MAC::read_len(uint32_t &len)
 {
 	uint32_t i;
 	uint32_t pos;
@@ -352,7 +330,7 @@ result_t EthMAC::read_len(uint32_t &len)
 	return RET::OK;
 }
 
-result_t EthMAC::register_callback(const enum mac_async_cb_type type,
+result_t MAC::register_callback(const enum mac_async_cb_type type,
 								   const FUNC_PTR_OBJ func, void *obj)
 {
 	switch (type)
@@ -371,7 +349,7 @@ result_t EthMAC::register_callback(const enum mac_async_cb_type type,
 	return RET::OK;
 }
 
-result_t EthMAC::set_filter(uint8_t index, struct mac_async_filter *filter)
+result_t MAC::set_filter(uint8_t index, struct mac_async_filter *filter)
 {
 	ASSERT(index < 4);
 
@@ -382,7 +360,7 @@ result_t EthMAC::set_filter(uint8_t index, struct mac_async_filter *filter)
 	return RET::OK;
 }
 
-result_t EthMAC::set_filter_ex(uint8_t mac[6])
+result_t MAC::set_filter_ex(uint8_t mac[6])
 {
 	uint8_t j;
 	uint8_t m;
@@ -422,7 +400,7 @@ result_t EthMAC::set_filter_ex(uint8_t mac[6])
 	return RET::OK;
 }
 
-result_t EthMAC::write_phy_reg(uint16_t addr, uint16_t reg, uint16_t data)
+result_t MAC::write_phy_reg(uint16_t addr, uint16_t reg, uint16_t data)
 {
 	hri_gmac_set_NCR_reg(hw, GMAC_NCR_MPE);
 	hri_gmac_write_MAN_reg(hw,
@@ -440,7 +418,7 @@ result_t EthMAC::write_phy_reg(uint16_t addr, uint16_t reg, uint16_t data)
 	return RET::OK;
 }
 
-result_t EthMAC::read_phy_reg(uint16_t addr, uint16_t reg, uint16_t *data)
+result_t MAC::read_phy_reg(uint16_t addr, uint16_t reg, uint16_t *data)
 {
 	hri_gmac_set_NCR_reg(hw, GMAC_NCR_MPE);
 	hri_gmac_write_MAN_reg(hw,
