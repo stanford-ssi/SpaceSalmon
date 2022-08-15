@@ -16,9 +16,6 @@ static struct _mac_txbuf_descriptor _txbuf_descrs[CONF_GMAC_TXDESCR_NUM];
 COMPILER_ALIGNED(8)
 static struct _mac_rxbuf_descriptor _rxbuf_descrs[CONF_GMAC_RXDESCR_NUM];
 
-/* Transmit buffer data array */
-// COMPILER_ALIGNED(32)
-// static uint8_t _txbuf[CONF_GMAC_TXDESCR_NUM][CONF_GMAC_TXBUF_SIZE];
 COMPILER_ALIGNED(32)
 static uint8_t _rxbuf[CONF_GMAC_RXDESCR_NUM][CONF_GMAC_RXBUF_SIZE];
 
@@ -129,7 +126,6 @@ result_t EthMAC::init()
 	hri_gmac_write_WOL_reg(hw, 0);
 	hri_gmac_write_IPGS_reg(hw, GMAC_IPGS_FL((CONF_GMAC_IPGS_FL_MUL << 8) | CONF_GMAC_IPGS_FL_DIV));
 	_init_bufdescr();
-
 
 	hri_gmac_set_IMR_RCOMP_bit(hw);
 	hri_gmac_set_IMR_TCOMP_bit(hw);

@@ -71,7 +71,7 @@ err_t SSIEth::netif_init(struct netif *netif)
 	LWIP_ASSERT("netif != NULL", (netif != NULL));
 	LWIP_ASSERT("netif->state != NULL", (netif->state != NULL));
 
-	SSIEth* Eth = (SSIEth*)netif->state;
+	SSIEth *Eth = (SSIEth *)netif->state;
 
 	Eth->ethMAC.register_callback(MAC_ASYNC_RECEIVE_CB, rx_frame_cb, Eth);
 
@@ -104,18 +104,18 @@ err_t SSIEth::netif_init(struct netif *netif)
 	netif_set_default(netif);
 	netif_set_up(netif);
 	netif_set_link_up(netif);
-	
+
 	return ERR_OK;
 }
 
 /**
  * \brief Called by MAC driver when frame received.
  */
-void SSIEth::rx_frame_cb(void* arg)
+void SSIEth::rx_frame_cb(void *arg)
 {
 	if (arg != nullptr)
 	{
-		SSIEth* ethObj = (SSIEth *)arg;
+		SSIEth *ethObj = (SSIEth *)arg;
 		portBASE_TYPE xGMACTaskWoken = pdFALSE;
 		xSemaphoreGiveFromISR((QueueHandle_t)ethObj->rx_sem.sem, &xGMACTaskWoken);
 		portEND_SWITCHING_ISR(xGMACTaskWoken);

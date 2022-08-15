@@ -378,7 +378,7 @@
 // <i> corresponds to 128 bytes etc.
 // <id> gmac_arch_dcfgr_drbs
 #ifndef CONF_GMAC_DCFGR_DRBS
-#define CONF_GMAC_DCFGR_DRBS 2
+#define CONF_GMAC_DCFGR_DRBS 8
 #endif
 
 // <q> DMA Discard Received Packets
@@ -411,13 +411,6 @@
 // <id> gmac_arch_rxdescr_num
 #ifndef CONF_GMAC_RXDESCR_NUM
 #define CONF_GMAC_RXDESCR_NUM 16
-#endif
-
-// <o> Byte size of Transmit Buffer <64-10240>
-// <i> Byte size of buffer for each transmit buffer descriptor.
-// <id> gmac_arch_txbuf_size
-#ifndef CONF_GMAC_TXBUF_SIZE
-#define CONF_GMAC_TXBUF_SIZE 1518
 #endif
 
 #ifndef CONF_GMAC_RXBUF_SIZE

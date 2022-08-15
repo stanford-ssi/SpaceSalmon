@@ -24,7 +24,7 @@ PHY::PHY(EthMAC &mac, uint16_t addr) : mac(mac), addr(addr)
  */
 result_t PHY::read_reg(uint16_t reg, uint16_t &val)
 {
-	return mac.read_phy_reg(addr,reg, &val);
+	return mac.read_phy_reg(addr, reg, &val);
 }
 
 /**
@@ -39,7 +39,7 @@ result_t PHY::read_reg(uint16_t reg, uint16_t &val)
  */
 result_t PHY::write_reg(uint16_t reg, uint16_t val)
 {
-	return mac.write_phy_reg(addr,reg,val);
+	return mac.write_phy_reg(addr, reg, val);
 }
 
 /**
@@ -59,7 +59,7 @@ result_t PHY::set_reg_bit(uint16_t reg, uint16_t ofst)
 	if (rst == RET::OK)
 	{
 		val |= ofst;
-		rst = mac.write_phy_reg(addr,reg,val);
+		rst = mac.write_phy_reg(addr, reg, val);
 	}
 	return rst;
 }
@@ -81,7 +81,7 @@ result_t PHY::clear_reg_bit(uint16_t reg, uint16_t ofst)
 	if (rst == RET::OK)
 	{
 		val &= ~ofst;
-		rst = mac.write_phy_reg( addr, reg, val);
+		rst = mac.write_phy_reg(addr, reg, val);
 	}
 	return rst;
 }
