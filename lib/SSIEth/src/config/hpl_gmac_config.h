@@ -2,10 +2,6 @@
 #ifndef HPL_GMAC_CONFIG_H
 #define HPL_GMAC_CONFIG_H
 
-// <<< Use Configuration Wizard in Context Menu >>>
-
-#include <peripheral_clk_config.h>
-
 // <h> Network Control configuration
 
 // <q> Enable LoopBack Local
@@ -407,7 +403,7 @@
 // <i> Number of Transmit Buffer Descriptor
 // <id> gmac_arch_txdescr_num
 #ifndef CONF_GMAC_TXDESCR_NUM
-#define CONF_GMAC_TXDESCR_NUM 2
+#define CONF_GMAC_TXDESCR_NUM 8
 #endif
 
 // <o> Number of Receive Buffer Descriptor <1-255>
@@ -415,13 +411,6 @@
 // <id> gmac_arch_rxdescr_num
 #ifndef CONF_GMAC_RXDESCR_NUM
 #define CONF_GMAC_RXDESCR_NUM 16
-#endif
-
-// <o> Byte size of Transmit Buffer <64-10240>
-// <i> Byte size of buffer for each transmit buffer descriptor.
-// <id> gmac_arch_txbuf_size
-#ifndef CONF_GMAC_TXBUF_SIZE
-#define CONF_GMAC_TXBUF_SIZE 1500
 #endif
 
 #ifndef CONF_GMAC_RXBUF_SIZE

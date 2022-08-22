@@ -32,7 +32,7 @@
 // <i> Default: 4096
 // <id> lwip_mem_size
 #ifndef MEM_SIZE
-#define MEM_SIZE 16384
+#define MEM_SIZE 8192
 #endif
 
 // <q> Enables TCP
@@ -292,7 +292,7 @@
 // <i> Default: 16
 // <id> lwip_pbuf_pool_size
 #ifndef PBUF_POOL_SIZE
-#define PBUF_POOL_SIZE 16
+#define PBUF_POOL_SIZE 8
 #endif
 
 // <o> the number of bytes that should be allocated for a link level header<0-1000>
@@ -313,7 +313,7 @@
 #define PBUF_POOL_BUFSIZE_ADDED 0
 #endif
 
-#define PBUF_POOL_BUFSIZE LWIP_MEM_ALIGN_SIZE(TCP_MSS + 40 + PBUF_LINK_HLEN + PBUF_POOL_BUFSIZE_ADDED)
+#define PBUF_POOL_BUFSIZE LWIP_MEM_ALIGN_SIZE(1518)
 
 // <o> the number of multicast groups<0-1000>
 // <i> the number of multicast groups
@@ -505,6 +505,7 @@
 #define TCP_FR_DEBUG               LWIP_DBG_ON
 #define TCP_QLEN_DEBUG             LWIP_DBG_ON
 #define TCP_RST_DEBUG              LWIP_DBG_ON
+#define ETHARP_DEBUG               LWIP_DBG_ON
 #endif
 
 #define LWIP_DBG_TYPES_ON         (LWIP_DBG_ON|LWIP_DBG_TRACE|LWIP_DBG_STATE|LWIP_DBG_FRESH|LWIP_DBG_HALT)

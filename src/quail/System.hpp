@@ -41,7 +41,7 @@ public:
     Ad7124Chip adc = Ad7124Chip(5,8,&adc_spi);
 
     #ifdef ETHERNET_TXRX
-        SSIEth ethernet = SSIEth(1);
+        SSIEth ethernet = SSIEth(1, MacAddr({0x00, 0x00, 0x00, 0x00, 0x20, 0x76}));
     #endif
 
     Slate slate = Slate("quail");
