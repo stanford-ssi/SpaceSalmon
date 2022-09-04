@@ -3,8 +3,6 @@
 
 PowerTask::PowerTask(uint8_t priority)
     : Task(priority, "PowerMonitor"){
-        sys.slate.battery.i_batt.val.unit = "A";
-        sys.slate.battery.v_batt.val.unit = "V";
 };
 
 void PowerTask::activity()
@@ -18,16 +16,16 @@ void PowerTask::activity()
         // 3.3V / 0.2 = 16.5A full scale
         // ADC is in 10 bit mode -> divide by 1024
         float i_batt = ((float) i_sense) / (1024 / 16.5); // amps
-        sys.slate.battery.i_batt << i_batt;
+        sys.telem_slate.i_batt.set(i_batt);
         uint16_t v_sense = adc0.read(0x02); // ADC0/AIN[3] is PB08
         // Using a voltage divider
         // R2 = 43kΩ
         // R4 = 10kΩ
         // V_batt = (43000 + 10000) / 10000 * V_sense
         float v_batt = ((float) v_sense) / (1024 / 3.3) * 53/10;
-        sys.slate.battery.v_batt << v_batt;
+        sys.telem_slate.v_batt.set(v_batt);
         
-        if(sys.slate.battery.v_batt() > 11) {
+        if(v_batt > 11.0) {
             digitalWrite(PWR_LED, 1);
         } else {
             digitalWrite(PWR_LED, 0);

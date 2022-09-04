@@ -22,13 +22,13 @@ void TXTask::activity() {
         Watchdog.reset();
 
         // prepare slate
-        sys.slate.board.tick << xTaskGetTickCount();
-        sys.slate.board.logging << sys.tasks.logger.isLoggingEnabled();
+        sys.telem_slate.tick.set(xTaskGetTickCount());
+        sys.telem_slate.logging.set(sys.tasks.logger.isLoggingEnabled());
 
         // convert slate to json
         StaticJsonDocument<DATA_PCKT_LEN> slateJSON;
         JsonVariant variant = slateJSON.to<JsonVariant>();
-        sys.slate >> variant;
+        //sys.slate >> variant;
         
         // always 
 

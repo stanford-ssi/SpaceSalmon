@@ -70,7 +70,7 @@ err_t EthernetTask::requestHandler(netconn *&conn, char *rcv, uint16_t len) {
             // get the data packet
             
             JsonVariant metaVar = metaJSON.to<JsonVariant>();
-            sys.slate.metadump(metaVar);
+            //sys.slate.metadump(metaVar);
 
             // Serial.print(metaJSON.memoryUsage());
             // Serial.print(" / ");

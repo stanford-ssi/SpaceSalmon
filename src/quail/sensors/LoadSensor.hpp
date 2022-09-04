@@ -5,7 +5,7 @@
 
 class LoadSensor : public Sensor{
     public:
-        LoadSensor(Ad7124::InputSel ainp, SensorSlate &slate);
+        LoadSensor(Ad7124::InputSel ainp, SlateField<float>& slate);
 
         void convertToFloat(uint32_t adc_dataword);
         

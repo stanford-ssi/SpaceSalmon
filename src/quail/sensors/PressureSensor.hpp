@@ -11,7 +11,7 @@ typedef enum {
 
 class PressureSensor : public Sensor{
     public:
-        PressureSensor(Ad7124::InputSel ainp, PressureRange range, SensorSlate &slate);
+        PressureSensor(Ad7124::InputSel ainp, PressureRange range, SlateField<float>& slate);
 
         void convertToFloat(uint32_t adc_dataword);
         void configure();

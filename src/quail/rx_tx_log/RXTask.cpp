@@ -9,7 +9,7 @@ RXTask::RXTask(uint8_t priority, uint16_t rx_interval):Task(priority, "RX"), rx_
         COMM_RESET, // default time is 5 mins
         false, // timer reaching zero triggers reset, no need for reload
         0, // timer id, only one timer for callback so unimportant
-        [](TimerHandle_t xTimer){sys.slate.board.comms << false;}, // callback as lambda for succinctness
+        [](TimerHandle_t xTimer){sys.telem_slate.comms.set(false);}, // callback as lambda for succinctness
         &(commTimerBuf)
     );
     xTimerStart(commTimer, NEVER);
@@ -24,7 +24,7 @@ void RXTask::activity(){
             // curr_cmd.clear(); // clear command contents
             cmd_t buf;
             cmdbuf.receive(buf, false);
-            sys.slate << buf.doc.as<JsonVariant>();
+            //sys.slate << buf.doc.as<JsonVariant>();
         }
         vTaskDelayUntil(&lastSensorTime, rx_interval_ms); // wait for a while to allow other tasks time to operate
     }

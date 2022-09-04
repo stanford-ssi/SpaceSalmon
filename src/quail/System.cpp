@@ -33,7 +33,6 @@ int main(void)
 	digitalWrite(9,HIGH);
 
 	digitalWrite(1, HIGH); // turn on power LED
-	// sys.tasks.seqlauncher.startSeq("ABORT");
 
 	//Watch dog timer - will reboot quail if not reset every 5 seconds
 	// currently this is done in TXTask

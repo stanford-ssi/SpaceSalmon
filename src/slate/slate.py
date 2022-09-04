@@ -19,7 +19,7 @@ def generate_slate(yaml_path, header_path):
     with open(yaml_path, 'r') as stream:
         data_loaded = yaml.safe_load(stream)
 
-    type_to_size = {"float":4, "bool":1, "int16_t":1}
+    type_to_size = {"float":4, "bool":1, "int16_t":1, "uint32_t":4}
 
     offset = 8 # 8 bytes for flow ID
     for id,channel in data_loaded["channels"].items():
@@ -46,7 +46,7 @@ def generate_slate(yaml_path, header_path):
     template = environment.get_template("slate.j2")
     content = template.render(data_loaded,path=slate_util_path)
 
-    header_path.parent.mkdir()
+    header_path.parent.mkdir(exist_ok=True)
     with open(header_path, mode="w", encoding="utf-8") as message:
             message.write(content)
             print(f"Wrote {header_path}")
