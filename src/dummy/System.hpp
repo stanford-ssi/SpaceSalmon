@@ -7,6 +7,7 @@ class System;
 // #include "CommandTask.hpp"
 // #include "WebsiteTask.hpp"
 #include "ethTest.hpp"
+#include "generated/telemetry.h"
 
 class System
 {
@@ -19,6 +20,7 @@ public:
         // CommandTask command_demo = CommandTask(2);
         // WebsiteTask website_demo = WebsiteTask(2);
         EthTestTask task = EthTestTask(2);
+        telemetry_t telem;
     };
 
     Tasks tasks;

@@ -4,6 +4,11 @@ import getpass
 import platform
 import subprocess
 
+from src.slate.slate import generate_slate
+
+generate_slate("src/dummy/telemetry.yaml","src/dummy/generated/telemetry.h")
+
+
 git_attr = subprocess.check_output(['git', 'describe', '--long', '--dirty', '--tags']).decode("utf-8").strip()
 time_attr = datetime.utcnow().strftime('%d/%m/%Y-%H:%M')
 user_attr = getpass.getuser()
