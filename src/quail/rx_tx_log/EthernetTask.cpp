@@ -2,6 +2,8 @@
 #include "main.hpp"
 #include "Task.hpp"
 
+constexpr uint8_t telemetry_t::metaslate_blob[];
+
 EthernetTask::EthernetTask(uint8_t priority) : Task(priority, "Ethernet") {}
 
 void EthernetTask::setup() {
@@ -67,20 +69,6 @@ err_t EthernetTask::requestHandler(netconn *&conn, char *rcv, uint16_t len) {
             return netconn_write(conn, "\n", 1, NETCONN_COPY);
         }
         if (pckt.containsKey("meta")) { // Metaslate dump requests
-            // get the data packet
-            
-            // JsonVariant metaVar = metaJSON.to<JsonVariant>();
-            //sys.slate.metadump(metaVar);
-
-            // Serial.print(metaJSON.memoryUsage());
-            // Serial.print(" / ");
-            // Serial.println(metaJSON.capacity());
-
-            // convert to string
-            serializeJson(metaJSON, metaStr, META_PCKT_LEN);
-
-            // send the metaslate request
-            PRINT(metaStr);
 
             //get the address from which the request came, send the UDP there
             ip4_addr_t target_ip;
@@ -88,7 +76,7 @@ err_t EthernetTask::requestHandler(netconn *&conn, char *rcv, uint16_t len) {
             netconn_getaddr(conn, &target_ip, &port, 0);
             createUDP(slateConn, MY_SLATE_PORT, CLIENT_SLATE_PORT, &target_ip);
 
-            netconn_write(conn, metaStr, strlen(metaStr), NETCONN_COPY);
+            netconn_write(conn, telemetry_t::metaslate_blob, sizeof(telemetry_t::metaslate_blob), NETCONN_COPY);
             return netconn_write(conn, "\n", 1, NETCONN_COPY);
         }
     }
