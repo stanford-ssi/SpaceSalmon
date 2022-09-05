@@ -3,7 +3,7 @@
 uint8_t ThermalSensor::cfg = UNCONFIGURED; // this sensor type is initially unconfigured
 
 ThermalSensor::ThermalSensor(Ad7124::InputSel ainp, SlateField<float>& slate) : 
-    Sensor(/*slate.id.c_str()*/"Fake", ainp, Ad7124::AIN0Input, slate){
+    Sensor(ainp, Ad7124::AIN0Input, slate){
 };
 
 void ThermalSensor::configure() {

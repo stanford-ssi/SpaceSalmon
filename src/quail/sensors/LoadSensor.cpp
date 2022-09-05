@@ -4,7 +4,7 @@
 uint8_t LoadSensor::cfg = UNCONFIGURED; // initially unconfigured
 
 LoadSensor::LoadSensor(Ad7124::InputSel ainp, SlateField<float>& slate) : 
-    Sensor(/*slate.id.c_str()*/"FAKE", ainp, Ad7124::AIN0Input, slate) {
+    Sensor(ainp, Ad7124::AIN0Input, slate) {
 };
 
 void LoadSensor::configure() {

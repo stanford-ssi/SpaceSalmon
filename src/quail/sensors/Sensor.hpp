@@ -9,7 +9,7 @@ class Sensor {
         /**
          * @brief General constructor for sensors, autoincrements number of sensors
          */
-        Sensor(const char* ch_name, Ad7124::InputSel ainp, Ad7124::InputSel ainm, SlateField<float>& slate);         
+        Sensor(Ad7124::InputSel ainp, Ad7124::InputSel ainm, SlateField<float>& slate);         
 
         /**
          * @brief over-written by inheritors, returns SI unit value of reading from ADC bin count
@@ -20,8 +20,6 @@ class Sensor {
          * @brief Configures and initializes this sensor.
          */
         virtual void configure(); 
-
-        const char* ch_name; // data channel name
 
         static uint8_t numSensors(){ return num_sensors; };
 

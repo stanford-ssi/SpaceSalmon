@@ -4,7 +4,7 @@
 uint8_t PressureSensor::cfg = UNCONFIGURED; // this sensor type is initially unconfigured
 
 PressureSensor::PressureSensor(Ad7124::InputSel ainp, PressureRange range, SlateField<float>& slate) : 
-    Sensor(/*slate.id.c_str()*/"FAKE", ainp, Ad7124::AVSSInput, slate), range(range) {
+    Sensor(ainp, Ad7124::AVSSInput, slate), range(range) {
 };
 
 void PressureSensor::configure() {
