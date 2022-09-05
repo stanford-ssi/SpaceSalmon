@@ -11,10 +11,10 @@ class EthernetTask : public Task<2000>{
 
         void activity();
 
-        void send(const char* message, uint16_t len) {sendUDP(slateConn, message, len);}
+        void send(const uint8_t* message, uint16_t len) {sendUDP(slateConn, message, len);}
         void send(JsonDocument& jsonDoc) {sendUDP(slateConn, jsonDoc);}
 
-        void sendUDP(netconn *conn, const char* message, uint16_t len);
+        void sendUDP(netconn *conn, const uint8_t* message, uint16_t len);
         void sendUDP(netconn *conn, JsonDocument& jsonDoc);
 
         void waitForCmd(char *cmd) {cmdBuf.receive(cmd, DATA_PCKT_LEN, true);};

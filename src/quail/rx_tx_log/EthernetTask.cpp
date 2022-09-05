@@ -154,10 +154,10 @@ void EthernetTask::sendUDP(netconn *conn, JsonDocument& jsonDoc) {
     uint16_t len = measureJson(jsonDoc);
     char str[len];
     serializeJson(jsonDoc, str, sizeof(str));
-    sendUDP(conn, str, sizeof(str));
+    sendUDP(conn, (uint8_t*)str, sizeof(str));
 }
 
-void EthernetTask::sendUDP(netconn *conn, const char* message, uint16_t fullLen) {
+void EthernetTask::sendUDP(netconn *conn, const uint8_t* message, uint16_t fullLen) {
     if (!isSetup) return;
     if (!udpSetup) return;
     
