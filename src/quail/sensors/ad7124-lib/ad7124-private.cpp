@@ -45,9 +45,9 @@ extern "C" {
 #include <avr/pgmspace.h>
 #else
 #define PROGMEM
-#define memcpy_P memcpy
-#define pgm_read_word
-#define sprintf_P sprintf
+//#define memcpy_P memcpy
+//#define pgm_read_word
+//#define sprintf_P sprintf
 #endif
 }
 
@@ -682,8 +682,8 @@ Ad7124Register::copyRegisterName (RegisterId id, char * name) {
     return sprintf_P (name, RegNameGain, id - Gain_0);
   }
   else {
-    const char * string = (const char *) pgm_read_word (&RegisterNames[id]);
-    return sprintf_P (name, string);
+    const char * string = RegisterNames[id];
+    return sprintf_P (name, "%s", string);
   }
   return -1;
 }

@@ -69,7 +69,7 @@ err_t EthernetTask::requestHandler(netconn *&conn, char *rcv, uint16_t len) {
         if (pckt.containsKey("meta")) { // Metaslate dump requests
             // get the data packet
             
-            JsonVariant metaVar = metaJSON.to<JsonVariant>();
+            // JsonVariant metaVar = metaJSON.to<JsonVariant>();
             //sys.slate.metadump(metaVar);
 
             // Serial.print(metaJSON.memoryUsage());

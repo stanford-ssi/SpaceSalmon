@@ -70,26 +70,25 @@ void RXTask::readInput(){
                 if(!cmd.isNull()){
                     char out[MAX_CMD_LENGTH];
                     char temp[MAX_CMD_LENGTH];
-                    strcpy(temp, cmd.as<char *>());
+                    strcpy(temp, cmd.as<const char *>());
                     rbase64_decode(out, temp, strlen(temp)); // binary sent over serial has been decoded from base64
                     sendcmd(out);
                 }
             }
         }
     }
-    #ifdef ETHERNET_TXRX
-        while(sys.tasks.ethernettask.cmdAvailable()) {
-            xTimerReset(commTimer, NEVER);
 
-            char cmdStr[MAX_CMD_LENGTH];
-            sys.tasks.ethernettask.waitForCmd(cmdStr);
+    while(sys.tasks.ethernettask.cmdAvailable()) {
+        xTimerReset(commTimer, NEVER);
 
-            StaticJsonDocument<MAX_CMD_LENGTH> doc;
-            DeserializationError ret = deserializeJson(doc, cmdStr);
-            JsonVariant cmdJson = doc["cmd"];
-            char out[MAX_CMD_LENGTH];
-            serializeJson(cmdJson, out);
-            sendcmd(out);
-        } 
-    #endif
+        char cmdStr[MAX_CMD_LENGTH];
+        sys.tasks.ethernettask.waitForCmd(cmdStr);
+
+        StaticJsonDocument<MAX_CMD_LENGTH> doc;
+        deserializeJson(doc, cmdStr);
+        JsonVariant cmdJson = doc["cmd"];
+        char out[MAX_CMD_LENGTH];
+        serializeJson(cmdJson, out);
+        sendcmd(out);
+    } 
 };

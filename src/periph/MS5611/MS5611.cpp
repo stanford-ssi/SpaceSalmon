@@ -57,7 +57,7 @@ int MS5611_SPI::init()
 
 MS5611_SPI::Data MS5611_SPI::readSensor()
 {
-  int result = read();
+  read();
   struct ms5611_data data = {0, 0};
   data.temperature = getTemperature();
   data.pressure = getPressure();

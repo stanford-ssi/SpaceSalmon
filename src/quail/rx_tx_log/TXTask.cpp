@@ -1,5 +1,3 @@
-#pragma once
-
 #include "TXTask.hpp"
 #include "main.hpp"
 #include <rBase64.h>
@@ -28,13 +26,13 @@ void TXTask::activity() {
         // convert slate to json
         StaticJsonDocument<DATA_PCKT_LEN> slateJSON;
         JsonVariant variant = slateJSON.to<JsonVariant>();
+        variant.memoryUsage();
         //sys.slate >> variant;
         
         // always 
 
         if(i == LOG_FACTOR){
             i = 0;
-            size_t len = measureJson(slateJSON);
 
             size_t ser_len = serializeJson(slateJSON, json_buffer, sizeof(json_buffer));   
 

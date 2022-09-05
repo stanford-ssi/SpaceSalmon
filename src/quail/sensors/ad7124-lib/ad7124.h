@@ -356,14 +356,14 @@ class Ad7124Chip {
      */
     int setBiasPins (uint16_t pinMask);
 
-    /**
-     * @brief Sampling a channel
-     * The channel is enabled in single mode, then the conversion is started
-     * and the value of the sample is returned
-     * @param ch channel number
-     * @return sample or negative error code
-     */
-    long read (uint8_t ch);
+    // /**
+    //  * @brief Sampling a channel
+    //  * The channel is enabled in single mode, then the conversion is started
+    //  * and the value of the sample is returned
+    //  * @param ch channel number
+    //  * @return sample or negative error code
+    //  */
+    // long read (uint8_t ch);
 
     /**
      * @brief Start conversion in single mode
