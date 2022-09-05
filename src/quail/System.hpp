@@ -14,7 +14,7 @@ class System;
 #include "sensors/LoadSensor.hpp"
 #include "sensors/SensorTask.hpp"
 #include "sensors/ADCTask.hpp"
-#include "sensors/PowerTask.hpp"
+#include "PowerTask.hpp"
 #include "rx_tx_log/LoggerTask.hpp"
 #include "rx_tx_log/TXTask.hpp"
 #include "rx_tx_log/RXTask.hpp"
