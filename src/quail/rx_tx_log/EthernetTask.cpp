@@ -2,6 +2,15 @@
 #include "main.hpp"
 #include "Task.hpp"
 
+#include "cmd.pb.h"
+
+void test(){
+    quail_telemetry_Message msg = quail_telemetry_Message_init_zero;
+
+    msg.which_message = quail_telemetry_Message_reboot_tag;
+    sizeof(quail_telemetry_Message);
+}
+
 constexpr uint8_t telemetry_t::metaslate_blob[];
 
 EthernetTask::EthernetTask(uint8_t priority) : Task(priority, "Ethernet") {}

@@ -1,0 +1,36 @@
+
+syntax = "proto2";
+
+import "nanopb.proto";
+
+package quail_telemetry;
+
+message Message {
+  oneof message {
+    reboot reboot = 1;
+    start_udp start_udp = 2;
+    request_metaslate request_metaslate = 3;
+    response_metaslate response_metaslate = 4;
+    set_field set_field = 5;
+  }
+}
+
+message reboot {}
+
+message start_udp {}
+
+message request_metaslate {
+    required uint64 hash = 1;
+}
+
+message response_metaslate {
+    required bytes metaslate = 1 [(nanopb).max_size = 1000];;
+}
+
+message set_field {
+    required uint64 hash = 1;
+    required uint32 offset = 2;
+    required bytes data = 3 [(nanopb).fixed_length = true, (nanopb).max_size = 8];
+}
+
+
