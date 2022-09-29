@@ -4,6 +4,7 @@
 #include "SSIEth.hpp"
 #include "StrBuffer.hpp"
 #include "../config.h"
+#include "cmd.pb.h"
 
 class EthernetTask : public Task<2000>{
     public:
@@ -31,10 +32,10 @@ class EthernetTask : public Task<2000>{
         StaticJsonDocument<META_PCKT_LEN> metaJSON;
         char metaStr[META_PCKT_LEN];
 
-        void setup();
-
         void createUDP(netconn *&conn, uint16_t myport, uint16_t client, ip4_addr_t *target = NULL);
         void createTCP(netconn *&conn, uint16_t myport);
 
         err_t requestHandler(netconn *&conn, char *rcv, uint16_t len);
+
+        err_t msg_handler(quail_telemetry_Message &msg);
 };

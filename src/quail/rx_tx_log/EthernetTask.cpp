@@ -2,28 +2,25 @@
 #include "main.hpp"
 #include "Task.hpp"
 
+#include "pb_decode.h"
 #include "cmd.pb.h"
 
-void test(){
-    quail_telemetry_Message msg = quail_telemetry_Message_init_zero;
+// void test(){
+//     quail_telemetry_Message msg = quail_telemetry_Message_init_zero;
 
-    msg.which_message = quail_telemetry_Message_reboot_tag;
-    sizeof(quail_telemetry_Message);
-}
+//     msg.which_message = quail_telemetry_Message_reboot_tag;
+//     sizeof(quail_telemetry_Message);
+// }
 
 constexpr uint8_t telemetry_t::metaslate_blob[];
 
 EthernetTask::EthernetTask(uint8_t priority) : Task(priority, "Ethernet") {}
 
-void EthernetTask::setup() {
+void EthernetTask::activity() {
     vTaskDelay(NETWORKING_DELAY);
     createUDP(slateConn, MY_SLATE_PORT, CLIENT_SLATE_PORT);
     createTCP(cmdConn, MY_CMD_PORT);
     isSetup = true;
-}
-
-void EthernetTask::activity() {
-    setup();
 
     netconn *newconn;
     err_t err;
@@ -33,14 +30,23 @@ void EthernetTask::activity() {
 
         if (err == ERR_OK) {
             netbuf *buf;
-            void *data;
+            pb_byte_t* data;
             uint16_t len;
+            quail_telemetry_Message msg;
 
             // while connection is not stale
             while ((err = netconn_recv(newconn, &buf)) == ERR_OK) {
                 do {
-                    // get pointers
-                    netbuf_data(buf, &data, &len);
+                    /*
+                        Going to take a shortcut here, should revise in the future. 
+                        Because the TCP stream is not packetized, we don't know when we've gotten a single full PB message. 
+                        This could result in failures that may cascade into future messages in the stream. 
+                        Or could result in some message being dropped. 
+                        Begs the question of whether TCP is the right choice here.
+                    */
+                    netbuf_data(buf, (void**)&data, &len);
+                    pb_istream_t rxd_msg = pb_istream_from_buffer(data, len);
+                    pb_decode_ex(&rxd_msg,quail_telemetry_Message_fields, &msg, PB_DECODE_DELIMITED);
 
                     // process command and send ACK
                     err = requestHandler(newconn, (char *)data, len);
@@ -57,6 +63,39 @@ void EthernetTask::activity() {
             netconn_delete(newconn);
         }
     }
+}
+
+err_t EthernetTask::msg_handler(quail_telemetry_Message &msg) {
+    switch (msg.which_message)
+    {
+    case quail_telemetry_Message_reboot_tag:
+        printf("Rebooting");
+        //flush?
+        NVIC_SystemReset();
+        break;
+    
+    case quail_telemetry_Message_start_udp_tag:
+        
+        PRINT("start udp\n");
+        break;
+
+    case quail_telemetry_Message_request_metaslate_tag:
+        PRINT("request meta\n");
+        break;
+
+    case quail_telemetry_Message_response_metaslate_tag:
+        PRINT("response meta\n");
+        break;
+
+    case quail_telemetry_Message_set_field_tag:
+        PRINT("set field\n");
+        break;
+
+    default:
+        PRINT("oops\n");
+        break;
+    }
+    return RET::OK;
 }
 
 err_t EthernetTask::requestHandler(netconn *&conn, char *rcv, uint16_t len) {

@@ -1,0 +1,1 @@
+../../.pio/libdeps/quail/Nanopb/generator/protoc ../../src/slate/cmd.proto --python_out=. --proto_path=../../src/slate
