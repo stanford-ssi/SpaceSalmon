@@ -3,7 +3,10 @@
 #include "Task.hpp"
 
 #include "pb_decode.h"
+#include "pb_encode.h"
 #include "cmd.pb.h"
+
+#include "../generated/telemetry.h"
 
 // void test(){
 //     quail_telemetry_Message msg = quail_telemetry_Message_init_zero;
@@ -49,7 +52,19 @@ void EthernetTask::activity() {
                     pb_decode_ex(&rxd_msg,quail_telemetry_Message_fields, &msg, PB_DECODE_DELIMITED);
 
                     // process command and send ACK
-                    err = requestHandler(newconn, (char *)data, len);
+                    //err = requestHandler(newconn, (char *)data, len);
+                    bool respond = false;
+                    msg_handler(msg, respond);
+
+                    if(respond){
+                        pb_ostream_t substream = PB_OSTREAM_SIZING;
+                        pb_encode_ex(&substream, quail_telemetry_Message_fields, &msg, PB_ENCODE_DELIMITED); // this is very waseful...
+                        uint8_t data[substream.bytes_written];
+                        substream = pb_ostream_from_buffer(data,substream.bytes_written);
+                        pb_encode_ex(&substream, quail_telemetry_Message_fields, &msg, PB_ENCODE_DELIMITED);
+                        netconn_write(newconn,data,substream.bytes_written,NETCONN_COPY);
+                        printf("Resonded with %u \n", substream.bytes_written);
+                    }
 
                     if (err != ERR_OK) {
                         PRINT("ETHERNET: cmd tcp connection failed to echo");
@@ -65,7 +80,7 @@ void EthernetTask::activity() {
     }
 }
 
-err_t EthernetTask::msg_handler(quail_telemetry_Message &msg) {
+err_t EthernetTask::msg_handler(quail_telemetry_Message &msg, bool &respond) {
     switch (msg.which_message)
     {
     case quail_telemetry_Message_reboot_tag:
@@ -75,16 +90,19 @@ err_t EthernetTask::msg_handler(quail_telemetry_Message &msg) {
         break;
     
     case quail_telemetry_Message_start_udp_tag:
-        
         PRINT("start udp\n");
         break;
 
     case quail_telemetry_Message_request_metaslate_tag:
         PRINT("request meta\n");
+        msg.which_message = quail_telemetry_Message_response_metaslate_tag;
+        memcpy(msg.message.response_metaslate.metaslate.bytes,telemetry_t::metaslate_blob,sizeof(telemetry_t::metaslate_blob));
+        msg.message.response_metaslate.metaslate.size = sizeof(telemetry_t::metaslate_blob);
+        respond = true;
         break;
 
     case quail_telemetry_Message_response_metaslate_tag:
-        PRINT("response meta\n");
+        PRINT("oops not supposed to get that\n");
         break;
 
     case quail_telemetry_Message_set_field_tag:

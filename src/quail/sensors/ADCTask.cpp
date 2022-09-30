@@ -78,8 +78,8 @@ void ADCTask::initADC() {
             break;
         }
         char msg_buffer[50];
-        sprintf(msg_buffer, "ADC Init Failed: %i", ret);
-        sys.tasks.txtask.writeUSB(msg_buffer);
+        //sprintf(msg_buffer, "ADC Init Failed: %i", ret);
+        //sys.tasks.txtask.writeUSB(msg_buffer);
         vTaskDelay(100);
     }
 

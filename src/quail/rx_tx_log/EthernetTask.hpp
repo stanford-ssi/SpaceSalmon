@@ -37,5 +37,5 @@ class EthernetTask : public Task<2000>{
 
         err_t requestHandler(netconn *&conn, char *rcv, uint16_t len);
 
-        err_t msg_handler(quail_telemetry_Message &msg);
+        err_t msg_handler(quail_telemetry_Message &msg, bool &respond);
 };
