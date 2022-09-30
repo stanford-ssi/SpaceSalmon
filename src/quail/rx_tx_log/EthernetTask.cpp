@@ -58,12 +58,19 @@ void EthernetTask::activity() {
 
                     if(respond){
                         pb_ostream_t substream = PB_OSTREAM_SIZING;
-                        pb_encode_ex(&substream, quail_telemetry_Message_fields, &msg, PB_ENCODE_DELIMITED); // this is very waseful...
+                        pb_encode_ex(&substream, quail_telemetry_Message_fields, &msg, PB_ENCODE_DELIMITED); // this is very waseful. We're encoding like 4 times here.
                         uint8_t data[substream.bytes_written];
                         substream = pb_ostream_from_buffer(data,substream.bytes_written);
                         pb_encode_ex(&substream, quail_telemetry_Message_fields, &msg, PB_ENCODE_DELIMITED);
                         netconn_write(newconn,data,substream.bytes_written,NETCONN_COPY);
                         printf("Resonded with %u \n", substream.bytes_written);
+                    }
+
+                    if(msg.which_message == quail_telemetry_Message_start_udp_tag){
+                        ip4_addr_t target_ip;
+                        u16_t port;
+                        netconn_getaddr(newconn, &target_ip, &port, 0);
+                        createUDP(slateConn, MY_SLATE_PORT, CLIENT_SLATE_PORT, &target_ip);
                     }
 
                     if (err != ERR_OK) {
