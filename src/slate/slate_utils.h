@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include "FreeRTOS.h"
 #include "portmacro.h"
 
 template <typename T, typename P>

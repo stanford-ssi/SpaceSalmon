@@ -7,14 +7,15 @@ import pathlib
 import sys
 import os
 
-def generate_slate(yaml_path, header_path):
+def generate_slate(yaml_path, output_path):
 
     codegen_dir = pathlib.Path(__file__).parent.resolve()
 
     yaml_path = pathlib.Path(yaml_path)
-    header_path = pathlib.Path(header_path)
+    output_path = pathlib.Path(output_path)
+    output_path.parent.mkdir(exist_ok=True)
 
-    slate_util_path = os.path.relpath(codegen_dir/"slate_utils.h",header_path.parent)
+    slate_util_path = os.path.relpath(codegen_dir/"slate_utils.h",output_path)
 
     with open(yaml_path, 'r') as stream:
         data_loaded = yaml.safe_load(stream)
@@ -43,13 +44,24 @@ def generate_slate(yaml_path, header_path):
     environment = jinja2.Environment(loader=jinja2.FileSystemLoader(codegen_dir))
     environment.trim_blocks = True
     environment.lstrip_blocks = True
-    template = environment.get_template("slate.j2")
-    content = template.render(data_loaded,path=slate_util_path)
 
-    header_path.parent.mkdir(exist_ok=True)
+    header_template = environment.get_template("slate.h.j2")
+    header_content = header_template.render(data_loaded,path=slate_util_path)
+    header_file = data_loaded["slate"]+".h"
+    header_path = output_path.joinpath(header_file)
+
+    cpp_template = environment.get_template("slate.cpp.j2")
+    cpp_content = cpp_template.render(data_loaded,header_file=header_file)
+    cpp_path = output_path.joinpath(data_loaded["slate"]+".cpp")
+
     with open(header_path, mode="w", encoding="utf-8") as message:
-            message.write(content)
+            message.write(header_content)
             print(f"Wrote {header_path}")
+
+    with open(cpp_path, mode="w", encoding="utf-8") as message:
+            message.write(cpp_content)
+            print(f"Wrote {cpp_path}")
+    
 
 if __name__ == "__main__":
     try:

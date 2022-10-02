@@ -6,8 +6,8 @@ import subprocess
 
 from src.slate.slate import generate_slate
 
-generate_slate("src/dummy/telemetry.yaml","src/dummy/generated/telemetry.h")
-generate_slate("src/quail/telemetry.yaml","src/quail/generated/telemetry.h")
+generate_slate("src/dummy/telemetry.yaml","src/dummy/generated/")
+generate_slate("src/quail/telemetry.yaml","src/quail/generated/")
 
 
 git_attr = subprocess.check_output(['git', 'describe', '--long', '--dirty', '--tags']).decode("utf-8").strip()

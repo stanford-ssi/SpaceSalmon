@@ -6,10 +6,6 @@
 #include "pb_encode.h"
 #include "cmd.pb.h"
 
-#include "../generated/telemetry.h"
-
-constexpr uint8_t telemetry_t::metaslate_blob[];
-
 CmdServer::CmdServer(uint8_t priority) : Task(priority, "Ethernet") {}
 
 void CmdServer::activity() {
