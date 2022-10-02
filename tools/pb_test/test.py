@@ -18,6 +18,9 @@ s.connect((TCP_IP, TCP_PORT))
 # Start UDP stream:
 msg = cmd_pb2.Message()
 msg.start_udp.SetInParent()
+msg.start_udp.hash = 0
+msg.start_udp.addr = 0xC0A80201
+msg.start_udp.port = 8000
 s.send(_VarintBytes(msg.ByteSize()) + msg.SerializeToString())
 
 # Ask for metaslate

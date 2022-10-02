@@ -17,14 +17,19 @@ message Message {
 
 message reboot {}
 
-message start_udp {}
+message start_udp {
+  required uint32 addr = 1;
+  required uint32 port = 2;
+  required uint64 hash = 3;
+}
 
 message request_metaslate {
     required uint64 hash = 1;
 }
 
 message response_metaslate {
-    required bytes metaslate = 1 [(nanopb).max_size = 1000];;
+    required uint64 hash = 1;
+    required bytes metaslate = 2 [(nanopb).max_size = 1000];;
 }
 
 message set_field {

@@ -19,7 +19,8 @@ class System;
 #include "rx_tx_log/TXTask.hpp"
 #include "rx_tx_log/RXTask.hpp"
 
-#include "rx_tx_log/EthernetTask.hpp"
+#include "rx_tx_log/CmdServer.hpp"
+#include "rx_tx_log/SlateServer.hpp"
 #include "generated/telemetry.h"
 #include "config.h"
 
@@ -32,6 +33,8 @@ public:
     Ad7124Chip adc = Ad7124Chip(5,8,&adc_spi);
 
     SSIEth ethernet = SSIEth(1, MacAddr({0x00, 0x00, 0x00, 0x00, 0x20, 0x76}));
+
+    SlateServer slateServer;
 
     telemetry_t telem_slate;
 
@@ -73,7 +76,9 @@ public:
         SensorTask sensortask = SensorTask(3);
         PowerTask powertask = PowerTask(3); // test for measuring battery voltage and current
         
-        EthernetTask ethernettask = EthernetTask(4);
+        CmdServer cmdserver = CmdServer(4);
+        
+
 
         TXTask txtask = TXTask(5, 50); //regularly collects state data, logs and sends over USB, radio, or ethernet
         RXTask rxtask = RXTask(5, 50); //processes commands from USB, radio, or ethernet

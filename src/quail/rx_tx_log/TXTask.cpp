@@ -28,8 +28,8 @@ void TXTask::activity() {
         
         //sys.tasks.logger.log(json_buffer);
         //writeUSB(json_buffer);
-            
-        sys.tasks.ethernettask.send(packet.payload, sizeof(packet.payload));
+        
+        sys.slateServer.send(packet.payload, sizeof(packet.payload));
         
     }
 };

@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 import nanopb_pb2 as nanopb__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\tcmd.proto\x12\x0fquail_telemetry\x1a\x0cnanopb.proto\"\xa5\x02\n\x07Message\x12)\n\x06reboot\x18\x01 \x01(\x0b\x32\x17.quail_telemetry.rebootH\x00\x12/\n\tstart_udp\x18\x02 \x01(\x0b\x32\x1a.quail_telemetry.start_udpH\x00\x12?\n\x11request_metaslate\x18\x03 \x01(\x0b\x32\".quail_telemetry.request_metaslateH\x00\x12\x41\n\x12response_metaslate\x18\x04 \x01(\x0b\x32#.quail_telemetry.response_metaslateH\x00\x12/\n\tset_field\x18\x05 \x01(\x0b\x32\x1a.quail_telemetry.set_fieldH\x00\x42\t\n\x07message\"\x08\n\x06reboot\"\x0b\n\tstart_udp\"!\n\x11request_metaslate\x12\x0c\n\x04hash\x18\x01 \x02(\x04\"/\n\x12response_metaslate\x12\x19\n\tmetaslate\x18\x01 \x02(\x0c\x42\x06\x92?\x03\x08\xe8\x07\"C\n\tset_field\x12\x0c\n\x04hash\x18\x01 \x02(\x04\x12\x0e\n\x06offset\x18\x02 \x02(\r\x12\x18\n\x04\x64\x61ta\x18\x03 \x02(\x0c\x42\n\x92?\x02x\x01\x92?\x02\x08\x08')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\tcmd.proto\x12\x0fquail_telemetry\x1a\x0cnanopb.proto\"\xa5\x02\n\x07Message\x12)\n\x06reboot\x18\x01 \x01(\x0b\x32\x17.quail_telemetry.rebootH\x00\x12/\n\tstart_udp\x18\x02 \x01(\x0b\x32\x1a.quail_telemetry.start_udpH\x00\x12?\n\x11request_metaslate\x18\x03 \x01(\x0b\x32\".quail_telemetry.request_metaslateH\x00\x12\x41\n\x12response_metaslate\x18\x04 \x01(\x0b\x32#.quail_telemetry.response_metaslateH\x00\x12/\n\tset_field\x18\x05 \x01(\x0b\x32\x1a.quail_telemetry.set_fieldH\x00\x42\t\n\x07message\"\x08\n\x06reboot\"5\n\tstart_udp\x12\x0c\n\x04\x61\x64\x64r\x18\x01 \x02(\r\x12\x0c\n\x04port\x18\x02 \x02(\r\x12\x0c\n\x04hash\x18\x03 \x02(\x04\"!\n\x11request_metaslate\x12\x0c\n\x04hash\x18\x01 \x02(\x04\"=\n\x12response_metaslate\x12\x0c\n\x04hash\x18\x01 \x02(\x04\x12\x19\n\tmetaslate\x18\x02 \x02(\x0c\x42\x06\x92?\x03\x08\xe8\x07\"C\n\tset_field\x12\x0c\n\x04hash\x18\x01 \x02(\x04\x12\x0e\n\x06offset\x18\x02 \x02(\r\x12\x18\n\x04\x64\x61ta\x18\x03 \x02(\x0c\x42\n\x92?\x02x\x01\x92?\x02\x08\x08')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'cmd_pb2', globals())
@@ -29,12 +29,12 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _MESSAGE._serialized_end=338
   _REBOOT._serialized_start=56
   _REBOOT._serialized_end=64
-  _START_UDP._serialized_start=99
-  _START_UDP._serialized_end=110
-  _REQUEST_METASLATE._serialized_start=363
-  _REQUEST_METASLATE._serialized_end=396
-  _RESPONSE_METASLATE._serialized_start=398
-  _RESPONSE_METASLATE._serialized_end=445
-  _SET_FIELD._serialized_start=447
-  _SET_FIELD._serialized_end=514
+  _START_UDP._serialized_start=350
+  _START_UDP._serialized_end=403
+  _REQUEST_METASLATE._serialized_start=405
+  _REQUEST_METASLATE._serialized_end=438
+  _RESPONSE_METASLATE._serialized_start=440
+  _RESPONSE_METASLATE._serialized_end=501
+  _SET_FIELD._serialized_start=503
+  _SET_FIELD._serialized_end=570
 # @@protoc_insertion_point(module_scope)

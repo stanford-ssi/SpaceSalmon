@@ -78,17 +78,17 @@ void RXTask::readInput(){
         }
     }
 
-    while(sys.tasks.ethernettask.cmdAvailable()) {
-        xTimerReset(commTimer, NEVER);
+    // while(sys.tasks.ethernettask.cmdAvailable()) {
+    //     xTimerReset(commTimer, NEVER);
 
-        char cmdStr[MAX_CMD_LENGTH];
-        sys.tasks.ethernettask.waitForCmd(cmdStr);
+    //     char cmdStr[MAX_CMD_LENGTH];
+    //     sys.tasks.ethernettask.waitForCmd(cmdStr);
 
-        StaticJsonDocument<MAX_CMD_LENGTH> doc;
-        deserializeJson(doc, cmdStr);
-        JsonVariant cmdJson = doc["cmd"];
-        char out[MAX_CMD_LENGTH];
-        serializeJson(cmdJson, out);
-        sendcmd(out);
-    } 
+    //     StaticJsonDocument<MAX_CMD_LENGTH> doc;
+    //     deserializeJson(doc, cmdStr);
+    //     JsonVariant cmdJson = doc["cmd"];
+    //     char out[MAX_CMD_LENGTH];
+    //     serializeJson(cmdJson, out);
+    //     sendcmd(out);
+    // } 
 };
