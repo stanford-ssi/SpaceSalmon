@@ -55,7 +55,6 @@ void CmdServer::activity() {
                     pb_decode_ex(&rxd_msg,quail_telemetry_Message_fields, &msg, PB_DECODE_DELIMITED);
 
                     // process command and send ACK
-                    //err = requestHandler(newconn, (char *)data, len);
                     bool respond = false;
                     msg_handler(msg, respond);
 
@@ -67,13 +66,6 @@ void CmdServer::activity() {
                         pb_encode_ex(&substream, quail_telemetry_Message_fields, &msg, PB_ENCODE_DELIMITED);
                         netconn_write(newconn,data,substream.bytes_written,NETCONN_COPY);
                         printf("Resonded with %u \n", substream.bytes_written);
-                    }
-
-                    if(msg.which_message == quail_telemetry_Message_start_udp_tag){
-                        ip4_addr_t target_ip;
-                        u16_t port;
-                        netconn_getaddr(newconn, &target_ip, &port, 0);
-                        sys.slateServer.connect(target_ip, CLIENT_SLATE_PORT);
                     }
 
                     if (err != ERR_OK) {
@@ -95,12 +87,13 @@ err_t CmdServer::msg_handler(quail_telemetry_Message &msg, bool &respond) {
     {
     case quail_telemetry_Message_reboot_tag:
         printf("Rebooting");
-        //flush?
+        vTaskDelay(100); //flush
         NVIC_SystemReset();
         break;
     
     case quail_telemetry_Message_start_udp_tag:
         PRINT("start udp\n");
+        sys.slateServer.connect({msg.message.start_udp.addr}, msg.message.start_udp.port);
         break;
 
     case quail_telemetry_Message_request_metaslate_tag:
@@ -113,7 +106,7 @@ err_t CmdServer::msg_handler(quail_telemetry_Message &msg, bool &respond) {
         break;
 
     case quail_telemetry_Message_response_metaslate_tag:
-        PRINT("oops not supposed to get that\n");
+        PRINT("response meta\n");
         break;
 
     case quail_telemetry_Message_set_field_tag:
