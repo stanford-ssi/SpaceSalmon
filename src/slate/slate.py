@@ -13,7 +13,7 @@ def generate_slate(yaml_path, output_path):
 
     yaml_path = pathlib.Path(yaml_path)
     output_path = pathlib.Path(output_path)
-    output_path.parent.mkdir(exist_ok=True)
+    output_path.mkdir(exist_ok=True)
 
     slate_util_path = os.path.relpath(codegen_dir/"slate_utils.h",output_path)
 
