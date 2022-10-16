@@ -11,7 +11,7 @@ def data_to_json(data):
         print(data)
     return json.loads(string)
 
-TCP_IP = "192.168.1.2"
+TCP_IP = "192.168.2.1"
 TCP_PORT = 1002
 
 command_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

@@ -3,7 +3,7 @@ import socket
 import json
  
 
-localIP     = "192.168.1.3"
+localIP     = "0.0.0.0"
 localPort   = 8000
 
 bufferSize  = 10_000

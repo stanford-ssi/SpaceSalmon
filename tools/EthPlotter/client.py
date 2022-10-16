@@ -49,7 +49,7 @@ def grapher(data_buf: mp.Queue):
 def data_ingestor(data_buf: mp.Queue, ip, port):
 
     # Create socket for server
-    UDP_IP = "192.168.1.1"
+    UDP_IP = "0.0.0.0"
     UDP_PORT = 2001
     data_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, 0)
     data_socket.bind((ip, port))
@@ -70,7 +70,7 @@ def data_ingestor(data_buf: mp.Queue, ip, port):
     data_socket.close()
 
 def command_sender(ip, port):
-    TCP_IP = "192.168.1.100"
+    TCP_IP = "192.168.2.2"
     TCP_PORT = 2002
     command_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     command = {
