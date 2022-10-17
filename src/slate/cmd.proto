@@ -6,16 +6,20 @@ import "nanopb.proto";
 package quail_telemetry;
 
 message Message {
+  required uint32 sequence = 1;
   oneof message {
-    reboot reboot = 1;
-    start_udp start_udp = 2;
-    request_metaslate request_metaslate = 3;
-    response_metaslate response_metaslate = 4;
-    set_field set_field = 5;
+    reboot reboot = 2;
+    start_udp start_udp = 3;
+    request_metaslate request_metaslate = 4;
+    response_metaslate response_metaslate = 5;
+    set_field set_field = 6;
+    ack ack = 7;
   }
 }
 
 message reboot {}
+
+message ack {}
 
 message start_udp {
   required uint32 addr = 1;

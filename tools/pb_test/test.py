@@ -9,38 +9,57 @@ from google.protobuf.internal.decoder import _DecodeVarint32
 
 
 
-TCP_IP = '192.168.2.2'
-TCP_PORT = 1002
+IP = '192.168.2.2'
+CMD_PORT = 1002
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect((TCP_IP, TCP_PORT))
+cmd_sock = socket.socket(socket.AF_INET, # Internet
+                     socket.SOCK_DGRAM) # UDP
+cmd_sock.bind(("0.0.0.0", 5423))
 
+seq = 1
+
+print("Requesting telemetry stream")
 # Start UDP stream:
 msg = cmd_pb2.Message()
+msg.sequence = seq
+seq += 1
 msg.start_udp.SetInParent()
 msg.start_udp.hash = 0
 msg.start_udp.addr = 0x0102A8C0
 msg.start_udp.port = 8000
-s.send(_VarintBytes(msg.ByteSize()) + msg.SerializeToString())
+cmd_sock.sendto(msg.SerializeToString(),(IP, CMD_PORT))
 
-# Ask for metaslate
-msg = cmd_pb2.Message()
-msg.request_metaslate.SetInParent()
-msg.request_metaslate.hash = 0
-s.send(_VarintBytes(msg.ByteSize()) + msg.SerializeToString())
-
-
+print("Waiting for ack")
 # decode metaslate
-data = s.recv(1024)
-msg_len, n = _DecodeVarint32(data,0)
-data = data[n:n+msg_len]
+data = cmd_sock.recv(1024)
 read_msg = cmd_pb2.Message()
 read_msg.ParseFromString(data)
+if (read_msg.sequence == seq):
+    print("got ack!")
+
+
+print("Requesting metaslate")
+# Ask for metaslate
+msg = cmd_pb2.Message()
+msg.sequence = seq
+seq += 1
+msg.request_metaslate.SetInParent()
+msg.request_metaslate.hash = 0
+cmd_sock.sendto(msg.SerializeToString(),(IP, CMD_PORT))
+
+
+print("Waiting for metaslate")
+# decode metaslate
+data = cmd_sock.recv(1024)
+read_msg = cmd_pb2.Message()
+read_msg.ParseFromString(data)
+if (read_msg.sequence == seq):
+    print("got metaslate!")
 data = zlib.decompress(read_msg.response_metaslate.metaslate)
 data = msgpack.unpackb(data)
 
 print(data)
-s.close()
+cmd_sock.close()
 
 UDP_IP = "0.0.0.0"
 UDP_PORT = 8000

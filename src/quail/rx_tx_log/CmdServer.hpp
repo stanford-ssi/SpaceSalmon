@@ -14,10 +14,8 @@ public:
     void activity();
 
 private:
-    bool isSetup = false;
-    bool udpSetup = false;
 
-    netconn *slateConn = NULL; // NULL is important to ensure it doesn't get fake deleted the first time
+    netconn *cmdConn = NULL; // NULL is important to ensure it doesn't get fake deleted the first time
 
-    err_t msg_handler(quail_telemetry_Message &msg, bool &respond);
+    err_t msg_handler(quail_telemetry_Message &msg, ip_addr_t* srcAddr, uint16_t srcPort);
 };
