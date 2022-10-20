@@ -46,12 +46,12 @@ def generate_slate(yaml_path, output_path):
     environment.lstrip_blocks = True
 
     header_template = environment.get_template("slate.h.j2")
-    header_content = header_template.render(data_loaded,path=slate_util_path)
+    header_content = header_template.render(data_loaded,path=slate_util_path,types=type_to_size)
     header_file = data_loaded["slate"]+".h"
     header_path = output_path.joinpath(header_file)
 
     cpp_template = environment.get_template("slate.cpp.j2")
-    cpp_content = cpp_template.render(data_loaded,header_file=header_file)
+    cpp_content = cpp_template.render(data_loaded,header_file=header_file,types=type_to_size)
     cpp_path = output_path.joinpath(data_loaded["slate"]+".cpp")
 
     with open(header_path, mode="w", encoding="utf-8") as message:

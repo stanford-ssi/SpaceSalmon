@@ -23,6 +23,7 @@ class System;
 #include "rx_tx_log/SlateServer.hpp"
 #include "generated/telemetry.h"
 #include "config.h"
+#include "rx_tx_log/SlateRegistry.hpp"
 
 class System
 { 
@@ -37,6 +38,8 @@ public:
     SlateServer<telemetry_t> slateServer;
 
     telemetry_t telem_slate;
+
+    SlateRegistry<telemetry_t> slate_registry = SlateRegistry(telem_slate);
 
     LoadSensor LC1 = LoadSensor(Ad7124::AIN12Input, telem_slate.lc1);
     LoadSensor LC2 = LoadSensor(Ad7124::AIN13Input, telem_slate.lc2);

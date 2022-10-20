@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include "{{path}}"
 
-struct {{slate}}_t
+struct {{slate}}_t : public Slate
 {
     {% for id,channel in channels.items() %}
     SlateField<{{ channel.type }}> {{ id }} = {{ channel.default }}; // {{channel.desc}}, in {{channel.unit}}
@@ -19,20 +19,21 @@ struct {{slate}}_t
         {% endfor %}
     }
 
-    void parseCMD(cmd_pkt_t &pkt){
-        if(pkt.slate_hash == metaslate_hash){
-            switch (pkt.offset)
-            {
-            {% for id,channel in channels.items() if channel.mutable %}
-            case {{channel.offset}}:
-                {{id}} = *({{channel.type}}*)pkt.data;
-                break;
-            {% endfor %}
-            default:
-                break;
-            }
+{% for type in types.keys() %}
+    void parseCMD(uint16_t offset, {{type}} value){
+        switch (offset)
+        {
+        {% for id,channel in channels.items() if channel.mutable and channel.type == type %}
+        case {{channel.offset}}:
+            {{id}} = value;
+            break;
+        {% endfor %}
+        default:
+            break;
         }
     }
+
+{% endfor %}
 
     static constexpr uint8_t metaslate_blob[] = { {{metaslate_blob}} };
     static constexpr uint64_t metaslate_hash = {{metaslate_hash}};

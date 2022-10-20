@@ -39,7 +39,13 @@ message response_metaslate {
 message set_field {
     required uint64 hash = 1;
     required uint32 offset = 2;
-    required bytes data = 3 [(nanopb).fixed_length = true, (nanopb).max_size = 8];
+    oneof adata {
+      int32 data_int16 = 3;
+      uint32 data_uint32 = 4;
+      float data_float = 5;
+      bool data_bool = 6;
+    }
+
 }
 
 
