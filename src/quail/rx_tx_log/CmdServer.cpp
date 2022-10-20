@@ -86,7 +86,7 @@ err_t CmdServer::msg_handler(quail_telemetry_Message &msg, ip_addr_t *addr, uint
         break;
 
     case quail_telemetry_Message_set_field_tag:
-        // TODO: acutally set the field
+        sys.slate_registry.parse_set_field(msg.message.set_field);
         msg.which_message = quail_telemetry_Message_ack_tag;
         respond = true;
         break;

@@ -3,57 +3,47 @@
 
 #include <array>
 #include <functional>
+#include "cmd.pb.h"
 
 template <typename... Ts>
 class SlateRegistry
 {
 private:
-    const std::array<std::reference_wrapper<const Slate>, sizeof...(Ts)> list;
+    const std::array<std::reference_wrapper<Slate>, sizeof...(Ts)> slateList;
 
 public:
-    SlateRegistry(Ts const &...xs) : list({(std::ref<const Slate>(xs), ...)})
+    SlateRegistry(Ts &...xs) : slateList({(std::ref<Slate>(xs), ...)})
     {
     }
 
-    void parse(uint16_t offset, float value)
+    void parse_set_field(quail_telemetry_set_field &cmd)
     {
-        for (auto elem : list)
+        for (auto wrapper : slateList)
         {
-            Slate &test = elem.get();
-            test.parseCMD(offset, value);
+            Slate &slate = wrapper.get();
+            if (cmd.hash == slate.get_metaslate_hash())
+            {
+                switch (cmd.which_adata)
+                {
+                case quail_telemetry_set_field_data_int16_tag:
+                    slate.set_int16_t_field(cmd.offset, cmd.adata.data_int16);
+                    break;
+
+                case quail_telemetry_set_field_data_uint32_tag:
+                    slate.set_uint32_t_field(cmd.offset, cmd.adata.data_uint32);
+                    break;
+
+                case quail_telemetry_set_field_data_bool_tag:
+                    slate.set_bool_field(cmd.offset, cmd.adata.data_bool);
+                    break;
+
+                case quail_telemetry_set_field_data_float_tag:
+                    slate.set_float_field(cmd.offset, cmd.adata.data_float);
+                    break;
+                }
+
+                break;
+            }
         }
     }
 };
-
-// A BUNCH OF OLD STUFF that I used to learn C++ lol
-// we could make a factory that make objects?
-// template <typename... Ts>
-// SlateRegistry2<Ts> makeSR(Ts const &...xs){
-//     return SlateRegistry2<Ts>(xs);
-// }
-
-// c++17 has type deduction from constructors
-
-// std::array<std::reference_wrapper<const Slate>, sizeof...(Ts)>
-
-// for(const auto t : {xs...}){}
-// SlateRegistry2(Ts const&... xs):list({xs...}){
-
-// template <size_t i>
-// class SlateRegistry
-// {
-// private:
-//     const std::array<std::reference_wrapper<Slate>, i> list;
-
-// public:
-//     SlateRegistry(std::array<std::reference_wrapper<Slate>, i> slates) : list(slates){};
-
-//     void parse(uint16_t offset, float value)
-//     {
-//         for (auto elem : list)
-//         {
-//             Slate &test = elem.get();
-//             test.parseCMD(offset, value);
-//         }
-//     }
-// };

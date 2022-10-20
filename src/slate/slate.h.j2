@@ -20,7 +20,7 @@ struct {{slate}}_t : public Slate
     }
 
 {% for type in types.keys() %}
-    void parseCMD(uint16_t offset, {{type}} value){
+    void set_{{type}}_field(uint16_t offset, {{type}} value){
         switch (offset)
         {
         {% for id,channel in channels.items() if channel.mutable and channel.type == type %}
@@ -36,6 +36,9 @@ struct {{slate}}_t : public Slate
 {% endfor %}
 
     static constexpr uint8_t metaslate_blob[] = { {{metaslate_blob}} };
+    const uint64_t& get_metaslate_hash(){ return metaslate_hash; }
+
+private:
     static constexpr uint64_t metaslate_hash = {{metaslate_hash}};
 };
 

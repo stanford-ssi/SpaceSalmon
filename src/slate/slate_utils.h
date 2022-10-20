@@ -8,12 +8,6 @@ inline void seralize_field(P &pkt , T val, uint32_t offset){
     *(T*)(((uint8_t*)(&pkt)) + offset) = val;
 }
 
-// typedef struct
-// {
-//     uint64_t slate_hash;
-//     uint16_t offset;
-//     uint8_t data[8];
-// } cmd_pkt_t;
 
 
 template <typename T>
@@ -52,5 +46,12 @@ public:
 class Slate
 {
 public:
-    virtual void parseCMD(uint16_t offset, float value){}
+    virtual void set_uint32_t_field(uint16_t offset, uint32_t value){}
+    virtual void set_int16_t_field(uint16_t offset, int16_t value){}
+    virtual void set_bool_field(uint16_t offset, bool value){}
+    virtual void set_float_field(uint16_t offset, float value){}
+    
+    virtual const uint64_t& get_metaslate_hash(){ return metaslate_hash; }
+private:
+    static constexpr uint64_t metaslate_hash = 0;
 };
