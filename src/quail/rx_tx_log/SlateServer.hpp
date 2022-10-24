@@ -8,6 +8,8 @@ template <typename slate_type>
 class SlateServer
 {
 public:
+    SlateServer(slate_type &slateRef): slate(slateRef){}
+
     result_t bind(uint16_t port)
     {
         if (isBound)
@@ -68,6 +70,8 @@ public:
     {
         return send(pkt.payload, sizeof(pkt));
     }
+
+    slate_type &slate;
 
 private:
     result_t send(const uint8_t *message, uint16_t len)

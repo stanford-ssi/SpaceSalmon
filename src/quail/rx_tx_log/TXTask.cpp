@@ -29,7 +29,7 @@ void TXTask::activity() {
         //sys.tasks.logger.log(json_buffer);
         //writeUSB(json_buffer);
         
-        sys.telem_slate.server.send(packet);
+        sys.telem_server.send(packet);
         
     }
 };

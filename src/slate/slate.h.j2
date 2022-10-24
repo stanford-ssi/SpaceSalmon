@@ -3,7 +3,6 @@
 #pragma once
 #include <stdint.h>
 #include "{{path}}"
-#include "../rx_tx_log/SlateServer.hpp"
 
 class {{slate}}_t : public Slate
 {
@@ -42,7 +41,5 @@ public:
 
     static constexpr uint8_t metaslate_blob[] = { {{metaslate_blob}} };
     const uint64_t& get_metaslate_hash(){ return metaslate_hash; }
-
-    SlateServer<{{slate}}_t> server;
 };
 

@@ -4,15 +4,16 @@
 #include <array>
 #include <functional>
 #include "cmd.pb.h"
+#include "SlateServer.hpp"
 
 template <typename... Ts>
 class SlateRegistry
 {
 private:
-    std::tuple<Ts &...> slateList;
+    std::tuple<SlateServer<Ts> &...> slateServerList;
 
 public:
-    SlateRegistry(Ts &...xs) : slateList(xs...)
+    SlateRegistry(SlateServer<Ts>&... xs) : slateServerList(xs...)
     {
     }
 
@@ -20,10 +21,11 @@ public:
     {
         std::apply
         (
-            [&](Ts &... slate)
+            [&](SlateServer<Ts> &... server)
             {
                 ([&]
                 {
+                    auto &slate = server.slate;
                     if (cmd.hash == slate.get_metaslate_hash())
                     {
                         switch (cmd.which_adata)
@@ -46,7 +48,7 @@ public:
                         }
                     }
                 } (), ...);
-            }, slateList
+            }, slateServerList
         );
     }
 };

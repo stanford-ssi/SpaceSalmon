@@ -36,8 +36,9 @@ public:
     SSIEth ethernet = SSIEth(1, MacAddr({0x00, 0x00, 0x00, 0x00, 0x20, 0x76}));
 
     telemetry_t telem_slate;
+    SlateServer<telemetry_t> telem_server = SlateServer(telem_slate);
 
-    SlateRegistry<telemetry_t> slate_registry = SlateRegistry(telem_slate);
+    SlateRegistry<telemetry_t> slate_registry = SlateRegistry<telemetry_t>(telem_server);
 
     LoadSensor LC1 = LoadSensor(Ad7124::AIN12Input, telem_slate.lc1);
     LoadSensor LC2 = LoadSensor(Ad7124::AIN13Input, telem_slate.lc2);
