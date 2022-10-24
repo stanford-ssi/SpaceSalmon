@@ -8,7 +8,7 @@ template <typename slate_type>
 class SlateServer
 {
 public:
-    SlateServer(slate_type &slateRef): slate(slateRef){}
+    SlateServer(slate_type &slateRef) : slate(slateRef) {}
 
     result_t bind(uint16_t port)
     {

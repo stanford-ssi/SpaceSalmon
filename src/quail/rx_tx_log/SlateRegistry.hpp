@@ -13,18 +13,17 @@ private:
     std::tuple<SlateServer<Ts> &...> slateServerList;
 
 public:
-    SlateRegistry(SlateServer<Ts>&... xs) : slateServerList(xs...)
+    SlateRegistry(SlateServer<Ts> &...xs) : slateServerList(xs...)
     {
     }
 
     void parse_set_field(quail_telemetry_set_field &cmd)
     {
-        std::apply
-        (
-            [&](SlateServer<Ts> &... server)
+        std::apply(
+            [&](SlateServer<Ts> &...server)
             {
                 ([&]
-                {
+                 {
                     auto &slate = server.slate;
                     if (cmd.hash == slate.get_metaslate_hash())
                     {
@@ -46,9 +45,43 @@ public:
                             slate.set_float_field(cmd.offset, cmd.adata.data_float);
                             break;
                         }
-                    }
-                } (), ...);
-            }, slateServerList
-        );
+                    } }(),
+                 ...);
+            },
+            slateServerList);
+    }
+
+    void set_server_target(quail_telemetry_start_udp &cmd)
+    {
+        std::apply(
+            [&](SlateServer<Ts> &...server)
+            {
+                ([&]
+                 {
+                    if (cmd.hash == server.slate.get_metaslate_hash())
+                    {
+                        server.connect({cmd.addr}, cmd.port);
+                    } }(),
+                 ...);
+            },
+            slateServerList);
+    }
+
+    void find_metaslate(quail_telemetry_response_metaslate &msg)
+    {
+        msg.metaslate.size = 0; // if none found, size is 0
+        std::apply(
+            [&](SlateServer<Ts> &...server)
+            {
+                ([&]
+                 {
+                    if (msg.hash == server.slate.get_metaslate_hash())
+                    {
+                        memcpy(msg.metaslate.bytes, server.slate.metaslate_blob, sizeof(server.slate.metaslate_blob));
+                        msg.metaslate.size = sizeof(server.slate.metaslate_blob);
+                    } }(),
+                 ...);
+            },
+            slateServerList);
     }
 };

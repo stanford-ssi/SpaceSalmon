@@ -17,13 +17,15 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as cmd_sock :
 
     seq = 1
 
+    hash = 0x8b0e8698b88b8a83
+
     print("Requesting telemetry stream")
     # Start UDP stream:
     msg = cmd_pb2.Message()
     msg.sequence = seq
     seq += 1
     msg.start_udp.SetInParent()
-    msg.start_udp.hash = 0
+    msg.start_udp.hash = hash
     msg.start_udp.addr = 0x0102A8C0
     msg.start_udp.port = 8000
     cmd_sock.sendto(msg.SerializeToString(),(IP, CMD_PORT))
@@ -42,7 +44,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as cmd_sock :
     msg = cmd_pb2.Message()
     msg.sequence = seq
     msg.request_metaslate.SetInParent()
-    msg.request_metaslate.hash = 0
+    msg.request_metaslate.hash = hash
     cmd_sock.sendto(msg.SerializeToString(),(IP, CMD_PORT))
 
 
@@ -53,8 +55,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as cmd_sock :
     read_msg.ParseFromString(data)
     if (read_msg.sequence == seq):
         print("got metaslate!")
-    hash = read_msg.response_metaslate.hash
-    print(hash)
     data = zlib.decompress(read_msg.response_metaslate.metaslate)
     data = msgpack.unpackb(data)
 

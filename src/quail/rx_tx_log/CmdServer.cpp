@@ -72,16 +72,15 @@ err_t CmdServer::msg_handler(quail_telemetry_Message &msg, ip_addr_t *addr, uint
         break;
 
     case quail_telemetry_Message_start_udp_tag:
-        sys.telem_server.connect({msg.message.start_udp.addr}, msg.message.start_udp.port);
+        sys.slate_registry.set_server_target(msg.message.start_udp);
         msg.which_message = quail_telemetry_Message_ack_tag;
         respond = true;
         break;
 
     case quail_telemetry_Message_request_metaslate_tag:
         msg.which_message = quail_telemetry_Message_response_metaslate_tag;
-        msg.message.response_metaslate.hash = sys.telem_slate.get_metaslate_hash();
-        memcpy(msg.message.response_metaslate.metaslate.bytes, telemetry_t::metaslate_blob, sizeof(telemetry_t::metaslate_blob));
-        msg.message.response_metaslate.metaslate.size = sizeof(telemetry_t::metaslate_blob);
+        msg.message.response_metaslate.hash = msg.message.request_metaslate.hash;
+        sys.slate_registry.find_metaslate(msg.message.response_metaslate);
         respond = true;
         break;
 

@@ -14,8 +14,7 @@ public:
     void activity();
 
 private:
-
     netconn *cmdConn = NULL; // NULL is important to ensure it doesn't get fake deleted the first time
 
-    err_t msg_handler(quail_telemetry_Message &msg, ip_addr_t* srcAddr, uint16_t srcPort);
+    err_t msg_handler(quail_telemetry_Message &msg, ip_addr_t *srcAddr, uint16_t srcPort);
 };
