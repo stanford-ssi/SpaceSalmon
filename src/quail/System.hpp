@@ -35,8 +35,6 @@ public:
 
     SSIEth ethernet = SSIEth(1, MacAddr({0x00, 0x00, 0x00, 0x00, 0x20, 0x76}));
 
-    SlateServer<telemetry_t> slateServer;
-
     telemetry_t telem_slate;
 
     SlateRegistry<telemetry_t> slate_registry = SlateRegistry(telem_slate);

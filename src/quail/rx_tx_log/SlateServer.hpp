@@ -2,6 +2,7 @@
 
 #include "SSIEth.hpp"
 #include <string.h>
+#include <algorithm>
 
 template <typename slate_type>
 class SlateServer
@@ -63,7 +64,7 @@ public:
         }
     }
 
-    result_t send(typename slate_type::telemetry_pkt_t &pkt)
+    result_t send(typename slate_type::pkt_t &pkt)
     {
         return send(pkt.payload, sizeof(pkt));
     }
@@ -81,7 +82,7 @@ private:
         uint16_t size;
         void *data_ptr;
         netbuf_data(buf, &data_ptr, &size);
-        memcpy(data_ptr, message, min(len, size));
+        memcpy(data_ptr, message, std::min(len, size));
 
         if (size != len)
         {

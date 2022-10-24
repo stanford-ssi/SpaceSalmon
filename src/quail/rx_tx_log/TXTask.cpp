@@ -23,13 +23,13 @@ void TXTask::activity() {
         sys.telem_slate.tick.set(xTaskGetTickCount());
         sys.telem_slate.logging.set(sys.tasks.logger.isLoggingEnabled());
 
-        telemetry_t::telemetry_pkt_t packet;
+        telemetry_t::pkt_t packet;
         sys.telem_slate.seralize(packet);
         
         //sys.tasks.logger.log(json_buffer);
         //writeUSB(json_buffer);
         
-        sys.slateServer.send(packet);
+        sys.telem_slate.server.send(packet);
         
     }
 };

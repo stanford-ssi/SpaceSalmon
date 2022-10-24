@@ -11,7 +11,7 @@ CmdServer::CmdServer(uint8_t priority) : Task(priority, "Ethernet") {}
 void CmdServer::activity()
 {
     vTaskDelay(4000);
-    sys.slateServer.bind(MY_SLATE_PORT);
+    sys.telem_slate.server.bind(MY_SLATE_PORT);
 
     cmdConn = netconn_new(NETCONN_UDP);
     err_t err = netconn_bind(cmdConn, IP4_ADDR_ANY, MY_CMD_PORT);
@@ -72,7 +72,7 @@ err_t CmdServer::msg_handler(quail_telemetry_Message &msg, ip_addr_t *addr, uint
         break;
 
     case quail_telemetry_Message_start_udp_tag:
-        sys.slateServer.connect({msg.message.start_udp.addr}, msg.message.start_udp.port);
+        sys.telem_slate.server.connect({msg.message.start_udp.addr}, msg.message.start_udp.port);
         msg.which_message = quail_telemetry_Message_ack_tag;
         respond = true;
         break;

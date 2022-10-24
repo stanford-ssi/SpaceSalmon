@@ -3,6 +3,7 @@
 #pragma once
 #include <stdint.h>
 #include "{{path}}"
+#include "../rx_tx_log/SlateServer.hpp"
 
 class {{slate}}_t : public Slate
 {
@@ -14,9 +15,9 @@ public:
     SlateField<{{ channel.type }}> {{ id }} = {{ channel.default }}; // {{channel.desc}}, in {{channel.unit}}
     {% endfor %}
 
-    typedef struct { uint8_t payload[{{total_len}}]; } {{slate}}_pkt_t;
+    typedef struct { uint8_t payload[{{total_len}}]; } pkt_t;
 
-    void seralize(telemetry_pkt_t &pkt){
+    void seralize(pkt_t &pkt){
         seralize_field(pkt,metaslate_hash,0);
         {% for id,channel in channels.items() %}
         seralize_field(pkt,{{ id }},{{channel.offset}});
@@ -41,5 +42,7 @@ public:
 
     static constexpr uint8_t metaslate_blob[] = { {{metaslate_blob}} };
     const uint64_t& get_metaslate_hash(){ return metaslate_hash; }
+
+    SlateServer<{{slate}}_t> server;
 };
 
