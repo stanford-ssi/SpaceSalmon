@@ -14,6 +14,8 @@ message Message {
     response_metaslate response_metaslate = 5;
     set_field set_field = 6;
     ack ack = 7;
+    query_info query_info = 8;
+    respond_info respond_info = 9;
   }
 }
 
@@ -48,4 +50,17 @@ message set_field {
 
 }
 
+message query_info {}
+
+message respond_info {
+  required string name = 1 [(nanopb).max_length = 20];
+  required string version = 2 [(nanopb).max_length = 100];
+  repeated slate_info slates = 3 [(nanopb).max_count = 5];
+}
+
+message slate_info {
+  required string name = 1 [(nanopb).max_length = 20];
+  required uint32 size = 2;
+  required uint64 hash = 3;
+}
 

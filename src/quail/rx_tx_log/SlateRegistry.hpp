@@ -84,4 +84,31 @@ public:
             },
             slateServerList);
     }
+
+    void fetch_slate_info(quail_telemetry_respond_info &msg)
+    {
+        uint8_t i = 0;
+
+        std::apply(
+            [&](SlateServer<Ts> &...server)
+            {
+                ([&]
+                 {
+                     if (i >= (sizeof(msg.slates)/sizeof(msg.slates[0])) )
+                     {
+                         return;
+                     }
+
+                     msg.slates[i].hash = server.slate.get_metaslate_hash();
+                     msg.slates[i].size = server.slate.size;
+                     strncpy(msg.slates[i].name, server.slate.name, sizeof(msg.slates[i].name));
+
+                     i++;
+                                  }(),
+                 ...);
+            },
+            slateServerList);
+
+        msg.slates_count = i;
+    }
 };

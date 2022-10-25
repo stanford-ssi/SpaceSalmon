@@ -7,8 +7,6 @@ import zlib, msgpack
 from google.protobuf.internal.encoder import _VarintBytes
 from google.protobuf.internal.decoder import _DecodeVarint32
 
-
-
 IP = '192.168.2.2'
 CMD_PORT = 1002
 
@@ -17,9 +15,26 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as cmd_sock :
 
     seq = 1
 
-    hash = 0x8b0e8698b88b8a83
+    print("=== Requesting available slate info ===")
+    # Start UDP stream:
+    msg = cmd_pb2.Message()
+    msg.sequence = seq
+    seq += 1
+    msg.query_info.SetInParent()
+    cmd_sock.sendto(msg.SerializeToString(),(IP, CMD_PORT))
 
-    print("Requesting telemetry stream")
+    print("waiting for ack...")
+    # decode metaslate
+    data = cmd_sock.recv(1024)
+    read_msg = cmd_pb2.Message()
+    read_msg.ParseFromString(data)
+    if (read_msg.sequence == seq):
+        print("got ack!")
+    print()
+    print(read_msg)
+    hash = read_msg.respond_info.slates[0].hash
+
+    print("=== Requesting telemetry stream ===")
     # Start UDP stream:
     msg = cmd_pb2.Message()
     msg.sequence = seq
@@ -30,7 +45,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as cmd_sock :
     msg.start_udp.port = 8000
     cmd_sock.sendto(msg.SerializeToString(),(IP, CMD_PORT))
 
-    print("Waiting for ack")
+    print("waiting for ack...")
     # decode metaslate
     data = cmd_sock.recv(1024)
     read_msg = cmd_pb2.Message()
@@ -38,8 +53,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as cmd_sock :
     if (read_msg.sequence == seq):
         print("got ack!")
 
-
-    print("Requesting metaslate")
+    print("=== Requesting metaslate ===")
     # Ask for metaslate
     msg = cmd_pb2.Message()
     msg.sequence = seq
@@ -47,8 +61,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as cmd_sock :
     msg.request_metaslate.hash = hash
     cmd_sock.sendto(msg.SerializeToString(),(IP, CMD_PORT))
 
-
-    print("Waiting for metaslate")
+    print("waiting for metaslate...")
     # decode metaslate
     data = cmd_sock.recv(1024)
     read_msg = cmd_pb2.Message()
@@ -58,9 +71,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as cmd_sock :
     data = zlib.decompress(read_msg.response_metaslate.metaslate)
     data = msgpack.unpackb(data)
 
-    print(data)
-
-
+    #print(data)
 
     UDP_IP = "0.0.0.0"
     UDP_PORT = 8000

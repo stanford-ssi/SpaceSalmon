@@ -90,6 +90,14 @@ err_t CmdServer::msg_handler(quail_telemetry_Message &msg, ip_addr_t *addr, uint
         respond = true;
         break;
 
+    case quail_telemetry_Message_query_info_tag:
+        msg.which_message = quail_telemetry_Message_respond_info_tag;
+        sys.slate_registry.fetch_slate_info(msg.message.respond_info);
+        strncpy(msg.message.respond_info.name, "quail", sizeof(msg.message.respond_info.name));
+        strncpy(msg.message.respond_info.version, build_version, sizeof(msg.message.respond_info.version));
+        respond = true;
+        break;
+
     default:
         printf("got packet we were not supposed to get!\n");
         break;
