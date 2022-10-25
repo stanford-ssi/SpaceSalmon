@@ -4,12 +4,10 @@
 #include <stdint.h>
 #include "{{path}}"
 
-class {{slate}}_t : public Slate
+class {{slate}}_t
 {
-private:
-    static constexpr uint64_t metaslate_hash = {{metaslate_hash}};
-
 public:
+
     {% for id,channel in channels.items() %}
     SlateField<{{ channel.type }}> {{ id }} = {{ channel.default }}; // {{channel.desc}}, in {{channel.unit}}
     {% endfor %}
@@ -38,10 +36,9 @@ public:
     }
 
 {% endfor %}
-
     static constexpr const char* name = "{{slate}}";
     static constexpr uint32_t size = {{total_len}};
     static constexpr uint8_t metaslate_blob[] = { {{metaslate_blob}} };
-    const uint64_t& get_metaslate_hash(){ return metaslate_hash; }
+    static constexpr uint64_t metaslate_hash = {{metaslate_hash}};
 };
 

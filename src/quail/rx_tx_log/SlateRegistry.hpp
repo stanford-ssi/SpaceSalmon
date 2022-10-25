@@ -25,7 +25,7 @@ public:
                 ([&]
                  {
                     auto &slate = server.slate;
-                    if (cmd.hash == slate.get_metaslate_hash())
+                    if (cmd.hash == slate.metaslate_hash)
                     {
                         switch (cmd.which_adata)
                         {
@@ -58,7 +58,7 @@ public:
             {
                 ([&]
                  {
-                    if (cmd.hash == server.slate.get_metaslate_hash())
+                    if (cmd.hash == server.slate.metaslate_hash)
                     {
                         server.connect({cmd.addr}, cmd.port);
                     } }(),
@@ -75,7 +75,7 @@ public:
             {
                 ([&]
                  {
-                    if (msg.hash == server.slate.get_metaslate_hash())
+                    if (msg.hash == server.slate.metaslate_hash)
                     {
                         memcpy(msg.metaslate.bytes, server.slate.metaslate_blob, sizeof(server.slate.metaslate_blob));
                         msg.metaslate.size = sizeof(server.slate.metaslate_blob);
@@ -99,12 +99,11 @@ public:
                          return;
                      }
 
-                     msg.slates[i].hash = server.slate.get_metaslate_hash();
+                     msg.slates[i].hash = server.slate.metaslate_hash;
                      msg.slates[i].size = server.slate.size;
                      strncpy(msg.slates[i].name, server.slate.name, sizeof(msg.slates[i].name));
 
-                     i++;
-                                  }(),
+                     i++; }(),
                  ...);
             },
             slateServerList);
