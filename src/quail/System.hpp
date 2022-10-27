@@ -17,7 +17,6 @@ class System;
 #include "PowerTask.hpp"
 #include "rx_tx_log/LoggerTask.hpp"
 #include "rx_tx_log/TXTask.hpp"
-#include "rx_tx_log/RXTask.hpp"
 
 #include "rx_tx_log/CmdServer.hpp"
 #include "rx_tx_log/SlateServer.hpp"
@@ -79,11 +78,8 @@ public:
         PowerTask powertask = PowerTask(3); // test for measuring battery voltage and current
         
         CmdServer cmdserver = CmdServer(4);
-        
-
 
         TXTask txtask = TXTask(5, 50); //regularly collects state data, logs and sends over USB, radio, or ethernet
-        RXTask rxtask = RXTask(5, 50); //processes commands from USB, radio, or ethernet
         LoggerTask logger = LoggerTask(1); // logs data to SD during idle time, writes USB data as available
 
 
