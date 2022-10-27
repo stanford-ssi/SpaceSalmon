@@ -23,6 +23,7 @@ class System;
 #include "generated/telemetry.h"
 #include "config.h"
 #include "rx_tx_log/SlateRegistry.hpp"
+#include "actuators/ValveTask.hpp"
 
 class System
 { 
@@ -75,13 +76,13 @@ public:
 
         ADCTask adctask = ADCTask(2); // passes ADC raw data to the appropriate sensor
         SensorTask sensortask = SensorTask(3);
-        PowerTask powertask = PowerTask(3); // test for measuring battery voltage and current
+        PowerTask powertask = PowerTask(3); // task for measuring battery voltage and current
         
         CmdServer cmdserver = CmdServer(4);
 
-        TXTask txtask = TXTask(5, 50); //regularly collects state data, logs and sends over USB, radio, or ethernet
+        TXTask txtask = TXTask(6, 50); //regularly collects state data, logs and sends over USB, radio, or ethernet
         LoggerTask logger = LoggerTask(1); // logs data to SD during idle time, writes USB data as available
-
+        ValveTask valves = ValveTask(5);
 
     } tasks = Tasks(*this);
 };
