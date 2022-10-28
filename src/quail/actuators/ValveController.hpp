@@ -36,6 +36,7 @@ public:
             }
             else if (_timer.get() > 0)
             {
+                printf("timer started\n");
                 _state = valve_state::on_timer;
                 _timer_end = xTaskGetTickCount() + _timer.get(); // WARNING! rolls over at 49 days!
                 _active.set(true);
@@ -59,10 +60,12 @@ public:
             }
             else if (time_now < _timer_end)
             {
+                printf("still going\n");
                 _timer.set(_timer_end - time_now);
             }
             else
             {
+                printf("turning off\n");
                 _state = valve_state::off;
                 _timer.set(0);
                 _active.set(false);

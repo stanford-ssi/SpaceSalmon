@@ -2,7 +2,8 @@ import zlib
 import cmd_pb2
 import sys
 import socket
-import zlib, msgpack
+import zlib
+import msgpack
 
 from google.protobuf.internal.encoder import _VarintBytes
 from google.protobuf.internal.decoder import _DecodeVarint32
@@ -10,7 +11,7 @@ from google.protobuf.internal.decoder import _DecodeVarint32
 IP = '192.168.2.2'
 CMD_PORT = 1002
 
-with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as cmd_sock :
+with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as cmd_sock:
     cmd_sock.bind(("0.0.0.0", 5423))
 
     seq = 1
@@ -21,7 +22,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as cmd_sock :
     msg.sequence = seq
     seq += 1
     msg.query_info.SetInParent()
-    cmd_sock.sendto(msg.SerializeToString(),(IP, CMD_PORT))
+    cmd_sock.sendto(msg.SerializeToString(), (IP, CMD_PORT))
 
     print("waiting for ack...")
     # decode metaslate
@@ -43,7 +44,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as cmd_sock :
     msg.start_udp.hash = hash
     msg.start_udp.addr = 0x0102A8C0
     msg.start_udp.port = 8000
-    cmd_sock.sendto(msg.SerializeToString(),(IP, CMD_PORT))
+    cmd_sock.sendto(msg.SerializeToString(), (IP, CMD_PORT))
 
     print("waiting for ack...")
     # decode metaslate
@@ -59,7 +60,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as cmd_sock :
     msg.sequence = seq
     msg.request_metaslate.SetInParent()
     msg.request_metaslate.hash = hash
-    cmd_sock.sendto(msg.SerializeToString(),(IP, CMD_PORT))
+    cmd_sock.sendto(msg.SerializeToString(), (IP, CMD_PORT))
 
     print("waiting for metaslate...")
     # decode metaslate
@@ -76,47 +77,54 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as cmd_sock :
     UDP_IP = "0.0.0.0"
     UDP_PORT = 8000
 
-    sock = socket.socket(socket.AF_INET, # Internet
-                        socket.SOCK_DGRAM) # UDP
+    sock = socket.socket(socket.AF_INET,  # Internet
+                         socket.SOCK_DGRAM)  # UDP
     sock.bind((UDP_IP, UDP_PORT))
 
     i = 0
 
-
-    def write(key,value):
+    def write(key, value):
         print(f"writing {value} to {key}")
+        channel_meta = data["channels"][key]
         msg = cmd_pb2.Message()
         msg.sequence = 69
         msg.set_field.SetInParent()
         msg.set_field.hash = hash
-        msg.set_field.offset = data["channels"][key]["offset"]
-        msg.set_field.data_int16 = value
-        cmd_sock.sendto(msg.SerializeToString(),(IP, CMD_PORT))
-        
+        msg.set_field.offset = channel_meta["offset"]
+
+        if channel_meta["type"] == "int16_t":
+            msg.set_field.data_int16 = value
+        elif channel_meta["type"] == "bool":
+            msg.set_field.data_bool = value
+        else:
+            print("don't know how to write!")
+
+        cmd_sock.sendto(msg.SerializeToString(), (IP, CMD_PORT))
 
     while True:
         i += 1
-        
-        if( i % 100 == 10):
-            write("s1_pulse",0)
-            #write("s1",0)
+
+        if (i % 100 == 10):
+            write("s1_pulse", 0)
+            write("s1",0)
+            
             # write("s1_pulse",i)
 
-        if( i % 100 == 20):
-             write("s1_pulse",200)
+        if (i % 100 == 20):
+            write("s1",1)
 
-        # if( i % 100 == 30):
-        #     write("s1",1)
-        
-        # if( i % 100 == 40):
-        #     write("s1",0)
+        if( i % 100 == 30):
+            write("s1",0)
 
-        slate_data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
+        if( i % 100 == 40):
+            write("s1",1)
+
+        slate_data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
         #print("received message: %s" % slate_data)
         slate = {}
-        for name,el in data["channels"].items():
-            slate[name] = int.from_bytes(slate_data[el["offset"]:el["offset"]+el["size"]], "little")
-        #print(slate)
-        print(f'tick {slate["tick"]} s1_pulse: {slate["s1_pulse"]} s1: {slate["s1"]} ')
-
-
+        for name, el in data["channels"].items():
+            slate[name] = int.from_bytes(
+                slate_data[el["offset"]:el["offset"]+el["size"]], "little")
+        # print(slate)
+        print(
+            f'tick {slate["tick"]} s1_pulse: {slate["s1_pulse"]} s1: {slate["s1"]} ')
