@@ -3,6 +3,7 @@
 #include "FreeRTOS.h"
 #include "Task.hpp"
 #include "ValveController.hpp"
+#include <functional>
 
 class ValveTask : public Task<256>
 {
@@ -15,10 +16,39 @@ public:
         while (true)
         {
             vTaskDelayUntil(&valve_time, 10);
-            valve1.serviceValve();
+            for (auto valve : valveList)
+            {
+                valve.get().serviceValve();
+            }
         }
     }
 
 private:
-    ValveController valve1;
+    ValveController
+        valve1,
+        valve2,
+        valve3,
+        valve4,
+        valve5,
+        valve6,
+        valve7,
+        valve8,
+        valve9,
+        valve10,
+        valve11,
+        valve12;
+
+    std::reference_wrapper<ValveController> valveList[12]{
+        valve1,
+        valve2,
+        valve3,
+        valve4,
+        valve5,
+        valve6,
+        valve7,
+        valve8,
+        valve9,
+        valve10,
+        valve11,
+        valve12};
 };
