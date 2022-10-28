@@ -65,6 +65,7 @@ public:
             {
                 _state = valve_state::off;
                 _timer.set(0);
+                _active.set(false);
             }
         }
 
