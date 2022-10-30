@@ -4,6 +4,7 @@ import sys
 import socket
 import zlib
 import msgpack
+import struct
 
 from google.protobuf.internal.encoder import _VarintBytes
 from google.protobuf.internal.decoder import _DecodeVarint32
@@ -105,26 +106,35 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as cmd_sock:
         i += 1
 
         if (i % 100 == 10):
-            write("s1_pulse", 0)
             write("s1",0)
+            write("s1_pulse", 500)
+
             
             # write("s1_pulse",i)
 
-        if (i % 100 == 20):
-            write("s1",1)
+        # if (i % 100 == 20):
+        #     write("s1",1)
 
-        if( i % 100 == 30):
-            write("s1",0)
+        # if( i % 100 == 30):
+        #     write("s1",0)
 
-        if( i % 100 == 40):
-            write("s1",1)
+        # if( i % 100 == 40):
+        #     write("s1",1)
 
         slate_data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
         #print("received message: %s" % slate_data)
         slate = {}
         for name, el in data["channels"].items():
-            slate[name] = int.from_bytes(
-                slate_data[el["offset"]:el["offset"]+el["size"]], "little")
+            if el["type"] == "int16_t":
+                slate[name] = int.from_bytes(
+                    slate_data[el["offset"]:el["offset"]+el["size"]], "little", signed=True)
+            elif el["type"] == "uint32_t":
+                slate[name] = int.from_bytes(
+                    slate_data[el["offset"]:el["offset"]+el["size"]], "little", signed=False)
+            elif el["type"] == "bool":
+                slate[name] = (slate_data[el["offset"]] != 0b0)
+            elif el["type"] == "float":
+                slate[name] = struct.unpack('f', slate_data[el["offset"]:el["offset"]+el["size"]])[0]
         # print(slate)
         print(
-            f'tick {slate["tick"]} s1_pulse: {slate["s1_pulse"]} s1: {slate["s1"]} ')
+            f'tick {slate["tick"]} s1_pulse: {slate["s1_pulse"]} s1: {slate["s1"]} pt3: {slate["pt3"]}')
