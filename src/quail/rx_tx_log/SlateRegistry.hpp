@@ -30,7 +30,6 @@ public:
                         switch (cmd.which_adata)
                         {
                         case quail_telemetry_set_field_data_int16_tag:
-                            printf("setting i16 at %i to %i\n",cmd.offset,cmd.adata.data_int16);
                             slate.set_int16_t_field(cmd.offset, cmd.adata.data_int16);
                             break;
 
@@ -39,7 +38,6 @@ public:
                             break;
 
                         case quail_telemetry_set_field_data_bool_tag:
-                            printf("setting bool at %i to %u\n",cmd.offset,cmd.adata.data_bool);
                             slate.set_bool_field(cmd.offset, cmd.adata.data_bool);
                             break;
 
