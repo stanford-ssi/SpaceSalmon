@@ -72,6 +72,10 @@ err_t CmdServer::msg_handler(quail_telemetry_Message &msg, ip_addr_t *addr, uint
         break;
 
     case quail_telemetry_Message_start_udp_tag:
+        if (msg.message.start_udp.addr == 0)
+        { // if target address is 0, we target the source of the packet
+            msg.message.start_udp.addr = addr->addr;
+        }
         sys.slate_registry.set_server_target(msg.message.start_udp);
         msg.which_message = quail_telemetry_Message_ack_tag;
         respond = true;
