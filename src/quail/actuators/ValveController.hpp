@@ -47,6 +47,7 @@ public:
             if (_active.get() == false)
             {
                 _state = valve_state::off;
+                _timer.set(0);
             }
             break;
 
