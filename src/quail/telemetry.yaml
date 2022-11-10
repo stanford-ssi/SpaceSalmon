@@ -298,12 +298,19 @@ channels:
     default: 0
     mutable: False
 
-  comms:
-    desc: "comms"
-    type: bool
-    unit: enum
+  watchdog_counter:
+    desc: "Watchdog Counter"
+    type: uint32_t
+    unit: ms
     default: 0
-    mutable: False
+    mutable: True    
+
+  watchdog_control:
+    desc: "Watchdog Timeout Control"
+    type: uint32_t
+    unit: ms
+    default: 0
+    mutable: True
 
   tick:
     desc: "tick"

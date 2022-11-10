@@ -16,9 +16,6 @@ void TXTask::activity() {
         j++;
         vTaskDelayUntil(&lastSensorTime, tx_interval_ms);
 
-        // still sending data so no hangups -> we prevent from failsafe rebooting
-        Watchdog.reset();
-
         // prepare slate
         sys.telem_slate.tick.set(xTaskGetTickCount());
         sys.telem_slate.logging.set(sys.tasks.logger.isLoggingEnabled());

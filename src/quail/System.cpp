@@ -34,9 +34,7 @@ int main(void)
 
 	digitalWrite(1, HIGH); // turn on power LED
 
-	//Watch dog timer - will reboot quail if not reset every 5 seconds
-	// currently this is done in TXTask
-	Watchdog.enable(5000);
+	sys.tasks.powertask.watchdog.set_interval(16000);
 
 	//start all RTOS tasks (this never returns)
 	vTaskStartScheduler();
