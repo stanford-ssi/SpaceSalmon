@@ -23,15 +23,12 @@ public:
     // set and enable the WTD to the given timeout. If timeout is 0, the WDT is disabled.
     void set_interval(uint32_t timeout)
     {
-        printf("got here\n");
         if (timeout)
         {
-            printf("and here\n");
             interval = Watchdog.enable(timeout);
         }
         else
         {
-            printf("but not here\n");
             interval = 0;
             Watchdog.disable();
         }
@@ -53,14 +50,12 @@ public:
     {
         if (interval)
         {
-            //printf("also later here\n");
             bool done = false;
             while (!done)
             {
                 uint32_t new_counter = _counter.get();
                 if (new_counter >= interval)
                 {
-                    printf("it got pet\n");
                     Watchdog.reset();
                     last_reset = xTaskGetTickCount();
                     _counter.set(interval - 1);
