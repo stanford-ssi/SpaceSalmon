@@ -74,7 +74,7 @@ channels:
     default: 0.0
     mutable: False
 
-  dry_mass:
+  load_mass_offset:
     desc: "Vehicle Dry Mass"
     unit: kg
     type: float
