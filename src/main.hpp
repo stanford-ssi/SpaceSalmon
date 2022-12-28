@@ -29,3 +29,4 @@
 #endif
 
 extern System sys;
+extern const char* build_version;

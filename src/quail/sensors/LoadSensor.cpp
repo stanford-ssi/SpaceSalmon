@@ -3,9 +3,8 @@
 
 uint8_t LoadSensor::cfg = UNCONFIGURED; // initially unconfigured
 
-LoadSensor::LoadSensor(Ad7124::InputSel ainp, SensorSlate &slate) : 
-    Sensor(slate.id.c_str(), ainp, Ad7124::AIN0Input, slate) {
-        slate.updateUnits("N");
+LoadSensor::LoadSensor(Ad7124::InputSel ainp, SlateField<float>& slate) : 
+    Sensor(ainp, Ad7124::AIN0Input, slate) {
 };
 
 void LoadSensor::configure() {
@@ -25,5 +24,5 @@ void LoadSensor::convertToFloat(uint32_t adc_dataword)
     //TODO: make this calculation variable based on range, set by this->range
     float load = voltage / 0.030 * 1000.0 * 4.4482216153; // return load in N
 
-    slate << load;
+    slate.set(load);
 };

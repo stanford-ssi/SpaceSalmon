@@ -1,0 +1,320 @@
+slate: telemetry
+name: "Quail Telemetry"
+version: 1
+
+channels:
+    
+  pt1:
+    desc: "GN2 Source Pressure"
+    unit: Pa
+    type: float
+    default: 0.0
+    mutable: False
+
+  pt2:
+    desc: "GN2 Postfill Pressure"
+    unit: Pa
+    type: float
+    default: 0.0
+    mutable: False
+
+  pt3:
+    desc: "NOx Source Pressure"
+    unit: Pa
+    type: float
+    default: 0.0
+    mutable: False
+
+  pt4:
+    desc: "NOx Postfill Pressure"
+    unit: Pa
+    type: float
+    default: 0.0
+    mutable: False
+
+  pt5:
+    desc: "PT5 Pressure"
+    unit: Pa
+    type: float
+    default: 0.0
+    mutable: False
+
+  pt6:
+    desc: "PT6 Pressure"
+    unit: Pa
+    type: float
+    default: 0.0
+    mutable: False
+
+  pt7:
+    desc: "PT7 Pressure"
+    unit: Pa
+    type: float
+    default: 0.0
+    mutable: False
+
+  pt8:
+    desc: "PT8 Pressure"
+    unit: Pa
+    type: float
+    default: 0.0
+    mutable: False
+
+  lc1:
+    desc: "Left Load Cell"
+    unit: "N"
+    type: float
+    default: 0.0
+    mutable: False
+
+  lc2:
+    desc: "Right Load Cell"
+    unit: "N"
+    type: float
+    default: 0.0
+    mutable: False
+
+  load_mass_offset:
+    desc: "Vehicle Dry Mass"
+    unit: kg
+    type: float
+    default: 0.0
+    mutable: True
+
+  load_mass:
+    desc: "Fuel/Ox Load"
+    unit: kg
+    type: float
+    default: 0.0
+    mutable: False
+
+  tc1:
+    desc: "NOx Bottle Temp"
+    unit: "K"
+    type: float
+    default: 0.0
+    mutable: False
+
+  tc2:
+    desc: "NOx Tank Temp"
+    unit: "K"
+    type: float
+    default: 0.0
+    mutable: False
+
+  s1:
+    desc: "Fuel Main Actuation"
+    type: bool
+    unit: bool
+    default: "false"
+    mutable: True
+
+  s2:
+    desc: "Ox Main Actuation"
+    type: bool
+    unit: bool
+    default: "false"
+    mutable: True
+
+  s3:
+    desc: "Fuel Fill"
+    type: bool
+    unit: bool
+    default: "false"
+    mutable: True
+
+  s4:
+    desc: "Fuel Bleed"
+    type: bool
+    unit: bool
+    default: "false"
+    mutable: True
+
+  s5:
+    desc: "Ox Fill"
+    type: bool
+    unit: bool
+    default: "false"
+    mutable: True
+
+  s6:
+    desc: "Ox Bleed"
+    type: bool
+    unit: bool
+    default: "false"
+    mutable: True
+
+  s7:
+    desc: "Ox Vent"
+    type: bool
+    unit: bool
+    default: "false"
+    mutable: True
+
+  s8:
+    desc: "S8"
+    type: bool
+    unit: bool
+    default: "false"
+    mutable: True
+
+  s9:
+    desc: "S9"
+    type: bool
+    unit: bool
+    default: "false"
+    mutable: True
+
+  s10:
+    desc: "S10"
+    type: bool
+    unit: bool
+    default: "false"
+    mutable: True
+
+  s11:
+    desc: "S11"
+    type: bool
+    unit: bool
+    default: "false"
+    mutable: True
+
+  s12:
+    desc: "S12"
+    type: bool
+    unit: bool
+    default: "false"
+    mutable: True
+
+  v_batt:
+    desc: "Battery Voltage"
+    type: float
+    unit: V
+    default: 0.0
+    mutable: false
+
+  i_batt:
+    desc: "Battery Current"
+    type: float
+    unit: A
+    default: 0.0
+    mutable: false
+
+  s1_pulse:
+    desc: "S1 valve timer"
+    type: int16_t
+    unit: ms
+    default: 0
+    mutable: True
+
+  s2_pulse:
+    desc: "S2 valve timer"
+    type: int16_t
+    unit: ms
+    default: 0
+    mutable: True
+
+  s3_pulse:
+    desc: "S3 valve timer"
+    type: int16_t
+    unit: ms
+    default: 0
+    mutable: True
+
+  s4_pulse:
+    desc: "S4 valve timer"
+    type: int16_t
+    unit: ms
+    default: 0
+    mutable: True
+
+  s5_pulse:
+    desc: "S5 valve timer"
+    type: int16_t
+    unit: ms
+    default: 0
+    mutable: True
+
+  s6_pulse:
+    desc: "S6 valve timer"
+    type: int16_t
+    unit: ms
+    default: 0
+    mutable: True
+
+  s7_pulse:
+    desc: "S7 valve timer"
+    type: int16_t
+    unit: ms
+    default: 0
+    mutable: True
+
+  s8_pulse:
+    desc: "S8 valve timer"
+    type: int16_t
+    unit: ms
+    default: 0
+    mutable: True
+
+  s9_pulse:
+    desc: "S9 valve timer"
+    type: int16_t
+    unit: ms
+    default: 0
+    mutable: True
+
+  s10_pulse:
+    desc: "S10 valve timer"
+    type: int16_t
+    unit: ms
+    default: 0
+    mutable: True
+
+  s11_pulse:
+    desc: "S11 valve timer"
+    type: int16_t
+    unit: ms
+    default: 0
+    mutable: True
+  
+  s12_pulse:
+    desc: "S12 valve timer"
+    type: int16_t
+    unit: ms
+    default: 0
+    mutable: True
+
+  error:
+    desc: "Error"
+    type: uint32_t
+    unit: enum
+    default: 0
+    mutable: False
+
+  logging:
+    desc: "Logging"
+    type: bool
+    unit: enum
+    default: 0
+    mutable: False
+
+  watchdog_counter:
+    desc: "Watchdog Counter"
+    type: uint32_t
+    unit: ms
+    default: 0
+    mutable: True    
+
+  watchdog_control:
+    desc: "Watchdog Timeout Control"
+    type: uint32_t
+    unit: ms
+    default: 0
+    mutable: True
+
+  tick:
+    desc: "tick"
+    type: uint32_t
+    unit: ms
+    default: 0
+    mutable: False

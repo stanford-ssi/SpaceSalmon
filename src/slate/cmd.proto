@@ -1,0 +1,66 @@
+
+syntax = "proto2";
+
+import "nanopb.proto";
+
+package quail_telemetry;
+
+message Message {
+  required uint32 sequence = 1;
+  oneof message {
+    reboot reboot = 2;
+    start_udp start_udp = 3;
+    request_metaslate request_metaslate = 4;
+    response_metaslate response_metaslate = 5;
+    set_field set_field = 6;
+    ack ack = 7;
+    query_info query_info = 8;
+    respond_info respond_info = 9;
+  }
+}
+
+message reboot {}
+
+message ack {}
+
+message start_udp {
+  required uint32 addr = 1;
+  required uint32 port = 2;
+  required uint64 hash = 3;
+}
+
+message request_metaslate {
+    required uint64 hash = 1;
+}
+
+message response_metaslate {
+    required uint64 hash = 1;
+    required bytes metaslate = 2 [(nanopb).max_size = 1000];;
+}
+
+message set_field {
+    required uint64 hash = 1;
+    required uint32 offset = 2;
+    oneof adata {
+      int32 data_int16 = 3;
+      uint32 data_uint32 = 4;
+      float data_float = 5;
+      bool data_bool = 6;
+    }
+
+}
+
+message query_info {}
+
+message respond_info {
+  required string name = 1 [(nanopb).max_length = 20];
+  required string version = 2 [(nanopb).max_length = 100];
+  repeated slate_info slates = 3 [(nanopb).max_count = 5];
+}
+
+message slate_info {
+  required string name = 1 [(nanopb).max_length = 20];
+  required uint32 size = 2;
+  required uint64 hash = 3;
+}
+

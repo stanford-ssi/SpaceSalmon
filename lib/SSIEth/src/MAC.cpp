@@ -1,6 +1,7 @@
 #include "MAC.h"
 
 #include <string.h>
+#include <algorithm>
 #include "utils/utils_assert.h"
 #include <hpl_gmac_config.h>
 
@@ -244,7 +245,7 @@ result_t MAC::read(uint8_t *buf, uint32_t buf_len, uint32_t &rx_len)
 			/* eof now indicate the number of bufs the frame used */
 			eof = i;
 			n = _rxbuf_descrs[pos].status.bm.len;
-			buf_len = min(n, buf_len);
+			buf_len = std::min(n, buf_len);
 			/* Break process since the last data has been found */
 			break;
 		}
@@ -268,7 +269,7 @@ result_t MAC::read(uint8_t *buf, uint32_t buf_len, uint32_t &rx_len)
 	{
 		if (eof != 0xFFFFFFFF && i >= sof && i <= eof && buf_len > 0)
 		{
-			n = min(buf_len, CONF_GMAC_RXBUF_SIZE);
+			n = std::min(buf_len, (uint32_t)CONF_GMAC_RXBUF_SIZE);
 			memcpy(buf, _rxbuf[_rxbuf_index], n);
 			buf += n;
 			total_len += n;

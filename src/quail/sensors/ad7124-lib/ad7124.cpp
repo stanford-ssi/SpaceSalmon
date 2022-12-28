@@ -306,29 +306,29 @@ Ad7124Chip::startSingleConversion (uint8_t ch) {
 }
 
 // -----------------------------------------------------------------------------
-long
-Ad7124Chip::read (uint8_t ch) {
-  int ret;
-  uint8_t cur_ch = currentChannel();
+// long
+// Ad7124Chip::read (uint8_t ch) {
+//   int ret;
+//   uint8_t cur_ch = currentChannel();
 
-  if (ch != cur_ch) {
-    // disable previous channel if different
-    ret = enableChannel (cur_ch, false);
-    if (ret < 0) {
-      return ret;
-    }
-  }
-  ret = startSingleConversion (ch);
-  if (ret < 0) {
+//   if (ch != cur_ch) {
+//     // disable previous channel if different
+//     ret = enableChannel (cur_ch, false);
+//     if (ret < 0) {
+//       return ret;
+//     }
+//   }
+//   ret = startSingleConversion (ch);
+//   if (ret < 0) {
 
-    return ret;
-  }
-  ret = waitEndOfConversion (timeout());
-  if (ret < 0) {
-    return ret;
-  }
-  //return getData();
-}
+//     return ret;
+//   }
+//   ret = waitEndOfConversion (timeout());
+//   if (ret < 0) {
+//     return ret;
+//   }
+//   //return getData();
+// }
 
 // -----------------------------------------------------------------------------
 int

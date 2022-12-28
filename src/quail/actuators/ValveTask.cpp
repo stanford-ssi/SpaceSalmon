@@ -1,83 +1,17 @@
 #include "ValveTask.hpp"
-#include "Arduino.h"
 #include "main.hpp"
 
-TimerHandle_t ValveTask::pulseTimers[NUM_SOLENOIDS];
-StaticTimer_t ValveTask::pulseBufs[NUM_SOLENOIDS];
-
-ValveTask::ValveTask(uint8_t priority, uint8_t valve_pin_start) : 
-Task(priority, "Valves"), valve_pin_start(valve_pin_start), slate(sys.slate.valves){
-    valveManager = xEventGroupCreateStatic(&evBuf);
-    for (uint8_t i = 0; i < NUM_SOLENOIDS; i++) {
-        pinMode(valve_pin_start + i, OUTPUT);
-    }
-
-    for(uint8_t i = 0; i < NUM_SOLENOIDS; i++) {
-        pulseTimers[i] = xTimerCreateStatic(slate[i].id.c_str(), // timer identifier
-                                            slate[i].time(), // default pulse time (always modified before calling)
-                                            pdFALSE, // timer does NOT auto-reload
-                                            (void *) (long)i, // timer ID, used to know which solenoid to close on callback
-                                            _callback, // callback to close
-                                            &(pulseBufs[i])); // static buffer
-    }
-}
-
-void ValveTask::activity() {
-    while(true) {
-        uint32_t flags = xEventGroupWaitBits(valveManager, 0xFFF, pdTRUE, pdFALSE, NEVER);
-        for(uint8_t i = 0; i < NUM_SOLENOIDS; i++, flags>>=1) {
-            if(flags & 0b01) {
-                _updatePower(i);
-            }
-        }
-    }
-}
-
-bool ValveTask::updatePulse(uint8_t ch, uint16_t pulse_dur) {
-    if (ch < 0 || ch >= NUM_SOLENOIDS) return false;
-    slate[ch].time << pulse_dur;
-    return _updatePulse(ch);
-}
-
-bool ValveTask::_updatePulse(uint8_t ch) {
-    if (ch < 0 || ch >= NUM_SOLENOIDS) return false;
-    xTimerChangePeriod(pulseTimers[ch], slate[ch].time(), NEVER); // set new pulse period
-    _pulseSolenoid(ch); // every update is also a pulse
-    _updateValves(ch);
-    return true;
-}
-
-bool ValveTask::_pulseSolenoid(uint8_t ch){
-    bool ret = openSolenoid(ch, false); // open solenoid
-    xTimerStart(pulseTimers[ch], NEVER); // start the timer to close this solenoid
-    return ret;
-};
-
-bool ValveTask::updateSolenoid(uint8_t ch, bool update_valves, solenoid_state_t state) {
-    if(ch >= 0 && ch < NUM_SOLENOIDS){
-        slate[ch].state << state;
-        if (update_valves) _updateValves(ch);
-        return true;
-    } else { return false; }
-}
-
-void ValveTask::_updateValves(uint8_t index) {
-    xEventGroupSetBits(valveManager, UPDATE_VALVES << index);
-}
-
-bool ValveTask::_updatePower(uint8_t ch) {
-    if (ch < 0 || ch >= NUM_SOLENOIDS) return false;
-    if(slate[ch].state() == slate[ch].normal()) { // if valve is in the state in which it should be powered
-        analogWrite(valve_pin_start + ch, slate[ch].pwm());
-    }
-    else{
-        analogWrite(valve_pin_start + ch, 0);
-    }
-    return true;
-}
-
-void ValveTask::_callback(TimerHandle_t xTimer){
-    uint8_t sol_ch[4];
-    sol_ch[0] = (long) pvTimerGetTimerID(xTimer);
-    sys.tasks.valvetask.closeSolenoid(sol_ch[0]); // circuitous to keep static
-};
+ValveTask::ValveTask(uint8_t priority)
+    : Task(priority, "Valves"),
+      valve1(sys.telem_slate.s1, sys.telem_slate.s1_pulse, 22),
+      valve2(sys.telem_slate.s2, sys.telem_slate.s2_pulse, 23),
+      valve3(sys.telem_slate.s3, sys.telem_slate.s3_pulse, 24),
+      valve4(sys.telem_slate.s4, sys.telem_slate.s4_pulse, 25),
+      valve5(sys.telem_slate.s5, sys.telem_slate.s5_pulse, 26),
+      valve6(sys.telem_slate.s6, sys.telem_slate.s6_pulse, 27),
+      valve7(sys.telem_slate.s7, sys.telem_slate.s7_pulse, 28),
+      valve8(sys.telem_slate.s8, sys.telem_slate.s8_pulse, 29),
+      valve9(sys.telem_slate.s9, sys.telem_slate.s9_pulse, 30),
+      valve10(sys.telem_slate.s10, sys.telem_slate.s10_pulse, 31),
+      valve11(sys.telem_slate.s11, sys.telem_slate.s11_pulse, 32),
+      valve12(sys.telem_slate.s12, sys.telem_slate.s12_pulse, 33) {}

@@ -2,14 +2,14 @@
 
 #include "ad7124-lib/ad7124.h"
 #include "SlateKey.hpp"
-#include "../slate/SlateAbstractions.hpp"
+#include "../../slate/slate_utils.h"
 
 class Sensor {
     public:
         /**
          * @brief General constructor for sensors, autoincrements number of sensors
          */
-        Sensor(const char* ch_name, Ad7124::InputSel ainp, Ad7124::InputSel ainm, SensorSlate& slate);         
+        Sensor(Ad7124::InputSel ainp, Ad7124::InputSel ainm, SlateField<float>& slate);         
 
         /**
          * @brief over-written by inheritors, returns SI unit value of reading from ADC bin count
@@ -21,8 +21,6 @@ class Sensor {
          */
         virtual void configure(); 
 
-        const char* ch_name; // data channel name
-
         static uint8_t numSensors(){ return num_sensors; };
 
     protected:   
@@ -32,7 +30,7 @@ class Sensor {
         const Ad7124::InputSel ainp; // ADC positive input
         const Ad7124::InputSel ainm; // ADC negative input  
 
-        SensorSlate& slate; // slate channel
+        SlateField<float>& slate; // slate channel
 
         static uint8_t addConfig() { return num_cfgs++; }
 

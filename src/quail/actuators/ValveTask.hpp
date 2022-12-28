@@ -1,55 +1,54 @@
+
 #pragma once
-
-#include <FreeRTOS.h>
-#include <task.h>
-#include "event_groups.h"
-#include <hal_rtos.h>
-#include <timers.h>
-
+#include "FreeRTOS.h"
 #include "Task.hpp"
-#include "../config.h"
-#include "Array.hpp"
-#include "../slate/SlateAbstractions.hpp"
+#include "ValveController.hpp"
+#include <functional>
 
-class ValveTask : public Task<1000> {
-    public:
-        ValveTask(uint8_t priority, uint8_t valve_pin_start);
+class ValveTask : public Task<256>
+{
+public:
+    ValveTask(uint8_t priority);
 
-        void activity();
-
-        bool openSolenoid(uint8_t ch, bool update = true) { return updateSolenoid(ch, update, OPEN); };
-        bool closeSolenoid(uint8_t ch, bool update = true) { return updateSolenoid(ch, update, CLOSED); };
-        bool pulseSolenoid(uint8_t sol_ch);
-        bool pulseSolenoid(uint8_t ch, uint16_t pulse_dur);
-        bool updatePulse(uint8_t ch, uint16_t pulse_dur);
-
-    private:
-        uint8_t valve_pin_start;
-
-        Array<Solenoid, NUM_SOLENOIDS> &slate;
-        friend class PulseEndpoint;
-        friend class Solenoid;
-        friend class EngineFSM;
-        friend class TankFSM;
-        friend class VaPakFSM;
-
-        StaticEventGroup_t evBuf;
-        EventGroupHandle_t valveManager;
-        
-        bool updateSolenoid(uint8_t ch, bool update, solenoid_state_t state);
-
-        void _updateValves(uint8_t index);
-        void _updateValves() {
-            for (uint8_t valve = 0; valve < NUM_SOLENOIDS; valve++)
-                _updateValves(valve);
+    void activity()
+    {
+        TickType_t valve_time = xTaskGetTickCount();
+        while (true)
+        {
+            vTaskDelayUntil(&valve_time, 10);
+            for (auto valve : valveList)
+            {
+                valve.get().serviceValve();
+            }
         }
-        bool _updatePulse(uint8_t ch);
-        bool _updatePower(uint8_t ch);
-        bool _pulseSolenoid(uint8_t ch);
-        bool _pulseSolenoind(uint8_t ch, uint16_t pulse_dur);
+    }
 
-        static TimerHandle_t pulseTimers[NUM_SOLENOIDS]; // xTimers for callback (timer IDS correspond to the array index & solenoid channel)
-        static StaticTimer_t pulseBufs[NUM_SOLENOIDS]; // xTimer static buffer for pulse timers
+private:
+    ValveController
+        valve1,
+        valve2,
+        valve3,
+        valve4,
+        valve5,
+        valve6,
+        valve7,
+        valve8,
+        valve9,
+        valve10,
+        valve11,
+        valve12;
 
-        static void _callback(TimerHandle_t xTimer);
+    std::reference_wrapper<ValveController> valveList[12]{
+        valve1,
+        valve2,
+        valve3,
+        valve4,
+        valve5,
+        valve6,
+        valve7,
+        valve8,
+        valve9,
+        valve10,
+        valve11,
+        valve12};
 };

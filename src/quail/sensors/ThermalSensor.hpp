@@ -6,7 +6,7 @@
 class ThermalSensor : public Sensor {
     public:
 
-        ThermalSensor(Ad7124::InputSel ainp, SensorSlate &slate);
+        ThermalSensor(Ad7124::InputSel ainp, SlateField<float>& slate);
 
         void convertToFloat(uint32_t adc_dataword);
         void configure();

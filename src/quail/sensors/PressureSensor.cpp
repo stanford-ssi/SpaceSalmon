@@ -3,9 +3,8 @@
 
 uint8_t PressureSensor::cfg = UNCONFIGURED; // this sensor type is initially unconfigured
 
-PressureSensor::PressureSensor(Ad7124::InputSel ainp, PressureRange range, SensorSlate &slate) : 
-    Sensor(slate.id.c_str(), ainp, Ad7124::AVSSInput, slate), range(range) {
-        slate.updateUnits("Pa");
+PressureSensor::PressureSensor(Ad7124::InputSel ainp, PressureRange range, SlateField<float>& slate) : 
+    Sensor(ainp, Ad7124::AVSSInput, slate), range(range) {
 };
 
 void PressureSensor::configure() {
@@ -25,5 +24,5 @@ void PressureSensor::convertToFloat(uint32_t adc_dataword)
     //TODO: make this calculation variable based on range, set by this->range
     float pressure = (voltage - 0.5) / 4.0 * (range*PSI_TO_PA);
     
-    slate << pressure;
+    slate.set(pressure);
 };
