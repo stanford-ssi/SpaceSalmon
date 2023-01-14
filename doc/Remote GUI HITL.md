@@ -23,6 +23,7 @@ cd ~/Olympus-GroundControl/ # go into the ground software project folder
 git checkout main # select the main branch
 git pull origin_https main # pull the latest code
 . venv/bin/activate # activate the server virtualenv
+pip install -r requirements.txt # update python requirements
 adev runserver main.py --port 8080 --livereload # start up the server
 ```
 
