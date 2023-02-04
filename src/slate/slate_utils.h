@@ -40,4 +40,10 @@ public:
         vPortExitCritical();
         return valid;
     }
+
+    T operator()() { return get(); }
+    SlateField<T> &operator<<(T in) { 
+        set(in); 
+        return *this;
+    }
 };

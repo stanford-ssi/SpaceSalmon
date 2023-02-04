@@ -43,9 +43,9 @@ public:
     LoadSensor LC1 = LoadSensor(Ad7124::AIN12Input, telem_slate.lc1);
     LoadSensor LC2 = LoadSensor(Ad7124::AIN13Input, telem_slate.lc2);
     PressureSensor PT1 = PressureSensor(Ad7124::AIN1Input, RANGE_2500, telem_slate.pt1);
-    PressureSensor PT2 =  PressureSensor(Ad7124::AIN2Input, RANGE_1000, telem_slate.pt2);
+    PressureSensor PT2 =  PressureSensor(Ad7124::AIN2Input, RANGE_1000, telem_slate.oxdz_press);
     PressureSensor PT3 =  PressureSensor(Ad7124::AIN3Input, RANGE_2500, telem_slate.pt3);
-    PressureSensor PT4 =  PressureSensor(Ad7124::AIN4Input, RANGE_1000, telem_slate.pt4);
+    PressureSensor PT4 =  PressureSensor(Ad7124::AIN4Input, RANGE_1000, telem_slate.fuel_press);
     PressureSensor PT5 =  PressureSensor(Ad7124::AIN5Input, RANGE_1000, telem_slate.pt5);
     PressureSensor PT6 =  PressureSensor(Ad7124::AIN6Input, RANGE_1000, telem_slate.pt6);
     PressureSensor PT7 =  PressureSensor(Ad7124::AIN7Input, RANGE_1000, telem_slate.pt7);

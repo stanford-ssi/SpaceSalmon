@@ -16,15 +16,19 @@ def generate_slate(yaml_path, output_path):
     output_path.mkdir(exist_ok=True)
 
     slate_util_path = os.path.relpath(codegen_dir/"slate_utils.h",output_path)
+    slate_enum_path = os.path.relpath(codegen_dir/"slate_enums.h",output_path)
 
     with open(yaml_path, 'r') as stream:
         data_loaded = yaml.safe_load(stream)
 
-    type_to_size = {"float":4, "bool":1, "int16_t":2, "uint32_t":4}
+    type_to_size = {"float":4, "bool":1, "int16_t":2, "uint16_t":2, "uint32_t":4}
 
     offset = 8 # 8 bytes for flow ID
     for id,channel in data_loaded["channels"].items():
-        channel["size"] = type_to_size[channel["type"]]
+        if channel["type"] in type_to_size:
+            channel["size"] = type_to_size[channel["type"]]
+        else:
+            channel["size"] = type_to_size["uint32_t"]
         channel["offset"] = offset
         offset += channel["size"]
 
@@ -46,7 +50,7 @@ def generate_slate(yaml_path, output_path):
     environment.lstrip_blocks = True
 
     header_template = environment.get_template("slate.h.j2")
-    header_content = header_template.render(data_loaded,path=slate_util_path,types=type_to_size)
+    header_content = header_template.render(data_loaded,utils=slate_util_path,enums=slate_enum_path,types=type_to_size)
     header_file = data_loaded["slate"]+".h"
     header_path = output_path.joinpath(header_file)
 

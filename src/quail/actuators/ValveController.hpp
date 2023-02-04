@@ -15,13 +15,13 @@ private:
     };
 
     SlateField<bool> &_active;
-    SlateField<int16_t> &_timer;
+    SlateField<uint16_t> &_timer;
     uint8_t _pin;
     valve_state _state;
     uint32_t _timer_end;
 
 public:
-    ValveController(SlateField<bool> &active, SlateField<int16_t> &timer, uint8_t pin) : _active(active), _timer(timer), _pin(pin) 
+    ValveController(SlateField<bool> &active, SlateField<uint16_t> &timer, uint8_t pin) : _active(active), _timer(timer), _pin(pin) 
     {
     }
 
