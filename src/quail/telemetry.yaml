@@ -25,50 +25,50 @@ channels:
     default: TANK_IDLE_EMPTY
     mutable: True  
 
-  pt1:
-    desc: "GN2 Source Pressure"
+  oxdz_source_press:
+    desc: "NOx Bottle Pressure"
     unit: Pa
     type: float
     default: 0.0
     mutable: False
 
-  oxdz_press:
-    desc: "GN2 Postfill Pressure"
+  oxdz_up_press:
+    desc: "NOx Prefill Pressure"
     unit: Pa
     type: float
     default: 0.0
     mutable: False
 
-  pt3:
-    desc: "NOx Source Pressure"
+  oxdz_down_press:
+    desc: "NOx Tank Pressure"
     unit: Pa
     type: float
     default: 0.0
     mutable: False
 
-  fuel_press:
-    desc: "NOx Postfill Pressure"
+  pt4:
+    desc: "Main Valve Pressure"
     unit: Pa
     type: float
     default: 0.0
     mutable: False
 
-  pt5:
-    desc: "PT5 Pressure"
+  fuel_source_press:
+    desc: "N2 Bottle Pressure"
     unit: Pa
     type: float
     default: 0.0
     mutable: False
 
-  pt6:
-    desc: "PT6 Pressure"
+  fuel_up_press:
+    desc: "Fuel Prefill Pressure"
     unit: Pa
     type: float
     default: 0.0
     mutable: False
 
-  pt7:
-    desc: "PT7 Pressure"
+  chamber_press:
+    desc: "Combustion Chamber Pressure"
     unit: Pa
     type: float
     default: 0.0
@@ -316,6 +316,20 @@ channels:
     desc: "Oxidizer Operating Pressure"
     type: float
     unit: Pa
+    default: 0
+    mutable: True
+
+  fuel_op_mass:
+    desc: "Fuel Operating Mass"
+    type: float
+    unit: kg
+    default: 0
+    mutable: True
+
+  oxdz_op_mass:
+    desc: "Oxidizer Operating Mass"
+    type: float
+    unit: kg
     default: 0
     mutable: True
 

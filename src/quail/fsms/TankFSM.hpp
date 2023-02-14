@@ -19,5 +19,4 @@ class TankFSM : public TankGeneric {
 
     private:
         bool inBounds() override;
-        SlateField<float> weight = 0;
 };

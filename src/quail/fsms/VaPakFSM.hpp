@@ -12,5 +12,8 @@ class VaPakFSM : public TankGeneric {
 
     private:
         bool inBounds() override;
-        SlateField<float> weight = 0;
+        bool notFilling(float current_mass, float last_mass);
+
+        const float MIN_MASS_DELTA = 0.5; // kg
+        SlateField<float> op_mass;
 };

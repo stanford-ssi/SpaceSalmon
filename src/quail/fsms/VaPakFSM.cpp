@@ -6,34 +6,43 @@ VaPakFSM::VaPakFSM(uint8_t priority) : TankGeneric(
     priority, 
     sys.telem_slate.oxdz_state, 
     sys.telem_slate.oxdz_op_press, 
-    sys.telem_slate.oxdz_press, 
-    weight, 
+    sys.telem_slate.oxdz_up_press, 
+    sys.telem_slate.oxdz_down_press, 
     sys.telem_slate.oxdz_fill, 
     sys.telem_slate.oxdz_vent,
-    sys.telem_slate.oxdz_bleed) { }
+    sys.telem_slate.oxdz_bleed), 
+    op_mass(sys.telem_slate.oxdz_op_mass) { }
 
 void VaPakFSM::activity() {
     lastTick = xTaskGetTickCount();
 
     while (true) {
-        if (press() > MAWP) state << TANK_DRAIN;
-        ZERO_PRESS = 0.1 * op();
+        if (down_press() > MAWP) state << TANK_DRAIN;
+        ZERO_PRESS = 0.1 * op_press();
+        ZERO_WEIGHT = 0.1 * op_mass();
+
+        float last_mass = 0, current_mass = 0;
 
         switch(state()) {
+            last_mass = current_mass;
+            current_mass = mass() - mass_offset();
+
             case TANK_IDLE_EMPTY:  // only way to get out of idle is through user or tank command
-                if(press() > MAWP / 2) {
+                if(down_press() > MAWP / 2) {
                     state << TANK_IDLE_PRESS;
                 }
+                mass_offset << mass();
                 break;
             case TANK_IDLE_PRESS: // if at any point idle tank is pressurized assume pressurized till reset
                 break;
             case TANK_EMPTY:
-                if(press() > ZERO_PRESS) {
+                if(down_press() > ZERO_PRESS) {
                     state << TANK_DRAIN;
                 }
+                mass_offset << mass();
                 break;
             case TANK_DRAIN:
-                if (press() > ZERO_PRESS) {
+                if (down_press() > ZERO_PRESS) {
                     vent_sol << true;
                 } else {
                     vent_sol << false;
@@ -41,17 +50,16 @@ void VaPakFSM::activity() {
                 }
                 break;
             case TANK_FILL:
-                bleed_sol << true;
-                if (!inBounds()) {
-                    // if (press() > op()) {
-                    //     ventSol.time << FSM_PTM;
-                    // } else {
-                    //     fillSol.time << FSM_PTM;
-                    // }
-                } else {
-                    fill_sol << true;
-                    vent_sol << false;
+                fill_sol << true;
+                if (inBounds()) {
+                    fill_sol << false;
                     state << TANK_FULL;
+                }
+                if (notFilling(current_mass, last_mass)) {
+                    TickType_t pulseTime = xTaskGetTickCount();
+                    vent_sol << true;
+                    vTaskDelayUntil(&pulseTime, PULSE_FREQ);
+                    vent_sol << false;
                 }
                 break;
             case TANK_FULL:
@@ -60,7 +68,7 @@ void VaPakFSM::activity() {
                 } 
                 break;
             case TANK_BLEED:
-                if (press() > ZERO_PRESS) {
+                if (up_press() > ZERO_PRESS) {
                     bleed_sol << true;
                 } else {
                     bleed_sol << false;
@@ -76,5 +84,9 @@ void VaPakFSM::activity() {
 }
 
 bool VaPakFSM::inBounds() {
-    return op() - press() <= ZERO_PRESS;
+    return mass() - mass_offset() - op_mass() <= ZERO_WEIGHT;
+}
+
+bool VaPakFSM::notFilling(float current_mass, float last_mass) {
+    return abs(current_mass - last_mass) < MIN_MASS_DELTA;
 }

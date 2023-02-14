@@ -9,31 +9,31 @@ TankFSM::TankFSM(uint8_t priority,
     SlateField<bool>& fill_sol,
     SlateField<bool>& vent_sol,
     SlateField<bool>& bleed_sol) :
-    TankGeneric(priority, state, op_press, press, weight, fill_sol, vent_sol, bleed_sol) { }
+    TankGeneric(priority, state, op_press, press, press, fill_sol, vent_sol, bleed_sol) { }
 
 
 void TankFSM::activity() {
     lastTick = xTaskGetTickCount();
 
     while (true) {
-        if (press() > MAWP) state << TANK_DRAIN;
-        ZERO_PRESS = 0.1 * op();
+        if (down_press() > MAWP) state << TANK_DRAIN;
+        ZERO_PRESS = 0.1 * op_press();
 
         switch(state()) {
             case TANK_IDLE_EMPTY:  // only way to get out of idle is through user or tank command
-                if(press() > MAWP / 2) {
+                if(down_press() > MAWP / 2) {
                     state << TANK_IDLE_PRESS;
                 }
                 break;
             case TANK_IDLE_PRESS: // if at any point idle tank is pressurized assume pressurized till reset
                 break;
             case TANK_EMPTY:
-                if(press() > ZERO_PRESS) {
+                if(down_press() > ZERO_PRESS) {
                     state << TANK_DRAIN;
                 }
                 break;
             case TANK_DRAIN:
-                if (press() > ZERO_PRESS) {
+                if (down_press() > ZERO_PRESS) {
                     vent_sol << true;
                 } else {
                     vent_sol << false;
@@ -41,12 +41,13 @@ void TankFSM::activity() {
                 }
                 break;
             case TANK_FILL:
-                bleed_sol<< CLOSED;
-                if (!inBounds()) {
-                    fill_sol << true;
-                } else {
-                    fill_sol << false;
+                if (inBounds()) {
                     state << TANK_FULL;
+                } {
+                    TickType_t pulseTime = xTaskGetTickCount();
+                    fill_sol << true;
+                    vTaskDelayUntil(&pulseTime, PULSE_FREQ);
+                    fill_sol << false;
                 }
                 break;
             case TANK_FULL:
@@ -55,7 +56,7 @@ void TankFSM::activity() {
                 } 
                 break;
             case TANK_BLEED:
-                if (press() > ZERO_PRESS) {
+                if (up_press() > ZERO_PRESS) {
                     bleed_sol << true;
                 } else {
                     bleed_sol << false;
@@ -71,5 +72,5 @@ void TankFSM::activity() {
 }
 
 bool TankFSM::inBounds() {
-    return op() - press() <= ZERO_PRESS;
+    return op_press() - down_press() <= ZERO_PRESS;
 }
