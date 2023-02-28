@@ -27,6 +27,7 @@ channels:
 
   oxdz_source_press:
     desc: "NOx Bottle Pressure"
+    # matlab: tank.record.p
     unit: Pa
     type: float
     default: 0.0
@@ -34,6 +35,7 @@ channels:
 
   oxdz_up_press:
     desc: "NOx Prefill Pressure"
+    # matlab: ambient.record.p
     unit: Pa
     type: float
     default: 0.0
@@ -126,6 +128,7 @@ channels:
   fuel_main:
     desc: "Fuel Main Actuation"
     type: bool
+    # matlab: orifice
     unit: bool
     default: "false"
     mutable: True
@@ -224,6 +227,7 @@ channels:
   fuel_main_pulse:
     desc: "S1 valve timer"
     type: uint16_t
+    # matlab: orifice
     unit: ms
     default: 0
     mutable: True

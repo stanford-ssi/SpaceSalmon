@@ -36,7 +36,7 @@ This repo holds the embedded software for several of SSI's PCBs. It uses Platfor
 
 ### Uploading
 If BOSSAC uploading fails, use this:  
-`python uf2conv.py -b 0x4000 .pio\build\XXX\firmware.bin`  
+`python uf2conv.py -b 0x4000 .pio/build/XXX/firmware.bin`  
 
 ### Lessons Learned
 * You can't write data into a buffer into another task, beacause you don't know that its constructor has been initialized! The main case is logging. Don't try logging from the constructors! We should probably prevent the logger from taking input before its initialized...
