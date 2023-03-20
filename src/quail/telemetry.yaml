@@ -7,13 +7,15 @@ channels:
   pt1:
     desc: "GN2 Source Pressure"
     unit: Pa
+    matlab: tank.ullage_node.record.P;
     type: float
     default: 0.0
-    mutable: False
+    mutable: True
 
   pt2:
     desc: "GN2 Postfill Pressure"
     unit: Pa
+    matlab: ;
     type: float
     default: 0.0
     mutable: False
@@ -105,8 +107,9 @@ channels:
   s1:
     desc: "Fuel Main Actuation"
     type: bool
+    matlab: orifice
     unit: bool
-    default: "false"
+    default: "true"
     mutable: True
 
   s2:
