@@ -82,12 +82,10 @@ err_t CmdServer::msg_handler(quail_telemetry_Message &msg, ip_addr_t *addr, uint
         break;
 
     case quail_telemetry_Message_request_metaslate_tag:
-        printf("Handling metaslate request\n");
         msg.which_message = quail_telemetry_Message_response_metaslate_tag;
         msg.message.response_metaslate.hash = msg.message.request_metaslate.hash;
         sys.slate_registry.find_metaslate(msg.message.response_metaslate);
         respond = true;
-        printf("Assembled message\n");
         break;
 
     case quail_telemetry_Message_set_field_tag:
@@ -129,7 +127,6 @@ err_t CmdServer::msg_handler(quail_telemetry_Message &msg, ip_addr_t *addr, uint
                     }
                     else
                     {
-                        printf(" size=%zu", substream.bytes_written);
                         substream = pb_ostream_from_buffer(dataptr, substream.bytes_written);
                         if (pb_encode(&substream, quail_telemetry_Message_fields, &msg))
                         {
@@ -140,8 +137,7 @@ err_t CmdServer::msg_handler(quail_telemetry_Message &msg, ip_addr_t *addr, uint
                         }
                         else
                         {
-                            printf("failed to encode pb: ");
-                            printf(substream.errmsg);
+                            printf("failed to encode pb: %s\n", substream.errmsg);
                         }
                     }
                 }
