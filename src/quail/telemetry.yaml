@@ -6,24 +6,24 @@ channels:
 
   engn_state:
     desc: "Engine State"
-    type: EngineState
+    type: uint16_t
     unit: enum
-    default: ENGINE_IDLE
+    default: 0
     mutable: True  
 
-  fuel_state:
-    desc: "Fuel Tank State"
-    type: TankState
-    unit: enum
-    default: TANK_IDLE_EMPTY
-    mutable: True  
+  # fuel_state:
+  #   desc: "Fuel Tank State"
+  #   type: TankState
+  #   unit: enum
+  #   default: TANK_IDLE_EMPTY
+  #   mutable: True  
 
-  oxdz_state:
-    desc: "Ox Tank State"
-    type: TankState
-    unit: enum
-    default: TANK_IDLE_EMPTY
-    mutable: True  
+  # oxdz_state:
+  #   desc: "Ox Tank State"
+  #   type: TankState
+  #   unit: enum
+  #   default: TANK_IDLE_EMPTY
+  #   mutable: True  
 
   oxdz_source_press:
     desc: "NOx Bottle Pressure"
