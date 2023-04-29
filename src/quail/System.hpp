@@ -17,7 +17,7 @@ class System;
 #include "PowerTask.hpp"
 #include "rx_tx_log/LoggerTask.hpp"
 #include "rx_tx_log/TXTask.hpp"
-
+#include "EngineControlTask.hpp"
 #include "rx_tx_log/CmdServer.hpp"
 #include "rx_tx_log/SlateServer.hpp"
 #include "generated/telemetry.h"
@@ -83,6 +83,8 @@ public:
         TXTask txtask = TXTask(6, 50); //regularly collects state data, logs and sends over USB, radio, or ethernet
         LoggerTask logger = LoggerTask(1); // logs data to SD during idle time, writes USB data as available
         ValveTask valves = ValveTask(5);
+
+        EngineControlTask engTask = EngineControlTask(3);
 
     } tasks = Tasks(*this);
 };
