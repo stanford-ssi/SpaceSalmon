@@ -7,7 +7,6 @@ class System;
 #include <Adafruit_SleepyDog.h>
 #include "SPI.h"
 #include "sensors/ad7124-lib/ad7124.h"
-
 #include "sensors/Sensor.hpp"
 #include "sensors/PressureSensor.hpp"
 #include "sensors/ThermalSensor.hpp"
@@ -17,13 +16,15 @@ class System;
 #include "PowerTask.hpp"
 #include "rx_tx_log/LoggerTask.hpp"
 #include "rx_tx_log/TXTask.hpp"
-
 #include "rx_tx_log/CmdServer.hpp"
 #include "rx_tx_log/SlateServer.hpp"
-#include "generated/telemetry.h"
-#include "config.h"
 #include "rx_tx_log/SlateRegistry.hpp"
+#include "generated/telemetry.h"
 #include "actuators/ValveTask.hpp"
+#include "fsms/EngineFSM.hpp"
+#include "fsms/TankFSM.hpp"
+#include "fsms/VaPakFSM.hpp"
+#include "config.h"
 
 class System
 { 
@@ -84,6 +85,9 @@ public:
         LoggerTask logger = LoggerTask(1); // logs data to SD during idle time, writes USB data as available
         ValveTask valves = ValveTask(5);
 
+        EngineFSM engine = EngineFSM(1);
+        TankFSM fuel = TankFSM(1);
+        VaPakFSM ox = VaPakFSM(1);
     } tasks = Tasks(*this);
 };
 

@@ -6,43 +6,46 @@ channels:
 
   engn_state:
     desc: "Engine State"
-    type: uint16_t
+    type: EngineState
     unit: enum
-    default: 0
+    default: ENGINE_IDLE
     mutable: True  
 
-  # fuel_state:
-  #   desc: "Fuel Tank State"
-  #   type: TankState
-  #   unit: enum
-  #   default: TANK_IDLE_EMPTY
-  #   mutable: True  
+  fuel_state:
+    desc: "Fuel Tank State"
+    type: TankState
+    unit: enum
+    default: TANK_IDLE_EMPTY
+    mutable: True  
 
-  # oxdz_state:
-  #   desc: "Ox Tank State"
-  #   type: TankState
-  #   unit: enum
-  #   default: TANK_IDLE_EMPTY
-  #   mutable: True  
+  oxdz_state:
+    desc: "Ox Tank State"
+    type: TankState
+    unit: enum
+    default: TANK_IDLE_EMPTY
+    mutable: True  
 
   oxdz_source_press:
     desc: "NOx Bottle Pressure"
-    # matlab: tank.record.p
+    matlab: tank.record.p
+    pid: PT1
     unit: Pa
     type: float
     default: 0.0
-    mutable: False
+    mutable: True
 
   oxdz_up_press:
     desc: "NOx Prefill Pressure"
-    # matlab: ambient.record.p
+    matlab: ambient.record.p
+    pid: PT2
     unit: Pa
     type: float
     default: 0.0
-    mutable: False
+    mutable: True
 
   oxdz_down_press:
     desc: "NOx Tank Pressure"
+    pid: PT3
     unit: Pa
     type: float
     default: 0.0
@@ -50,6 +53,7 @@ channels:
 
   pt4:
     desc: "Main Valve Pressure"
+    pid: PT4
     unit: Pa
     type: float
     default: 0.0
@@ -57,6 +61,7 @@ channels:
 
   fuel_source_press:
     desc: "N2 Bottle Pressure"
+    pid: PT5
     unit: Pa
     type: float
     default: 0.0
@@ -64,6 +69,7 @@ channels:
 
   fuel_up_press:
     desc: "Fuel Prefill Pressure"
+    pid: PT6
     unit: Pa
     type: float
     default: 0.0
@@ -71,6 +77,7 @@ channels:
 
   chamber_press:
     desc: "Combustion Chamber Pressure"
+    pid: PT7
     unit: Pa
     type: float
     default: 0.0
@@ -78,6 +85,7 @@ channels:
 
   pt8:
     desc: "PT8 Pressure"
+    pid: PT8
     unit: Pa
     type: float
     default: 0.0
@@ -85,6 +93,7 @@ channels:
 
   lc1:
     desc: "Left Load Cell"
+    pid: LC1
     unit: "N"
     type: float
     default: 0.0
@@ -92,6 +101,7 @@ channels:
 
   lc2:
     desc: "Right Load Cell"
+    pid: LC2
     unit: "N"
     type: float
     default: 0.0
@@ -113,6 +123,7 @@ channels:
 
   tc1:
     desc: "NOx Bottle Temp"
+    pid: TC1
     unit: "K"
     type: float
     default: 0.0
@@ -120,6 +131,7 @@ channels:
 
   tc2:
     desc: "NOx Tank Temp"
+    pid: TC2
     unit: "K"
     type: float
     default: 0.0
@@ -128,7 +140,8 @@ channels:
   fuel_main:
     desc: "Fuel Main Actuation"
     type: bool
-    # matlab: orifice
+    matlab: orifice
+    pid: SV1
     unit: bool
     default: "false"
     mutable: True
@@ -136,6 +149,7 @@ channels:
   oxdz_main:
     desc: "Ox Main Actuation"
     type: bool
+    pid: SV2
     unit: bool
     default: "false"
     mutable: True
@@ -143,6 +157,7 @@ channels:
   fuel_fill:
     desc: "Fuel Fill"
     type: bool
+    pid: SV3
     unit: bool
     default: "false"
     mutable: True
@@ -150,6 +165,7 @@ channels:
   fuel_bleed:
     desc: "Fuel Bleed"
     type: bool
+    pid: SV4
     unit: bool
     default: "false"
     mutable: True
@@ -157,6 +173,7 @@ channels:
   oxdz_fill:
     desc: "Ox Fill"
     type: bool
+    pid: SV5
     unit: bool
     default: "false"
     mutable: True
@@ -164,6 +181,7 @@ channels:
   oxdz_bleed:
     desc: "Ox Bleed"
     type: bool
+    pid: SV6
     unit: bool
     default: "false"
     mutable: True
@@ -171,6 +189,7 @@ channels:
   oxdz_vent:
     desc: "Ox Vent"
     type: bool
+    pid: SV7
     unit: bool
     default: "false"
     mutable: True
@@ -178,6 +197,7 @@ channels:
   s8:
     desc: "S8"
     type: bool
+    pid: SV8
     unit: bool
     default: "false"
     mutable: True
@@ -185,6 +205,7 @@ channels:
   s9:
     desc: "S9"
     type: bool
+    pid: SV9
     unit: bool
     default: "false"
     mutable: True
@@ -192,6 +213,7 @@ channels:
   s10:
     desc: "S10"
     type: bool
+    pid: SV10
     unit: bool
     default: "false"
     mutable: True
@@ -199,6 +221,7 @@ channels:
   s11:
     desc: "S11"
     type: bool
+    pid: SV11
     unit: bool
     default: "false"
     mutable: True
@@ -206,6 +229,7 @@ channels:
   danger:
     desc: "Danger Lights"
     type: bool
+    pid: SV12
     unit: bool
     default: "false"
     mutable: True

@@ -1,16 +1,15 @@
 #include "TankFSM.hpp"
 #include "main.hpp"
 
-// different tanks are parametrized by different Endpoints
-TankFSM::TankFSM(uint8_t priority,
-    SlateField<TankState>& state, 
-    SlateField<float>& op_press,
-    SlateField<float>& press,
-    SlateField<bool>& fill_sol,
-    SlateField<bool>& vent_sol,
-    SlateField<bool>& bleed_sol) :
-    TankGeneric(priority, state, op_press, press, press, fill_sol, vent_sol, bleed_sol) { }
-
+TankFSM::TankFSM(uint8_t priority) : TankGeneric(
+    priority,
+    sys.telem_slate.fuel_state,
+    sys.telem_slate.fuel_op_press,
+    sys.telem_slate.fuel_source_press,
+    sys.telem_slate.fuel_up_press,
+    sys.telem_slate.fuel_fill,
+    sys.telem_slate.fuel_main,
+    sys.telem_slate.fuel_bleed) {}
 
 void TankFSM::activity() {
     lastTick = xTaskGetTickCount();

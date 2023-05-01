@@ -15,6 +15,7 @@ class TankFSM : public TankGeneric {
             SlateField<bool>& fill_sol,
             SlateField<bool>& vent_sol,
             SlateField<bool>& bleed_sol);
+        TankFSM(uint8_t priority);
         void activity() override;
 
     private:

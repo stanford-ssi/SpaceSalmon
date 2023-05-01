@@ -16,4 +16,6 @@ class VaPakFSM : public TankGeneric {
 
         const float MIN_MASS_DELTA = 0.5; // kg
         SlateField<float> op_mass;
+        SlateField<float>& mass;
+        SlateField<float>& mass_offset;
 };

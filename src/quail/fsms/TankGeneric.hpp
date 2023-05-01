@@ -4,7 +4,6 @@
 #include "../../slate/slate_utils.h"
 #include "../../slate/slate_enums.h"
 #include "../config.h"
-#include "main.hpp"
 
 class TankGeneric : public Task<500> {
     public:
@@ -28,8 +27,6 @@ class TankGeneric : public Task<500> {
         SlateField<float>& op_press;
         SlateField<float>& up_press;
         SlateField<float>& down_press;
-        SlateField<float>& mass = sys.telem_slate.load_mass;
-        SlateField<float>& mass_offset = sys.telem_slate.load_mass_offset;
         SlateField<bool>& fill_sol;
         SlateField<bool>& vent_sol;
         SlateField<bool>& bleed_sol;
