@@ -260,7 +260,7 @@ void MS5611_SPI::convert(const uint8_t addr, uint8_t bits)
   while (micros() - start < waitTime)
   {
     yield();
-    delay_ms(10);
+    delayMicroseconds(10);
   }
 }
 
