@@ -30,7 +30,7 @@ void TelemetryTask::activity()
         if (sys.tasks.radio.isIdle())
         {
             gps_data_t data = sys.tasks.gps.locationData;
-            TwoBattery::two_cell_voltage_t srad = sys.tasks.alt.battData_srad;
+            HackBattery::one_cell_voltage_t srad = sys.tasks.alt.battData_srad;
             HackBattery::one_cell_voltage_t cots = sys.tasks.alt.battData_cots;
 
             rf_down_t down_packet;
@@ -40,8 +40,7 @@ void TelemetryTask::activity()
             down_packet.filter_alt = compressFloat(sys.tasks.filter.filter.p_alt, -2000.0, 40000.0, 15);
             down_packet.filter_vel = compressFloat(sys.tasks.filter.filter.p_vel, -1000.0, 1000.0, 11);
 
-            down_packet.batt_srad_A = compressFloat(srad.cellA, 1.0, 6.0, 8);
-            down_packet.batt_srad_B = compressFloat(srad.cellB, 1.0, 6.0, 8);
+            down_packet.batt_srad = compressFloat(srad.cell, 1.0, 6.0, 8);
             down_packet.batt_cots = compressFloat(cots.cell, 1.0, 6.0, 8);
 
             down_packet.lat = compressFloat(data.lat, 0.0, 10.0, 18);

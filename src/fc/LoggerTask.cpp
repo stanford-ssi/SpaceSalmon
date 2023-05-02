@@ -154,6 +154,7 @@ void LoggerTask::activity()
 
     char *p = lineBuffer;
     TickType_t timeout = 0;
+    uint32_t shitltimer = xTaskGetTickCount();
     while (true)
     {
         //Step 1: read in all the logs
@@ -184,6 +185,7 @@ void LoggerTask::activity()
         }
         else
         { //if timeout is NEVER, we don't ever reach this (no SHITL)
+            vTaskDelayUntil(&shitltimer, 10);
             readSHITL();
         }
     }

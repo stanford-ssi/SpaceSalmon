@@ -58,9 +58,9 @@ void AltimeterTask::activity()
 
         pyro_json.add(pyroA);
         pyro_json.add(pyroB);
-
+        // if (!sys.shitl){
         sys.tasks.logger.logJSON(status_json, "status");
-
+        
         digitalWrite(ALT_LED, false);
     }
 }

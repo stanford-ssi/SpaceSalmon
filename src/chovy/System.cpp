@@ -37,7 +37,6 @@ int main(void)
 	pinMode(28,OUTPUT);
 	pinMode(29,INPUT);
 	
-
 	//start all RTOS tasks (this never returns)
 	vTaskStartScheduler();
 }

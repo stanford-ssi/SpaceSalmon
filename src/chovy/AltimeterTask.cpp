@@ -36,15 +36,14 @@ void AltimeterTask::activity()
             tasks_json[tasks[i].pcTaskName] = percent;
         }
 
-        TwoBattery::two_cell_voltage_t srad = sys.srad_batt.readVoltage();
+        HackBattery::one_cell_voltage_t srad = sys.srad_batt.readVoltage();
         HackBattery::one_cell_voltage_t cots = sys.cots_batt.readVoltage();
 
         battData_srad.post(srad);
         battData_cots.post(cots);
 
         JsonObject bat_json = status_json.createNestedObject("bat");
-        bat_json["sradA"] = srad.cellA;
-        bat_json["sradB"] = srad.cellB;
+        bat_json["sradA"] = srad.cell;
         bat_json["cots"] = cots.cell;
 
         status_json["log"] = sys.tasks.logger.isLoggingEnabled();
@@ -65,8 +64,9 @@ void AltimeterTask::activity()
         pyro_json.add(pyroC);
         pyro_json.add(pyroD);
 
-        sys.tasks.logger.logJSON(status_json, "status");
-
+        // if (!sys.shitl) {
+            sys.tasks.logger.logJSON(status_json, "status");
+        // }
         digitalWrite(ALT_LED, false);
     }
 }

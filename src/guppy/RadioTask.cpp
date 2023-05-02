@@ -108,8 +108,9 @@ void RadioTask::activity()
             logStats();
             time = xTaskGetTickCount();
         }
-
+        // Serial.println("before first waitbit");
         uint32_t flags = xEventGroupWaitBits(evgroup, 0b11, true, false, NEVER);
+        // Serial.println("after first waitbit");
         uint16_t irq = lora.getIrqStatus();
         lora.clearIrqStatus();
 
@@ -118,9 +119,9 @@ void RadioTask::activity()
         {
             log(info, "Preamble");
             uint32_t time = lora.symbolToMs(32); //time of a packet header
-
+            // Serial.println("before second waitbit");
             flags = xEventGroupWaitBits(evgroup, 0b01, true, false, time); //wait for another radio interupt for 500ms
-
+            // Serial.println("after second waitbit");
             if (!(flags & 0b01))
             {
                 log(warning, "Missed Header");
@@ -136,8 +137,9 @@ void RadioTask::activity()
             {
                 log(info, "wait RxDone");
                 uint32_t time = lora.getTimeOnAir(255) / 1000;                 //TODO: read this out of the header to make timeout tighter
+                // Serial.println("before third wait bit");
                 flags = xEventGroupWaitBits(evgroup, 0b01, true, false, time); //wait for radio interupt for 500ms
-
+                // Serial.println("after third wait bit");
                 if (!(flags & 0b01))
                 {
                     log(warning, "Missed RxDone");
@@ -194,7 +196,9 @@ void RadioTask::activity()
                 lora.standby();
                 lora.setCad();
                 uint32_t time = lora.symbolToMs(12) + 50;
+                // Serial.println("before fourth waitbit");
                 xEventGroupWaitBits(evgroup, 0b01, true, false, time);
+                // Serial.println("after fourth waitbit");
                 irq = lora.getIrqStatus();
                 lora.clearIrqStatus();
             } while (!(irq & SX126X_IRQ_CAD_DONE) || irq & SX126X_IRQ_CAD_DETECTED);
@@ -207,10 +211,11 @@ void RadioTask::activity()
 
                 uint32_t time = lora.getTimeOnAir(packet.len) / 1000; //get TOA in ms
                 time = (time * 1.1) + 100;                            //add margin
-
                 logPacket("TX", packet);
                 lora.startTransmit(packet.data, packet.len);
+                // Serial.println("before fifth waitbit");
                 flags = xEventGroupWaitBits(evgroup, 0b01, true, false, time);
+                // Serial.println("after fifth waitbit");
                 irq = lora.getIrqStatus();
                 lora.clearIrqStatus();
 
@@ -227,7 +232,9 @@ void RadioTask::activity()
 
                 lora.startReceive();
                 time = lora.symbolToMs(32);                             //this can be tuned
+                // Serial.println("before sixth waitbit");
                 xEventGroupWaitBits(evgroup, 0b01, false, false, time); //wait for other radio to get a chance to speak
+                // Serial.println("after sixth waitbit");
             }
             else
             {

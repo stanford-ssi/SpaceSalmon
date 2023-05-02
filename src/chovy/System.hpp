@@ -24,7 +24,6 @@ class System;
 #include "TelemetryTask.hpp"
 #include "RadioTask.hpp"
 #include "ArmingTask.hpp"
-#include "../periph/TwoBattery/TwoBattery.hpp"
 #include "../periph/HackBattery/HackBattery.hpp"
 
 #include "ssi_adc.h"
@@ -39,8 +38,8 @@ public:
     Pyro &pyro = pyrosquib;
 
     ADC adc0 = ADC(ADC0);
-    TwoBattery srad_batt = TwoBattery(adc0,13,14);
-    HackBattery cots_batt = HackBattery(adc0,15);
+    HackBattery srad_batt = HackBattery(adc0, 13);
+    HackBattery cots_batt = HackBattery(adc0, 14);
 
     Tone buzzer = Tone(5);
 

@@ -5,7 +5,6 @@
 #include <semphr.h>
 #include <hal_rtos.h>
 #include "Poster.hpp"
-#include "./periph/TwoBattery/TwoBattery.hpp"
 #include "./periph/HackBattery/HackBattery.hpp"
 #include "Task.hpp"
 
@@ -18,7 +17,7 @@ private:
 
 public:
     AltimeterTask(uint8_t priority);
-    Poster<TwoBattery::two_cell_voltage_t> battData_srad;
+    Poster<HackBattery::one_cell_voltage_t> battData_srad;
     Poster<HackBattery::one_cell_voltage_t> battData_cots;
 
 };

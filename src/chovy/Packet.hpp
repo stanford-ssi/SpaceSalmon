@@ -6,8 +6,7 @@ typedef struct __attribute__((__packed__)) rf_down_t
 
     unsigned time : 18;
     
-    unsigned batt_srad_A : 8;
-    unsigned batt_srad_B : 8;
+    unsigned batt_srad : 8;
     unsigned batt_cots : 8;
 
     unsigned state : 3; 

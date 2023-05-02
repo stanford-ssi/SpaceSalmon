@@ -33,6 +33,16 @@ void AltFilterTask::activity()
         digitalWrite(4, true);
         filter.update(data);
         plan.update(filter);
+        if (sys.shitl) {
+            // Serial.println("in shitl");
+            StaticJsonDocument<500> json;
+            json["tick"] = 0; 
+            JsonArray x_json = json.createNestedArray("alt");
+            x_json.add(filter.getAltitude());
+            JsonArray z_json = json.createNestedArray("vel");
+            z_json.add(filter.getVelocity());       
+            sys.tasks.logger.logJSON(json, "altitude");
+        }
         digitalWrite(4, false);
     }
 }

@@ -38,14 +38,18 @@ void GPSTask::activity()
             gps_json["alt"] = parser.altitude.meters();
             gps_json["sat"] = parser.satellites.value();
             gps_json["failed"] = parser.failedChecksum();
+            // if (!sys.shitl){
             sys.tasks.logger.logJSON(gps_json, "gps");
+            // }
             updateTimer = xTaskGetTickCount();
         }
         else if ((xTaskGetTickCount() - updateTimer) > 1000)
         {
             StaticJsonDocument<1024> gps_json;
             gps_json["updated"] = false;
+            // if (!sys.shitl){
             sys.tasks.logger.logJSON(gps_json, "gps");
+            // }
             updateTimer = xTaskGetTickCount();
         }
     }

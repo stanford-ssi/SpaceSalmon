@@ -84,7 +84,7 @@ void AltFilter::prefilter(SensorData& data){
   }
 
   Z(0) = p2alt(pres);  //LOL gotta convert to meters oops
-  Z(1) = (data.adxl1_data.y) - 9.807; //Antenna connector facing up, ematch connector down
+  Z(1) = (data.adxl2_data.x * -1.0) - 9.807; //Antenna connector facing up, ematch connector down
   //Z(1) = (data.adxl1_data.y * -1.0) - 9.807; //Antenna connector facing down, ematch connector up
     
   //NEGATIVE! If the accelerometers read -9.8 (raw from the sensor) when the rocket is vertical,
@@ -105,5 +105,7 @@ void AltFilter::logState(){
   JsonArray z_json = json.createNestedArray("z");
   z_json.add(Z(0));
   z_json.add(Z(1));
+  // if (!sys.shitl) {
   sys.tasks.logger.logJSON(json, "filter_state");
+  // }
 }
