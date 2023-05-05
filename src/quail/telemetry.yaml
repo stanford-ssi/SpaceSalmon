@@ -27,7 +27,7 @@ channels:
 
   oxdz_source_press:
     desc: "NOx Bottle Pressure"
-    matlab: tank.record.p
+    matlab: tank.ullage_node.record.P
     pid: PT1
     unit: Pa
     type: float
@@ -36,7 +36,7 @@ channels:
 
   oxdz_up_press:
     desc: "NOx Prefill Pressure"
-    matlab: ambient.record.p
+    matlab: ambient.record.P
     pid: PT2
     unit: Pa
     type: float
