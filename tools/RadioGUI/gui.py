@@ -4,6 +4,7 @@ from tkinter import *
 import json
 import base64
 
+
 import tkinter as tk
 
 
@@ -45,6 +46,7 @@ Label(frame, text=": ").pack(side=RIGHT)
 prefix = Entry(frame, width=10)
 prefix.pack(side=RIGHT)
 
+# frame for widgets
 dataFrame = Frame(root, borderwidth=5)
 dataFrame.grid(column=2, row=1, rowspan=2)
 
@@ -55,16 +57,18 @@ vars = [["freq", "Frequency", "MHz"], ["bw", "Bandwidth", "kHz"],
         ["cr", "Coding Rate", ""], ["rx_success", "RX Good", ""],
         ["rx_failure", "RX Fail", ""], ["tx_success", "TX Good", ""],
         ["tx_failure", "TX Fail", ""], ["rssi", "Last RSSI:", "dBm"],
-        ["snr", "Last SNR:", "dB"]]
+        ["snr", "Last SNR:", "dB"],
+        ["velocity", "Last Velocity (m/s):", ""], # WARNING: NOT CHECKED
+        ]
 
 # Build Data Window Dynamicaly
-data_feilds = {}
+data_fields = {}
 data_row = 1
 for entry in vars:
-    data_feilds[entry[0]] = (StringVar(), entry[2])
-    data_feilds[entry[0]][0].set("???"+entry[2])
+    data_fields[entry[0]] = (StringVar(), entry[2])
+    data_fields[entry[0]][0].set("???"+entry[2])
     Label(dataFrame, text=entry[1]).grid(column=0, row=data_row)
-    Label(dataFrame, textvariable=data_feilds[entry[0]][0]).grid(
+    Label(dataFrame, textvariable=data_fields[entry[0]][0]).grid(
         column=1, row=data_row)
     data_row += 1
 
@@ -104,14 +108,19 @@ data_row += 1
 # Serial.readline seems unreliable at times too
 serBuffer = ""
 
+# Check velocity not over capacity. WARNING: NOT CHECKED
+if ((data_fields["velocity"][1] != "") and (int(data_fields["velocity"][1]) <= -100)):
+    label = tk.Label(dataFrame, text="Descent velocity too high!", fg='red').grid(column=0, row=data_row)
+else: label = tk.Label(dataFrame, text="Descent velocity is appropriate.").grid(column=0, row=data_row)
 
+# Update data
 def process(line):
     logging.info("Got Msg: " + line.strip())
     data = json.loads(line)
     if data["id"] == "Radio":
         for key in data:
-            if key in data_feilds:
-                data_feilds[key][0].set(str(data[key]) + data_feilds[key][1])
+            if key in data_fields:
+                data_fields[key][0].set(str(data[key]) + data_fields[key][1])
 
         if (data["msg"] == "RX" or data["msg"] == "TX"):
             if msgtype.get() == "base64":
