@@ -48,6 +48,7 @@ public:
     const bool silent = false;
 
     Poster<bool> armed = Poster<bool>(false);
+    Poster<bool> timeExceeded = Poster<bool>(false); // If time between Sensortask exceed 15ms, use var to produce warning sound
 
     class Sensors
     {

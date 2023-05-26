@@ -5,6 +5,9 @@ SensorTask::SensorTask(uint8_t priority) : Task(priority, "Sensor") {}
 
 void SensorTask::activity()
 {
+
+
+
     if (sys.shitl)
     {
         vTaskSuspend(getTaskHandle());
@@ -114,9 +117,23 @@ void SensorTask::activity()
 
     TickType_t lastSensorTime = xTaskGetTickCount();
 
-    while (true)
+    int prevTickCount = 0;
+    while (true) // Start repeating functions here
     {
+
+        // Throw warning if over 12ms runs Sensortask
+        int curTickCount = xTaskGetTickCount();
+        if (curTickCount - prevTickCount > 12)
+        {
+            sys.tasks.logger.log("You're fucked!");
+            sys.timeExceeded.post(true);
+        } else {
+            sys.timeExceeded.post(false); // not needed?
+        }
+        prevTickCount = curTickCount;
+
         vTaskDelayUntil(&lastSensorTime, 10);
+
 
         digitalWrite(SENSOR_LED, true);
 

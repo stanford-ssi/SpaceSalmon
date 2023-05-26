@@ -4,14 +4,14 @@ BuzzerTask::BuzzerTask(uint8_t priority) : Task(priority, "Buzzer"){};
 
 void BuzzerTask::activity()
 {
-    if(sys.silent){
+    if(sys.silent){ 
         vTaskSuspend(getTaskHandle());
     }
     
-    uint32_t timer = 0;
-    while (true)
+    uint32_t timer = 0; // use for timing delays
+    while (true) // main activity loop
     {
-        vTaskDelayUntil(&timer, 5000);
+        vTaskDelayUntil(&timer, 5000); // a delay of 5 seconds
 
         bool pyroA = sys.pyro.getStatus(Pyro::SquibA);
         bool pyroB = sys.pyro.getStatus(Pyro::SquibB);
@@ -22,8 +22,20 @@ void BuzzerTask::activity()
         sys.buzzer.set(2500);
         vTaskDelay(300);
         sys.buzzer.set(0);
-
         vTaskDelay(500);
+
+        // If time exceeded, scary beep
+        bool timeExceeded;
+        sys.timeExceeded.get(timeExceeded);
+        if (timeExceeded) {
+            for (int i = 0; i< 20; i++) {
+                sys.buzzer.set(3500);
+                vTaskDelay(100);
+                sys.buzzer.set(0);
+                vTaskDelay(100);
+            }
+            
+        }
 
         switch (state)
         {
@@ -65,7 +77,7 @@ void BuzzerTask::activity()
 
         vTaskDelay(500);
 
-        if (pyroA)
+        if (pyroA) // true if actual pyros connected to board
         {
             sys.buzzer.set(5000);
             vTaskDelay(100);
