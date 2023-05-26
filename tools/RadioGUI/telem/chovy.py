@@ -24,7 +24,7 @@ def decodeTelem(data, pos):
     data["filter_alt"] = expand_float(data["filter_alt"], -2000.0, 40000.0, 15)
     data["filter_vel"] = expand_float(data["filter_vel"], -1000.0, 1000.0, 11)
 
-    return str(data)
+    return str(data), data
 
 
 def expand_float(input, min, max, bits, offset=0):

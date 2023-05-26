@@ -58,7 +58,7 @@ vars = [["freq", "Frequency", "MHz"], ["bw", "Bandwidth", "kHz"],
         ["rx_failure", "RX Fail", ""], ["tx_success", "TX Good", ""],
         ["tx_failure", "TX Fail", ""], ["rssi", "Last RSSI:", "dBm"],
         ["snr", "Last SNR:", "dB"],
-        ["velocity", "Last Velocity (m/s):", ""], # WARNING: NOT CHECKED
+        ["filter_vel", "Last Velocity (m/s):", ""], # WARNING: NOT CHECKED
         ]
 
 # Build Data Window Dynamicaly
@@ -71,6 +71,10 @@ for entry in vars:
     Label(dataFrame, textvariable=data_fields[entry[0]][0]).grid(
         column=1, row=data_row)
     data_row += 1
+
+# label = tk.Label(dataFrame, text="Initial Velocity Text")
+# label.pack()
+
 
 # radiobuttons
 msgtype = StringVar()
@@ -107,20 +111,27 @@ data_row += 1
 # useful for parsing commands
 # Serial.readline seems unreliable at times too
 serBuffer = ""
-
+print(data_fields.keys())
 # Check velocity not over capacity. WARNING: NOT CHECKED
-if ((data_fields["velocity"][1] != "") and (int(data_fields["velocity"][1]) <= -100)):
-    label = tk.Label(dataFrame, text="Descent velocity too high!", fg='red').grid(column=0, row=data_row)
-else: label = tk.Label(dataFrame, text="Descent velocity is appropriate.").grid(column=0, row=data_row)
+
+velocityWarningText = StringVar()
+velocityWarningText.set("Velocity Data Not Received")
+tk.Label(dataFrame, textvariable=velocityWarningText, fg='black').grid(column=0, row=data_row)
 
 # Update data
 def process(line):
     logging.info("Got Msg: " + line.strip())
     data = json.loads(line)
     if data["id"] == "Radio":
+        # if 'data' in data:
+        #     print(data['data'])
         for key in data:
             if key in data_fields:
                 data_fields[key][0].set(str(data[key]) + data_fields[key][1])
+
+            # if key=="filter_vel":
+            #     print(data[key])
+
 
         if (data["msg"] == "RX" or data["msg"] == "TX"):
             if msgtype.get() == "base64":
@@ -143,9 +154,23 @@ def process(line):
                 spec.loader.exec_module(telem)
 
                 # parse telemetry packet
-                msg = telem.decodeTelem(data["data"], pos)
+                msg, msgJSON = telem.decodeTelem(data["data"], pos)
+                print("------")
+                print(msg)
+                print(msgJSON['filter_vel'])
                 console.insert(END, msg + "\n")
                 logging.info("Decoded Telem: " + msg)
+                if ((data_fields["filter_vel"][1] != "") and (int(data_fields["filter_vel"][1]) <= -100)):
+                    velocityWarningText.set("descent velocity is too fast")
+                    tk.Label(dataFrame, textvariable=velocityWarningText, fg='red').grid(column=0, row=data_row)
+                    # new_text = "Descent Velocity is too fast"
+                    # label.config(text = new_text)
+                else:
+                    velocityWarningText.set("Velocity nominal")
+                    tk.Label(dataFrame, textvariable=velocityWarningText, fg='green').grid(column=0, row=data_row)
+
+                # else: label = tk.Label(dataFrame, text="Descent velocity is appropriate.").grid(column=0, row=data_row)
+
 
             console.see(END)
 
